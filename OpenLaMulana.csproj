@@ -112,4 +112,7 @@
   <ItemGroup>
     <Folder Include="Audio\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="ChaiFoxes.FMODAudio\ChaiFoxes.FMODAudio\ChaiFoxes.FMODAudio.Desktop\ChaiFoxes.FMODAudio.Desktop.csproj" />
+  </ItemGroup>
 </Project>
