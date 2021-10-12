@@ -19,17 +19,974 @@
 /processorParam:Quality=Best
 /build:button-press.mp3
 
+#begin data/boss00.dat
+/copy:data/boss00.dat
+
+#begin data/boss01.dat
+/copy:data/boss01.dat
+
+#begin data/boss02.dat
+/copy:data/boss02.dat
+
+#begin data/boss03.dat
+/copy:data/boss03.dat
+
+#begin data/boss04.dat
+/copy:data/boss04.dat
+
+#begin data/boss05.dat
+/copy:data/boss05.dat
+
+#begin data/boss06.dat
+/copy:data/boss06.dat
+
+#begin data/boss07.dat
+/copy:data/boss07.dat
+
+#begin data/boss08.dat
+/copy:data/boss08.dat
+
+#begin data/map00.dat
+/copy:data/map00.dat
+
+#begin data/map01.dat
+/copy:data/map01.dat
+
+#begin data/map02.dat
+/copy:data/map02.dat
+
+#begin data/map03.dat
+/copy:data/map03.dat
+
+#begin data/map04.dat
+/copy:data/map04.dat
+
+#begin data/map05.dat
+/copy:data/map05.dat
+
+#begin data/map06.dat
+/copy:data/map06.dat
+
+#begin data/map07.dat
+/copy:data/map07.dat
+
+#begin data/map08.dat
+/copy:data/map08.dat
+
+#begin data/map09.dat
+/copy:data/map09.dat
+
+#begin data/map10.dat
+/copy:data/map10.dat
+
+#begin data/map11.dat
+/copy:data/map11.dat
+
+#begin data/map12.dat
+/copy:data/map12.dat
+
+#begin data/map13.dat
+/copy:data/map13.dat
+
+#begin data/map14.dat
+/copy:data/map14.dat
+
+#begin data/map15.dat
+/copy:data/map15.dat
+
+#begin data/map16.dat
+/copy:data/map16.dat
+
+#begin data/map17.dat
+/copy:data/map17.dat
+
+#begin data/map18.dat
+/copy:data/map18.dat
+
+#begin data/map19.dat
+/copy:data/map19.dat
+
+#begin data/map20.dat
+/copy:data/map20.dat
+
+#begin data/map21.dat
+/copy:data/map21.dat
+
+#begin data/map22.dat
+/copy:data/map22.dat
+
+#begin data/map23.dat
+/copy:data/map23.dat
+
+#begin data/map24.dat
+/copy:data/map24.dat
+
+#begin data/map25.dat
+/copy:data/map25.dat
+
+#begin data/map26.dat
+/copy:data/map26.dat
+
+#begin data/map27.dat
+/copy:data/map27.dat
+
+#begin data/map28.dat
+/copy:data/map28.dat
+
+#begin data/map29.dat
+/copy:data/map29.dat
+
+#begin data/map30.dat
+/copy:data/map30.dat
+
+#begin data/map31.dat
+/copy:data/map31.dat
+
+#begin data/map32.dat
+/copy:data/map32.dat
+
+#begin data/map33.dat
+/copy:data/map33.dat
+
+#begin data/map34.dat
+/copy:data/map34.dat
+
+#begin data/script.dat
+/copy:data/script.dat
+
+#begin data/script.txt
+/copy:data/script.txt
+
+#begin data/script_ENG.dat
+/copy:data/script_ENG.dat
+
+#begin data/script_ENG.txt
+/copy:data/script_ENG.txt
+
+#begin graphics/boss00.bmp
+/copy:graphics/boss00.bmp
+
+#begin graphics/boss01.bmp
+/copy:graphics/boss01.bmp
+
+#begin graphics/boss02.bmp
+/copy:graphics/boss02.bmp
+
+#begin graphics/boss03.bmp
+/copy:graphics/boss03.bmp
+
+#begin graphics/boss04.bmp
+/copy:graphics/boss04.bmp
+
+#begin graphics/boss05.bmp
+/copy:graphics/boss05.bmp
+
+#begin graphics/boss06.bmp
+/copy:graphics/boss06.bmp
+
+#begin graphics/boss07.bmp
+/copy:graphics/boss07.bmp
+
+#begin graphics/boss08.bmp
+/copy:graphics/boss08.bmp
+
+#begin graphics/enddemo.bmp
+/copy:graphics/enddemo.bmp
+
+#begin graphics/enddemo_EN.bmp
+/copy:graphics/enddemo_EN.bmp
+
+#begin graphics/enemy1.bmp
+/copy:graphics/enemy1.bmp
+
+#begin graphics/enemy2.bmp
+/copy:graphics/enemy2.bmp
+
+#begin graphics/eveg00.bmp
+/copy:graphics/eveg00.bmp
+
+#begin graphics/eveg00_EN.bmp
+/copy:graphics/eveg00_EN.bmp
+
+#begin graphics/eveg01.bmp
+/copy:graphics/eveg01.bmp
+
+#begin graphics/eveg02.bmp
+/copy:graphics/eveg02.bmp
+
+#begin graphics/eveg02_EN.bmp
+/copy:graphics/eveg02_EN.bmp
+
+#begin graphics/eveg03.bmp
+/copy:graphics/eveg03.bmp
+
+#begin graphics/eveg03_EN.bmp
+/copy:graphics/eveg03_EN.bmp
+
+#begin graphics/eveg04.bmp
+/copy:graphics/eveg04.bmp
+
+#begin graphics/eveg04_EN.bmp
+/copy:graphics/eveg04_EN.bmp
+
+#begin graphics/eveg05.bmp
+/copy:graphics/eveg05.bmp
+
+#begin graphics/eveg05_EN.bmp
+/copy:graphics/eveg05_EN.bmp
+
+#begin graphics/eveg06.bmp
+/copy:graphics/eveg06.bmp
+
+#begin graphics/eveg06_EN.bmp
+/copy:graphics/eveg06_EN.bmp
+
+#begin graphics/eveg07.bmp
+/copy:graphics/eveg07.bmp
+
+#begin graphics/eveg07_EN.bmp
+/copy:graphics/eveg07_EN.bmp
+
+#begin graphics/eveg08.bmp
+/copy:graphics/eveg08.bmp
+
+#begin graphics/eveg08_EN.bmp
+/copy:graphics/eveg08_EN.bmp
+
+#begin graphics/eveg09.bmp
+/copy:graphics/eveg09.bmp
+
+#begin graphics/eveg09_EN.bmp
+/copy:graphics/eveg09_EN.bmp
+
+#begin graphics/eveg10.bmp
+/copy:graphics/eveg10.bmp
+
+#begin graphics/eveg10_EN.bmp
+/copy:graphics/eveg10_EN.bmp
+
+#begin graphics/eveg11.bmp
+/copy:graphics/eveg11.bmp
+
+#begin graphics/eveg11_EN.bmp
+/copy:graphics/eveg11_EN.bmp
+
+#begin graphics/eveg12.bmp
+/copy:graphics/eveg12.bmp
+
+#begin graphics/eveg12_EN.bmp
+/copy:graphics/eveg12_EN.bmp
+
+#begin graphics/eveg13.bmp
+/copy:graphics/eveg13.bmp
+
+#begin graphics/eveg13_EN.bmp
+/copy:graphics/eveg13_EN.bmp
+
+#begin graphics/eveg14.bmp
+/copy:graphics/eveg14.bmp
+
+#begin graphics/eveg14_EN.bmp
+/copy:graphics/eveg14_EN.bmp
+
+#begin graphics/eveg15.bmp
+/copy:graphics/eveg15.bmp
+
+#begin graphics/eveg15_EN.bmp
+/copy:graphics/eveg15_EN.bmp
+
+#begin graphics/eveg16.bmp
+/copy:graphics/eveg16.bmp
+
+#begin graphics/eveg16_EN.bmp
+/copy:graphics/eveg16_EN.bmp
+
+#begin graphics/eveg17.bmp
+/copy:graphics/eveg17.bmp
+
+#begin graphics/eveg17_EN.bmp
+/copy:graphics/eveg17_EN.bmp
+
+#begin graphics/eveg18.bmp
+/copy:graphics/eveg18.bmp
+
+#begin graphics/eveg18_EN.bmp
+/copy:graphics/eveg18_EN.bmp
+
+#begin graphics/eveg19.bmp
+/copy:graphics/eveg19.bmp
+
+#begin graphics/eveg20.bmp
+/copy:graphics/eveg20.bmp
+
+#begin graphics/eveg21.bmp
+/copy:graphics/eveg21.bmp
+
+#begin graphics/eveg22.bmp
+/copy:graphics/eveg22.bmp
+
+#begin graphics/font_EN.bmp
+/copy:graphics/font_EN.bmp
+
+#begin graphics/font_JP.bmp
+/copy:graphics/font_JP.bmp
+
+#begin graphics/item.bmp
+/copy:graphics/item.bmp
+
+#begin graphics/item_EN.bmp
+/copy:graphics/item_EN.bmp
+
+#begin graphics/logo.bmp
+/copy:graphics/logo.bmp
+
+#begin graphics/logo_EN.bmp
+/copy:graphics/logo_EN.bmp
+
+#begin graphics/mapg00.bmp
+/copy:graphics/mapg00.bmp
+
+#begin graphics/mapg01.bmp
+/copy:graphics/mapg01.bmp
+
+#begin graphics/mapg02.bmp
+/copy:graphics/mapg02.bmp
+
+#begin graphics/mapg03.bmp
+/copy:graphics/mapg03.bmp
+
+#begin graphics/mapg04.bmp
+/copy:graphics/mapg04.bmp
+
+#begin graphics/mapg05.bmp
+/copy:graphics/mapg05.bmp
+
+#begin graphics/mapg06.bmp
+/copy:graphics/mapg06.bmp
+
+#begin graphics/mapg07.bmp
+/copy:graphics/mapg07.bmp
+
+#begin graphics/mapg08.bmp
+/copy:graphics/mapg08.bmp
+
+#begin graphics/mapg09.bmp
+/copy:graphics/mapg09.bmp
+
+#begin graphics/mapg10.bmp
+/copy:graphics/mapg10.bmp
+
+#begin graphics/mapg11.bmp
+/copy:graphics/mapg11.bmp
+
+#begin graphics/mapg12.bmp
+/copy:graphics/mapg12.bmp
+
+#begin graphics/mapg13.bmp
+/copy:graphics/mapg13.bmp
+
+#begin graphics/mapg14.bmp
+/copy:graphics/mapg14.bmp
+
+#begin graphics/mapg15.bmp
+/copy:graphics/mapg15.bmp
+
+#begin graphics/mapg16.bmp
+/copy:graphics/mapg16.bmp
+
+#begin graphics/mapg17.bmp
+/copy:graphics/mapg17.bmp
+
+#begin graphics/mapg18.bmp
+/copy:graphics/mapg18.bmp
+
+#begin graphics/mapg18_EN.bmp
+/copy:graphics/mapg18_EN.bmp
+
+#begin graphics/mapg19.bmp
+/copy:graphics/mapg19.bmp
+
+#begin graphics/mapg20.bmp
+/copy:graphics/mapg20.bmp
+
+#begin graphics/mapg20_EN.bmp
+/copy:graphics/mapg20_EN.bmp
+
+#begin graphics/mapg21.bmp
+/copy:graphics/mapg21.bmp
+
+#begin graphics/mapg22.bmp
+/copy:graphics/mapg22.bmp
+
+#begin graphics/mapg22_EN.bmp
+/copy:graphics/mapg22_EN.bmp
+
+#begin graphics/mapg31.bmp
+/copy:graphics/mapg31.bmp
+
+#begin graphics/mapg31_EN.bmp
+/copy:graphics/mapg31_EN.bmp
+
+#begin graphics/mapg32.bmp
+/copy:graphics/mapg32.bmp
+
+#begin graphics/mapg32_EN.bmp
+/copy:graphics/mapg32_EN.bmp
+
+#begin graphics/msxlogo.bmp
+/copy:graphics/msxlogo.bmp
+
+#begin graphics/msxlogo_EN.bmp
+/copy:graphics/msxlogo_EN.bmp
+
+#begin graphics/opdemo.bmp
+/copy:graphics/opdemo.bmp
+
+#begin graphics/opdemo_EN.bmp
+/copy:graphics/opdemo_EN.bmp
+
+#begin graphics/prot_debug.bmp
+/copy:graphics/prot_debug.bmp
+
+#begin graphics/prot1.bmp
+/copy:graphics/prot1.bmp
+
+#begin graphics/stdemo1.bmp
+/copy:graphics/stdemo1.bmp
+
+#begin graphics/test_player.bmp
+/copy:graphics/test_player.bmp
+
+#begin graphics/title.bmp
+/copy:graphics/title.bmp
+
+#begin graphics/title_EN.bmp
+/copy:graphics/title_EN.bmp
+
 #begin hit.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:hit.mp3
 
+#begin music/m00.mid
+/copy:music/m00.mid
+
+#begin music/m01.mid
+/copy:music/m01.mid
+
+#begin music/m02.mid
+/copy:music/m02.mid
+
+#begin music/m03.mid
+/copy:music/m03.mid
+
+#begin music/m04.mid
+/copy:music/m04.mid
+
+#begin music/m05.mid
+/copy:music/m05.mid
+
+#begin music/m06.mid
+/copy:music/m06.mid
+
+#begin music/m07.mid
+/copy:music/m07.mid
+
+#begin music/m08.mid
+/copy:music/m08.mid
+
+#begin music/m09.mid
+/copy:music/m09.mid
+
+#begin music/m10.mid
+/copy:music/m10.mid
+
+#begin music/m11.mid
+/copy:music/m11.mid
+
+#begin music/m12.mid
+/copy:music/m12.mid
+
+#begin music/m13.mid
+/copy:music/m13.mid
+
+#begin music/m14.mid
+/copy:music/m14.mid
+
+#begin music/m15.mid
+/copy:music/m15.mid
+
+#begin music/m16.mid
+/copy:music/m16.mid
+
+#begin music/m17.mid
+/copy:music/m17.mid
+
+#begin music/m18.mid
+/copy:music/m18.mid
+
+#begin music/m19.mid
+/copy:music/m19.mid
+
+#begin music/m20.mid
+/copy:music/m20.mid
+
+#begin music/m21.mid
+/copy:music/m21.mid
+
+#begin music/m22.mid
+/copy:music/m22.mid
+
+#begin music/m23.mid
+/copy:music/m23.mid
+
+#begin music/m24.mid
+/copy:music/m24.mid
+
+#begin music/m25.mid
+/copy:music/m25.mid
+
+#begin music/m26.mid
+/copy:music/m26.mid
+
+#begin music/m27.mid
+/copy:music/m27.mid
+
+#begin music/m28.mid
+/copy:music/m28.mid
+
+#begin music/m29.mid
+/copy:music/m29.mid
+
+#begin music/m30.mid
+/copy:music/m30.mid
+
+#begin music/m31.mid
+/copy:music/m31.mid
+
+#begin music/m32.mid
+/copy:music/m32.mid
+
+#begin music/m33.mid
+/copy:music/m33.mid
+
+#begin music/m34.mid
+/copy:music/m34.mid
+
+#begin music/m35.mid
+/copy:music/m35.mid
+
+#begin music/m36.mid
+/copy:music/m36.mid
+
+#begin music/m37.mid
+/copy:music/m37.mid
+
+#begin music/m38.mid
+/copy:music/m38.mid
+
+#begin music/m39.mid
+/copy:music/m39.mid
+
+#begin music/m40.mid
+/copy:music/m40.mid
+
+#begin music/m41.mid
+/copy:music/m41.mid
+
+#begin music/m42.mid
+/copy:music/m42.mid
+
+#begin music/m43.mid
+/copy:music/m43.mid
+
+#begin music/m44.mid
+/copy:music/m44.mid
+
+#begin music/m45.mid
+/copy:music/m45.mid
+
+#begin music/m46.mid
+/copy:music/m46.mid
+
+#begin music/m47.mid
+/copy:music/m47.mid
+
+#begin music/m48.mid
+/copy:music/m48.mid
+
+#begin music/m49.mid
+/copy:music/m49.mid
+
+#begin music/m50.mid
+/copy:music/m50.mid
+
+#begin music/m51.mid
+/copy:music/m51.mid
+
+#begin music/m52.mid
+/copy:music/m52.mid
+
+#begin music/m53.mid
+/copy:music/m53.mid
+
+#begin music/m54.mid
+/copy:music/m54.mid
+
+#begin music/m55.mid
+/copy:music/m55.mid
+
+#begin music/m56.mid
+/copy:music/m56.mid
+
+#begin music/m57.mid
+/copy:music/m57.mid
+
+#begin music/m58.mid
+/copy:music/m58.mid
+
+#begin music/m59.mid
+/copy:music/m59.mid
+
+#begin music/m60.mid
+/copy:music/m60.mid
+
+#begin music/m61.mid
+/copy:music/m61.mid
+
+#begin music/m62.mid
+/copy:music/m62.mid
+
+#begin music/m63.mid
+/copy:music/m63.mid
+
+#begin music/m64.mid
+/copy:music/m64.mid
+
+#begin music/m65.mid
+/copy:music/m65.mid
+
+#begin music/m66.mid
+/copy:music/m66.mid
+
+#begin music/m67.mid
+/copy:music/m67.mid
+
+#begin music/m68.mid
+/copy:music/m68.mid
+
+#begin music/m69.mid
+/copy:music/m69.mid
+
+#begin music/m70.mid
+/copy:music/m70.mid
+
+#begin music/m71.mid
+/copy:music/m71.mid
+
+#begin music/m72.mid
+/copy:music/m72.mid
+
+#begin music/m73.mid
+/copy:music/m73.mid
+
+#begin music/m74.mid
+/copy:music/m74.mid
+
+#begin music/m75.mid
+/copy:music/m75.mid
+
+#begin music/SanbikiScc.dls
+/copy:music/SanbikiScc.dls
+
 #begin score-reached.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:score-reached.mp3
+
+#begin sound/se00.wav
+/copy:sound/se00.wav
+
+#begin sound/se01.wav
+/copy:sound/se01.wav
+
+#begin sound/se02.wav
+/copy:sound/se02.wav
+
+#begin sound/se03.wav
+/copy:sound/se03.wav
+
+#begin sound/se04.wav
+/copy:sound/se04.wav
+
+#begin sound/se05.wav
+/copy:sound/se05.wav
+
+#begin sound/se06.wav
+/copy:sound/se06.wav
+
+#begin sound/se07.wav
+/copy:sound/se07.wav
+
+#begin sound/se08.wav
+/copy:sound/se08.wav
+
+#begin sound/se09.wav
+/copy:sound/se09.wav
+
+#begin sound/se0A.wav
+/copy:sound/se0A.wav
+
+#begin sound/se0B.wav
+/copy:sound/se0B.wav
+
+#begin sound/se0C.wav
+/copy:sound/se0C.wav
+
+#begin sound/se0D.wav
+/copy:sound/se0D.wav
+
+#begin sound/se0E.wav
+/copy:sound/se0E.wav
+
+#begin sound/se0F.wav
+/copy:sound/se0F.wav
+
+#begin sound/se10.wav
+/copy:sound/se10.wav
+
+#begin sound/se11.wav
+/copy:sound/se11.wav
+
+#begin sound/se12.wav
+/copy:sound/se12.wav
+
+#begin sound/se13.wav
+/copy:sound/se13.wav
+
+#begin sound/se14.wav
+/copy:sound/se14.wav
+
+#begin sound/se15.wav
+/copy:sound/se15.wav
+
+#begin sound/se16.wav
+/copy:sound/se16.wav
+
+#begin sound/se17.wav
+/copy:sound/se17.wav
+
+#begin sound/se18.wav
+/copy:sound/se18.wav
+
+#begin sound/se19.wav
+/copy:sound/se19.wav
+
+#begin sound/se1A.wav
+/copy:sound/se1A.wav
+
+#begin sound/se1A_01.wav
+/copy:sound/se1A_01.wav
+
+#begin sound/se1B.wav
+/copy:sound/se1B.wav
+
+#begin sound/se1C.wav
+/copy:sound/se1C.wav
+
+#begin sound/se1D.wav
+/copy:sound/se1D.wav
+
+#begin sound/se1E.wav
+/copy:sound/se1E.wav
+
+#begin sound/se1F.wav
+/copy:sound/se1F.wav
+
+#begin sound/se20.wav
+/copy:sound/se20.wav
+
+#begin sound/se21.wav
+/copy:sound/se21.wav
+
+#begin sound/se22.wav
+/copy:sound/se22.wav
+
+#begin sound/se23.wav
+/copy:sound/se23.wav
+
+#begin sound/se24.wav
+/copy:sound/se24.wav
+
+#begin sound/se25.wav
+/copy:sound/se25.wav
+
+#begin sound/se26.wav
+/copy:sound/se26.wav
+
+#begin sound/se27.wav
+/copy:sound/se27.wav
+
+#begin sound/se28.wav
+/copy:sound/se28.wav
+
+#begin sound/se29.wav
+/copy:sound/se29.wav
+
+#begin sound/se2A.wav
+/copy:sound/se2A.wav
+
+#begin sound/se2B.wav
+/copy:sound/se2B.wav
+
+#begin sound/se2C.wav
+/copy:sound/se2C.wav
+
+#begin sound/se2D.wav
+/copy:sound/se2D.wav
+
+#begin sound/se2E.wav
+/copy:sound/se2E.wav
+
+#begin sound/se2F.wav
+/copy:sound/se2F.wav
+
+#begin sound/se30.wav
+/copy:sound/se30.wav
+
+#begin sound/se31.wav
+/copy:sound/se31.wav
+
+#begin sound/se32.wav
+/copy:sound/se32.wav
+
+#begin sound/se33.wav
+/copy:sound/se33.wav
+
+#begin sound/se34.wav
+/copy:sound/se34.wav
+
+#begin sound/se35.wav
+/copy:sound/se35.wav
+
+#begin sound/SE36.WAV
+/copy:sound/SE36.WAV
+
+#begin sound/SE37.WAV
+/copy:sound/SE37.WAV
+
+#begin sound/SE38.WAV
+/copy:sound/SE38.WAV
+
+#begin sound/SE39.WAV
+/copy:sound/SE39.WAV
+
+#begin sound/SE3A.WAV
+/copy:sound/SE3A.WAV
+
+#begin sound/SE3B.WAV
+/copy:sound/SE3B.WAV
+
+#begin sound/SE3C.WAV
+/copy:sound/SE3C.WAV
+
+#begin sound/SE3D.WAV
+/copy:sound/SE3D.WAV
+
+#begin sound/se3E.wav
+/copy:sound/se3E.wav
+
+#begin sound/se3F.wav
+/copy:sound/se3F.wav
+
+#begin sound/se40.wav
+/copy:sound/se40.wav
+
+#begin sound/se41.wav
+/copy:sound/se41.wav
+
+#begin sound/se42.wav
+/copy:sound/se42.wav
+
+#begin sound/se43.wav
+/copy:sound/se43.wav
+
+#begin sound/se44.wav
+/copy:sound/se44.wav
+
+#begin sound/se45.wav
+/copy:sound/se45.wav
+
+#begin sound/se46.wav
+/copy:sound/se46.wav
+
+#begin sound/se47.wav
+/copy:sound/se47.wav
+
+#begin sound/se48.wav
+/copy:sound/se48.wav
+
+#begin sound/se49.wav
+/copy:sound/se49.wav
+
+#begin sound/se4A.wav
+/copy:sound/se4A.wav
+
+#begin sound/se4B.wav
+/copy:sound/se4B.wav
+
+#begin sound/se4C.wav
+/copy:sound/se4C.wav
+
+#begin sound/se4D.wav
+/copy:sound/se4D.wav
+
+#begin sound/se4E.wav
+/copy:sound/se4E.wav
+
+#begin sound/se4F.wav
+/copy:sound/se4F.wav
+
+#begin sound/se50.wav
+/copy:sound/se50.wav
+
+#begin sound/se51.wav
+/copy:sound/se51.wav
+
+#begin sound/se52.wav
+/copy:sound/se52.wav
+
+#begin sound/se53.wav
+/copy:sound/se53.wav
+
+#begin sound/se54.wav
+/copy:sound/se54.wav
+
+#begin sound/se55.wav
+/copy:sound/se55.wav
+
+#begin sound/se56.wav
+/copy:sound/se56.wav
+
+#begin sound/se57.wav
+/copy:sound/se57.wav
+
+#begin sound/se58.wav
+/copy:sound/se58.wav
+
+#begin sound/se59.wav
+/copy:sound/se59.wav
+
+#begin sound/se5A.wav
+/copy:sound/se5A.wav
+
+#begin sound/se5B.wav
+/copy:sound/se5B.wav
+
+#begin sound/se5C.wav
+/copy:sound/se5C.wav
 
 #begin test.mp3
 /copy:test.mp3
