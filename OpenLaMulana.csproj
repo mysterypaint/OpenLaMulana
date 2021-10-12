@@ -15,6 +15,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ChaiFoxes.FMODAudio\**" />
+    <EmbeddedResource Remove="ChaiFoxes.FMODAudio\**" />
+    <None Remove="ChaiFoxes.FMODAudio\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
     <None Remove="Content\obj\DesktopGL\score-reached.mgcontent" />
@@ -23,11 +28,9 @@
     <None Remove="Audio\" />
     <None Remove="x64\fmod.dll" />
     <None Remove="x64\fmodstudio.dll" />
-    <None Remove="x64\libfmod.dylib" />
     <None Remove="x64\libfmod.so" />
     <None Remove="x64\libfmod.so.11" />
     <None Remove="x64\libfmod.so.11.8" />
-    <None Remove="x64\libfmodstudio.dylib" />
     <None Remove="x64\libfmodstudio.so" />
     <None Remove="x64\libfmodstudio.so.11" />
     <None Remove="x64\libfmodstudio.so.11.8" />
@@ -63,9 +66,6 @@
     <Content Include="x64\fmodstudio.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="x64\libfmod.dylib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="x64\libfmod.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -73,9 +73,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="x64\libfmod.so.11.8">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x64\libfmodstudio.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="x64\libfmodstudio.so">
