@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
@@ -20,48 +20,27 @@
     <None Remove="Content\obj\DesktopGL\score-reached.mgcontent" />
     <None Remove="Content\obj\DesktopGL\TrexSpritesheet.mgcontent" />
     <None Remove="Content\bin\DesktopGL\TrexSpritesheet.xnb" />
-    <None Remove="SharpMik\obj\Debug\SharpMik.csproj.AssemblyReference.cache" />
-    <None Remove="SharpMik\obj\Release\SharpMik.csproj.CoreCompileInputs.cache" />
-    <None Remove="SharpMik\obj\Release\SharpMikNAudio.pdb" />
-    <None Remove="SharpMik\obj\Release\SharpMikNAudio.csproj.FileListAbsolute.txt" />
-    <None Remove="SharpMik\obj\Release\SharpMikNAudio.dll" />
-    <None Remove="SharpMik\obj\Release\SharpMikNAudio.csproj.CoreCompileInputs.cache" />
-    <None Remove="SharpMik\obj\Release\SharpMik.dll" />
-    <None Remove="SharpMik\obj\Release\SharpMikNAudio.csproj.AssemblyReference.cache" />
-    <None Remove="SharpMik\obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <None Remove="SharpMik\obj\Release\SharpMik.pdb" />
-    <None Remove="SharpMik\obj\Release\SharpMikNAudio.csproj.CopyComplete" />
-    <None Remove="SharpMik\obj\Release\SharpMik.csproj.FileListAbsolute.txt" />
-    <None Remove="SharpMik\obj\Debug\SharpMik.csproj.CoreCompileInputs.cache" />
-    <None Remove="SharpMik\obj\Debug\SharpMikNAudio.pdb" />
-    <None Remove="SharpMik\obj\Debug\SharpMikNAudio.csproj.FileListAbsolute.txt" />
-    <None Remove="SharpMik\obj\Debug\SharpMikNAudio.dll" />
-    <None Remove="SharpMik\obj\Debug\SharpMikNAudio.csproj.CoreCompileInputs.cache" />
-    <None Remove="SharpMik\obj\Debug\SharpMik.dll" />
-    <None Remove="SharpMik\obj\Debug\SharpMik.pdb" />
-    <None Remove="SharpMik\obj\Debug\SharpMikNAudio.csproj.CopyComplete" />
-    <None Remove="SharpMik\obj\Debug\SharpMik.csproj.FileListAbsolute.txt" />
-    <None Remove="SharpMik\bin\SharpMik\Release\SharpMikNAudio.pdb" />
-    <None Remove="SharpMik\bin\SharpMik\Release\NAudio.dll" />
-    <None Remove="SharpMik\bin\SharpMik\Release\SharpMikNAudio.dll" />
-    <None Remove="SharpMik\bin\SharpMik\Release\SharpMik.dll" />
-    <None Remove="SharpMik\bin\SharpMik\Release\SharpMik.pdb" />
-    <None Remove="SharpMik\bin\SharpMik\Debug\SharpMik.dll" />
-    <None Remove="SharpMik\bin\SharpMik\Debug\SharpMik.pdb" />
-    <None Remove="SharpMik\bin\SharpMikNAudio\Debug\SharpMikNAudio.pdb" />
-    <None Remove="SharpMik\bin\SharpMikNAudio\Debug\NAudio.dll" />
-    <None Remove="SharpMik\bin\SharpMikNAudio\Debug\SharpMikNAudio.dll" />
-    <None Remove="SharpMik\SharpMik.csproj" />
-    <None Remove="SharpMik\SharpMikNAudio.csproj" />
-    <None Remove="SharpMik\SharpMikXNAWindows.csproj" />
-    <None Remove="SharpMik\obj\Debug\SharpMikNAudio.csproj.AssemblyReference.cache" />
-    <None Remove="SharpMik" />
-    <None Remove="SharpMik\.DS_Store" />
-    <None Remove="SharpMik\bin\.DS_Store" />
-    <None Remove="SharpMik\bin\SharpMik\.DS_Store" />
     <None Remove="Audio\" />
-    <None Remove="SharpMikNAudio" />
-    <None Remove="NAudio" />
+    <None Remove="x64\fmod.dll" />
+    <None Remove="x64\fmodstudio.dll" />
+    <None Remove="x64\libfmod.dylib" />
+    <None Remove="x64\libfmod.so" />
+    <None Remove="x64\libfmod.so.11" />
+    <None Remove="x64\libfmod.so.11.8" />
+    <None Remove="x64\libfmodstudio.dylib" />
+    <None Remove="x64\libfmodstudio.so" />
+    <None Remove="x64\libfmodstudio.so.11" />
+    <None Remove="x64\libfmodstudio.so.11.8" />
+    <None Remove="x86\fmod.dll" />
+    <None Remove="x86\fmodstudio.dll" />
+    <None Remove="x86\libfmod.so" />
+    <None Remove="x86\libfmod.so.11" />
+    <None Remove="x86\libfmod.so.11.8" />
+    <None Remove="x86\libfmod.so.13" />
+    <None Remove="x86\libfmod.so.13.3" />
+    <None Remove="x86\libfmodstudio.so" />
+    <None Remove="x86\libfmodstudio.so.11" />
+    <None Remove="x86\libfmodstudio.so.11.8" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -78,56 +57,62 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="SharpMik\Attributes\ModExtentionAttribute.cs" />
-    <Compile Remove="SharpMik\munitrk.cs" />
-    <Compile Remove="SharpMik\ModuleReader.cs" />
-    <Compile Remove="SharpMik\SharpMikCommon.cs" />
-    <Compile Remove="SharpMik\ModuleLoader.cs" />
-    <Compile Remove="SharpMik\Debugger.cs" />
-    <Compile Remove="SharpMik\Types\BinaryModule.cs" />
-    <Compile Remove="SharpMik\Drivers\NaudioDriver.cs" />
-    <Compile Remove="SharpMik\Drivers\WavDriver.cs" />
-    <Compile Remove="SharpMik\Drivers\VirtualDriver1.cs" />
-    <Compile Remove="SharpMik\Drivers\XNADriver.cs" />
-    <Compile Remove="SharpMik\Drivers\PushStreamDriver.cs" />
-    <Compile Remove="SharpMik\Drivers\NoAudio.cs" />
-    <Compile Remove="SharpMik\Drivers\PullStreamDriver.cs" />
-    <Compile Remove="SharpMik\Drivers\VirtualSoftwareDriver.cs" />
-    <Compile Remove="SharpMik\SoftwareMixers\LQSoftwareMixer.cs" />
-    <Compile Remove="SharpMik\SoftwareMixers\HQSoftwareMixer.cs" />
-    <Compile Remove="SharpMik\SoftwareMixers\CommonSoftwareMixer.cs" />
-    <Compile Remove="SharpMik\Depackers\IDepacker.cs" />
-    <Compile Remove="SharpMik\Properties\AssemblyInfo.cs" />
-    <Compile Remove="SharpMik\Extentions\ExtentionMethods.cs" />
-    <Compile Remove="SharpMik\DSP\Idsp.cs" />
-    <Compile Remove="SharpMik\Loaders\M15Loader.cs" />
-    <Compile Remove="SharpMik\Loaders\669Loader.cs" />
-    <Compile Remove="SharpMik\Loaders\MTMLoader.cs" />
-    <Compile Remove="SharpMik\Loaders\MEDLoader.cs" />
-    <Compile Remove="SharpMik\Loaders\ModLoader.cs" />
-    <Compile Remove="SharpMik\Loaders\ITLoader.cs" />
-    <Compile Remove="SharpMik\Loaders\ULTLoader.cs" />
-    <Compile Remove="SharpMik\Loaders\XMLoader.cs" />
-    <Compile Remove="SharpMik\Loaders\FARLoader.cs" />
-    <Compile Remove="SharpMik\Loaders\AMFLoader.cs" />
-    <Compile Remove="SharpMik\Loaders\S3MLoader.cs" />
-    <Compile Remove="SharpMik\Interfaces\IModLoader.cs" />
-    <Compile Remove="SharpMik\Interfaces\IModDriver.cs" />
-    <Compile Remove="SharpMik\Player\ModDriver.cs" />
-    <Compile Remove="SharpMik\Player\effects.cs" />
-    <Compile Remove="SharpMik\Player\MikMod.cs" />
-    <Compile Remove="SharpMik\Player\ModPlayer.cs" />
-    <Compile Remove="SharpMik\Player\ModStream.cs" />
-    <Compile Remove="SharpMik\Player\SampleLoader.cs" />
-    <Compile Remove="SharpMik\obj\Debug\.NETFramework,Version=v4.0.AssemblyAttributes.cs" />
-    <Compile Remove="SharpMik\obj\Release\.NETFramework,Version=v4.0.AssemblyAttributes.cs" />
+    <Content Include="x64\fmod.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\fmodstudio.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\libfmod.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\libfmod.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\libfmod.so.11">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\libfmod.so.11.8">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\libfmodstudio.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\libfmodstudio.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\libfmodstudio.so.11">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x64\libfmodstudio.so.11.8">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\fmod.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\fmodstudio.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\libfmod.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\libfmod.so.11">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\libfmod.so.11.8">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\libfmodstudio.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\libfmodstudio.so.11">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\libfmodstudio.so.11.8">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Audio\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="SharpMikNAudio">
-      <HintPath>SharpMik\bin\SharpMik\Release\SharpMikNAudio.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

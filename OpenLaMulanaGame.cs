@@ -11,6 +11,7 @@ using OpenLaMulana.Extensions;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
+using ChaiFoxes.FMODAudio;
 
 namespace OpenLaMulana
 {
@@ -139,8 +140,8 @@ namespace OpenLaMulana
             Console.WriteLine(path);
 
             _songManager.InitPlayer();
-            _songManager.LoadSong(path);
-            Debug.WriteLine(_songManager.PrintSongName());
+            _songManager.LoadSong("test.mp3");
+            //Debug.WriteLine(_songManager.PrintSongName());
 
             _groundManager = new GroundManager(_spriteSheetTexture, _entityManager, _trex);
             _obstacleManager = new ObstacleManager(_entityManager, _trex, _scoreBoard, _spriteSheetTexture);
@@ -193,9 +194,6 @@ namespace OpenLaMulana
                 _trex.Initialize();
 
                 _obstacleManager.IsEnabled = true;
-
-                _songManager.TogglePause();
-
             }
 
         }

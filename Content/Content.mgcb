@@ -31,6 +31,9 @@
 /processorParam:Quality=Best
 /build:score-reached.mp3
 
+#begin test.mp3
+/copy:test.mp3
+
 #begin TrexSpritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
