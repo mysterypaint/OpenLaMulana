@@ -4,7 +4,7 @@ using OpenLaMulana.Graphics;
 
 namespace OpenLaMulana.Entities
 {
-    public class GroundTile : IGameEntity
+    public class Tile : IGameEntity
     {
 
         private float _positionY;
@@ -14,7 +14,7 @@ namespace OpenLaMulana.Entities
 
         public int DrawOrder { get; set; }
 
-        public GroundTile(float positionX, float positionY, Sprite sprite)
+        public Tile(float positionX, float positionY, Sprite sprite)
         {
             PositionX = positionX;
             _positionY = positionY;

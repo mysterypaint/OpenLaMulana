@@ -44,7 +44,7 @@ namespace OpenLaMulana.Entities
 
         public Sprite Sprite { get; private set; }
 
-        public CactusGroup(Texture2D spriteSheet, bool isLarge, GroupSize size, Trex trex, Vector2 position) : base(trex, position)
+        public CactusGroup(Texture2D spriteSheet, bool isLarge, GroupSize size, Protag trex, Vector2 position) : base(trex, position)
         {
             IsLarge = isLarge;
             Size = size;

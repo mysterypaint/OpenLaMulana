@@ -18,6 +18,10 @@
     <Compile Remove="ChaiFoxes.FMODAudio\**" />
     <EmbeddedResource Remove="ChaiFoxes.FMODAudio\**" />
     <None Remove="ChaiFoxes.FMODAudio\**" />
+    <None Remove="x64\libfmod.dylib" />
+    <None Remove="x64\libfmodstudio.dylib" />
+    <None Remove="ChaiFoxes.FMODAudio.Desktop" />
+    <None Remove="Map\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />
@@ -48,6 +52,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
+    <EmbeddedResource Include="x64\libfmod.dylib" />
+    <EmbeddedResource Include="x64\libfmodstudio.dylib" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
@@ -111,8 +117,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Audio\" />
+    <Folder Include="Map\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ChaiFoxes.FMODAudio\ChaiFoxes.FMODAudio\ChaiFoxes.FMODAudio.Desktop\ChaiFoxes.FMODAudio.Desktop.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ChaiFoxes.FMODAudio.Desktop">
+      <HintPath>..\..\..\Desktop\MonoGame\OpenLaMulana\bin\Debug\net5.0\ChaiFoxes.FMODAudio.Desktop.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

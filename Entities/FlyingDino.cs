@@ -24,7 +24,7 @@ namespace OpenLaMulana.Entities
 
         private SpriteAnimation _animation;
 
-        private Trex _trex;
+        private Protag _trex;
 
         public override Rectangle CollisionBox
         {
@@ -36,7 +36,7 @@ namespace OpenLaMulana.Entities
             }
         }
 
-        public FlyingDino(Trex trex, Vector2 position, Texture2D spriteSheet) : base(trex, position)
+        public FlyingDino(Protag trex, Vector2 position, Texture2D spriteSheet) : base(trex, position)
         {
             Sprite spriteA = new Sprite(spriteSheet, TEXTURE_COORDS_X, TEXTURE_COORDS_Y, SPRITE_WIDTH, SPRITE_HEIGHT);
             Sprite spriteB = new Sprite(spriteSheet, TEXTURE_COORDS_X + SPRITE_WIDTH, TEXTURE_COORDS_Y, SPRITE_WIDTH, SPRITE_HEIGHT);

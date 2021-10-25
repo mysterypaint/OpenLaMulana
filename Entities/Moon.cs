@@ -24,7 +24,7 @@ namespace OpenLaMulana.Entities
 
         public override float Speed => _trex.Speed * 0.1f;
 
-        public Moon(IDayNightCycle dayNightCycle, Texture2D spriteSheet, Trex trex, Vector2 position) : base(trex, position)
+        public Moon(IDayNightCycle dayNightCycle, Texture2D spriteSheet, Protag trex, Vector2 position) : base(trex, position)
         {
             _dayNightCycle = dayNightCycle;
             _sprite = new Sprite(spriteSheet, RIGHTMOST_SPRITE_COORDS_X, RIGHTMOST_SPRITE_COORDS_Y, SPRITE_WIDTH, SPRITE_HEIGHT);

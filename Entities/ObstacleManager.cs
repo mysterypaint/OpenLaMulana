@@ -30,7 +30,7 @@ namespace OpenLaMulana.Entities
         private double _currentTargetDistance;
 
         private readonly EntityManager _entityManager;
-        private readonly Trex _trex;
+        private readonly Protag _trex;
         private readonly ScoreBoard _scoreBoard;
 
         private readonly Random _random;
@@ -43,7 +43,7 @@ namespace OpenLaMulana.Entities
 
         public int DrawOrder => 0;
 
-        public ObstacleManager(EntityManager entityManager, Trex trex, ScoreBoard scoreBoard, Texture2D spriteSheet)
+        public ObstacleManager(EntityManager entityManager, Protag trex, ScoreBoard scoreBoard, Texture2D spriteSheet)
         {
             _entityManager = entityManager;
             _trex = trex;
@@ -68,7 +68,7 @@ namespace OpenLaMulana.Entities
                 _currentTargetDistance = _random.NextDouble()
                     * (MAX_OBSTACLE_DISTANCE - MIN_OBSTACLE_DISTANCE) + MIN_OBSTACLE_DISTANCE;
 
-                _currentTargetDistance += (_trex.Speed - Trex.START_SPEED) / (Trex.MAX_SPEED - Trex.START_SPEED) * OBSTACLE_DISTANCE_SPEED_TOLERANCE;
+                _currentTargetDistance += (_trex.Speed - Protag.START_SPEED) / (Protag.MAX_SPEED - Protag.START_SPEED) * OBSTACLE_DISTANCE_SPEED_TOLERANCE;
 
                 _lastSpawnScore = _scoreBoard.Score;
 

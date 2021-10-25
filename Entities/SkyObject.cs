@@ -5,7 +5,7 @@ namespace OpenLaMulana.Entities
 {
     public abstract class SkyObject : IGameEntity
     {
-        protected readonly Trex _trex;
+        protected readonly Protag _trex;
 
         public int DrawOrder { get; set; }
 
@@ -13,7 +13,7 @@ namespace OpenLaMulana.Entities
 
         public Vector2 Position { get; set; }
 
-        protected SkyObject(Trex trex, Vector2 position)
+        protected SkyObject(Protag trex, Vector2 position)
         {
             _trex = trex;
             Position = position;

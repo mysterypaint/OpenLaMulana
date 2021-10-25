@@ -10,7 +10,7 @@ using OpenLaMulana.Graphics;
 
 namespace OpenLaMulana.Entities
 {
-    public class Trex : IGameEntity, ICollidable
+    public class Protag : IGameEntity, ICollidable
     {
 
         private const float RUN_ANIMATION_FRAME_LENGTH = 0.1f;
@@ -25,21 +25,21 @@ namespace OpenLaMulana.Entities
         private const int TREX_IDLE_BACKGROUND_SPRITE_POS_X = 40;
         private const int TREX_IDLE_BACKGROUND_SPRITE_POS_Y = 0;
 
-        public const int TREX_DEFAULT_SPRITE_POS_X = 848;
-        public const int TREX_DEFAULT_SPRITE_POS_Y = 0;
-        public const int TREX_DEFAULT_SPRITE_WIDTH = 44;
-        public const int TREX_DEFAULT_SPRITE_HEIGHT = 52;
+        public const int DEFAULT_SPRITE_POS_X = 0;
+        public const int DEFAULT_SPRITE_POS_Y = 0;
+        public const int DEFAULT_SPRITE_WIDTH = 16;
+        public const int DEFAULT_SPRITE_HEIGHT = 16;
 
         private const float BLINK_ANIMATION_RANDOM_MIN = 2f;
         private const float BLINK_ANIMATION_RANDOM_MAX = 10f;
         private const float BLINK_ANIMATION_EYE_CLOSE_TIME = 0.5f;
 
-        private const int TREX_RUNNING_SPRITE_ONE_POS_X = TREX_DEFAULT_SPRITE_POS_X + TREX_DEFAULT_SPRITE_WIDTH * 2;
+        private const int TREX_RUNNING_SPRITE_ONE_POS_X = DEFAULT_SPRITE_POS_X + DEFAULT_SPRITE_WIDTH * 2;
         private const int TREX_RUNNING_SPRITE_ONE_POS_Y = 0;
 
         private const int TREX_DUCKING_SPRITE_WIDTH = 59;
 
-        private const int TREX_DUCKING_SPRITE_ONE_POS_X = TREX_DEFAULT_SPRITE_POS_X + TREX_DEFAULT_SPRITE_WIDTH * 6;
+        private const int TREX_DUCKING_SPRITE_ONE_POS_X = DEFAULT_SPRITE_POS_X + DEFAULT_SPRITE_WIDTH * 6;
         private const int TREX_DUCKING_SPRITE_ONE_POS_Y = 0;
 
         private const int TREX_DEAD_SPRITE_POS_X = 1068;
@@ -92,8 +92,8 @@ namespace OpenLaMulana.Entities
                 Rectangle box = new Rectangle(
                     (int)Math.Round(Position.X),
                     (int)Math.Round(Position.Y),
-                    TREX_DEFAULT_SPRITE_WIDTH,
-                    TREX_DEFAULT_SPRITE_HEIGHT
+                    DEFAULT_SPRITE_WIDTH,
+                    DEFAULT_SPRITE_HEIGHT
                 );
                 box.Inflate(-COLLISION_BOX_INSET, -COLLISION_BOX_INSET);
 
@@ -108,19 +108,19 @@ namespace OpenLaMulana.Entities
             }
         }
 
-        public Trex(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound)
+        public Protag(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound)
         {
 
             Position = position;
-            _idleBackgroundSprite = new Sprite(spriteSheet, TREX_IDLE_BACKGROUND_SPRITE_POS_X, TREX_IDLE_BACKGROUND_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
+            _idleBackgroundSprite = new Sprite(spriteSheet, TREX_IDLE_BACKGROUND_SPRITE_POS_X, TREX_IDLE_BACKGROUND_SPRITE_POS_Y, DEFAULT_SPRITE_WIDTH, DEFAULT_SPRITE_HEIGHT);
             State = TrexState.Idle;
 
             _jumpSound = jumpSound;
 
             _random = new Random();
 
-            _idleSprite = new Sprite(spriteSheet, TREX_DEFAULT_SPRITE_POS_X, TREX_DEFAULT_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
-            _idleBlinkSprite = new Sprite(spriteSheet, TREX_DEFAULT_SPRITE_POS_X + TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
+            _idleSprite = new Sprite(spriteSheet, DEFAULT_SPRITE_POS_X, DEFAULT_SPRITE_POS_Y, DEFAULT_SPRITE_WIDTH, DEFAULT_SPRITE_HEIGHT);
+            _idleBlinkSprite = new Sprite(spriteSheet, DEFAULT_SPRITE_POS_X + DEFAULT_SPRITE_WIDTH, DEFAULT_SPRITE_POS_Y, DEFAULT_SPRITE_WIDTH, DEFAULT_SPRITE_HEIGHT);
 
             _blinkAnimation = new SpriteAnimation();
             CreateBlinkAnimation();
@@ -130,18 +130,18 @@ namespace OpenLaMulana.Entities
             _startPosY = position.Y;
 
             _runAnimation = new SpriteAnimation();
-            _runAnimation.AddFrame(new Sprite(spriteSheet, TREX_RUNNING_SPRITE_ONE_POS_X, TREX_RUNNING_SPRITE_ONE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT), 0);
-            _runAnimation.AddFrame(new Sprite(spriteSheet, TREX_RUNNING_SPRITE_ONE_POS_X + TREX_DEFAULT_SPRITE_WIDTH, TREX_RUNNING_SPRITE_ONE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT), RUN_ANIMATION_FRAME_LENGTH);
+            _runAnimation.AddFrame(new Sprite(spriteSheet, TREX_RUNNING_SPRITE_ONE_POS_X, TREX_RUNNING_SPRITE_ONE_POS_Y, DEFAULT_SPRITE_WIDTH, DEFAULT_SPRITE_HEIGHT), 0);
+            _runAnimation.AddFrame(new Sprite(spriteSheet, TREX_RUNNING_SPRITE_ONE_POS_X + DEFAULT_SPRITE_WIDTH, TREX_RUNNING_SPRITE_ONE_POS_Y, DEFAULT_SPRITE_WIDTH, DEFAULT_SPRITE_HEIGHT), RUN_ANIMATION_FRAME_LENGTH);
             _runAnimation.AddFrame(_runAnimation[0].Sprite, RUN_ANIMATION_FRAME_LENGTH * 2);
             _runAnimation.Play();
 
             _duckAnimation = new SpriteAnimation();
-            _duckAnimation.AddFrame(new Sprite(spriteSheet, TREX_DUCKING_SPRITE_ONE_POS_X, TREX_DUCKING_SPRITE_ONE_POS_Y, TREX_DUCKING_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT), 0);
-            _duckAnimation.AddFrame(new Sprite(spriteSheet, TREX_DUCKING_SPRITE_ONE_POS_X + TREX_DUCKING_SPRITE_WIDTH, TREX_DUCKING_SPRITE_ONE_POS_Y, TREX_DUCKING_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT), RUN_ANIMATION_FRAME_LENGTH);
+            _duckAnimation.AddFrame(new Sprite(spriteSheet, TREX_DUCKING_SPRITE_ONE_POS_X, TREX_DUCKING_SPRITE_ONE_POS_Y, TREX_DUCKING_SPRITE_WIDTH, DEFAULT_SPRITE_HEIGHT), 0);
+            _duckAnimation.AddFrame(new Sprite(spriteSheet, TREX_DUCKING_SPRITE_ONE_POS_X + TREX_DUCKING_SPRITE_WIDTH, TREX_DUCKING_SPRITE_ONE_POS_Y, TREX_DUCKING_SPRITE_WIDTH, DEFAULT_SPRITE_HEIGHT), RUN_ANIMATION_FRAME_LENGTH);
             _duckAnimation.AddFrame(_duckAnimation[0].Sprite, RUN_ANIMATION_FRAME_LENGTH * 2);
             _duckAnimation.Play();
 
-            _deadSprite = new Sprite(spriteSheet, TREX_DEAD_SPRITE_POS_X, TREX_DEAD_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
+            _deadSprite = new Sprite(spriteSheet, TREX_DEAD_SPRITE_POS_X, TREX_DEAD_SPRITE_POS_Y, DEFAULT_SPRITE_WIDTH, DEFAULT_SPRITE_HEIGHT);
 
             IsAlive = true;
         }

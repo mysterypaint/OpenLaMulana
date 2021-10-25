@@ -9,7 +9,7 @@ namespace OpenLaMulana.Entities
 
     public abstract class Obstacle : IGameEntity, ICollidable
     {
-        private Trex _trex;
+        private Protag _trex;
 
         public abstract Rectangle CollisionBox { get; }
 
@@ -17,7 +17,7 @@ namespace OpenLaMulana.Entities
 
         public Vector2 Position { get; protected set; }
 
-        protected Obstacle(Trex trex, Vector2 position)
+        protected Obstacle(Protag trex, Vector2 position)
         {
             _trex = trex;
             Position = position;

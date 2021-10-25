@@ -33,7 +33,7 @@ namespace OpenLaMulana.Entities
         private const int MAX_SCORE = 99_999;
 
         private Texture2D _texture;
-        private Trex _trex;
+        private Protag _trex;
 
         private bool _isPlayingFlashAnimation;
         private float _flashAnimationTime;
@@ -56,7 +56,7 @@ namespace OpenLaMulana.Entities
 
         public Vector2 Position { get; set; }
 
-        public ScoreBoard(Texture2D texture, Vector2 position, Trex trex, SoundEffect scoreSfx)
+        public ScoreBoard(Texture2D texture, Vector2 position, Protag trex, SoundEffect scoreSfx)
         {
             _texture = texture;
             _trex = trex;

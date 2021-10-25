@@ -11,33 +11,36 @@ namespace OpenLaMulana.System
     {
 
         private bool _isBlocked;
-        private Trex _trex;
+        private Protag _trex;
+        private World _world;
 
-        private KeyboardState _previousKeyboardState;
+        static KeyboardState keyboardState;
+        static KeyboardState _previousKeyboardState;
 
-        public InputController(Trex trex)
+        public InputController(Protag trex, World world)
         {
             _trex = trex;
+            _world = world;
         }
 
         public void ProcessControls(GameTime gameTime)
         {
+            GetState();
 
-            KeyboardState keyboardState = Keyboard.GetState();
+            WorldTransitionTesting();
+
 
             if(!_isBlocked)
             {
-                bool isJumpKeyPressed = keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.Space);
-                bool wasJumpKeyPressed = _previousKeyboardState.IsKeyDown(Keys.Up) || _previousKeyboardState.IsKeyDown(Keys.Space);
 
-                if(!wasJumpKeyPressed && isJumpKeyPressed)
+                if(KeyPressed(Keys.Up) || KeyPressed(Keys.Space))
                 {
 
                     if (_trex.State != TrexState.Jumping)
                         _trex.BeginJump();
 
                 }
-                else if (_trex.State == TrexState.Jumping && !isJumpKeyPressed)
+                else if (_trex.State == TrexState.Jumping && (KeyReleased(Keys.Up) || KeyReleased(Keys.Space)))
                 {
 
                     _trex.CancelJump();
@@ -61,8 +64,6 @@ namespace OpenLaMulana.System
 
             }
 
-            _previousKeyboardState = keyboardState;
-
             _isBlocked = false;
 
         }
@@ -72,5 +73,49 @@ namespace OpenLaMulana.System
             _isBlocked = true;
         }
 
+        private void WorldTransitionTesting()
+        {
+            int camMoveX = Convert.ToInt32(KeyPressed(Keys.D)) - Convert.ToInt32(KeyPressed(Keys.A));
+            int camMoveY = Convert.ToInt32(KeyPressed(Keys.S)) - Convert.ToInt32(KeyPressed(Keys.W));
+
+            if (camMoveX == 1)
+            {
+                _world.FieldTransitionRight();
+            }
+            else if (camMoveX == -1)
+            {
+                _world.FieldTransitionLeft();
+            }
+            if (camMoveY == 1)
+            {
+                _world.FieldTransitionDown();
+            }
+            else if (camMoveY == -1)
+            {
+                _world.FieldTransitionUp();
+            }
+        }
+
+        public static KeyboardState GetState()
+        {
+            _previousKeyboardState = keyboardState;
+            keyboardState = Keyboard.GetState();
+            return keyboardState;
+        }
+
+        public static bool KeyPressed(Keys key)
+        {
+            return keyboardState.IsKeyDown(key) && !_previousKeyboardState.IsKeyDown(key);
+        }
+
+        public static bool KeyReleased(Keys key)
+        {
+            return _previousKeyboardState.IsKeyDown(key);
+        }
+
+        public static bool KeyCheck(Keys key)
+        {
+            return keyboardState.IsKeyDown(key);
+        }
     }
 }

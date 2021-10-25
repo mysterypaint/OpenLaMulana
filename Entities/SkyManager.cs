@@ -43,7 +43,7 @@ namespace OpenLaMulana.Entities
 
         private readonly EntityManager _entityManager;
         private readonly ScoreBoard _scoreBoard;
-        private readonly Trex _trex;
+        private readonly Protag _trex;
         private Texture2D _spriteSheet;
         private Texture2D _invertedSpriteSheet;
         private Moon _moon;
@@ -74,7 +74,7 @@ namespace OpenLaMulana.Entities
             }
         }
 
-        public SkyManager(Trex trex, Texture2D spriteSheet, Texture2D invertedSpriteSheet, EntityManager entityManager, ScoreBoard scoreBoard)
+        public SkyManager(Protag trex, Texture2D spriteSheet, Texture2D invertedSpriteSheet, EntityManager entityManager, ScoreBoard scoreBoard)
         {
             this._entityManager = entityManager;
             this._scoreBoard = scoreBoard;
