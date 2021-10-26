@@ -1,10 +1,8 @@
 # OpenLaMulana
-A C#, cross-platform port of La-Mulana Classic. Written using MonoGame and fmod in Visual Studio
+A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual Studio
 
 # Libs
 - [MonoGame](https://www.monogame.net/) | NuGet
-- [fmod](https://fmod.com/)
-- [ChaiFoxes.FMODAudio](https://github.com/Martenfur/ChaiFoxes.FMODAudio) | NuGet
 
 # Building
 - Clone the repo
