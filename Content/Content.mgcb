@@ -154,14 +154,11 @@
 #begin data/script.dat
 /copy:data/script.dat
 
-#begin data/script.txt
-/copy:data/script.txt
+#begin data/script_JPN_UTF8.txt
+/copy:data/script_JPN_UTF8.txt
 
 #begin data/script_ENG.dat
 /copy:data/script_ENG.dat
-
-#begin data/script_ENG.txt
-/copy:data/script_ENG.txt
 
 #begin graphics/boss00.bmp
 /copy:graphics/boss00.bmp

@@ -1,11 +1,15 @@
 ﻿<Properties StartupConfiguration="{DCE086B8-A84F-4448-8554-C2FECACA7E8A}|Default">
   <MonoDevelop.Ide.ItemProperties.OpenLaMulana PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Map/World.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="System/PseudoXML.cs">
     <Files>
       <File FileName="OpenLaMulanaGame.cs" Line="106" Column="1" />
-      <File FileName="Map/World.cs" Line="52" Column="1" />
       <File FileName="Entities/EntityManager.cs" />
-      <File FileName="Map/Field.cs" Line="18" Column="1" />
+      <File FileName="Map/Field.cs" />
+      <File FileName="Entities/TrexState.cs" />
+      <File FileName="Entities/Protag.cs" />
+      <File FileName="Map/World.cs" />
+      <File FileName="System/PseudoXML.cs" Line="20" Column="19" />
+      <File FileName="Program.cs" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -20,10 +24,10 @@
               </Node>
               <Node name="Entities" expanded="True" />
               <Node name="Graphics" expanded="True" />
-              <Node name="Map" expanded="True">
-                <Node name="World.cs" selected="True" />
+              <Node name="Map" expanded="True" />
+              <Node name="System" expanded="True">
+                <Node name="PseudoXML.cs" selected="True" />
               </Node>
-              <Node name="System" expanded="True" />
             </Node>
           </Node>
         </State>

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.IO;
-
-using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
+using static OpenLaMulana.Entities.PseudoXML;
 
 namespace OpenLaMulana.Entities
 {
+
     public class Utf8StringWriter : StringWriter
     {
         public override Encoding Encoding => Encoding.UTF8;
@@ -27,109 +25,26 @@ namespace OpenLaMulana.Entities
         private List<Texture2D> _fieldTextures = null;
         private int currRoomX = 0;
         private int currRoomY = 0;
+        private List<string> _dialogue;
+
 
         public World()
         {
-            ParseXML("");
-
             _fields = new List<Field>();
             _fields.Add(new Field("map00", "mapg00", "eveg00"));
             _fields.Add(new Field("map01", "mapg01", "eveg01"));
             _fields.Add(new Field("map02", "mapg02", "eveg02"));
             _fields.Add(new Field("map03", "mapg03", "eveg03"));
             _fields.Add(new Field("map04", "mapg04", "eveg04"));
+
+            PseudoXML.ParseDataScriptTree("Content/data/script_JPN_UTF8.txt", this);
         }
 
-        private void ParseXML(string v)
+        public void SetDialogue(List<string> dialogue)
         {
-            //string text = File.ReadAllText(@"Content/data/script_ENG.dat", Encoding.UTF8);
-
-
-            // StrinBuilderだと、なぜかUnicode(UTF-16)になってしまう。 
-            // MSDN(http://msdn.microsoft.com/ja-jp/library/system.xml.xmlwritersettings.encoding.aspx)によると、
-            // XmlWriterSettingsのEncodingよりも、基になるライターのエンコーディングが優先されるようだ。StringWriterも同様らしい。 
-            var str = new StringBuilder();
-            using (var writer = XmlWriter.Create(str, new XmlWriterSettings() { Encoding = Encoding.GetEncoding("Shift-JIS") }))
-            {
-                writer.WriteStartElement("Root");
-                writer.WriteElementString("Name", "うお座の花");
-                writer.WriteFullEndElement();
-            }
-            Console.WriteLine(str.ToString()); // <?xml version="1.0" encoding="utf-16"?><Root><Name>うお座の花</Name></Root>
-
-
-            // xmlヘッダーを書き換える方法もあるが、MemoryStreamを使うことでも解消できる。 
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = XmlWriter.Create(stream, new XmlWriterSettings() { Encoding = Encoding.GetEncoding("Shift-JIS") }))
-                {
-                    writer.WriteStartElement("Root");
-                    writer.WriteElementString("Name", "うお座の花");
-                    writer.WriteFullEndElement();
-                }
-
-                Console.WriteLine(Encoding.GetEncoding("Shift-JIS").GetString(stream.ToArray())); // <?xml version="1.0" encoding="shift_jis"?><Root><Name>うお座の花</Name></Root>
-            }
-
-
-
-            /*
-            using (FileStream fs = File.Open("Content/data/script_ENG.dat", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                using (BufferedStream bs = new BufferedStream(fs))
-                {
-                    using (StreamReader sr = new StreamReader(bs, Encoding.GetEncoding("Shift-JIS")))
-                    {
-                        string line;
-                        int j = 0;
-                        while ((line = sr.ReadLine()) != null)
-                        {
-                            if (j >= 5)
-                                break;
-
-                            char[] decoded = new char[line.Length];
-
-                            for (int i = 0; i < decoded.Length; i++)
-                                decoded[i] = (char)(line[i] + 0x1F);
-
-                            String decodedStr = new String(decoded);
-
-                            Console.WriteLine(decodedStr, Encoding.GetEncoding("Shift-JIS"));
-
-                            j++;
-                        }
-                    }
-                }
-            }
-            */
-
-            /*
-            string str =
-@"<?xml version=""1.0""?>  
-<!-- comment at the root level -->  
-<Root>  
-    <Child>Content</Child>  
-</Root>";
-            XDocument doc1 = XDocument.Parse(str, LoadOptions.PreserveWhitespace);
-            Console.WriteLine("nodes when preserving whitespace: {0}", doc1.DescendantNodes().Count());
-            XDocument doc2 = XDocument.Parse(str, LoadOptions.None);
-            Console.WriteLine("nodes when not preserving whitespace: {0}", doc2.DescendantNodes().Count());
-            */
-
-
-            /*
-            XmlDocument xmlDoc = new XmlDocument(); // Create an XML document object
-            xmlDoc.Load("Content/data/script.txt"); // Load the XML document from the specified file
-
-            // Get elements
-            XmlNodeList worldNode = xmlDoc.GetElementsByTagName("WORLD");
-            XmlNodeList fieldNode = xmlDoc.GetElementsByTagName("FIELD");
-
-            // Display the results
-            //Console.WriteLine("Address: " + worldNode[0].InnerText);
-            Console.WriteLine("Field: " + fieldNode[0].InnerText);
-            */
+            _dialogue = dialogue;
         }
+        
 
         public void SetAreaTexturesList(List<Texture2D> inTexList)
         {
