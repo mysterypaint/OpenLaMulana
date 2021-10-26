@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenLaMulana", "OpenLaMulana.csproj", "{DCE086B8-A84F-4448-8554-C2FECACA7E8A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B52A7E62-AADB-4E9A-8261-1BBFB922DC9E} = {B52A7E62-AADB-4E9A-8261-1BBFB922DC9E}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChaiFoxes.FMODAudio.Desktop", "ChaiFoxes.FMODAudio\ChaiFoxes.FMODAudio\ChaiFoxes.FMODAudio.Desktop\ChaiFoxes.FMODAudio.Desktop.csproj", "{B52A7E62-AADB-4E9A-8261-1BBFB922DC9E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -23,10 +18,6 @@ Global
 		{DCE086B8-A84F-4448-8554-C2FECACA7E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCE086B8-A84F-4448-8554-C2FECACA7E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCE086B8-A84F-4448-8554-C2FECACA7E8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B52A7E62-AADB-4E9A-8261-1BBFB922DC9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B52A7E62-AADB-4E9A-8261-1BBFB922DC9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B52A7E62-AADB-4E9A-8261-1BBFB922DC9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B52A7E62-AADB-4E9A-8261-1BBFB922DC9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

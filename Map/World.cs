@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 using static OpenLaMulana.Entities.PseudoXML;
+using System.Collections;
 
 namespace OpenLaMulana.Entities
 {
@@ -37,7 +38,7 @@ namespace OpenLaMulana.Entities
             _fields.Add(new Field("map03", "mapg03", "eveg03"));
             _fields.Add(new Field("map04", "mapg04", "eveg04"));
 
-            PseudoXML.ParseDataScriptTree("Content/data/script_JPN_UTF8.txt", this);
+            PseudoXML.ParseDataScriptTree("Content/data/script_ENG.txt", this);
         }
 
         public void SetDialogue(List<string> dialogue)

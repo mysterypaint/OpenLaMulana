@@ -18,8 +18,6 @@
     <Compile Remove="ChaiFoxes.FMODAudio\**" />
     <EmbeddedResource Remove="ChaiFoxes.FMODAudio\**" />
     <None Remove="ChaiFoxes.FMODAudio\**" />
-    <None Remove="x64\libfmod.dylib" />
-    <None Remove="x64\libfmodstudio.dylib" />
     <None Remove="ChaiFoxes.FMODAudio.Desktop" />
     <None Remove="Map\" />
   </ItemGroup>
@@ -30,30 +28,12 @@
     <None Remove="Content\obj\DesktopGL\TrexSpritesheet.mgcontent" />
     <None Remove="Content\bin\DesktopGL\TrexSpritesheet.xnb" />
     <None Remove="Audio\" />
-    <None Remove="x64\fmod.dll" />
-    <None Remove="x64\fmodstudio.dll" />
-    <None Remove="x64\libfmod.so" />
-    <None Remove="x64\libfmod.so.11" />
-    <None Remove="x64\libfmod.so.11.8" />
-    <None Remove="x64\libfmodstudio.so" />
-    <None Remove="x64\libfmodstudio.so.11" />
-    <None Remove="x64\libfmodstudio.so.11.8" />
-    <None Remove="x86\fmod.dll" />
-    <None Remove="x86\fmodstudio.dll" />
-    <None Remove="x86\libfmod.so" />
-    <None Remove="x86\libfmod.so.11" />
-    <None Remove="x86\libfmod.so.11.8" />
     <None Remove="x86\libfmod.so.13" />
     <None Remove="x86\libfmod.so.13.3" />
-    <None Remove="x86\libfmodstudio.so" />
-    <None Remove="x86\libfmodstudio.so.11" />
-    <None Remove="x86\libfmodstudio.so.11.8" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
-    <EmbeddedResource Include="x64\libfmod.dylib" />
-    <EmbeddedResource Include="x64\libfmodstudio.dylib" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
@@ -66,65 +46,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="x64\fmod.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x64\fmodstudio.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x64\libfmod.so">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x64\libfmod.so.11">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x64\libfmod.so.11.8">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x64\libfmodstudio.so">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x64\libfmodstudio.so.11">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x64\libfmodstudio.so.11.8">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\fmod.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\fmodstudio.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\libfmod.so">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\libfmod.so.11">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\libfmod.so.11.8">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\libfmodstudio.so">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\libfmodstudio.so.11">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\libfmodstudio.so.11.8">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Audio\" />
     <Folder Include="Map\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="ChaiFoxes.FMODAudio\ChaiFoxes.FMODAudio\ChaiFoxes.FMODAudio.Desktop\ChaiFoxes.FMODAudio.Desktop.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="ChaiFoxes.FMODAudio.Desktop">
-      <HintPath>..\..\..\Desktop\MonoGame\OpenLaMulana\bin\Debug\net5.0\ChaiFoxes.FMODAudio.Desktop.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

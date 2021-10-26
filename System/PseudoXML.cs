@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace OpenLaMulana.Entities
 {
-    public static class PseudoXML
+    public class PseudoXML
     {
         private static World _world = null;
 
@@ -43,8 +43,8 @@ namespace OpenLaMulana.Entities
 
         private static void GetMatches(string inStr, TokenTypes token)
         {
-            ArrayList aResult = new ArrayList();
-            string regexPattern = "Undefined";
+            List<String> aResult = new List<String>();
+            string regexPattern;
 
             switch (token)
             {
@@ -56,7 +56,12 @@ namespace OpenLaMulana.Entities
                         aResult.Add(match.Groups[1].ToString());
                     }
 
-                    World aResult;
+                    _world.SetDialogue(aResult);
+                    break;
+                case TokenTypes.World:
+                    regexPattern = "";
+                    break;
+                default:
                     break;
             }
             
