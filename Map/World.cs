@@ -9,36 +9,49 @@ using System.Collections;
 
 namespace OpenLaMulana.Entities
 {
-
-    public class Utf8StringWriter : StringWriter
+    public partial class World : IGameEntity
     {
-        public override Encoding Encoding => Encoding.UTF8;
-    }
 
-    public class World : IGameEntity
-    {
         public int DrawOrder { get; set; }
         public const int tileWidth = 8;
         public const int tileHeight = 8;
-        public int currField = 3;
+        public int currField { get; set; }  = 1;
 
         private List<Field> _fields;
-        private List<Texture2D> _fieldTextures = null;
+        private List<Texture2D> _Textures = null;
         private int currRoomX = 0;
         private int currRoomY = 0;
         private List<string> _dialogue;
 
+        public int fieldCount = 0;
 
-        public World()
+        public static EntityManager _entityManager;
+
+
+        public World(EntityManager entityManager)
         {
-            _fields = new List<Field>();
-            _fields.Add(new Field("map00", "mapg00", "eveg00"));
-            _fields.Add(new Field("map01", "mapg01", "eveg01"));
-            _fields.Add(new Field("map02", "mapg02", "eveg02"));
-            _fields.Add(new Field("map03", "mapg03", "eveg03"));
-            _fields.Add(new Field("map04", "mapg04", "eveg04"));
+            _entityManager = entityManager;
+            
 
-            PseudoXML.ParseDataScriptTree("Content/data/script_ENG.txt", this);
+            _fields = new List<Field>();
+            for (int i = 0; i <= 22; i++)
+            {
+                string numStr;
+                if (i <= 9)
+                {
+                    numStr = "0" + i.ToString();
+                }
+                else
+                {
+                    numStr = i.ToString();
+                }
+                _fields.Add(new Field("map" + numStr, "mapg" + numStr, "eveg" + numStr));
+            }
+
+            fieldCount = _fields.Count;
+
+            PseudoXML.ParseDataScriptTree("Content/data/script_JPN_UTF8.txt", this);
+
         }
 
         public void SetDialogue(List<string> dialogue)
@@ -47,9 +60,9 @@ namespace OpenLaMulana.Entities
         }
         
 
-        public void SetAreaTexturesList(List<Texture2D> inTexList)
+        public void SetTexturesList(List<Texture2D> inTexList)
         {
-            _fieldTextures = inTexList;
+            _Textures = inTexList;
         }
 
         public void Update(GameTime gameTime)
@@ -60,7 +73,7 @@ namespace OpenLaMulana.Entities
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             var _thisField = _fields[currField];
-            var _thisTex = _fieldTextures[currField];
+            var _thisTex = _Textures[(int)currField];
             var currFieldRoomData = _thisField.GetMapData();
             var _thisRoom = currFieldRoomData[currRoomX, currRoomY];
 
@@ -82,9 +95,12 @@ namespace OpenLaMulana.Entities
                     var _texX = (_thisTile % 40) * 8;
                     var _texY = (_thisTile / 40) * 8;
 
-                    spriteBatch.Draw(_fieldTextures[currField], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
+                    spriteBatch.Draw(_Textures[(int)currField], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
                 }
             }
+
+
+
         }
 
         public void FieldTransitionRight()

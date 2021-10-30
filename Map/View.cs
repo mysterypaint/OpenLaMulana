@@ -2,7 +2,7 @@
 
 namespace OpenLaMulana
 {
-    public class Room
+    public class View
     {
         enum WORLD_DESTINATION_DIRECTIONS
         {
@@ -24,7 +24,7 @@ namespace OpenLaMulana
         private int[] RoomParams = { 0, 0, 0, 0 };
         private int RoomNumber = 0; // Unsure what this does... Maybe has to do with sharing room numbers -> how enemies persist/de-spawn?
 
-        public Room(int roomWidth, int roomHeight)
+        public View(int roomWidth, int roomHeight)
         {
             Tiles = new int[roomWidth, roomHeight];
 

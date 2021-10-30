@@ -16,8 +16,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="ChaiFoxes.FMODAudio\**" />
+    <Compile Remove="Content\sound\**" />
     <EmbeddedResource Remove="ChaiFoxes.FMODAudio\**" />
+    <EmbeddedResource Remove="Content\sound\**" />
     <None Remove="ChaiFoxes.FMODAudio\**" />
+    <None Remove="Content\sound\**" />
     <None Remove="ChaiFoxes.FMODAudio.Desktop" />
     <None Remove="Map\" />
   </ItemGroup>
@@ -47,6 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Audio\" />
-    <Folder Include="Map\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Content\data\script_ENG.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

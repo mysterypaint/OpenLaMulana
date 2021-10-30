@@ -251,7 +251,7 @@ Gradius 2 Beta
 A1 Spirit
 </TALK>
 <TALK>
-So§ do you want to
+So§ do you want to
 save the game?
 </TALK>
 <TALK>
@@ -510,91 +510,91 @@ Throwing Knife
 Spear
 </TALK>
 <TALK>
-Ye who runs needlessly°
-Thou art a fool°
-Thou art a fool°
-Thou art a fool°
+Ye who runs needlessly°
+Thou art a fool°
+Thou art a fool°
+Thou art a fool°
 Thou art a fool°
 </TALK>
 <TALK>
-No matter how far I go§I endup in the same room•
-This must what be what they
+No matter how far I go§I endup in the same room•
+This must what be what they
 mean by "Endless Corridor°"
 </TALK>
 <TALK>
-Chant the name°
-The one who Tiamat loved andhated°The source of the painwho gave birth to the 11
+Chant the name°
+The one who Tiamat loved andhated°The source of the painwho gave birth to the 11
 monsters°MARDUK°
 </TALK>
 <TALK>
-Chant the name°
- That of the witches' banquetfor Baphomet°The name of theplace where summoned demons return°
+Chant the name°
+ That of the witches' banquetfor Baphomet°The name of theplace where summoned demons return°
 SABBAT°
 </TALK>
 <TALK>
-Chant the name°
-That of the Nameless One°
-The name of the Nameless Onewho travels to the sky°
+Chant the name°
+That of the Nameless One°
+The name of the Nameless Onewho travels to the sky°
 MU°
 </TALK>
 <TALK>
-Chant the name°
-That of the ugly demon that
-lives deep within the earth°The name of the one with thedrooping eyelid°
+Chant the name°
+That of the ugly demon that
+lives deep within the earth°The name of the one with thedrooping eyelid°
 VIY°
 </TALK>
 <TALK>
-Chant the name°
-The name of the distant     rough ocean° The dark waves under which Bahamut lives°
+Chant the name°
+The name of the distant     rough ocean° The dark waves under which Bahamut lives°
 BAHRUN°
 </TALK>
 <TALK>
-Chant the name°
-That of the eye that watchesthe truth°The name of the
-one who watches over and
-gives blessings to all°
+Chant the name°
+That of the eye that watchesthe truth°The name of the
+one who watches over and
+gives blessings to all°
 UDJAT°
 </TALK>
 <TALK>
-Chant the name°
-That of the one who records the sorrow of the Giants°
-He who weeps over the death of his people°
+Chant the name°
+That of the one who records the sorrow of the Giants°
+He who weeps over the death of his people°
 ABT°
 </TALK>
 <TALK>
-Chant the name°
-That of the beginning of
-everything° And give her an eternal rest§as the final
-child°
+Chant the name°
+That of the beginning of
+everything° And give her an eternal rest§as the final
+child°
 LAMULANA°
 </TALK>
 <TALK>
-äHow to save teleport
-locations for the
-Grail?You've seen those
-tablets with a strangeshape§ right? Just
+äHow to save teleport
+locations for the
+Grail?You've seen those
+tablets with a strangeshape§ right? Just
 read those°
 </TALK>
 <TALK>
-ãThe Grapple Claw§ eh? Press up against a
+ãThe Grapple Claw§ eh? Press up against a
 wall while jumping to grab onto it°If you then press awayfrom the wall and timeit right§ you can kickoff of it°
 </TALK>
 <TALK>
-åSo you've found the
-Feather? Think "I wantto go higher!" while
-jumping and try to
+åSo you've found the
+Feather? Think "I wantto go higher!" while
+jumping and try to
 jump again°
 </TALK>
 <TALK>
-yThere's an MSX game
-called Network Rally° It's supposed to be
-like Hyper Rally mixedwith Road Fighter°I was able to play it over the network with a computer called
-LINKS°If you have those
-games§maybe you could use them to contact
+yThere's an MSX game
+called Network Rally° It's supposed to be
+like Hyper Rally mixedwith Road Fighter°I was able to play it over the network with a computer called
+LINKS°If you have those
+games§maybe you could use them to contact
 other computers°
 </TALK>
 <TALK>
-It has the same form as whatis already possessed. Yet ithas another meaning. It is
+It has the same form as whatis already possessed. Yet ithas another meaning. It is
 the brothers' password°
 </TALK>
 <TALK>
@@ -679,209 +679,208 @@ the brothers' password°
 Mopi Ranger is coming to save me°
 </TALK>
 <TALK>
-With my spare money§
-all I could buy was
-Salamander°
-I always got the bad
+With my spare money§
+all I could buy was
+Salamander°
+I always got the bad
 ending°
 </TALK>
 <TALK>
 Princess Penko always died°
 </TALK>
 <TALK>
-I smashed Pamperse
+I smashed Pamperse
 along with the rock!
 </TALK>
 <TALK>
-I can't believe that
-Simon is a model
+I can't believe that
+Simon is a model
 pervert°
 </TALK>
 <TALK>
-I wonder if anyone
+I wonder if anyone
 bought Q-bert because they actually wanted  to play it•
 </TALK>
 <TALK>
-I didn't like the name"Female Coed Student"§so I changed it to thename of a girl I had
-a thing for°I completely forgot
-that and lent all my
-passwords to a friend°This must have been
-what the curse of Gog
+I didn't like the name"Female Coed Student"§so I changed it to thename of a girl I had
+a thing for°I completely forgot
+that and lent all my
+passwords to a friend°This must have been
+what the curse of Gog
 was°
 </TALK>
 <TALK>
-It's long! The MSX
+It's long! The MSX
 laser is long! So the MSX WINS!!!••Wha? It was a dream?
 </TALK>
 <TALK>
-They had big dreams
-and sold over four
-million MSX units°So why doesn't my sitehave more than four
-million hits?
-Don't you think it's
+They had big dreams
+and sold over four
+million MSX units°So why doesn't my sitehave more than four
+million hits?
+Don't you think it's
 strange?
 </TALK>
 <TALK>
-Foolish Famicom User! How dare you mock me! You can't even shoot
-Thexder's laser° Your Vic Core is small too°And what the heck is
-that "Family Basic"?
+Foolish Famicom User! How dare you mock me! You can't even shoot
+Thexder's laser° Your Vic Core is small too°And what the heck is
+that "Family Basic"?
 It's just ridiculous!
 </TALK>
 <TALK>
 Hamachi!
 </TALK>
 <TALK>
-Ashguine's curse is
-awful° After all§it's an iron pipe sticking out from the crotch°Those trilobites are
+Ashguine's curse is
+awful° After all§it's an iron pipe sticking out from the crotch°Those trilobites are
 surprising too°
 </TALK>
 <TALK>
-I wonder what happenedto Venom? I haven't
+I wonder what happenedto Venom? I haven't
 seen him since I heardhim laughing while in a time slip°I certainly hope he's doing well°
 </TALK>
 <TALK>
-Is BABYS original gameout yet? Are they
-recruiting for DANTE 2yet?I've been making a
+Is BABYS original gameout yet? Are they
+recruiting for DANTE 2yet?I've been making a
 huge RPG for the past 10 years°
 </TALK>
 <TALK>
-I get really angry
-when Diviner Sensationgets my personality
-right°Thanks to it I've
-gotten my zeal for
+I get really angry
+when Diviner Sensationgets my personality
+right°Thanks to it I've
+gotten my zeal for
 life back° I'm full ofenergy now too°
 </TALK>
 <TALK>
-You know•I wish they'dfind some new
-unreleased game°
+You know•I wish they'dfind some new
+unreleased game°
 I'd like to play it°
 </TALK>
 <TALK>
-Won't GR3 come out in ROM format? I wish
-they'd stop being so
+Won't GR3 come out in ROM format? I wish
+they'd stop being so
 stingy about it°
 </TALK>
 <TALK>
-Whenever I did a moon landing on the third
-level§ my fuel was
+Whenever I did a moon landing on the third
+level§ my fuel was
 always at zero°
 </TALK>
 <TALK>
-Konami's Baseball is
-really the best°
-Pennant Race? What's
+Konami's Baseball is
+really the best°
+Pennant Race? What's
 that?
 </TALK>
 <TALK>
-What happened to the
-penguin cameos?
+What happened to the
+penguin cameos?
 Damn you§ Nintendo!
 </TALK>
 <TALK>
-You have to use some
-elbow grease to yank
-out those MSX carts°
+You have to use some
+elbow grease to yank
+out those MSX carts°
 Ah§ how manly!
 </TALK>
 <TALK>
-Though I suppose it's to be expected•
+Though I suppose it's to be expected•
 Official emulators are no good°
 </TALK>
 <TALK>
-M-my belt is
+M-my belt is
 stretching!
 </TALK>
 <TALK>
-One issue per year?
-Well§ that's a good
+One issue per year?
+Well§ that's a good
 pace for an old man°
 </TALK>
 <TALK>
-Whoever it was that
-first decided to say
+Whoever it was that
+first decided to say
 their personal opinion§step forward!
 </TALK>
 <TALK>
-P-peach is arising!
-From a Momonoki tree! Amazing peach-colored socks!•Oh§it was only a
+P-peach is arising!
+From a Momonoki tree! Amazing peach-colored socks!•Oh§it was only a
 dream°
 </TALK>
 <TALK>
-Where does the MSX
+Where does the MSX
 train go?
 </TALK>
 <TALK>
 Up§up§down§down§left§ right§left§right§B§A° What's that?
 </TALK>
 <TALK>
-Booom° Lalaaa§Lalaa§
-bada bada bada doom°
-bombombombombombo§bom
+Booom° Lalaaa§Lalaa§
+bada bada bada doom°
+bombombombombombo§bom
 bom bom§dadumdum°
 </TALK>
 <TALK>
-I wonder when my fish-man friend is going torelease his new
-creation?Take an iron pipe to
+I wonder when my fish-man friend is going torelease his new
+creation?Take an iron pipe to
 the crotch!
 </TALK>
 <TALK>
-Welcome§ youngster°Those like you who
-challenged the ruins
-of La-Mulana were     never heard from
-again°You'll just be anotherone of them°
-Not that I mind°(I've opened the
+Welcome§ youngster°Those like you who
+challenged the ruins
+of La-Mulana were     never heard from
+again°You'll just be anotherone of them°
+Not that I mind°(I've opened the
 entrance to the ruins°Do as you will°â
 </TALK>
 <TALK>
-This is the Guidance Gate°
-A place to guide those who
-would defile this tomb to
+This is the Guidance Gate°
+A place to guide those who
+would defile this tomb to
 their deaths°
 </TALK>
 <TALK>
-This is the Mausoleum of
-Giants° The sad memory of
+This is the Mausoleum of
+Giants° The sad memory of
 the race of Giants°
 </TALK>
 <TALK>
-This is the Spring of the
+This is the Spring of the
 Sky§ built by the giants°
 </TALK>
 <TALK>
-This is the Temple of the
+This is the Temple of the
 Sun° The valiant§ male      temple°
 </TALK>
 <TALK>
-This is the Inferno Cavern°
-A place that was once a
+This is the Inferno Cavern°
+A place that was once a
 source of power°
 </TALK>
 <TALK>
-This is the Chamber of
-Extinction°The remains of a
+This is the Chamber of
+Extinction°The remains of a
 terrible battle°
 </TALK>
 <TALK>
-This is the Twin Labyrinths°A place where twin souls
+This is the Twin Labyrinths°A place where twin souls
 reside°
 </TALK>
 <TALK>
-This is the Endless
-Corridor° A path that goes
+This is the Endless
+Corridor° A path that goes
 on forever°
 </TALK>
 <TALK>
-This is the Shrine of the
+This is the Shrine of the
 Mother° The place where the Mother rests°
 </TALK>
 <TALK>
-My wares are cheap!
+My wares are cheap!
 Please buy something°
 </TALK>
 <TALK>
-
-ˇˇ
-Ùˇˇ	Pπ
+
+ˇˇÙˇˇ	Pπ
 </TALK>
 <TALK>
 That's a Hand Scanner°
@@ -896,7 +895,7 @@ That's a Buckler°
 Sorry§that's sold out°
 </TALK>
 <TALK>
-Oh dear§ you don't
+Oh dear§ you don't
 have enough for that°
 </TALK>
 <TALK>
@@ -936,7 +935,7 @@ What§ you change your mind?
 This is the MSX shop! Please buy something!
 </TALK>
 <TALK>
-
+
  d"#
 </TALK>
 <TALK>
@@ -952,7 +951,7 @@ That's a Ruins RAM 8K°
 Sorry§ we're sold out!
 </TALK>
 <TALK>
-Bitch! You ain't got
+Bitch! You ain't got
 the cred! Up yours!
 </TALK>
 <TALK>
@@ -989,7 +988,7 @@ Buy more•
 Ah§ buy more•
 </TALK>
 <TALK>
-If you don't buy I
+If you don't buy I
 can't pass on•
 </TALK>
 <TALK>
@@ -1017,89 +1016,89 @@ Buy some more•
 Ah§buy some more•
 </TALK>
 <TALK>
-We are the second race born of the Great Mother° We wereborn to return her to the
-skies° This is the sad
-story of our race°
-Nine brothers led our race:
+We are the second race born of the Great Mother° We wereborn to return her to the
+skies° This is the sad
+story of our race°
+Nine brothers led our race:
 Zeb§ Bud§ Migera§ Led§ Fut§ Abt§ Zi§ Riv§ and Sakit°
 </TALK>
 <TALK>
-The eldest§ Zeb§ could not
-move§ as he had to hold up
+The eldest§ Zeb§ could not
+move§ as he had to hold up
 the Earth°
 </TALK>
 <TALK>
-Bud§ Migera§ Led§ and Fut
-built a flying tower to
-return the Mother to the
+Bud§ Migera§ Led§ and Fut
+built a flying tower to
+return the Mother to the
 sky°
 </TALK>
 <TALK>
-Abt§ Zi§ Riv§ and Sakit
-wanted the Mother to remain
+Abt§ Zi§ Riv§ and Sakit
+wanted the Mother to remain
 here on Earth°
 </TALK>
 <TALK>
-In order to hold up the
-Earth§ Zeb stopped moving§
-and the remaining brothers
+In order to hold up the
+Earth§ Zeb stopped moving§
+and the remaining brothers
 split into two factions and fought amongst themselves°
 </TALK>
 <TALK>
 Bud went into a long§ final rest on a night when the skywas full of stars°
 </TALK>
 <TALK>
-Zi started praying to the
+Zi started praying to the
 Earth on a moonlight night°
 </TALK>
 <TALK>
-On a day when the sun was
-bright§ Led fell in battle° A large hole torn in his
-chest§ he went into his
+On a day when the sun was
+bright§ Led fell in battle° A large hole torn in his
+chest§ he went into his
 long§ final rest°
 </TALK>
 <TALK>
-To launch the tower§ water
-was indispensible° Migera
+To launch the tower§ water
+was indispensible° Migera
 carried a lake to this land and expired in the effort°
 </TALK>
 <TALK>
-Grieving for his elder
-brothers§ Riv dug a tunnel
-from the lake to the tower  to bring water to it°
-He collapsed in the effort
+Grieving for his elder
+brothers§ Riv dug a tunnel
+from the lake to the tower  to bring water to it°
+He collapsed in the effort
 and went into a long rest°
 </TALK>
 <TALK>
-The youngest§ Sakit§
-followed his own path° He
-locked Led's body§ left
+The youngest§ Sakit§
+followed his own path° He
+locked Led's body§ left
 power in his hand§ and went into a long rest°
 </TALK>
 <TALK>
-We could not grant the GreatMother's wish°
-I am the only one to remain§and here I go to my long§
-final rest°
-
+We could not grant the GreatMother's wish°
+I am the only one to remain§and here I go to my long§
+final rest°
+
           Abt
 </TALK>
 <TALK>
-Rapids ahead!
-If you're not confident in
+Rapids ahead!
+If you're not confident in
 keeping your balance§ do notenter!
 </TALK>
 <TALK>
-Have you found all theROMS?
-Something good will
-happen if you do°Oh°
-Come to think of it§
-I've got one of them
-right here°I already finished it§so you can have it°
+Have you found all theROMS?
+Something good will
+happen if you do°Oh°
+Come to think of it§
+I've got one of them
+right here°I already finished it§so you can have it°
 Besides§ I'm dead°&rHere you go° Take goodcare of it°
 </TALK>
 <TALK>
-Find the Mirror° The Mirror reflects the truth of the
-ruins° All has a front and
+Find the Mirror° The Mirror reflects the truth of the
+ruins° All has a front and
 back§ two are one°
 </TALK>
 <TALK>
@@ -1121,7 +1120,7 @@ Flares°
 Sold out°
 </TALK>
 <TALK>
-Not enough money°
+Not enough money°
 Fool°
 </TALK>
 <TALK>
@@ -1149,7 +1148,7 @@ Weights! Quite useful!
 Sorry§ I'm sold out°
 </TALK>
 <TALK>
-Hey now§ you don't
+Hey now§ you don't
 have the money°
 </TALK>
 <TALK>
@@ -1162,8 +1161,7 @@ Don't get my hopes up!Now I'm sad!
 Ooh§you found me!
 </TALK>
 <TALK>
-
-êˇˇdˇˇ)ˇˇ
+êˇˇdˇˇ)ˇˇ
 </TALK>
 <TALK>
 Ammunition§ on sale°
@@ -1187,24 +1185,24 @@ Buy more° Come on!
 Hmph! Stingy bastard°
 </TALK>
 <TALK>
-Welcome§ chosen one°
-I am Giltorriyo§ one
-of the four Sages-the Sage of Knowledge°These ruins are the
-Mother's body° She cannot be defeated° Thou must defeat her soul°Summon the soul of theMother and give it a
-form in this world°
-The method to do so isalready prepared°As the 7th children§
-we have devised a
-secret art for this•
-And now we shall tell it to thee°Drive 8 wedges into
-the Mother's body°
-Find the Wedge and theMagatama Jewel§ and
-chant the Mantras°The Mantras have been inscribed on Tablets° Drive the wedges
-through the rear° Please§ chosen one°
-Grant our wish and
+Welcome§ chosen one°
+I am Giltorriyo§ one
+of the four Sages-the Sage of Knowledge°These ruins are the
+Mother's body° She cannot be defeated° Thou must defeat her soul°Summon the soul of theMother and give it a
+form in this world°
+The method to do so isalready prepared°As the 7th children§
+we have devised a
+secret art for this•
+And now we shall tell it to thee°Drive 8 wedges into
+the Mother's body°
+Find the Wedge and theMagatama Jewel§ and
+chant the Mantras°The Mantras have been inscribed on Tablets° Drive the wedges
+through the rear° Please§ chosen one°
+Grant our wish and
 release our Mother•©
 </TALK>
 <TALK>
-I thought I smelt a
+I thought I smelt a
 customer!
 </TALK>
 <TALK>
@@ -1250,7 +1248,7 @@ These Throwing Knives?
 Sorry° I'm sold out ofthat°
 </TALK>
 <TALK>
-Looks like you don't
+Looks like you don't
 have the money°
 </TALK>
 <TALK>
@@ -1332,7 +1330,7 @@ Those? Weights°
 That? Sorry§ sold out!
 </TALK>
 <TALK>
-You don't have the
+You don't have the
 money there!
 </TALK>
 <TALK>
@@ -1342,78 +1340,78 @@ Thanks!
 Too bad!
 </TALK>
 <TALK>
-Summon the Dragon from the
-earth° Follow the correct
+Summon the Dragon from the
+earth° Follow the correct
 path and let the Dragon     judge thee°
 </TALK>
 <TALK>
-Walk the End Year of the
+Walk the End Year of the
 Aztecs' Fifth Age°
 </TALK>
 <TALK>
-To get through§ wilt thou
-exhaust thy strength or thy
-wisdom?
+To get through§ wilt thou
+exhaust thy strength or thy
+wisdom?
 The path is left up to thee°Place a Weight down below°
 </TALK>
 <TALK>
-Prove thy wisdom°
+Prove thy wisdom°
 Just prove thy wisdom°
 </TALK>
 <TALK>
 Shut the eye waiting beyond°Shut the eye born from here°Beyond that lies everything°
 </TALK>
 <TALK>
-Welcome§ chosen one°
-I am Alsedarna§ one ofthe four Sages-the
-Sage of Death°I shall tell thee the
-secret of the ruins°
-We went into a long
-sleep to grant the
-Mother's wish°The Mother came to theEarth from the skies° We do not know where
-she came from° But shewanted to return°Having lost the power to move§ the Mother
-breathed life into
-earthen dolls--us
-humans°We were born to returnher to the sky§ and
-were given wisdom herein these ruins°Then we were sent out into the wider world§ to look for a way to
-return the Mother to
-the skies°Yes•these ruins
-themselves are the
-Mother°Alas§ returning the
-Mother to the skies isnot possible°If we cannot grant herwish§ then all we can do is grant her an
-eternal rest°Chosen one§ please
-release the Mother
-from her suffering•
+Welcome§ chosen one°
+I am Alsedarna§ one ofthe four Sages-the
+Sage of Death°I shall tell thee the
+secret of the ruins°
+We went into a long
+sleep to grant the
+Mother's wish°The Mother came to theEarth from the skies° We do not know where
+she came from° But shewanted to return°Having lost the power to move§ the Mother
+breathed life into
+earthen dolls--us
+humans°We were born to returnher to the sky§ and
+were given wisdom herein these ruins°Then we were sent out into the wider world§ to look for a way to
+return the Mother to
+the skies°Yes•these ruins
+themselves are the
+Mother°Alas§ returning the
+Mother to the skies isnot possible°If we cannot grant herwish§ then all we can do is grant her an
+eternal rest°Chosen one§ please
+release the Mother
+from her suffering•
 That is our wish••
 </TALK>
 <TALK>
-Thou wishes to become small? Thou art small already° I shall give thee the Mini Doll°
+Thou wishes to become small? Thou art small already° I shall give thee the Mini Doll°
 Prove thou art small°
 </TALK>
 <TALK>
-Eh? Who are you? Good timing though! Can I
-ask you a favor? If
-you don't want to do
-it§ then get out°Right° So you see§
-this mischievous pixiehid my precious
-treasure°Before she disappearedshe left this pepper
-behind and sang this
-ridiculous song:"Six Angels whisper
-that the inviting
-guardian swallowed thetreasure° How will youget it back?What will happen if
-you do?"If you get back the
-treasure I'll give you500 coins••achoo!!Looks like the pepper got in my nose° Here§ take it° /Go and find
+Eh? Who are you? Good timing though! Can I
+ask you a favor? If
+you don't want to do
+it§ then get out°Right° So you see§
+this mischievous pixiehid my precious
+treasure°Before she disappearedshe left this pepper
+behind and sang this
+ridiculous song:"Six Angels whisper
+that the inviting
+guardian swallowed thetreasure° How will youget it back?What will happen if
+you do?"If you get back the
+treasure I'll give you500 coins••achoo!!Looks like the pepper got in my nose° Here§ take it° /Go and find
 my treasure!
 </TALK>
 <TALK>
-What is this!? It's
-all wet with drool!
-You got my precious
-treasure all covered
-in slobber!This junk is all you
-get°
-
-Now get out of my
+What is this!? It's
+all wet with drool!
+You got my precious
+treasure all covered
+in slobber!This junk is all you
+get°
+
+Now get out of my
 sight!
 </TALK>
 <TALK>
@@ -1423,12 +1421,12 @@ Hurry and find it!
 Don't ever come back!
 </TALK>
 <TALK>
-You have done well in makingit this far§ wise one°
-Break through the final
+You have done well in makingit this far§ wise one°
+Break through the final
 confusion°
 </TALK>
 <TALK>
-Become small!
+Become small!
 Only the tiny should proceedonward°
 </TALK>
 <TALK>
@@ -1459,7 +1457,7 @@ Thanks°
 Change your mind?
 </TALK>
 <TALK>
-Welcome to the older
+Welcome to the older
 brother's store°
 </TALK>
 <TALK>
@@ -1475,11 +1473,11 @@ Those are Spears°
 Those are Flares°
 </TALK>
 <TALK>
-I don't deal in that
+I don't deal in that
 any more°
 </TALK>
 <TALK>
-Come back when you
+Come back when you
 have more money°
 </TALK>
 <TALK>
@@ -1489,11 +1487,11 @@ Thanks very much°
 Decide against it?
 </TALK>
 <TALK>
-I'll sell you some
+I'll sell you some
 incredible stuff!
 </TALK>
 <TALK>
-
+
 ^˘xˇˇ(ˇˇ
 </TALK>
 <TALK>
@@ -1560,11 +1558,11 @@ F1 Spirit 3D Special°
 Those are Weights°
 </TALK>
 <TALK>
-I don't deal in that
+I don't deal in that
 any more°
 </TALK>
 <TALK>
-You know you don't
+You know you don't
 have enough§ right?
 </TALK>
 <TALK>
@@ -1574,12 +1572,11 @@ Thank you§ come again°
 Just hurry up and buy it!
 </TALK>
 <TALK>
-You have awakened me
+You have awakened me
 from my rest-now buy!
 </TALK>
 <TALK>
-»ˇˇ
-Ùˇˇ
+»ˇˇÙˇˇ
 </TALK>
 <TALK>
 A Bracelet° Handy!
@@ -1591,7 +1588,7 @@ Shuriken° The basics°
 Ammunition° Powerful!
 </TALK>
 <TALK>
-Sorry§ that's out of
+Sorry§ that's out of
 stock°
 </TALK>
 <TALK>
@@ -1601,214 +1598,214 @@ You're broke! How dareyou!
 OK° Now buy more°
 </TALK>
 <TALK>
-What§ you don't want
+What§ you don't want
 it? Buy it!
 </TALK>
 <TALK>
-Eight souls rest in
-this land° The souls
-are those of the
-Guardians that protectthese lands°When the Ankhs holdingthe souls shatter froma shining red light§
-the souls will awaken°The Ankh in this land is beyond the path of Angels§ and the Jewel is at the foot of a
+Eight souls rest in
+this land° The souls
+are those of the
+Guardians that protectthese lands°When the Ankhs holdingthe souls shatter froma shining red light§
+the souls will awaken°The Ankh in this land is beyond the path of Angels§ and the Jewel is at the foot of a
 long wall°
 </TALK>
 <TALK>
-These ruins are full of
+These ruins are full of
 traps° I no longer have the energy to escape•
 </TALK>
 <TALK>
 I can't read these letters• If only I had bought a GlyphReader•
 </TALK>
 <TALK>
-Do not fe
-         ainst the flow of
-th               in
+Do not fe
+         ainst the flow of
+th               in
 resistan
 </TALK>
 <TALK>
-This is a holy place° Do notdefile it carelessly° He whoignores this warning will bestruck down by divine
+This is a holy place° Do notdefile it carelessly° He whoignores this warning will bestruck down by divine
 retribution°
 </TALK>
 <TALK>
-I was careless°
+I was careless°
 Every place that looks like it has something good alwayshas a trap•
 </TALK>
 <TALK>
-I got caught in such a
+I got caught in such a
 simple tra•
 </TALK>
 <TALK>
-The sad tale of the giants° Their history is recorded
+The sad tale of the giants° Their history is recorded
 therein°
 </TALK>
 <TALK>
-The eight Ankhs guard huge
-souls° Hold aloft the red
-glowing Ankh Jewels° Their
+The eight Ankhs guard huge
+souls° Hold aloft the red
+glowing Ankh Jewels° Their
 Guardians will test thee°
 </TALK>
 <TALK>
-Why•No matter how many timesI try§ the treasure won't
+Why•No matter how many timesI try§ the treasure won't
 open°
 </TALK>
 <TALK>
 Apparently there are shops  in these ruins°             I'm about to die so it      doesn't matter to me though°
 </TALK>
 <TALK>
-If thou dost cross the oceanof the inferno§ thou
+If thou dost cross the oceanof the inferno§ thou
 shouldst take the top path°
 </TALK>
 <TALK>
-This is the shortcut I
-found!
-These ruins seem to be
+This is the shortcut I
+found!
+These ruins seem to be
 interconnected in mysteriousways•
 </TALK>
 <TALK>
-Pour thy memories of this
-land into the grail° Chant
-this place's number to the
+Pour thy memories of this
+land into the grail° Chant
+this place's number to the
 grail and thou shalt return°
 </TALK>
 <TALK>
-"Twin Guards"
-"Silent and alone"
-"Deliver a stone on high"
+"Twin Guards"
+"Silent and alone"
+"Deliver a stone on high"
 What does it mean by guards?
 </TALK>
 <TALK>
-In the temple of the Sun§
+In the temple of the Sun§
 a new trap fills a hole and conceals a trigger°
 </TALK>
 <TALK>
-If not for the monsters§
-these would be nice and
+If not for the monsters§
+these would be nice and
 quiet ruins•
 </TALK>
 <TALK>
-How many times have I fallenin here•
+How many times have I fallenin here•
 I guess this is a trap too°
 </TALK>
 <TALK>
-Light          Unsee
+Light          Unsee
  of         move°
 </TALK>
 <TALK>
-"Steal the sword§ Steal the Shield§ Crush the helmet§
-Crush the armor°"
+"Steal the sword§ Steal the Shield§ Crush the helmet§
+Crush the armor°"
 Is this some sort of        military theory? I don't getit•
 </TALK>
 <TALK>
-The guild hides
-   search       key
-
+The guild hides
+   search       key
+
 First         water
 </TALK>
 <TALK>
-"There is a path where the
-Angels face each other°"
+"There is a path where the
+Angels face each other°"
 I found an invisible floor! But in my excitement§ I felloff•
 </TALK>
 <TALK>
-This is where the Mother
-sleeps°
-A path of trials§ where onlyheroes that do not fear
+This is where the Mother
+sleeps°
+A path of trials§ where onlyheroes that do not fear
 death may enter°
 </TALK>
 <TALK>
-Offer three sacrifices to
+Offer three sacrifices to
 the heavens°
 </TALK>
 <TALK>
-         ar water° He who
-climbs ag
-  e water will ga
+         ar water° He who
+climbs ag
+  e water will ga
          ce to it°
 </TALK>
 <TALK>
 Courageous one§ take power° If thou desires power§ provethy courage°
 </TALK>
 <TALK>
-Shu§ the monster that drinksthe lifeblood of pure
-maidens and has attained
-eternal power°
+Shu§ the monster that drinksthe lifeblood of pure
+maidens and has attained
+eternal power°
 Do not fall into the hole ofsacrifices°
 </TALK>
 <TALK>
-If one of my friends
-approaches§ just stay still°
+If one of my friends
+approaches§ just stay still°
 Otherwise she won't beable to heal you°
 </TALK>
 <TALK>
-They say that the
-courageous can get a weapon•But if I jump into those
+They say that the
+courageous can get a weapon•But if I jump into those
 spikes§I'm finished!
 </TALK>
 <TALK>
-1 Sword§ 2 Bodies§
-3 Wishes§ 4 Disasters°
-5 Stars§ 6 Moons§
-7 Lights§ 8 Paths°
-9 Cups§ and 0 which
+1 Sword§ 2 Bodies§
+3 Wishes§ 4 Disasters°
+5 Stars§ 6 Moons§
+7 Lights§ 8 Paths°
+9 Cups§ and 0 which
 is Life°
 </TALK>
 <TALK>
-Four treasures and one
-treasure°
+Four treasures and one
+treasure°
 Open them starting from the front°
 </TALK>
 <TALK>
-11 children guard Tiamat's
-chamber°
-The Grail is powerless
+11 children guard Tiamat's
+chamber°
+The Grail is powerless
 therein°
 </TALK>
 <TALK>
-There is a cursed treasure° The curse befalls those who touch it° Break the curse
+There is a cursed treasure° The curse befalls those who touch it° Break the curse
 with the red stone°
 </TALK>
 <TALK>
-It looks like you can only
-assemble two of the symbols°To do the third you have to
-leave the room first°
-Proof?
+It looks like you can only
+assemble two of the symbols°To do the third you have to
+leave the room first°
+Proof?
 I'm your proof-I used up allmy energy trying to assemblethe third-now look at me!
 </TALK>
 <TALK>
-The Algol with the
+The Algol with the
 blue body and the manyeyes° Legend has it heis weak to the SerpentStaff°
 </TALK>
 <TALK>
-          DANGER!!
-
+          DANGER!!
+
  No entry beyond this point!
 </TALK>
 <TALK>
-So these ruins are those
-from a race of giants•
-I was just about to
+So these ruins are those
+from a race of giants•
+I was just about to
 decipher their legend too•
 </TALK>
 <TALK>
-The mother was great°
-Great enough so that even
-the Giants seemed dwarfed byher°
-The Giants were great°
-Great enough so that thee§
+The mother was great°
+Great enough so that even
+the Giants seemed dwarfed byher°
+The Giants were great°
+Great enough so that thee§
 little one§ seem dwarfed by them°
 </TALK>
 <TALK>
-Do not read this tablet
-again°
+Do not read this tablet
+again°
 He who ignores this warning shall have the pain of deathbrought upon them°
 </TALK>
 <TALK>
 Ye who ignored the warning° Taste the pain of death°
 </TALK>
 <TALK>
-Where the ghosts
-          two Knights°
-         disappear then one
+Where the ghosts
+          two Knights°
+         disappear then one
 will gain power°
 </TALK>
 <TALK>
@@ -1818,21 +1815,21 @@ The ghosts are scary°
        steals     red            never leav             again°
 </TALK>
 <TALK>
-Here§ all that is in the
-heavens can be controlled°
+Here§ all that is in the
+heavens can be controlled°
 He who controls the heavens can control time as well°
 </TALK>
 <TALK>
-If there is a man§
-there is also a woman°You must not use
-weapons inside the
-woman°If you wish to solve
-the riddle of the
-temple§ proceed into
+If there is a man§
+there is also a woman°You must not use
+weapons inside the
+woman°If you wish to solve
+the riddle of the
+temple§ proceed into
 the next room°∫
 </TALK>
 <TALK>
-I can't get out•
+I can't get out•
 Where's the switch•
 </TALK>
 <TALK>
@@ -1842,7 +1839,7 @@ Leap into the sun°
 I can't climb out•
 </TALK>
 <TALK>
-Turn on the lights° The
+Turn on the lights° The
 truth will be illuminated°
 </TALK>
 <TALK>
@@ -2026,134 +2023,134 @@ Death Seal
 Skimpy Swimsuit
 </TALK>
 <TALK>
-I can't climb the slopes°
+I can't climb the slopes°
  If only I was faster•
 </TALK>
 <TALK>
-The rock where the sacred
-fish dwells° Polished by a
-pure maiden§ it becomes the Scalesphere° It shall
+The rock where the sacred
+fish dwells° Polished by a
+pure maiden§ it becomes the Scalesphere° It shall
 protect thee from drowning°
 </TALK>
 <TALK>
 There is a secret inside thepyramid° Fear not§ and      continue onward°
 </TALK>
 <TALK>
-The path that connects the
+The path that connects the
 two pyramids°
 </TALK>
 <TALK>
-Beyond here there is no
+Beyond here there is no
 light°
 </TALK>
 <TALK>
-Fill th             water
-           ris          
+Fill th             water
+           ris          
  he riddle        Pyram
 </TALK>
 <TALK>
-The woman becomes pregnant
+The woman becomes pregnant
 inside the man°
 </TALK>
 <TALK>
-Solve the riddle or thou
+Solve the riddle or thou
 wilt never leave here°
 </TALK>
 <TALK>
-Meditate under Udjat°
+Meditate under Udjat°
 Do nothing-just pray•
 </TALK>
 <TALK>
-Ye who hast solved all the
+Ye who hast solved all the
 riddles§ proceed below°
 </TALK>
 <TALK>
-Summon the power of the
+Summon the power of the
 twins° The twins are two andyet one° The twins are very much alike°
 </TALK>
 <TALK>
-Challenge the cavern of the inferno° It will be a long
-road° He who follows it
+Challenge the cavern of the inferno° It will be a long
+road° He who follows it
 should be prepared to die°
 </TALK>
 <TALK>
-Open the floodgate° The
-water will flow again° The
-blue flying one holds the
+Open the floodgate° The
+water will flow again° The
+blue flying one holds the
 key°
 </TALK>
 <TALK>
-So these are the waterworks Migera made•but they don't
+So these are the waterworks Migera made•but they don't
 seem to be working now°
 </TALK>
 <TALK>
-If I tried to go under the
-waterfalls I'd just get
-swept away°
-If I had some sort of helmetI might be able to get by
+If I tried to go under the
+waterfalls I'd just get
+swept away°
+If I had some sort of helmetI might be able to get by
 them•
 </TALK>
 <TALK>
 The water that operates the tower° It flows here and is converted to energy°
 </TALK>
 <TALK>
-Rest thy weary body° The
-fairies will kindly divine
+Rest thy weary body° The
+fairies will kindly divine
 thy life°
 </TALK>
 <TALK>
 Seek the seals° Thy way willbe opened even more°
 </TALK>
 <TALK>
-Cast off the boat° Bahamut'ssleeping place lies there°
+Cast off the boat° Bahamut'ssleeping place lies there°
 The red shine is held by themaster of fish°
 </TALK>
 <TALK>
-Walk down the infinite
-corridor° Beyond it lies
+Walk down the infinite
+corridor° Beyond it lies
 everything°
 </TALK>
 <TALK>
-The Sky Spring lies above
+The Sky Spring lies above
 the sun°
 </TALK>
 <TALK>
-When the serpents are
+When the serpents are
 angered§ it opens°
 </TALK>
 <TALK>
-Strange§ these ruins are
-strange°
-This shouldn't be a dead
+Strange§ these ruins are
+strange°
+This shouldn't be a dead
 end•
 </TALK>
 <TALK>
-My computer went haywire
+My computer went haywire
 with the heat°
 </TALK>
 <TALK>
-Extend thy hands up°
-Kick the wall and leap to
+Extend thy hands up°
+Kick the wall and leap to
 another point°
 </TALK>
 <TALK>
-What is here is not
-everything° This is
-the critical location°Take another path and return to this land
+What is here is not
+everything° This is
+the critical location°Take another path and return to this land
 again°
 </TALK>
 <TALK>
 The fo     ges                  bod    to stone         watc     ov          always°
 </TALK>
 <TALK>
-If thou rides the right§
-right§ if thou rides the
-left§ left°
+If thou rides the right§
+right§ if thou rides the
+left§ left°
 Make a mistake and the powerwill never be thine°
 </TALK>
 <TALK>
-That which is not here is
-here°
+That which is not here is
+here°
 It is at another here°
 </TALK>
 <TALK>
@@ -2166,23 +2163,23 @@ Discover where the truth of this land lies°
 The imprisoned twins° The   man that runs faster than   anyone will free them°
 </TALK>
 <TALK>
-Ye who hast reached this
+Ye who hast reached this
 place° We have chosen you°  Come to us° We will respond to the flute you play°
 </TALK>
 <TALK>
-There is a riddle
-Hidden between two
-murals°Concealed within the
-large one§it is
-summoned by the small°Challenge the riddle
-with golden key in
+There is a riddle
+Hidden between two
+murals°Concealed within the
+large one§it is
+summoned by the small°Challenge the riddle
+with golden key in
 hand°
 </TALK>
 <TALK>
-The Guardians lurk in the front° Places
-without them are the
-rear° This is the law of the ruins°Only the Infinite
-Corridor is an
+The Guardians lurk in the front° Places
+without them are the
+rear° This is the law of the ruins°Only the Infinite
+Corridor is an
 exception°
 </TALK>
 <TALK>
@@ -2192,56 +2189,56 @@ Create illumination here°
 There is naught to disperse the darkness here°
 </TALK>
 <TALK>
-If thou cannot go left§ go
+If thou cannot go left§ go
 right°
 </TALK>
 <TALK>
-Spriggan§ the giant statue° Show hostility and he will
-awaken°
-Fight him more and he will
+Spriggan§ the giant statue° Show hostility and he will
+awaken°
+Fight him more and he will
 return to sleep°
 </TALK>
 <TALK>
 The flywheel produces life° Everything was born from it§flourished§ and set out on ajourney°
 </TALK>
 <TALK>
-There are two murals°
-Use the golden key on the
+There are two murals°
+Use the golden key on the
 smaller° Summon it from the cross deep within the earth°
 </TALK>
 <TALK>
-The final        jewel is
- Endless
+The final        jewel is
+ Endless
        red light in the key
 </TALK>
 <TALK>
-Attain the Dragon Bone°
+Attain the Dragon Bone°
 It will lead you to the coreof this land°
 </TALK>
 <TALK>
-A joyful soul is milky hued§an eloquent soul is black§
-an honest soul is purple§
-a happy soul is green§
-a pure soul is white§
-a passionate soul is red§
-and a kind soul is blue°
+A joyful soul is milky hued§an eloquent soul is black§
+an honest soul is purple§
+a happy soul is green§
+a pure soul is white§
+a passionate soul is red§
+and a kind soul is blue°
 Souls have colors°
 </TALK>
 <TALK>
-The large cross deep within the earth°
-The cross to with which to
+The large cross deep within the earth°
+The cross to with which to
 summon Palenque°
 </TALK>
 <TALK>
-Gozu and Mezu§ the guardiansof Hell§ at the darkness'
+Gozu and Mezu§ the guardiansof Hell§ at the darkness'
 end° Beyond them§ the final Pyramid where Nu Wa sleeps°
 </TALK>
 <TALK>
-There is a medicine that cangive form to a great soul°
+There is a medicine that cangive form to a great soul°
 Consult the correct spirit°
 </TALK>
 <TALK>
-In a fiery land§ Nu Wa restsin the final Pyramid°
+In a fiery land§ Nu Wa restsin the final Pyramid°
 The path there is sealed by the Sages°
 </TALK>
 <TALK>
@@ -2251,88 +2248,88 @@ Endlessness and dimensions° With her great power§ Tiamatbent the laws of both°
 Push the wall on a moonlit  night°
 </TALK>
 <TALK>
-Only the chosen one may go
+Only the chosen one may go
 onward°
 </TALK>
 <TALK>
-The Sages will only show thepath to the chosen one°
-At its end lies a great
+The Sages will only show thepath to the chosen one°
+At its end lies a great
 soul°
 </TALK>
 <TALK>
-Examine thy weapons°
-The key of awakening lies
+Examine thy weapons°
+The key of awakening lies
 among them°
 </TALK>
 <TALK>
 A land guarded by 8 souls°
 </TALK>
 <TALK>
-We were born of this earth° We were the seventh to be
-born° And we forgot our
+We were born of this earth° We were the seventh to be
+born° And we forgot our
 Mother•
 </TALK>
 <TALK>
-Through a ceremony passed
-down through the ages§ the
+Through a ceremony passed
+down through the ages§ the
 four Sages attained undying bodies°
 </TALK>
 <TALK>
-The Mother's power is the
-power of life° When the soulshatters it shows itself°
+The Mother's power is the
+power of life° When the soulshatters it shows itself°
 This is life's treasure°
 </TALK>
 <TALK>
-Proceed from the correct
+Proceed from the correct
 path°
 </TALK>
 <TALK>
 The twins' gates respond to the twins' souls°
 </TALK>
 <TALK>
-Cast a spell on the spirits that have the elixir° The
+Cast a spell on the spirits that have the elixir° The
 Elixir gives shape to souls°
 </TALK>
 <TALK>
 The Dance of Life°
 </TALK>
 <TALK>
-The witches assemble§ and
+The witches assemble§ and
 Baphomet is summoned°
 </TALK>
 <TALK>
-The word of the black Onyx
-is "Eloquence°" The word of the purple Amethyst is
-"Honesty°"
-Gems have words attributed
-to them° Gather these words from the spider's web that
+The word of the black Onyx
+is "Eloquence°" The word of the purple Amethyst is
+"Honesty°"
+Gems have words attributed
+to them° Gather these words from the spider's web that
 connects the whole world°
 </TALK>
 <TALK>
-The priests lived in the
-ruins and guarded them°
-As they started to die§ fourof them turned themselves
-into stone§ gained eternal
+The priests lived in the
+ruins and guarded them°
+As they started to die§ fourof them turned themselves
+into stone§ gained eternal
 life§ and became Sages°
 </TALK>
 <TALK>
-Tiamat used her power to
+Tiamat used her power to
 escape from the front of theworld°
 </TALK>
 <TALK>
-Go to sleep inside the
+Go to sleep inside the
 woman°
 </TALK>
 <TALK>
 Is this my son reading this?I hope so° I've made it thisfar§ but was not chosen by  the sages° I could not wake the Mother° Please do what Icould not° The source of alllife is here° Oh yes§ pleasehit the "off" button now°
 </TALK>
 <TALK>
-       nt and the back
-         in the front
+       nt and the back
+         in the front
          in the     °
 </TALK>
 <TALK>
-Interfere in the love of theancient beasts§ the two
+Interfere in the love of theancient beasts§ the two
 close beasts that face each other° And go to the top of the terrible mountains°
 </TALK>
 <TALK>
@@ -2345,7 +2342,7 @@ Release the twins°
 Bright light     rrupts     love of all           mersed       brillian
 </TALK>
 <TALK>
-The front of
+The front of
       beyond the skull°
 </TALK>
 <TALK>
@@ -2355,19 +2352,19 @@ The front of
 The King of Hell§ Beelzebub°He guards the eight souls infront of the Mother°
 </TALK>
 <TALK>
-The power to stop time°
-Time flows only for thee°
-That which that travels too
-fast to be seen will also
+The power to stop time°
+Time flows only for thee°
+That which that travels too
+fast to be seen will also
 become visible°
 </TALK>
 <TALK>
-Zu of the white face opens
-the the hall of meditation° Peryton of the blue shadow
+Zu of the white face opens
+the the hall of meditation° Peryton of the blue shadow
 seals off the Ankh°
 </TALK>
 <TALK>
-The Ankh is certainly in the front° Think
+The Ankh is certainly in the front° Think
 well where that might be°
 </TALK>
 <TALK>
@@ -2431,125 +2428,125 @@ Angel Shield
 Ammunition
 </TALK>
 <TALK>
-This was once a prosperous
-place°
-Many secret treasures are
+This was once a prosperous
+place°
+Many secret treasures are
 hidden within°
 </TALK>
 <TALK>
-This is the Twin Labyrinths°A place where twin souls
+This is the Twin Labyrinths°A place where twin souls
 reside°
 </TALK>
 <TALK>
 Open the lock to the hallwaywhich proceeds forever°
 </TALK>
 <TALK>
-Many daises are left of the first° Many daises are rightof the next° These two are not next together° Thou wilt pass the first dais when
+Many daises are left of the first° Many daises are rightof the next° These two are not next together° Thou wilt pass the first dais when
 going from the fourth to thefifth° The fourth is not at the edge but the last is°
 </TALK>
 <TALK>
-Not telling the Mother§ the sad bird cast a spell° The
-power to create life° The
+Not telling the Mother§ the sad bird cast a spell° The
+power to create life° The
 large bird cast a spell°
 </TALK>
 <TALK>
-The wandering lizard
+The wandering lizard
 discarded the light° Should the light return to it§ the pillar of light will vanish°
 </TALK>
 <TALK>
-The pillar of light is the
+The pillar of light is the
 joy of the dancing child° Ifhis treasures vanish all at once§ he shall become sad°
 </TALK>
 <TALK>
-The great treasure hidden inthis land produces life°
+The great treasure hidden inthis land produces life°
 We were born here§ and went on a journey for the Mother°
 </TALK>
 <TALK>
-Is the one reading this
-tablet wise or a fool?
-I pray it is one that has
+Is the one reading this
+tablet wise or a fool?
+I pray it is one that has
 wisdom°
 </TALK>
 <TALK>
-Ye who has life°
-There is still time°
-Turn back°
+Ye who has life°
+There is still time°
+Turn back°
 The confusion continues°
 </TALK>
 <TALK>
-Woe to ye§ he who does not
-listen§ ignoring the advice of others!
-So overconfident in thy
-abilities§ thou art a fool
-to come this far° Death to
+Woe to ye§ he who does not
+listen§ ignoring the advice of others!
+So overconfident in thy
+abilities§ thou art a fool
+to come this far° Death to
 the fool!
 </TALK>
 <TALK>
 The fairy opens the lock°
 </TALK>
 <TALK>
-Ye fool§ judging things onlyfrom what thou sees°
-Wander this labyrinth
+Ye fool§ judging things onlyfrom what thou sees°
+Wander this labyrinth
 forever!
 </TALK>
 <TALK>
-He who just waits is a true fool° Ye have done well in
-understanding°
-Art thou wise or a fool?
-Only thy actions will tell°
-I pray that thou are truly
+He who just waits is a true fool° Ye have done well in
+understanding°
+Art thou wise or a fool?
+Only thy actions will tell°
+I pray that thou are truly
 wise°
 </TALK>
 <TALK>
-A fool thought he was wise
-because he was a fool° Smallminded§ he went right°A foolwas wise but thought he was a fool and thus was° Self-
-depricating§ he went left°
+A fool thought he was wise
+because he was a fool° Smallminded§ he went right°A foolwas wise but thought he was a fool and thus was° Self-
+depricating§ he went left°
 There is only one true path°May ye be truly wise°
 </TALK>
 <TALK>
-Thou wilt not find thy way
-by just wandering° Courage
-to leap into the confusion
+Thou wilt not find thy way
+by just wandering° Courage
+to leap into the confusion
 will grant thy wish°
 </TALK>
 <TALK>
-Fools will continue to be
+Fools will continue to be
 lost°
 </TALK>
 <TALK>
-This is the Confusion Gate° The path will open to the
+This is the Confusion Gate° The path will open to the
 wise°
 </TALK>
 <TALK>
-This is the Graveyard of theGiants°
+This is the Graveyard of theGiants°
 The cemetary of the sorrow- filled Giants°
 </TALK>
 <TALK>
-MU is the name of the       nameless one§ the one who
+MU is the name of the       nameless one§ the one who
 climbs to the sky°
 </TALK>
 <TALK>
 The rogue that releases manylights° He who does not holdthe silver shine is doomed°
 </TALK>
 <TALK>
-The man and woman meet°
-The seed of life is born
+The man and woman meet°
+The seed of life is born
 inside the man°
 </TALK>
 <TALK>
-The genuine article cannot
+The genuine article cannot
 be attained with money°
 </TALK>
 <TALK>
-Only thy own strength can
+Only thy own strength can
 get thee through this frozenland°
 </TALK>
 <TALK>
 Take thy new weapon in hand°Shatter the wall that blocksthy path ahead°
 </TALK>
 <TALK>
-Just walk down the path°
-A new power awaits thee at
+Just walk down the path°
+A new power awaits thee at
 its end°
 </TALK>
 <TALK>
@@ -2559,46 +2556,46 @@ Where life is born§ there isa shop that sells a Jewel°
 My eyes are not blind°
 </TALK>
 <TALK>
-Art thou the chosen one or  not?
-Proceed ahead°
+Art thou the chosen one or  not?
+Proceed ahead°
 We wait for thee beyond°
 </TALK>
 <TALK>
-The cape of ice protects
+The cape of ice protects
 against the harshest heat°
 </TALK>
 <TALK>
 This is the Temple of       Moonlight° The lovely§      female temple°
 </TALK>
 <TALK>
-The light from the god of
-death grants death to all
-living things° Only he who
-holds the Book of the Dead
+The light from the god of
+death grants death to all
+living things° Only he who
+holds the Book of the Dead
 is spared°
 </TALK>
 <TALK>
 Changing water to power§ theTower flies up into the sky°
 </TALK>
 <TALK>
-Souls have weights: Joy-20§ Eloquence-44§ Honesty-50§
-Prosperity-63§ Purity-70§
+Souls have weights: Joy-20§ Eloquence-44§ Honesty-50§
+Prosperity-63§ Purity-70§
 Passion-81§ and Love-100°
 </TALK>
 <TALK>
-The confusion is endless°
+The confusion is endless°
 The Endless Key lies within the confusion° On top of thesame word°
 </TALK>
 <TALK>
-The sound of the flute is
+The sound of the flute is
 given to the pregnant woman°
 </TALK>
 <TALK>
 If thou wantest power§ risk thy life°
 </TALK>
 <TALK>
-The Guardians protect
-something else°
+The Guardians protect
+something else°
 In those places lie wedges§ eight wedges which can give form to a soul°
 </TALK>
 <TALK>
@@ -2608,110 +2605,110 @@ Beyond here lies the chamberof Anubis§ the god of death°
 Trim the Pyramid°
 </TALK>
 <TALK>
-The kind§ mischievous fairy°The kind§ lonely fairy°
-Her mischief is innocent°
-Innocent mischief will do
+The kind§ mischievous fairy°The kind§ lonely fairy°
+Her mischief is innocent°
+Innocent mischief will do
 thee no harm°
 </TALK>
 <TALK>
 Trace the name which is not°
 </TALK>
 <TALK>
-The large earthen doll§
+The large earthen doll§
 It carries the flying goldenkey°
 </TALK>
 <TALK>
 Defeat the invisible enemy° Ye shall attain the medicineof life°
 </TALK>
 <TALK>
-The flying iron bird°
-Distressed at its travel§
+The flying iron bird°
+Distressed at its travel§
 the goddesses depart°
 </TALK>
 <TALK>
-The people who created
-Nu Wa§those who imitate the power of the Great Mother°
-The power to create life°
-The power to create us°
+The people who created
+Nu Wa§those who imitate the power of the Great Mother°
+The power to create life°
+The power to create us°
 That wish goes unfulfilled°
 </TALK>
 <TALK>
-This is the tower of ruin°
-It is the remains of an
+This is the tower of ruin°
+It is the remains of an
 unfulfilled§ ruined dream°
 </TALK>
 <TALK>
-Ye who dares to challenge
-Nu Wa°Ye who drives wedges into the Mother's sleep°
-I pray that thou art the
+Ye who dares to challenge
+Nu Wa°Ye who drives wedges into the Mother's sleep°
+I pray that thou art the
 chosen one°
 </TALK>
 <TALK>
-To ye who hast made it this far§ undertake the final
+To ye who hast made it this far§ undertake the final
 trial° The Mother's wish canno longer be granted°
 </TALK>
 <TALK>
-Nu Wa sleeps°
+Nu Wa sleeps°
 Ask the Sages of the path°
 </TALK>
 <TALK>
-Ascertain those who would
-lead thee astray°
-Ascertain those who are
+Ascertain those who would
+lead thee astray°
+Ascertain those who are
 truly pure°
 </TALK>
 <TALK>
-That which moves too fast tosee°
-Even stopping time cannot
+That which moves too fast tosee°
+Even stopping time cannot
 stop its movement°
 </TALK>
 <TALK>
-The red glowing crosses are guides that connect the
+The red glowing crosses are guides that connect the
 front and the back°
 </TALK>
 <TALK>
-This is the Tower of the
-Goddess° A place to grant
+This is the Tower of the
+Goddess° A place to grant
 the wish of the Mother°
 </TALK>
 <TALK>
-The model of the flying ironlump is a symbol of the
-desire for the skies°
-Attain it and the goddesses will leave this land in
+The model of the flying ironlump is a symbol of the
+desire for the skies°
+Attain it and the goddesses will leave this land in
 sorrow°
 </TALK>
 <TALK>
-The mischievous Rusali°
-Yaksi§ who beguiles men°
+The mischievous Rusali°
+Yaksi§ who beguiles men°
 Dakini§ dancing enticingly° Only one of them has a pure heart°
 </TALK>
 <TALK>
-Migera and Fut created the
-lake°
-Riv was the one who guided
-the water to the tower°
+Migera and Fut created the
+lake°
+Riv was the one who guided
+the water to the tower°
 Seek what he points at°
 </TALK>
 <TALK>
-This is a forbidden land
-that no one may enter°
-The place concealed beyond
-here hides a secret°
+This is a forbidden land
+that no one may enter°
+The place concealed beyond
+here hides a secret°
 Fly on golden wings°
 </TALK>
 <TALK>
-Ye who climbs the tower°
+Ye who climbs the tower°
 Do not look back° A Bao A Quattacks those who hesitate°
 </TALK>
 <TALK>
-The pain thou cannot see is thy hesitation° The Eye of
+The pain thou cannot see is thy hesitation° The Eye of
 Truth will illuminate it°
 </TALK>
 <TALK>
-Challenge the Chamber of
-Birth°
-Take the Golden Key°
-Proceed to where we were
+Challenge the Chamber of
+Birth°
+Take the Golden Key°
+Proceed to where we were
 born°
 </TALK>
 <TALK>
@@ -2721,76 +2718,76 @@ When balance is attained thewise will gain great power° If thou art ready§ go up
 Ye who desires power§ prove thy wisdom° Show thy abilityto balance the souls and thepower will be thine°
 </TALK>
 <TALK>
-Strike the one who blocks
+Strike the one who blocks
 the Golden Wings°
 </TALK>
 <TALK>
-To the left is the secret oflife§ to the right is the
+To the left is the secret oflife§ to the right is the
 power of destruction°
 </TALK>
 <TALK>
-Ye who leaves this land§
-take this to heart° We can  not grant the Mother's wish°Which child of the Mother
-art thou? We§ her second
+Ye who leaves this land§
+take this to heart° We can  not grant the Mother's wish°Which child of the Mother
+art thou? We§ her second
 children§ wish that you can grant her desire°
 </TALK>
 <TALK>
-The guardians of Hell§ Gozu and Mezu§ are strong°
+The guardians of Hell§ Gozu and Mezu§ are strong°
 Beyond them§ Nu Wa sleeps°
 </TALK>
 <TALK>
-The golden shine reflects
+The golden shine reflects
 the narrow extending light°
 </TALK>
 <TALK>
-Drive in the wedges° Awaken the Mother°
-The Shrine of the Mother
-will then show its true
+Drive in the wedges° Awaken the Mother°
+The Shrine of the Mother
+will then show its true
 form°
 </TALK>
 <TALK>
-The Crystal Skull suppressesTiamat's power and summons
+The Crystal Skull suppressesTiamat's power and summons
 forth the dimension in whichshe dwells°
 </TALK>
 <TALK>
 Dance here°                 Praise life°
 </TALK>
 <TALK>
-Palenque sleeps within a
-wall° Take the golden key
+Palenque sleeps within a
+wall° Take the golden key
 and challenge him°
 </TALK>
 <TALK>
-All were born from the Tree of Life here§ starting with mud lumps° Even thy race§
+All were born from the Tree of Life here§ starting with mud lumps° Even thy race§
 who has forgotten the Wish°
 </TALK>
 <TALK>
 The four Sages silently waitfor the time when the strongone arrives°
 </TALK>
 <TALK>
-The woman raises life° To   get the woman the man risks his life° The woman lies
+The woman raises life° To   get the woman the man risks his life° The woman lies
 beyond many corpses°
 </TALK>
 <TALK>
-This is the land where life was born°
-When life is praised§ the
-large earthen doll will be
+This is the land where life was born°
+When life is praised§ the
+large earthen doll will be
 born§ the earthen doll that holds the golden key°
 </TALK>
 <TALK>
-The Tree of Life is the
-source of all life°
+The Tree of Life is the
+source of all life°
 The mud dolls become people°
 </TALK>
 <TALK>
-As they become people§ this land prospers° Gathering
-power§ they leave this placeon a journey° And they
-continue to prosper§ aiming for the skies in other
+As they become people§ this land prospers° Gathering
+power§ they leave this placeon a journey° And they
+continue to prosper§ aiming for the skies in other
 lands°
 </TALK>
 <TALK>
-Keep striking the white
-wall° The darkness will
+Keep striking the white
+wall° The darkness will
 eventually dissipate°
 </TALK>
 <TALK>
@@ -2800,15 +2797,15 @@ Ye cannot get there thyself°
 This is the Chamber of Life°The place where all life wasborn°
 </TALK>
 <TALK>
-The mural where Palenque
+The mural where Palenque
 sleeps is beyond here°
 </TALK>
 <TALK>
-Prepare to die° He who runs cannot win over the woman°
+Prepare to die° He who runs cannot win over the woman°
 Overcome the danger with thycourage and wisdom°
 </TALK>
 <TALK>
-This is the Dimensional
+This is the Dimensional
 Corridor° An isolated place§created by Tiamat°
 </TALK>
 <TALK>
@@ -2833,7 +2830,7 @@ Real Weights§ those°
 Too bad§ I'm sold out°
 </TALK>
 <TALK>
-Hey§ you don't have
+Hey§ you don't have
 the money°
 </TALK>
 <TALK>
@@ -2843,121 +2840,120 @@ You got a good deal!
 Don't want it?
 </TALK>
 <TALK>
-This is Naramura°
-This took•3 years°
-It practically became my life's work!Even though I was in
-charge of the project it got so big that I
-couldn't remember all of the secrets°Well§ want to hear an intersting story? If
-you pause the game theprofessor eats curry°When I thought this upKane Kosugi's "curry
-is my special power-
-up" commercial came onTV°After we decided the
-professor would be a
-descendant of ninjas§ we spent hours arguingover what to name him°We're pretty lame°Here's another good
-story° The other two
-apparently really hateContra and F1 Spirit° I don't mind them°One last story° Our
-friend Fishman makes
-several cameos° in thegame°Duplex was humiliated by Fishman before and the cameos are a "love beyond revenge" sort
-of thing apparently°That he's got the
-Castlevania ROM is
-kind of a dig at him°All right now§ get
+This is Naramura°
+This took•3 years°
+It practically became my life's work!Even though I was in
+charge of the project it got so big that I
+couldn't remember all of the secrets°Well§ want to hear an intersting story? If
+you pause the game theprofessor eats curry°When I thought this upKane Kosugi's "curry
+is my special power-
+up" commercial came onTV°After we decided the
+professor would be a
+descendant of ninjas§ we spent hours arguingover what to name him°We're pretty lame°Here's another good
+story° The other two
+apparently really hateContra and F1 Spirit° I don't mind them°One last story° Our
+friend Fishman makes
+several cameos° in thegame°Duplex was humiliated by Fishman before and the cameos are a "love beyond revenge" sort
+of thing apparently°That he's got the
+Castlevania ROM is
+kind of a dig at him°All right now§ get
 back to playing!
 </TALK>
 <TALK>
-Hi§ this is duplex°
-Having trouble in the ruins?Actually§ initially
-there were a lot of
-tougher monsters in
-the game°Since the secrets werealready hard§ Naramuraand Samieru scolded mefor that so I made themonsters weaker°So if you think that
-the monsters in this
-game are tough§ you
-should thank them°
-Wait°So I'm going to put
+Hi§ this is duplex°
+Having trouble in the ruins?Actually§ initially
+there were a lot of
+tougher monsters in
+the game°Since the secrets werealready hard§ Naramuraand Samieru scolded mefor that so I made themonsters weaker°So if you think that
+the monsters in this
+game are tough§ you
+should thank them°
+Wait°So I'm going to put
 all those hard enemiesI devised patterns forin another Castlevaniastyle game°Sorry§ I'm kidding°
 </TALK>
 <TALK>
-Oh§ you found me!
-This is Samieru°
-This time we really
-were reckless° We
-overdid everything°It's like a miracle
-that we ever finished!All right now§ who's
-the wise guy who said it would be a good
-idea to have differentmusic for each boss!?Eh? It was me? Oh°At the time I'm
-writing this the game isn't finished§ but
-looking at it overall it's really daunting°It's just gigantic§ onseveral levels°This is the soul of
-GR3! Even though everygame you can say the
-same thing°Anyhow•••
+Oh§ you found me!
+This is Samieru°
+This time we really
+were reckless° We
+overdid everything°It's like a miracle
+that we ever finished!All right now§ who's
+the wise guy who said it would be a good
+idea to have differentmusic for each boss!?Eh? It was me? Oh°At the time I'm
+writing this the game isn't finished§ but
+looking at it overall it's really daunting°It's just gigantic§ onseveral levels°This is the soul of
+GR3! Even though everygame you can say the
+same thing°Anyhow•••
 Accept our soul!!!!
 </TALK>
 <TALK>
-Ah§ you're a human°
-I'm a fairy that livesin these ruins°The four Sages told meto help any humans
-that came here§ so
-I've been waiting
-here°My friends and I will help you out°Let's decide on some
-sort of symbol so thatmy friends will
-recognize you°Eh?
-That's an interesting thing you've got
-there° It's called a  ROM§ is it?I'll tell everyone
-that's our symbol°
-Come back here when
-you have a suitable
+Ah§ you're a human°
+I'm a fairy that livesin these ruins°The four Sages told meto help any humans
+that came here§ so
+I've been waiting
+here°My friends and I will help you out°Let's decide on some
+sort of symbol so thatmy friends will
+recognize you°Eh?
+That's an interesting thing you've got
+there° It's called a  ROM§ is it?I'll tell everyone
+that's our symbol°
+Come back here when
+you have a suitable
 ROM for us°E
 </TALK>
 <TALK>
-Hurry and bring a goodsymbol° We'd like a
-cute ROM appropriate
+Hurry and bring a goodsymbol° We'd like a
+cute ROM appropriate
 for us!
 </TALK>
 <TALK>
 Oh! That's cute!      Let's use that DivinerSensation ROM as a    symbol°Equip that when you   need our help° Me and my friends will be    waiting for you in theruins°G
 </TALK>
 <TALK>
-I shall give thee the
-Medicine once more°
-Determine which spiritis the pure one°I cannot help you any further••
+I shall give thee the
+Medicine once more°
+Determine which spiritis the pure one°I cannot help you any further••
 Please let me sleep inpeace••rs{|}~Ä
 </TALK>
 <TALK>
-Welcome§ chosen one°
-I am Samaranta§ one ofthe Four Sages-the
-Sage of Power°The soul of the Mothersleeps in the Shrine
-of the Mother° There
-lies the final Ankh°The final red light
-will bring forth its
-true form°Ye who hast conquered these ruins° Only thy power can grant the
-Mother rest°We four Sages sealed
-off four paths° Mine
-is now open° For the
-others§ find Fobous
+Welcome§ chosen one°
+I am Samaranta§ one ofthe Four Sages-the
+Sage of Power°The soul of the Mothersleeps in the Shrine
+of the Mother° There
+lies the final Ankh°The final red light
+will bring forth its
+true form°Ye who hast conquered these ruins° Only thy power can grant the
+Mother rest°We four Sages sealed
+off four paths° Mine
+is now open° For the
+others§ find Fobous
 and Giltorriyo°Now go§ chosen one•¶
 </TALK>
 <TALK>
-Welcome§ chosen one°
-I am Fobous§ one of
-the Four Sages-the
-Sage of Life°The Mother's power is the power to create
-life°In ages past§ others
-attempted to create
-life as well° Tiamat§ Nu Wa••neither could
-compare to the Mother°With the Medicine of
-Life§ one can attain
-the power of the
-Mother°The pure-hearted
-mischievous fairy has been entrusted with
-this medicine° Seek
-her out°When thou findest her§cast BIRTH§ the spell of life§ upon her°Cast DEATH§ the spell of death§ on the falsefairies that would
-lead thee astray°If thou attainest the wrong medicine§ returnhere°Without the correct
-medicine§ thou cannot attain the power of
+Welcome§ chosen one°
+I am Fobous§ one of
+the Four Sages-the
+Sage of Life°The Mother's power is the power to create
+life°In ages past§ others
+attempted to create
+life as well° Tiamat§ Nu Wa••neither could
+compare to the Mother°With the Medicine of
+Life§ one can attain
+the power of the
+Mother°The pure-hearted
+mischievous fairy has been entrusted with
+this medicine° Seek
+her out°When thou findest her§cast BIRTH§ the spell of life§ upon her°Cast DEATH§ the spell of death§ on the falsefairies that would
+lead thee astray°If thou attainest the wrong medicine§ returnhere°Without the correct
+medicine§ thou cannot attain the power of
 the Mother••§
 </TALK>
 <TALK>
-Welcome to the Store
+Welcome to the Store
 of Life§ glub°
 </TALK>
 <TALK>
-
-ÙˇˇxÏˇˇ
+ÙˇˇxÏˇˇ
 </TALK>
 <TALK>
 Glub§ that's ammo°
@@ -2972,7 +2968,7 @@ Glub§ weights there°
 No more§ glub glub°
 </TALK>
 <TALK>
-Come back later when
+Come back later when
 you have money§ glub°
 </TALK>
 <TALK>
@@ -2982,7 +2978,7 @@ Thanks§ glub°
 Don't want it§ glub?
 </TALK>
 <TALK>
-"There is power by the feet of Fut°"
+"There is power by the feet of Fut°"
 Which one is Fut••?
 </TALK>
 <TALK>

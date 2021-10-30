@@ -5,6 +5,7 @@
         Initial,
         Transition,
         Playing,
-        GameOver
+        GameOver,
+        Paused
     }
 }
