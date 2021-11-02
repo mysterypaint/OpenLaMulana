@@ -94,6 +94,21 @@ namespace OpenLaMulana.System
             {
                 _world.FieldTransitionUp();
             }
+
+            if (KeyPressed(Keys.K))
+            {
+                var newVal = _world.currField + 1;
+                if (newVal > _world.fieldCount - 1)
+                    newVal = 0;
+                _world.currField = newVal;
+            }
+            else if (KeyPressed(Keys.J))
+            {
+                var newVal = _world.currField - 1;
+                if (newVal < 0)
+                    newVal = _world.fieldCount - 1;
+                _world.currField = newVal;
+            }
         }
 
         public static KeyboardState GetState()

@@ -46,20 +46,26 @@ namespace OpenLaMulana
         private const float FADE_IN_ANIMATION_SPEED = 820f;
 
         private const string SAVE_FILE_NAME = "Save.dat";
-
+        
         public int DISPLAY_ZOOM_FACTOR = 3;
+        private int DISPLAY_ZOOM_MAX = 10;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private SoundEffect _sfxHit;
-        private SoundEffect _sfxButtonPress;
+        //private SoundEffect _sfxHit;
+        //private SoundEffect _sfxButtonPress;
         //private SoundEffect _sfxScoreReached;
+
+        private SoundEffect _sfxPause;
+        private SoundEffectInstance _sfxPauseInstance;
+        private SoundEffect _sfxJump;
 
         private Texture2D _spriteSheetTexture;
         private Texture2D _fadeInTexture;
         private Texture2D _invertedSpriteSheet;
         private Texture2D _txProt1;
+        private Texture2D _gameFontTex;
 
         private float _fadeInTexturePosX;
 
@@ -67,7 +73,6 @@ namespace OpenLaMulana
         //private ScoreBoard _scoreBoard;
 
         private InputController _inputController;
-
         private World _world;
 
         //private TileManager _tileManager;
@@ -77,12 +82,15 @@ namespace OpenLaMulana
 
         private EntityManager _entityManager;
         private SongManager _songManager;
+        private TextManager _textManager;
+        private GameMenu _gameMenu;
 
         private KeyboardState _previousKeyboardState;
 
         //private DateTime _highscoreDate;
 
         private Matrix _transformMatrix = Matrix.Identity;
+        private int pauseToggleTimer = 0;
 
         public GameState State { get; private set; }
 
@@ -93,8 +101,16 @@ namespace OpenLaMulana
         public OpenLaMulanaGame()
         {
             _graphics = new GraphicsDeviceManager(this);
+            //_graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            
+            // 30fps game
+            this.IsFixedTimeStep = true;//false;
+            this.TargetElapsedTime = TimeSpan.FromSeconds(1d / 30d); //60);
+
+            this.IsMouseVisible = true;
+            //this.Window.AllowUserResizing = true;
+
             _entityManager = new EntityManager();
             State = GameState.Initial;
             //_fadeInTexturePosX = Protag.DEFAULT_SPRITE_WIDTH;
@@ -126,11 +142,16 @@ namespace OpenLaMulana
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _sfxButtonPress = Content.Load<SoundEffect>(ASSET_NAME_SFX_BUTTON_PRESS);
-            _sfxHit = Content.Load<SoundEffect>(ASSET_NAME_SFX_HIT);
+            //_sfxButtonPress = Content.Load<SoundEffect>(ASSET_NAME_SFX_BUTTON_PRESS);
+            //_sfxHit = Content.Load<SoundEffect>(ASSET_NAME_SFX_HIT);
             //_sfxScoreReached = Content.Load<SoundEffect>(ASSET_NAME_SFX_SCORE_REACHED);
             
             _spriteSheetTexture = Content.Load<Texture2D>(ASSET_NAME_SPRITESHEET);
+
+            _sfxPause = Content.Load<SoundEffect>("sound/se00");
+            _sfxPauseInstance = _sfxPause.CreateInstance();
+            _sfxJump = Content.Load<SoundEffect>("sound/se01");
+
             _txProt1 = Content.Load<Texture2D>("graphics/prot1");
 
             _invertedSpriteSheet = _spriteSheetTexture.InvertColors(Color.Transparent);
@@ -138,7 +159,7 @@ namespace OpenLaMulana
             //_fadeInTexture = new Texture2D(GraphicsDevice, 1, 1);
             //_fadeInTexture.SetData(new Color[] { Color.White });
 
-            _protag = new Protag(_txProt1, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Protag.DEFAULT_SPRITE_HEIGHT), _sfxButtonPress);
+            _protag = new Protag(_txProt1, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Protag.DEFAULT_SPRITE_HEIGHT), _sfxJump);
             _protag.DrawOrder = 100;
             _protag.JumpComplete += trex_JumpComplete;
             _protag.Died += trex_Died;
@@ -147,21 +168,29 @@ namespace OpenLaMulana
             //_scoreBoard.Score = 498;
             //_scoreBoard.HighScore = 12345;
 
-            _world = new World();
+            _world = new World(_entityManager);
             _inputController = new InputController(_protag, _world);
 
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg00"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg01"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg02"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg03"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg04"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg05"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg06"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg07"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg08"));
-            tempTexList.Add(Content.Load<Texture2D>("graphics/mapg09"));
 
-            _world.SetAreaTexturesList(tempTexList);
+            //_gameFontTex = Content.Load<Texture2D>("graphics/font_JP");
+            _gameFontTex = Content.Load<Texture2D>("graphics/font_EN");
+
+            
+            for (int i = 0; i <= 22; i++)
+            {
+                string numStr;
+                if (i <= 9)
+                {
+                    numStr = "0" + i.ToString();
+                }
+                else
+                {
+                    numStr = i.ToString();
+                }
+                tempTexList.Add(Content.Load<Texture2D>("graphics/mapg" + numStr));
+            }
+
+            _world.SetTexturesList(tempTexList);
 
 
             /*
@@ -184,8 +213,15 @@ namespace OpenLaMulana
             _gameOverScreen = new GameOverScreen(_spriteSheetTexture, this);
             _gameOverScreen.Position = new Vector2(WINDOW_WIDTH / 2 - GameOverScreen.GAME_OVER_SPRITE_WIDTH / 2, WINDOW_HEIGHT / 2 - 30);
 
+
             _entityManager.AddEntity(_protag);
             _entityManager.AddEntity(_world);
+
+            _textManager = new TextManager(_gameFontTex);
+            _gameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, _textManager); 
+            _entityManager.AddEntity(_textManager);
+            _entityManager.AddEntity(_gameMenu);
+
             //_entityManager.AddEntity(_tileManager);
             //_entityManager.AddEntity(_scoreBoard);
             //_entityManager.AddEntity(_obstacleManager);
@@ -204,7 +240,7 @@ namespace OpenLaMulana
             //_obstacleManager.IsEnabled = false;
             _gameOverScreen.IsEnabled = true;
 
-            _sfxHit.Play();
+            //_sfxHit.Play();
 
             Debug.WriteLine("Game Over: " +  DateTime.Now);
 
@@ -245,18 +281,38 @@ namespace OpenLaMulana
             base.Update(gameTime);
 
             KeyboardState keyboardState = Keyboard.GetState();
+            bool isStartKeyPressed, wasStartKeyPressed, isAltKeyDown;
+
+
+            isStartKeyPressed = keyboardState.IsKeyDown(Keys.Enter);
+            wasStartKeyPressed = _previousKeyboardState.IsKeyDown(Keys.Enter);
+            isAltKeyDown = (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt));
+            if (isAltKeyDown && (isStartKeyPressed && !wasStartKeyPressed))
+            {
+                _graphics.ToggleFullScreen();
+                _graphics.ApplyChanges();
+            }
 
             switch (State)
             {
                 case GameState.Playing:
                     _inputController.ProcessControls(gameTime);
+
+                    if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
+                    {
+                        ToggleGamePause();
+                    }
+                    break;
+                case GameState.Paused:
+                    if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
+                    {
+                        ToggleGamePause();
+                    }
                     break;
                 case GameState.Transition:
                     //_fadeInTexturePosX += (float)gameTime.ElapsedGameTime.TotalSeconds * FADE_IN_ANIMATION_SPEED;
                     break;
                 case GameState.Initial:
-                    bool isStartKeyPressed = keyboardState.IsKeyDown(Keys.Enter);
-                    bool wasStartKeyPressed = _previousKeyboardState.IsKeyDown(Keys.Enter);
 
                     if (isStartKeyPressed && !wasStartKeyPressed)
                     {
@@ -266,6 +322,8 @@ namespace OpenLaMulana
                     break;
             }
 
+            DecrementCounters();
+
             _entityManager.Update(gameTime);
 
             if(keyboardState.IsKeyDown(Keys.F8) && !_previousKeyboardState.IsKeyDown(Keys.F8)) {
@@ -274,10 +332,10 @@ namespace OpenLaMulana
 
             }
 
-            if (keyboardState.IsKeyDown(Keys.F12) && !_previousKeyboardState.IsKeyDown(Keys.F12))
+            if (keyboardState.IsKeyDown(Keys.F7) && !_previousKeyboardState.IsKeyDown(Keys.F7) && !_graphics.IsFullScreen)
             {
                 DISPLAY_ZOOM_FACTOR += 1;
-                if (DISPLAY_ZOOM_FACTOR > 4)
+                if (DISPLAY_ZOOM_FACTOR > DISPLAY_ZOOM_MAX)
                     DISPLAY_ZOOM_FACTOR = 1;
                 ToggleDisplayMode();
 
@@ -285,6 +343,31 @@ namespace OpenLaMulana
 
             _previousKeyboardState = keyboardState;
 
+        }
+
+        private void DecrementCounters()
+        {
+            if (pauseToggleTimer > 0)
+                pauseToggleTimer--;
+        }
+
+        private void ToggleGamePause()
+        {
+            if (pauseToggleTimer > 0)
+                return;
+            _sfxPauseInstance.Stop();
+            _sfxPauseInstance.Play();
+
+            if (State == GameState.Playing)
+            {
+                pauseToggleTimer = 30;
+                State = GameState.Paused;
+            }
+            else if (State == GameState.Paused)
+            {
+                State = GameState.Playing;
+                pauseToggleTimer = 30;
+            }
         }
 
         protected override void Draw(GameTime gameTime)

@@ -10,7 +10,7 @@ namespace OpenLaMulana
         public const int RoomWidth = 32;  // How many 8x8 tiles a room is wide
         public const int RoomHeight = 22; // How many 8x8 tiles a room is tall
 
-        private Room[,] mapData = new Room[FieldWidth, FieldHeight];
+        private View[,] mapData = new View[FieldWidth, FieldHeight];
         private string _mapName { get; set; }
         private string _mapGraphics { get; set; }
         private string _eventGraphics { get; set; }
@@ -26,7 +26,7 @@ namespace OpenLaMulana
             {
                 for (var x = 0; x < FieldWidth; x++)
                 {
-                    mapData[x, y] = new Room(RoomWidth, RoomHeight);
+                    mapData[x, y] = new View(RoomWidth, RoomHeight);
                 }
             }
 
@@ -73,7 +73,7 @@ namespace OpenLaMulana
             }
         }
 
-        public Room[,] GetMapData()
+        public View[,] GetMapData()
         {
             return mapData;
         }
