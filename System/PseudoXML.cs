@@ -103,11 +103,15 @@ namespace OpenLaMulana.System
                 bool writingCommand = false;
                 byte nextByte;
                 bool talkingCommand = true;
+                bool justLineBroke = false;
                 foreach (byte b in fDat)
                 {
                     byte currByte = (byte)(b ^ DECRYPTION_KEY);
                     bool alreadyWrote = false;
                     fDat[i] = currByte;
+
+                    if (i == 0x1A34)
+                        Console.WriteLine("hi");
 
                     if (currByte == 0x3E) // >
                     {
@@ -118,11 +122,15 @@ namespace OpenLaMulana.System
                                     if (fDat[i - 4] == 0x54) // T
                                     {
                                         talkingCommand = true;
-                                        if (fDat[i - 5] == 0x2F) // /
+                                        if (fDat[i - 5] == 0x2F)
+                                        { // /
                                             talkingCommand = false;
-
-                                        writer.Write(charSet[currByte]);
+                                            writer.Write(charSet[currByte]);
+                                        }
+                                        else
+                                            writer.Write(charSet[currByte] + "\n");
                                         alreadyWrote = true;
+                                        justLineBroke = true;
                                     }
                         }
                     } else if (currByte == 0x3C) // <
@@ -140,10 +148,14 @@ namespace OpenLaMulana.System
                     {
                         if (i < fDat.Length - 1) { // Are we already at the end of the file?
                             nextByte = (byte)(fDat[i + 1] ^ DECRYPTION_KEY);
-                            if (currByte == 0x3C)
+                            if (currByte == 0x3C)                           // We should check if the next char is a '<' char
                                 writingCommand = false;
-                            if ((nextByte >= 0x61 && nextByte <= 0x7A) || nextByte == 0x20 || nextByte == 0x27)// We should check if the next char is a '<' char, another control code, a lowercase letter, a space, or an apostrophe
-                                writingCommand = false;                                                         // ...before we stop explicitly writing values as-is, instead of actual text characters
+                            if ((nextByte >= 0x61 && nextByte <= 0x7A)      // a lowercase letter,
+                                || (nextByte >= 0x41 && nextByte <= 0x5A)   // a capital letter,
+                                        || nextByte == 0x5C                 // ...another control code,
+                                        || nextByte == 0x20                 // a space,
+                                        || nextByte == 0x27)                // or an apostrophe
+                                writingCommand = false;                     // ...before we stop explicitly writing values as-is, instead of actual text characters
 
                         }
                         else
@@ -157,8 +169,25 @@ namespace OpenLaMulana.System
                     {
                         if (talkingCommand)
                         {
-                            if (fDat[i - 1] != 0x3E) // Only write a new linebreak as "\10" if the previous text wasn't "</TALK>"
+                            /*
+                            if (fDat[i - 1] != 0x3E &&      // >
+                                fDat[i - 2] == 0x4B &&      // K
+                                fDat[i - 3] == 0x4C &&      // L
+                                fDat[i - 4] == 0x41 &&      // A
+                                fDat[i - 5] == 0x54 &&      // T
+                                fDat[i - 6] == 0x2F         // /
+                                ) // Only write a new linebreak as "\10" if the previous text wasn't "</TALK>"
+                            {
                                 writer.Write("\\" + currByte.ToString());
+                            }
+                            */
+                            if (fDat[i + 1] != 0x3E)
+                            {
+                                if (justLineBroke)
+                                    justLineBroke = false;
+                                else
+                                    writer.Write("\\" + currByte.ToString());
+                            }
                             else
                                 writer.Write("\n");
                         }
@@ -179,7 +208,7 @@ namespace OpenLaMulana.System
 
                     i++;
                 }
-
+                writer.Write("\n");
             }
 
             return fDat;
