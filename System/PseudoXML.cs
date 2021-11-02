@@ -101,11 +101,35 @@ namespace OpenLaMulana.System
             {
                 var i = 0;
                 bool writingCommand = false;
+                byte nextByte;
+                bool talkingCommand = true;
                 foreach (byte b in fDat)
                 {
                     byte currByte = (byte)(b ^ DECRYPTION_KEY);
-
+                    bool alreadyWrote = false;
                     fDat[i] = currByte;
+
+                    if (currByte == 0x3E) // >
+                    {
+                        if (fDat[i - 1] == 0x4B) // K
+                        {
+                            if (fDat[i - 2] == 0x4C) // L
+                                if (fDat[i - 3] == 0x41) // A
+                                    if (fDat[i - 4] == 0x54) // T
+                                    {
+                                        talkingCommand = true;
+                                        if (fDat[i - 5] == 0x2F) // /
+                                            talkingCommand = false;
+
+                                        writer.Write(charSet[currByte]);
+                                        alreadyWrote = true;
+                                    }
+                        }
+                    } else if (currByte == 0x3C) // <
+                    {
+                        if (i > 0)
+                            writer.Write("\n");
+                    }
 
 
                     if (!writingCommand && (currByte == 0x5C || (currByte <= 0xF && currByte != 0xA)))          // We ran into a '¥' char or special command. This is a special control code that must be written explicitly
@@ -115,13 +139,9 @@ namespace OpenLaMulana.System
                     else if ((currByte >= 0x41 && currByte <= 0x5A) || currByte == 0x3C)     // If we hit a capital letter or '<'...
                     {
                         if (i < fDat.Length - 1) { // Are we already at the end of the file?
-                            byte nextByte = (byte)(fDat[i + 1] ^ DECRYPTION_KEY);
+                            nextByte = (byte)(fDat[i + 1] ^ DECRYPTION_KEY);
                             if (currByte == 0x3C)
                                 writingCommand = false;
-                            if (nextByte <= 0xF)
-                            {
-                            }
-
                             if ((nextByte >= 0x61 && nextByte <= 0x7A) || nextByte == 0x20 || nextByte == 0x27)// We should check if the next char is a '<' char, another control code, a lowercase letter, a space, or an apostrophe
                                 writingCommand = false;                                                         // ...before we stop explicitly writing values as-is, instead of actual text characters
 
@@ -132,11 +152,30 @@ namespace OpenLaMulana.System
                         }
                     }
 
-                    if (!writingCommand)
-                        writer.Write(charSet[currByte]);
+                    // Perform a linebreak properly if we hit a \10 while we're not explicitly writing out <TALK> command data
+                    if (currByte == 0xA)
+                    {
+                        if (talkingCommand)
+                        {
+                            if (fDat[i - 1] != 0x3E) // Only write a new linebreak as "\10" if the previous text wasn't "</TALK>"
+                                writer.Write("\\" + currByte.ToString());
+                            else
+                                writer.Write("\n");
+                        }
+                        else {
+                            //writer.Write("\n");
+                        }
+                    }
                     else
-                        writer.Write("\\" + currByte.ToString());
-
+                    {
+                        if (!alreadyWrote)
+                        {
+                            if (!writingCommand)
+                                writer.Write(charSet[currByte]);
+                            else
+                                writer.Write("\\" + currByte.ToString());
+                        }
+                    }
 
                     i++;
                 }
@@ -163,36 +202,36 @@ namespace OpenLaMulana.System
             charSet.Add(0x8, "\\8"); //␈
             charSet.Add(0x9, "\\9"); //␉
             //charSet.Add(0xA, "\\10"); //␊
-            charSet.Add(0xA, "\n");
+            charSet.Add(0xA, "\n\r");
             charSet.Add(0xB, "\\11"); //␋
             charSet.Add(0xC, "\\12"); //␌
             charSet.Add(0xD, "\\13"); //␌
             charSet.Add(0xE, "\\14"); //␎
             charSet.Add(0xF, "\\15"); //␏
 
-            _charSet.Add(0x10, "Ｓ");
-            _charSet.Add(0x11, "ｄ");
-            _charSet.Add(0x12, "Ｏ");
-            _charSet.Add(0x13, "新");
-            _charSet.Add(0x14, "⑩");
-            _charSet.Add(0x15, "倍");
-            _charSet.Add(0x16, "母");
-            _charSet.Add(0x17, "天");
-            _charSet.Add(0x18, "道");
-            _charSet.Add(0x19, "書");
-            _charSet.Add(0x1A, "者");
-            _charSet.Add(0x1B, "間");
-            _charSet.Add(0x1C, "死");
-            _charSet.Add(0x1D, "地");
-            _charSet.Add(0x1E, "古");
-            _charSet.Add(0x1F, "文");
+            charSet.Add(0x10, "\\16"); //Ｓ
+            charSet.Add(0x11, "\\17"); //ｄ
+            charSet.Add(0x12, "\\18"); //Ｏ
+            charSet.Add(0x13, "\\19"); //新
+            charSet.Add(0x14, "\\20"); //⑩
+            charSet.Add(0x15, "\\21"); //倍
+            charSet.Add(0x16, "\\22"); //母
+            charSet.Add(0x17, "\\23"); //天
+            charSet.Add(0x18, "\\24"); //道
+            charSet.Add(0x19, "\\25"); //書
+            charSet.Add(0x1A, "\\26"); //者
+            charSet.Add(0x1B, "\\27"); //間
+            charSet.Add(0x1C, "\\28"); //死
+            charSet.Add(0x1D, "\\29"); //地
+            charSet.Add(0x1E, "\\30"); //古
+            charSet.Add(0x1F, "\\31"); //文
 
             _charSet.Add(0x20, " ");
             _charSet.Add(0x21, "!");
             _charSet.Add(0x22, "\"");
-            _charSet.Add(0x23, "#");
-            _charSet.Add(0x24, "$");
-            _charSet.Add(0x25, "%");
+            _charSet.Add(0x23, "\\35"); //#
+            _charSet.Add(0x24, "\\36"); //$
+            _charSet.Add(0x25, "\\37"); //%
             _charSet.Add(0x26, "&");
             _charSet.Add(0x27, "\'");
             _charSet.Add(0x28, "(");
@@ -221,7 +260,7 @@ namespace OpenLaMulana.System
             _charSet.Add(0x3E, ">");
             _charSet.Add(0x3F, "?");
 
-            _charSet.Add(0x40, "@");
+            _charSet.Add(0x40, "\\64"); //@
             _charSet.Add(0x41, "A");
             _charSet.Add(0x42, "B");
             _charSet.Add(0x43, "C");
