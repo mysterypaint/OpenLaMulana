@@ -4,14 +4,14 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
-using static OpenLaMulana.Entities.PseudoXML;
 using System.Collections;
+using OpenLaMulana.System;
+using System.Text.RegularExpressions;
 
 namespace OpenLaMulana.Entities
 {
     public partial class World : IGameEntity
     {
-
         public int DrawOrder { get; set; }
         public const int tileWidth = 8;
         public const int tileHeight = 8;
@@ -21,19 +21,22 @@ namespace OpenLaMulana.Entities
         private List<Texture2D> _Textures = null;
         private int currRoomX = 0;
         private int currRoomY = 0;
-        private List<string> _dialogue;
 
         public int fieldCount = 0;
 
-        public static EntityManager _entityManager;
+        public static EntityManager s_entityManager;
 
+        private TextManager _textManager;
 
-        public World(EntityManager entityManager)
+        public World(EntityManager entityManager, Texture2D _gameFontTex)
         {
-            _entityManager = entityManager;
+            s_entityManager = entityManager;
             
-
             _fields = new List<Field>();
+
+            _textManager = new TextManager(_gameFontTex);
+            
+            // Testing: Loads the first 22 maps into memory when the game world is initialized on bootup
             for (int i = 0; i <= 22; i++)
             {
                 string numStr;
@@ -50,15 +53,92 @@ namespace OpenLaMulana.Entities
 
             fieldCount = _fields.Count;
 
-            PseudoXML.ParseDataScriptTree("Content/data/script_JPN_UTF8.txt", this);
+            // Define the font table for the game
+            Dictionary<int, string>  s_charSet = _textManager.GetCharSet();
+            s_charSet = PseudoXML.DefineCharSet(s_charSet);
+
+            string jpTxtFile = "Content/data/script_JPN_UTF8.txt";
+            string engTxtFile = "Content/data/script_ENG_UTF8.txt";
+            // Decrypt "Content/data/script.dat" and the English-Translated counterpart file
+            PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, OpenLaMulanaGame.Languages.Japanese);
+            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, OpenLaMulanaGame.Languages.English);
+
+            string[] data = File.ReadAllLines(jpTxtFile);
+
+            /*
+            foreach(string s in data)
+            {
+                string regexPattern = "<TALK>[\r\n]*((.*?)[\r\n]*)*</TALK>+";
+
+
+                if (Regex.Match(s, regexPattern))
+                    break;
+                foreach (Match match in Regex.Matches(inStr, regexPattern))
+                {
+                    string groupStr = match.Groups[0].ToString();
+                    string filteredStr = groupStr.Substring(7, groupStr.Length - 15);
+                    aResult.Add(filteredStr);
+                }
+            }*/
+
+            //ParseXmlRecursive(world, data, 0);
+
+            if (File.Exists(engTxtFile))
+            {
+                File.Delete(engTxtFile);
+            }
+            if (File.Exists(jpTxtFile))
+            {
+                File.Delete(jpTxtFile);
+            }
 
         }
 
-        public void SetDialogue(List<string> dialogue)
+        /*
+        // Returns new currentLine; end when it returns -1
+        public int ParseXmlRecursive(IGameEntity currentObject, string[] xml, int currentLine)
         {
-            _dialogue = dialogue;
+            if (currentLine >= xml.Length - 1)
+                return -1;
+
+            string line;
+
+            do
+            {
+                // "<MAP 1,3,13>"
+                line = xml[currentLine];
+
+                // "<MAP"
+                string type = line.Split(" ")[0];
+                // "MAP"
+                type = type.Substring(1, type.Length);
+
+                switch (type)
+                {
+                    case "WORLD":
+                        break;
+                    case "FIELD":
+                        string[] params = line.Split(" ")[1].Split(",");
+                        // Process paramters
+                        //...
+                        Field f = new Field(params[0], params[1], params[2], params[3], params[4]);
+                        currentLine = ParseXmlRecursive(f, xml, currentLine + 1);
+                        currentObject.AddChild(f);
+                        break;
+                    case "MAP":
+                        break;
+                }
+            }
+            while (!line.StartsWith("</"));
+            return currentLine;
         }
-        
+        */
+
+
+        internal void InitGameText(OpenLaMulanaGame.Languages lang, List<string> data)
+        {
+            _textManager.SetDialogue(lang, data);
+        }
 
         public void SetTexturesList(List<Texture2D> inTexList)
         {
@@ -79,9 +159,6 @@ namespace OpenLaMulana.Entities
 
             //mapData[roomX, roomY].Tiles[_rtx, _rty] = tileID;
 
-
-            
-
             // Loop through every single Room[_x][_y] tile to draw every single tile in a given room
             for (int _y = 0; _y < Field.RoomHeight; _y++)
             {
@@ -98,8 +175,6 @@ namespace OpenLaMulana.Entities
                     spriteBatch.Draw(_Textures[(int)currField], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
                 }
             }
-
-
 
         }
 
@@ -126,6 +201,11 @@ namespace OpenLaMulana.Entities
             currRoomY++;
             if (currRoomY > Field.FieldHeight - 1)
                 currRoomY = 0;
+        }
+
+        internal TextManager GetTextManager()
+        {
+            return _textManager;
         }
     }
 }

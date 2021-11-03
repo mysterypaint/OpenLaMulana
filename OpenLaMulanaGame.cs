@@ -24,12 +24,16 @@ namespace OpenLaMulana
             Zoomed
         }
 
+        public enum Languages
+        {
+            English,
+            Japanese,
+            Max
+        };
+
         public const string GAME_TITLE = "La.MuLANA";
 
-        private const string ASSET_NAME_SPRITESHEET = "TrexSpritesheet";
-        private const string ASSET_NAME_SFX_HIT = "hit";
-        private const string ASSET_NAME_SFX_SCORE_REACHED = "score-reached";
-        private const string ASSET_NAME_SFX_BUTTON_PRESS = "button-press";
+        public Languages currLang = Languages.English;
 
         public const int WINDOW_WIDTH = 256;
         public const int WINDOW_HEIGHT = 192;
@@ -46,7 +50,8 @@ namespace OpenLaMulana
         private const float FADE_IN_ANIMATION_SPEED = 820f;
 
         private const string SAVE_FILE_NAME = "Save.dat";
-        
+        private const string gfxPath = "Content/graphics/";
+
         public int DISPLAY_ZOOM_FACTOR = 3;
         private int DISPLAY_ZOOM_MAX = 10;
 
@@ -61,9 +66,6 @@ namespace OpenLaMulana
         private SoundEffectInstance _sfxPauseInstance;
         private SoundEffect _sfxJump;
 
-        private Texture2D _spriteSheetTexture;
-        private Texture2D _fadeInTexture;
-        private Texture2D _invertedSpriteSheet;
         private Texture2D _txProt1;
         private Texture2D _gameFontTex;
 
@@ -138,6 +140,8 @@ namespace OpenLaMulana
         }
 
         List<Texture2D> tempTexList = new List<Texture2D>();
+        private int textIndex;
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -146,15 +150,15 @@ namespace OpenLaMulana
             //_sfxHit = Content.Load<SoundEffect>(ASSET_NAME_SFX_HIT);
             //_sfxScoreReached = Content.Load<SoundEffect>(ASSET_NAME_SFX_SCORE_REACHED);
             
-            _spriteSheetTexture = Content.Load<Texture2D>(ASSET_NAME_SPRITESHEET);
 
             _sfxPause = Content.Load<SoundEffect>("sound/se00");
             _sfxPauseInstance = _sfxPause.CreateInstance();
             _sfxJump = Content.Load<SoundEffect>("sound/se01");
 
-            _txProt1 = Content.Load<Texture2D>("graphics/prot1");
-
-            _invertedSpriteSheet = _spriteSheetTexture.InvertColors(Color.Transparent);
+            //_txProt1 = Content.Load<Texture2D>("graphics/prot1");
+            FileStream fileStream = new FileStream(gfxPath + "prot1.png", FileMode.Open);
+            _txProt1 = Texture2D.FromStream(GraphicsDevice, fileStream);
+            fileStream.Dispose();
 
             //_fadeInTexture = new Texture2D(GraphicsDevice, 1, 1);
             //_fadeInTexture.SetData(new Color[] { Color.White });
@@ -168,14 +172,19 @@ namespace OpenLaMulana
             //_scoreBoard.Score = 498;
             //_scoreBoard.HighScore = 12345;
 
-            _world = new World(_entityManager);
+            fileStream = new FileStream(gfxPath + "font_EN.png", FileMode.Open);
+            _gameFontTex = Texture2D.FromStream(GraphicsDevice, fileStream);
+            fileStream.Dispose();
+
+            _world = new World(_entityManager, _gameFontTex);
             _inputController = new InputController(_protag, _world);
 
 
             //_gameFontTex = Content.Load<Texture2D>("graphics/font_JP");
-            _gameFontTex = Content.Load<Texture2D>("graphics/font_EN");
+            //_gameFontTex = Content.Load<Texture2D>("graphics/font_EN");
 
-            
+
+
             for (int i = 0; i <= 22; i++)
             {
                 string numStr;
@@ -187,7 +196,10 @@ namespace OpenLaMulana
                 {
                     numStr = i.ToString();
                 }
-                tempTexList.Add(Content.Load<Texture2D>("graphics/mapg" + numStr));
+
+                fileStream = new FileStream(gfxPath + "mapg" + numStr + ".png", FileMode.Open);
+                tempTexList.Add(Texture2D.FromStream(GraphicsDevice, fileStream));
+                fileStream.Dispose();
             }
 
             _world.SetTexturesList(tempTexList);
@@ -210,14 +222,11 @@ namespace OpenLaMulana
             //_obstacleManager = new ObstacleManager(_entityManager, _protag, _scoreBoard, _spriteSheetTexture);
             //_skyManager = new SkyManager(_protag, _spriteSheetTexture, _invertedSpriteSheet, _entityManager, _scoreBoard);
 
-            _gameOverScreen = new GameOverScreen(_spriteSheetTexture, this);
-            _gameOverScreen.Position = new Vector2(WINDOW_WIDTH / 2 - GameOverScreen.GAME_OVER_SPRITE_WIDTH / 2, WINDOW_HEIGHT / 2 - 30);
-
-
             _entityManager.AddEntity(_protag);
             _entityManager.AddEntity(_world);
 
-            _textManager = new TextManager(_gameFontTex);
+            _textManager = _world.GetTextManager();
+            
             _gameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, _textManager); 
             _entityManager.AddEntity(_textManager);
             _entityManager.AddEntity(_gameMenu);
@@ -225,7 +234,7 @@ namespace OpenLaMulana
             //_entityManager.AddEntity(_tileManager);
             //_entityManager.AddEntity(_scoreBoard);
             //_entityManager.AddEntity(_obstacleManager);
-            _entityManager.AddEntity(_gameOverScreen);
+            //_entityManager.AddEntity(_gameOverScreen);
             //_entityManager.AddEntity(_skyManager);
 
             //_tileManager.Initialize();
@@ -302,6 +311,14 @@ namespace OpenLaMulana
                     {
                         ToggleGamePause();
                     }
+
+                    if (gameTime.TotalGameTime.Ticks % 5 == 0)
+                    {
+                        textIndex++;
+                        if (textIndex >= _textManager.GetTextCount(currLang))
+                            textIndex = 0;
+                    }
+
                     break;
                 case GameState.Paused:
                     if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
@@ -323,6 +340,7 @@ namespace OpenLaMulana
             }
 
             DecrementCounters();
+
 
             _entityManager.Update(gameTime);
 
@@ -368,6 +386,8 @@ namespace OpenLaMulana
                 State = GameState.Playing;
                 pauseToggleTimer = 30;
             }
+
+
         }
 
         protected override void Draw(GameTime gameTime)
@@ -385,12 +405,20 @@ namespace OpenLaMulana
 
             _entityManager.Draw(_spriteBatch, gameTime);
 
-            if(State == GameState.Initial || State == GameState.Transition)
+            switch(State)
             {
-
-                //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
+                case GameState.Initial:
+                case GameState.Transition:
+                    //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
+                    _textManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps"); //"Hello world! I hope you are, well!¥10¥20¥21"
+                    break;
+                default:
+                case GameState.Playing:
+                    _textManager.DrawText(0, 0, _textManager.GetText(textIndex, Languages.English));
+                    break;
 
             }
+
 
             _spriteBatch.End();
 

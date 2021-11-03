@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Entities;
 
 namespace OpenLaMulana
 {
-    public class Field
+    public class Field : IGameEntity
     {
         public const int FieldWidth = 4;
         public const int FieldHeight = 5;
@@ -14,6 +17,9 @@ namespace OpenLaMulana
         private string _mapName { get; set; }
         private string _mapGraphics { get; set; }
         private string _eventGraphics { get; set; }
+
+        public int DrawOrder => throw new NotImplementedException();
+
         private int _musicNumber = 0;
 
         public Field(string mapName, string mapGraphics, string eventGraphics)
@@ -76,6 +82,16 @@ namespace OpenLaMulana
         public View[,] GetMapData()
         {
             return mapData;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
     }
 }

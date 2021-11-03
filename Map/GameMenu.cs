@@ -20,7 +20,7 @@ namespace OpenLaMulana.Entities
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _textManager.DrawText(0, 0, "Hello world! I hope you are, well!¥10¥20¥21");
+            
         }
 
         public void Update(GameTime gameTime)

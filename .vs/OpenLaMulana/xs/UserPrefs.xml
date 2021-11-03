@@ -1,16 +1,13 @@
 ﻿<Properties StartupConfiguration="{DCE086B8-A84F-4448-8554-C2FECACA7E8A}|Default">
   <MonoDevelop.Ide.ItemProperties.OpenLaMulana PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Map/World.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="System/TextManager.cs">
     <Files>
-      <File FileName="OpenLaMulanaGame.cs" Line="364" Column="21" />
-      <File FileName="Entities/EntityManager.cs" />
-      <File FileName="Map/Field.cs" />
-      <File FileName="Entities/TrexState.cs" />
-      <File FileName="Entities/Protag.cs" />
-      <File FileName="Map/World.cs" Line="97" Column="3" />
-      <File FileName="System/PseudoXML.cs" />
-      <File FileName="Program.cs" />
-      <File FileName="Audio/SongManager.cs" />
+      <File FileName="OpenLaMulanaGame.cs" Line="209" Column="1" />
+      <File FileName="Entities/EntityManager.cs" Line="62" Column="1" />
+      <File FileName="Map/World.cs" Line="90" Column="13" />
+      <File FileName="System/PseudoXML.cs" Line="196" Column="14" />
+      <File FileName="Map/GameMenu.cs" Line="23" Column="13" />
+      <File FileName="System/TextManager.cs" Line="164" Column="21" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -18,12 +15,16 @@
           <Node name="OpenLaMulana" expanded="True">
             <Node name="OpenLaMulana" expanded="True">
               <Node name="Dependencies" expanded="True" />
+              <Node name="Audio" expanded="True" />
+              <Node name="Content" expanded="True">
+                <Node name="bin" expanded="True" />
+              </Node>
               <Node name="Entities" expanded="True" />
               <Node name="Graphics" expanded="True" />
-              <Node name="Map" expanded="True">
-                <Node name="World.cs" selected="True" />
+              <Node name="Map" expanded="True" />
+              <Node name="System" expanded="True">
+                <Node name="TextManager.cs" selected="True" />
               </Node>
-              <Node name="System" expanded="True" />
             </Node>
           </Node>
         </State>
@@ -36,9 +37,7 @@
     <String>/Users/mysterypaint</String>
   </Debugger.DebugSourceFolders>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/Users/mysterypaint/Documents/GitHub/OpenLaMulana/Map/World.cs" relfile="Map/World.cs" line="46" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>
