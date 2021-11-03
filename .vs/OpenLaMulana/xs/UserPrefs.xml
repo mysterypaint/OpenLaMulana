@@ -12,7 +12,6 @@
       <File FileName="Program.cs" Line="11" Column="1" />
       <File FileName="Audio/SongManager.cs" />
       <File FileName="System/GameState.cs" />
-      <File FileName="Content/data/script_JPN_UTF8.txt" Line="1" Column="1" />
       <File FileName="Entities/IGameEntity.cs" Line="15" Column="63" />
       <File FileName="Entities/ICollidable.cs" Line="1" Column="1" />
       <File FileName="Entities/IDayNightCycle.cs" Line="1" Column="1" />
@@ -21,7 +20,7 @@
       <File FileName="System/ScreenOverlayState.cs" Line="1" Column="1" />
       <File FileName="System/TextManager.cs" Line="106" Column="46" />
       <File FileName="System/InputController.cs" Line="1" Column="1" />
-      <File FileName=".gitignore" Line="1" Column="1" />
+      <File FileName=".gitignore" Line="65" Column="6" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -32,7 +31,6 @@
               <Node name="Audio" expanded="True" />
               <Node name="Content" expanded="True">
                 <Node name="bin" expanded="True" />
-                <Node name="data" expanded="True" />
               </Node>
               <Node name="Entities" expanded="True" />
               <Node name="Graphics" expanded="True" />
