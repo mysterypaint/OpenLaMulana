@@ -12,13 +12,6 @@ namespace OpenLaMulana.Entities
 {
     public partial class World : IGameEntity
     {
-        public enum Languages
-        {
-            English,
-            Japanese,
-            Max
-        };
-
         public int DrawOrder { get; set; }
         public const int tileWidth = 8;
         public const int tileHeight = 8;
@@ -28,22 +21,21 @@ namespace OpenLaMulana.Entities
         private List<Texture2D> _Textures = null;
         private int currRoomX = 0;
         private int currRoomY = 0;
-        private List<string> _dialogueJP;
-        private List<string> _dialogueEN;
 
         public int fieldCount = 0;
 
         public static EntityManager s_entityManager;
 
-        public static Dictionary<int, string> s_charSet;
+        private TextManager _textManager;
 
-        public World(EntityManager entityManager)
+        public World(EntityManager entityManager, Texture2D _gameFontTex)
         {
             s_entityManager = entityManager;
             
             _fields = new List<Field>();
 
-
+            _textManager = new TextManager(_gameFontTex);
+            
             // Testing: Loads the first 22 maps into memory when the game world is initialized on bootup
             for (int i = 0; i <= 22; i++)
             {
@@ -62,14 +54,14 @@ namespace OpenLaMulana.Entities
             fieldCount = _fields.Count;
 
             // Define the font table for the game
-            s_charSet = new Dictionary<int, string>();
+            Dictionary<int, string>  s_charSet = _textManager.GetCharSet();
             s_charSet = PseudoXML.DefineCharSet(s_charSet);
 
             string jpTxtFile = "Content/data/script_JPN_UTF8.txt";
             string engTxtFile = "Content/data/script_ENG_UTF8.txt";
             // Decrypt "Content/data/script.dat" and the English-Translated counterpart file
-            PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, Languages.Japanese);
-            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, Languages.English);
+            PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, OpenLaMulanaGame.Languages.Japanese);
+            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, OpenLaMulanaGame.Languages.English);
 
             string[] data = File.ReadAllLines(jpTxtFile);
 
@@ -143,18 +135,9 @@ namespace OpenLaMulana.Entities
         */
 
 
-        internal void InitGameText(Languages lang, List<string> data)
+        internal void InitGameText(OpenLaMulanaGame.Languages lang, List<string> data)
         {
-            switch (lang)
-            {
-                default:
-                case Languages.English:
-                    _dialogueEN = data;
-                    break;
-                case Languages.Japanese:
-                    _dialogueJP = data;
-                    break;
-            }
+            _textManager.SetDialogue(lang, data);
         }
 
         public void SetTexturesList(List<Texture2D> inTexList)
@@ -218,6 +201,11 @@ namespace OpenLaMulana.Entities
             currRoomY++;
             if (currRoomY > Field.FieldHeight - 1)
                 currRoomY = 0;
+        }
+
+        internal TextManager GetTextManager()
+        {
+            return _textManager;
         }
     }
 }

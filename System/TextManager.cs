@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.System
 {
@@ -27,6 +28,12 @@ namespace OpenLaMulana.System
         private const int TEXT_HEIGHT = 8;
         private const int TEXT_TABLE_WIDTH = 16;
 
+
+        public List<string> _dialogueJP;
+        public List<string> _dialogueEN;
+
+        public static Dictionary<int, string> s_charSet;
+
         private Texture2D _gameFontTex;
         private List<Point> queuedXYPos;
         private List<String> queuedText;
@@ -34,6 +41,8 @@ namespace OpenLaMulana.System
 
         public TextManager(Texture2D gameFontTex)
         {
+            s_charSet = new Dictionary<int, string>();
+
             _gameFontTex = gameFontTex;
             queuedXYPos = new List<Point>();
             queuedText = new List<String>();
@@ -52,6 +61,25 @@ namespace OpenLaMulana.System
                 queuedText.Clear();
                 queuedXYPos.Clear();
             }
+        }
+
+        public void SetDialogue(OpenLaMulanaGame.Languages lang, List<string> data)
+        {
+            switch (lang)
+            {
+                default:
+                case OpenLaMulanaGame.Languages.English:
+                    _dialogueEN = data;
+                    break;
+                case OpenLaMulanaGame.Languages.Japanese:
+                    _dialogueJP = data;
+                    break;
+            }
+        }
+
+        internal Dictionary<int, string> GetCharSet()
+        {
+            return s_charSet;
         }
 
         private void DisplayString(SpriteBatch spriteBatch, string str, int i)
@@ -163,6 +191,9 @@ namespace OpenLaMulana.System
 
         public void DrawText(int x, int y, string str)
         {
+            byte[] bytes = Encoding.Default.GetBytes(str);
+            str = Encoding.UTF8.GetString(bytes);
+
             queuedXYPos.Add(new Point(x, y));
             queuedText.Add(str);
         }
@@ -170,6 +201,42 @@ namespace OpenLaMulana.System
         public void Update(GameTime gameTime)
         {
             
+        }
+
+        internal string GetText(int index, OpenLaMulanaGame.Languages lang)
+        {
+            List<string> _dialogue;
+
+            switch (lang)
+            {
+                default:
+                case OpenLaMulanaGame.Languages.English:
+                    _dialogue = _dialogueEN;
+                    break;
+                case OpenLaMulanaGame.Languages.Japanese:
+                    _dialogue = _dialogueJP;
+                    break;
+            }
+
+            return _dialogue[index];
+        }
+
+        internal int GetTextCount(OpenLaMulanaGame.Languages lang)
+        {
+            List<string> _dialogue;
+
+            switch (lang)
+            {
+                default:
+                case OpenLaMulanaGame.Languages.English:
+                    _dialogue = _dialogueEN;
+                    break;
+                case OpenLaMulanaGame.Languages.Japanese:
+                    _dialogue = _dialogueJP;
+                    break;
+            }
+
+            return _dialogue.Count;
         }
     }
 }

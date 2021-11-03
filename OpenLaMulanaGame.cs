@@ -24,8 +24,16 @@ namespace OpenLaMulana
             Zoomed
         }
 
+        public enum Languages
+        {
+            English,
+            Japanese,
+            Max
+        };
+
         public const string GAME_TITLE = "La.MuLANA";
 
+        public Languages currLang = Languages.English;
 
         public const int WINDOW_WIDTH = 256;
         public const int WINDOW_HEIGHT = 192;
@@ -132,6 +140,8 @@ namespace OpenLaMulana
         }
 
         List<Texture2D> tempTexList = new List<Texture2D>();
+        private int textIndex;
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -162,16 +172,17 @@ namespace OpenLaMulana
             //_scoreBoard.Score = 498;
             //_scoreBoard.HighScore = 12345;
 
-            _world = new World(_entityManager);
+            fileStream = new FileStream(gfxPath + "font_EN.png", FileMode.Open);
+            _gameFontTex = Texture2D.FromStream(GraphicsDevice, fileStream);
+            fileStream.Dispose();
+
+            _world = new World(_entityManager, _gameFontTex);
             _inputController = new InputController(_protag, _world);
 
 
             //_gameFontTex = Content.Load<Texture2D>("graphics/font_JP");
             //_gameFontTex = Content.Load<Texture2D>("graphics/font_EN");
 
-            fileStream = new FileStream(gfxPath + "font_EN.png", FileMode.Open);
-            _gameFontTex = Texture2D.FromStream(GraphicsDevice, fileStream);
-            fileStream.Dispose();
 
 
             for (int i = 0; i <= 22; i++)
@@ -214,7 +225,8 @@ namespace OpenLaMulana
             _entityManager.AddEntity(_protag);
             _entityManager.AddEntity(_world);
 
-            _textManager = new TextManager(_gameFontTex);
+            _textManager = _world.GetTextManager();
+            
             _gameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, _textManager); 
             _entityManager.AddEntity(_textManager);
             _entityManager.AddEntity(_gameMenu);
@@ -299,6 +311,14 @@ namespace OpenLaMulana
                     {
                         ToggleGamePause();
                     }
+
+                    if (gameTime.TotalGameTime.Ticks % 5 == 0)
+                    {
+                        textIndex++;
+                        if (textIndex >= _textManager.GetTextCount(currLang))
+                            textIndex = 0;
+                    }
+
                     break;
                 case GameState.Paused:
                     if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
@@ -320,6 +340,7 @@ namespace OpenLaMulana
             }
 
             DecrementCounters();
+
 
             _entityManager.Update(gameTime);
 
@@ -365,6 +386,8 @@ namespace OpenLaMulana
                 State = GameState.Playing;
                 pauseToggleTimer = 30;
             }
+
+
         }
 
         protected override void Draw(GameTime gameTime)
@@ -382,12 +405,20 @@ namespace OpenLaMulana
 
             _entityManager.Draw(_spriteBatch, gameTime);
 
-            if(State == GameState.Initial || State == GameState.Transition)
+            switch(State)
             {
-
-                //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
+                case GameState.Initial:
+                case GameState.Transition:
+                    //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
+                    _textManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps"); //"Hello world! I hope you are, well!¥10¥20¥21"
+                    break;
+                default:
+                case GameState.Playing:
+                    _textManager.DrawText(0, 0, _textManager.GetText(textIndex, Languages.English));
+                    break;
 
             }
+
 
             _spriteBatch.End();
 

@@ -1,25 +1,13 @@
 ﻿<Properties StartupConfiguration="{DCE086B8-A84F-4448-8554-C2FECACA7E8A}|Default">
   <MonoDevelop.Ide.ItemProperties.OpenLaMulana PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Entities/EntityManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="System/TextManager.cs">
     <Files>
-      <File FileName="OpenLaMulanaGame.cs" Line="225" Column="15" />
+      <File FileName="OpenLaMulanaGame.cs" Line="209" Column="1" />
       <File FileName="Entities/EntityManager.cs" Line="62" Column="1" />
-      <File FileName="Map/Field.cs" Line="6" Column="1" />
-      <File FileName="Entities/TrexState.cs" />
-      <File FileName="Entities/Protag.cs" Line="1" Column="1" />
       <File FileName="Map/World.cs" Line="90" Column="13" />
       <File FileName="System/PseudoXML.cs" Line="196" Column="14" />
-      <File FileName="Program.cs" Line="11" Column="1" />
-      <File FileName="Audio/SongManager.cs" />
-      <File FileName="System/GameState.cs" />
-      <File FileName="Entities/IGameEntity.cs" Line="15" Column="63" />
-      <File FileName="Entities/ICollidable.cs" Line="1" Column="1" />
-      <File FileName="Entities/IDayNightCycle.cs" Line="1" Column="1" />
-      <File FileName="Entities/Obstacle.cs" Line="1" Column="1" />
-      <File FileName="Entities/SkyObject.cs" Line="6" Column="39" />
-      <File FileName="System/ScreenOverlayState.cs" Line="1" Column="1" />
-      <File FileName="System/TextManager.cs" Line="106" Column="46" />
-      <File FileName="System/InputController.cs" Line="1" Column="1" />
+      <File FileName="Map/GameMenu.cs" Line="23" Column="13" />
+      <File FileName="System/TextManager.cs" Line="164" Column="21" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -31,12 +19,12 @@
               <Node name="Content" expanded="True">
                 <Node name="bin" expanded="True" />
               </Node>
-              <Node name="Entities" expanded="True">
-                <Node name="EntityManager.cs" selected="True" />
-              </Node>
+              <Node name="Entities" expanded="True" />
               <Node name="Graphics" expanded="True" />
               <Node name="Map" expanded="True" />
-              <Node name="System" expanded="True" />
+              <Node name="System" expanded="True">
+                <Node name="TextManager.cs" selected="True" />
+              </Node>
             </Node>
           </Node>
         </State>

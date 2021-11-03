@@ -40,7 +40,7 @@ namespace OpenLaMulana.System
             throw new NotImplementedException();
         }
 
-        public static void DecodeScriptDat(string fileIn, string fileOut, Dictionary<int, string> charSet, World world, Languages lang)
+        public static void DecodeScriptDat(string fileIn, string fileOut, Dictionary<int, string> charSet, World world, OpenLaMulanaGame.Languages lang)
         {
             if (File.Exists(fileOut))
             {
@@ -180,7 +180,7 @@ namespace OpenLaMulana.System
             PseudoXML.ParseGameDialogue(fileOut, world, lang);
         }
 
-        public static void ParseGameDialogue(string inFile, World _world, World.Languages lang)
+        public static void ParseGameDialogue(string inFile, World _world, OpenLaMulanaGame.Languages lang)
         {
             String inStr = File.ReadAllText(inFile, Encoding.UTF8);
             List<String> aResult = new List<String>();
@@ -198,11 +198,11 @@ namespace OpenLaMulana.System
             switch (lang)
             {
                 default:
-                case World.Languages.English:
-                    _world.InitGameText(World.Languages.English, aResult);
+                case OpenLaMulanaGame.Languages.English:
+                    _world.InitGameText(OpenLaMulanaGame.Languages.English, aResult);
                     break;
-                case World.Languages.Japanese:
-                    _world.InitGameText(World.Languages.Japanese, aResult);
+                case OpenLaMulanaGame.Languages.Japanese:
+                    _world.InitGameText(OpenLaMulanaGame.Languages.Japanese, aResult);
                     break;
             }
         }
