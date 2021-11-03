@@ -15,5 +15,6 @@ Then, just run the .exe and you should be good to go!
 
 # Compiling
 - Clone the repo
-- Open the .sln in Visual Studio
+- Copy the original game's assets (/data/, /graphics/, /music/, and /sound/) to the repo's /Content/ folder
+- Open the .sln in Visual Studio; Configure the .sln so that it will "Always Copy" all of the original game's assets to the new build folder.
 - Compile and Build

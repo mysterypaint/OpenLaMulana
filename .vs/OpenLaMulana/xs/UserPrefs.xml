@@ -1,6 +1,6 @@
 ﻿<Properties StartupConfiguration="{DCE086B8-A84F-4448-8554-C2FECACA7E8A}|Default">
   <MonoDevelop.Ide.ItemProperties.OpenLaMulana PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument=".gitignore">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Entities/EntityManager.cs">
     <Files>
       <File FileName="OpenLaMulanaGame.cs" Line="225" Column="15" />
       <File FileName="Entities/EntityManager.cs" Line="62" Column="1" />
@@ -20,7 +20,6 @@
       <File FileName="System/ScreenOverlayState.cs" Line="1" Column="1" />
       <File FileName="System/TextManager.cs" Line="106" Column="46" />
       <File FileName="System/InputController.cs" Line="1" Column="1" />
-      <File FileName=".gitignore" Line="65" Column="6" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -32,11 +31,12 @@
               <Node name="Content" expanded="True">
                 <Node name="bin" expanded="True" />
               </Node>
-              <Node name="Entities" expanded="True" />
+              <Node name="Entities" expanded="True">
+                <Node name="EntityManager.cs" selected="True" />
+              </Node>
               <Node name="Graphics" expanded="True" />
               <Node name="Map" expanded="True" />
               <Node name="System" expanded="True" />
-              <Node name=".gitignore" selected="True" />
             </Node>
           </Node>
         </State>

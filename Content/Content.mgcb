@@ -966,18 +966,3 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/se5C.wav
-
-#begin test.mp3
-/copy:test.mp3
-
-#begin TrexSpritesheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TrexSpritesheet.png
