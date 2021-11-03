@@ -17,4 +17,5 @@ Then, just run the .exe and you should be good to go!
 - Clone the repo
 - Copy the original game's assets (/data/, /graphics/, /music/, and /sound/) to the repo's /Content/ folder
 - Open the .sln in Visual Studio; Configure the .sln so that it will "Always Copy" all of the original game's assets to the new build folder.
+- [Install the MGCB Editor for MonoGame](https://docs.monogame.net/articles/getting_started/1_setting_up_your_development_environment_windows.html#install-mgcb-editor)
 - Compile and Build
