@@ -13,6 +13,5 @@ namespace OpenLaMulana.Entities
         void Update(GameTime gameTime);
 
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);
-
     }
 }

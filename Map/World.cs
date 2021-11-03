@@ -6,11 +6,18 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Xml;
 using System.Collections;
 using OpenLaMulana.System;
+using System.Text.RegularExpressions;
 
 namespace OpenLaMulana.Entities
 {
     public partial class World : IGameEntity
     {
+        public enum Languages
+        {
+            English,
+            Japanese,
+            Max
+        };
 
         public int DrawOrder { get; set; }
         public const int tileWidth = 8;
@@ -21,7 +28,8 @@ namespace OpenLaMulana.Entities
         private List<Texture2D> _Textures = null;
         private int currRoomX = 0;
         private int currRoomY = 0;
-        private List<string> _dialogue;
+        private List<string> _dialogueJP;
+        private List<string> _dialogueEN;
 
         public int fieldCount = 0;
 
@@ -57,19 +65,97 @@ namespace OpenLaMulana.Entities
             s_charSet = new Dictionary<int, string>();
             s_charSet = PseudoXML.DefineCharSet(s_charSet);
 
+            string jpTxtFile = "Content/data/script_JPN_UTF8.txt";
+            string engTxtFile = "Content/data/script_ENG_UTF8.txt";
             // Decrypt "Content/data/script.dat" and the English-Translated counterpart file
-            byte[] scriptData = PseudoXML.DecodeScriptDat("Content/data/", this, s_charSet);
+            PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, Languages.Japanese);
+            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, Languages.English);
 
-            // Parse the decrypted data as a data tree
-            PseudoXML.ParseDataScriptTree("Content/data/script_JPN_UTF8.txt", this);
+            string[] data = File.ReadAllLines(jpTxtFile);
+
+            /*
+            foreach(string s in data)
+            {
+                string regexPattern = "<TALK>[\r\n]*((.*?)[\r\n]*)*</TALK>+";
+
+
+                if (Regex.Match(s, regexPattern))
+                    break;
+                foreach (Match match in Regex.Matches(inStr, regexPattern))
+                {
+                    string groupStr = match.Groups[0].ToString();
+                    string filteredStr = groupStr.Substring(7, groupStr.Length - 15);
+                    aResult.Add(filteredStr);
+                }
+            }*/
+
+            //ParseXmlRecursive(world, data, 0);
+
+            if (File.Exists(engTxtFile))
+            {
+                File.Delete(engTxtFile);
+            }
+            if (File.Exists(jpTxtFile))
+            {
+                File.Delete(jpTxtFile);
+            }
 
         }
 
-        public void SetDialogue(List<string> dialogue)
+        /*
+        // Returns new currentLine; end when it returns -1
+        public int ParseXmlRecursive(IGameEntity currentObject, string[] xml, int currentLine)
         {
-            _dialogue = dialogue;
+            if (currentLine >= xml.Length - 1)
+                return -1;
+
+            string line;
+
+            do
+            {
+                // "<MAP 1,3,13>"
+                line = xml[currentLine];
+
+                // "<MAP"
+                string type = line.Split(" ")[0];
+                // "MAP"
+                type = type.Substring(1, type.Length);
+
+                switch (type)
+                {
+                    case "WORLD":
+                        break;
+                    case "FIELD":
+                        string[] params = line.Split(" ")[1].Split(",");
+                        // Process paramters
+                        //...
+                        Field f = new Field(params[0], params[1], params[2], params[3], params[4]);
+                        currentLine = ParseXmlRecursive(f, xml, currentLine + 1);
+                        currentObject.AddChild(f);
+                        break;
+                    case "MAP":
+                        break;
+                }
+            }
+            while (!line.StartsWith("</"));
+            return currentLine;
         }
-        
+        */
+
+
+        internal void InitGameText(Languages lang, List<string> data)
+        {
+            switch (lang)
+            {
+                default:
+                case Languages.English:
+                    _dialogueEN = data;
+                    break;
+                case Languages.Japanese:
+                    _dialogueJP = data;
+                    break;
+            }
+        }
 
         public void SetTexturesList(List<Texture2D> inTexList)
         {

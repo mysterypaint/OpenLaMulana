@@ -26,10 +26,6 @@ namespace OpenLaMulana
 
         public const string GAME_TITLE = "La.MuLANA";
 
-        private const string ASSET_NAME_SPRITESHEET = "TrexSpritesheet";
-        private const string ASSET_NAME_SFX_HIT = "hit";
-        private const string ASSET_NAME_SFX_SCORE_REACHED = "score-reached";
-        private const string ASSET_NAME_SFX_BUTTON_PRESS = "button-press";
 
         public const int WINDOW_WIDTH = 256;
         public const int WINDOW_HEIGHT = 192;
@@ -46,7 +42,8 @@ namespace OpenLaMulana
         private const float FADE_IN_ANIMATION_SPEED = 820f;
 
         private const string SAVE_FILE_NAME = "Save.dat";
-        
+        private const string gfxPath = "Content/graphics/";
+
         public int DISPLAY_ZOOM_FACTOR = 3;
         private int DISPLAY_ZOOM_MAX = 10;
 
@@ -61,9 +58,6 @@ namespace OpenLaMulana
         private SoundEffectInstance _sfxPauseInstance;
         private SoundEffect _sfxJump;
 
-        private Texture2D _spriteSheetTexture;
-        private Texture2D _fadeInTexture;
-        private Texture2D _invertedSpriteSheet;
         private Texture2D _txProt1;
         private Texture2D _gameFontTex;
 
@@ -146,15 +140,15 @@ namespace OpenLaMulana
             //_sfxHit = Content.Load<SoundEffect>(ASSET_NAME_SFX_HIT);
             //_sfxScoreReached = Content.Load<SoundEffect>(ASSET_NAME_SFX_SCORE_REACHED);
             
-            _spriteSheetTexture = Content.Load<Texture2D>(ASSET_NAME_SPRITESHEET);
 
             _sfxPause = Content.Load<SoundEffect>("sound/se00");
             _sfxPauseInstance = _sfxPause.CreateInstance();
             _sfxJump = Content.Load<SoundEffect>("sound/se01");
 
-            _txProt1 = Content.Load<Texture2D>("graphics/prot1");
-
-            _invertedSpriteSheet = _spriteSheetTexture.InvertColors(Color.Transparent);
+            //_txProt1 = Content.Load<Texture2D>("graphics/prot1");
+            FileStream fileStream = new FileStream(gfxPath + "prot1.png", FileMode.Open);
+            _txProt1 = Texture2D.FromStream(GraphicsDevice, fileStream);
+            fileStream.Dispose();
 
             //_fadeInTexture = new Texture2D(GraphicsDevice, 1, 1);
             //_fadeInTexture.SetData(new Color[] { Color.White });
@@ -173,9 +167,13 @@ namespace OpenLaMulana
 
 
             //_gameFontTex = Content.Load<Texture2D>("graphics/font_JP");
-            _gameFontTex = Content.Load<Texture2D>("graphics/font_EN");
+            //_gameFontTex = Content.Load<Texture2D>("graphics/font_EN");
 
-            
+            fileStream = new FileStream(gfxPath + "font_EN.png", FileMode.Open);
+            _gameFontTex = Texture2D.FromStream(GraphicsDevice, fileStream);
+            fileStream.Dispose();
+
+
             for (int i = 0; i <= 22; i++)
             {
                 string numStr;
@@ -187,7 +185,10 @@ namespace OpenLaMulana
                 {
                     numStr = i.ToString();
                 }
-                tempTexList.Add(Content.Load<Texture2D>("graphics/mapg" + numStr));
+
+                fileStream = new FileStream(gfxPath + "mapg" + numStr + ".png", FileMode.Open);
+                tempTexList.Add(Texture2D.FromStream(GraphicsDevice, fileStream));
+                fileStream.Dispose();
             }
 
             _world.SetTexturesList(tempTexList);
@@ -210,10 +211,6 @@ namespace OpenLaMulana
             //_obstacleManager = new ObstacleManager(_entityManager, _protag, _scoreBoard, _spriteSheetTexture);
             //_skyManager = new SkyManager(_protag, _spriteSheetTexture, _invertedSpriteSheet, _entityManager, _scoreBoard);
 
-            _gameOverScreen = new GameOverScreen(_spriteSheetTexture, this);
-            _gameOverScreen.Position = new Vector2(WINDOW_WIDTH / 2 - GameOverScreen.GAME_OVER_SPRITE_WIDTH / 2, WINDOW_HEIGHT / 2 - 30);
-
-
             _entityManager.AddEntity(_protag);
             _entityManager.AddEntity(_world);
 
@@ -225,7 +222,7 @@ namespace OpenLaMulana
             //_entityManager.AddEntity(_tileManager);
             //_entityManager.AddEntity(_scoreBoard);
             //_entityManager.AddEntity(_obstacleManager);
-            _entityManager.AddEntity(_gameOverScreen);
+            //_entityManager.AddEntity(_gameOverScreen);
             //_entityManager.AddEntity(_skyManager);
 
             //_tileManager.Initialize();

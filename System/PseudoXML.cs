@@ -8,13 +8,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using OpenLaMulana.Entities;
+using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.System
 {
     public class PseudoXML
     {
         private const int DECRYPTION_KEY = 0x61;
-        private static World _world = null;
+        private World _world = null;
 
         private enum TokenTypes
         {
@@ -34,68 +35,21 @@ namespace OpenLaMulana.System
             Max
         }
 
-        public static void ParseDataScriptTree(string inFile, World world)
+        internal static void GetGameDialogue(string v1, string v2, World world)
         {
-            _world = world;
-
-            /*
-
-            String str = File.ReadAllText(inFile, Encoding.UTF8);
-            GetMatches(str, TokenTypes.Talk);
-
-            List<String> aResult = new List<String>();
-
-            var doc = File.ReadLines(inFile, Encoding.UTF8);
-
-            foreach (var line in doc)
-            {
-
-                string regexPattern = "<TALK>[\r\n]+(.*?)[\r\n]+</TALK>+";
-                //string regexPattern = "<WORLD>[\r\n]+(.*?)[\r\n]+</TALK>+";
-
-                MatchCollection match = Regex.Matches(line, regexPattern);
-                //aResult.Add(match[1].ToString());
-            }
-
-            _world.SetDialogue(aResult);
-            */
+            throw new NotImplementedException();
         }
 
-        private static void GetMatches(string inStr, TokenTypes token)
+        public static void DecodeScriptDat(string fileIn, string fileOut, Dictionary<int, string> charSet, World world, Languages lang)
         {
-            List<String> aResult = new List<String>();
-            string regexPattern;
-
-            switch (token)
+            if (File.Exists(fileOut))
             {
-                case TokenTypes.Talk:
-                    regexPattern = "<TALK>[\r\n]+(.*?)[\r\n]+</TALK>+";
-
-                    foreach (Match match in Regex.Matches(inStr, regexPattern))
-                    {
-                        aResult.Add(match.Groups[1].ToString());
-                    }
-
-                    _world.SetDialogue(aResult);
-                    break;
-                case TokenTypes.World:
-                    regexPattern = "";
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        public static byte[] DecodeScriptDat(string dirPath, World world, Dictionary<int, string> charSet)
-        {
-            if (File.Exists(dirPath + "script_ENG_Decrypted_UTF8.txt"))
-            {
-                File.Delete(dirPath + "script_ENG_Decrypted_UTF8.txt");
+                File.Delete(fileOut);
             }
 
-            byte[] fDat = File.ReadAllBytes(dirPath + "script_ENG.dat");
+            byte[] fDat = File.ReadAllBytes(fileIn);
 
-            FileStream converted = new FileStream(dirPath + "script_ENG_Decrypted_UTF8.txt", FileMode.CreateNew);
+            FileStream converted = new FileStream(fileOut, FileMode.CreateNew);
 
             using (StreamWriter writer = new StreamWriter(converted, Encoding.UTF8))
             {
@@ -133,10 +87,14 @@ namespace OpenLaMulana.System
                                         justLineBroke = true;
                                     }
                         }
-                    } else if (currByte == 0x3C) // <
+                    }
+                    else if (currByte == 0x3C) // <
                     {
                         if (i > 0)
+                        {
+                            //if (!writingCommand)
                             writer.Write("\n");
+                        }
                     }
 
 
@@ -144,17 +102,25 @@ namespace OpenLaMulana.System
                     {
                         writingCommand = true;
                     }
-                    else if ((currByte >= 0x41 && currByte <= 0x5A) || currByte == 0x3C)     // If we hit a capital letter or '<'...
+                    else if (ValueCapitalLowerCaseHiraganaOrKatakana(currByte) || currByte == 0x3C)     // If we hit a capital letter or '<'...
                     {
-                        if (i < fDat.Length - 1) { // Are we already at the end of the file?
+                        if (i < fDat.Length - 1)
+                        { // Are we already at the end of the file?
                             nextByte = (byte)(fDat[i + 1] ^ DECRYPTION_KEY);
                             if (currByte == 0x3C)                           // We should check if the next char is a '<' char
-                                writingCommand = false;
-                            if ((nextByte >= 0x61 && nextByte <= 0x7A)      // a lowercase letter,
-                                || (nextByte >= 0x41 && nextByte <= 0x5A)   // a capital letter,
-                                        || nextByte == 0x5C                 // ...another control code,
-                                        || nextByte == 0x20                 // a space,
-                                        || nextByte == 0x27)                // or an apostrophe
+                            {
+                                if ((int)nextByte == 0x2F
+                                    && (fDat[i + 2] ^ DECRYPTION_KEY) == 0x54
+                                    && (fDat[i + 3] ^ DECRYPTION_KEY) == 0x41
+                                    && (fDat[i + 4] ^ DECRYPTION_KEY) == 0x4C
+                                    && (fDat[i + 5] ^ DECRYPTION_KEY) == 0x4B
+                                    && (fDat[i + 6] ^ DECRYPTION_KEY) == 0x3E)                             // We should check if the next few chars are "/TALK>"
+                                    writingCommand = false;
+                            }
+                            if (nextByte == 0x5C                     // another control code,
+                                || nextByte == 0x20                     // a space,
+                                || nextByte == 0x27                     // or an apostrophe
+                                || ValueCapitalLowerCaseHiraganaOrKatakana(nextByte))// A capital/lowercase letter, and all of the non-kanji Hiragana/Katakana chars
                                 writingCommand = false;                     // ...before we stop explicitly writing values as-is, instead of actual text characters
 
                         }
@@ -211,7 +177,48 @@ namespace OpenLaMulana.System
                 writer.Write("\n");
             }
 
-            return fDat;
+            PseudoXML.ParseGameDialogue(fileOut, world, lang);
+        }
+
+        public static void ParseGameDialogue(string inFile, World _world, World.Languages lang)
+        {
+            String inStr = File.ReadAllText(inFile, Encoding.UTF8);
+            List<String> aResult = new List<String>();
+            string regexPattern;
+
+            regexPattern = "<TALK>[\r\n]*((.*?)[\r\n]*)*</TALK>+";
+
+            foreach (Match match in Regex.Matches(inStr, regexPattern))
+            {
+                string groupStr = match.Groups[0].ToString();
+                string filteredStr = groupStr.Substring(7, groupStr.Length - 15);
+                aResult.Add(filteredStr);
+            }
+
+            switch (lang)
+            {
+                default:
+                case World.Languages.English:
+                    _world.InitGameText(World.Languages.English, aResult);
+                    break;
+                case World.Languages.Japanese:
+                    _world.InitGameText(World.Languages.Japanese, aResult);
+                    break;
+            }
+        }
+
+        private static bool ValueCapitalLowerCaseHiraganaOrKatakana(byte testByte)
+        {
+            bool result = ((testByte >= 0x61 && testByte <= 0x7A)       // Lowercase letters
+                            || (testByte >= 0x41 && testByte <= 0x5A)   // Uppercase letters
+                            || (testByte >= 0x86 && testByte <= 0x8F)   // Hiragana part 1
+                            || (testByte >= 0x91 && testByte <= 0x9F)
+                            || (testByte >= 0xA7 && testByte <= 0xAF)
+                            || (testByte >= 0xB1 && testByte <= 0xBF)
+                            || (testByte >= 0xC0 && testByte <= 0xCF)
+                            || (testByte >= 0xD0 && testByte <= 0xDD)
+                            || (testByte >= 0xE0 && testByte <= 0xFD));
+            return result;
         }
 
         public static Dictionary<int, string> DefineCharSet(Dictionary<int, string> charSet)

@@ -104,7 +104,6 @@ namespace OpenLaMulana.System
                             break;
                         case 10:
                             linebreak = true;
-                            Console.WriteLine("Executing a linebreak");
                             break;
                     }
 
