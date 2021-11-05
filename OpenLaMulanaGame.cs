@@ -185,7 +185,7 @@ namespace OpenLaMulana
 
 
 
-            for (int i = 0; i <= 22; i++)
+            for (int i = 0; i <= 32; i++)
             {
                 string numStr;
                 if (i <= 9)
@@ -197,9 +197,17 @@ namespace OpenLaMulana
                     numStr = i.ToString();
                 }
 
-                fileStream = new FileStream(gfxPath + "mapg" + numStr + ".png", FileMode.Open);
-                tempTexList.Add(Texture2D.FromStream(GraphicsDevice, fileStream));
-                fileStream.Dispose();
+                if (i > 22 && i < 31)
+                {
+                    Texture2D dummy = new Texture2D(GraphicsDevice, 1, 1);
+                    dummy.SetData(new Color[] { Color.White });
+                    tempTexList.Add(dummy);
+                } else
+                {
+                    fileStream = new FileStream(gfxPath + "mapg" + numStr + ".png", FileMode.Open);
+                    tempTexList.Add(Texture2D.FromStream(GraphicsDevice, fileStream));
+                    fileStream.Dispose();
+                }
             }
 
             _world.SetTexturesList(tempTexList);

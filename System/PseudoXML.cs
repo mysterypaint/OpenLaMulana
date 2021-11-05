@@ -15,25 +15,6 @@ namespace OpenLaMulana.System
     public class PseudoXML
     {
         private const int DECRYPTION_KEY = 0x61;
-        private World _world = null;
-
-        private enum TokenTypes
-        {
-            Talk,
-            World,
-            Field,
-            Chipline,
-            Hit,
-            Anime,
-            Object,
-            Start,
-            Map,
-            Up,
-            Down,
-            Left,
-            Right,
-            Max
-        }
 
         internal static void GetGameDialogue(string v1, string v2, World world)
         {
@@ -63,9 +44,6 @@ namespace OpenLaMulana.System
                     byte currByte = (byte)(b ^ DECRYPTION_KEY);
                     bool alreadyWrote = false;
                     fDat[i] = currByte;
-
-                    if (i == 0x1A34)
-                        Console.WriteLine("hi");
 
                     if (currByte == 0x3E) // >
                     {

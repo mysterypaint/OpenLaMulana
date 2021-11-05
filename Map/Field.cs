@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,34 +14,54 @@ namespace OpenLaMulana
         public const int RoomWidth = 32;  // How many 8x8 tiles a room is wide
         public const int RoomHeight = 22; // How many 8x8 tiles a room is tall
 
+        private Dictionary<int, int> hitList;   // lol (also, I have no idea what this does... probably hit-detection-related?
+
+        private List<int[]> animeList;
+        private List<ObjectSpawnData> objectSpawnData;
+        private List<int[]> objectStartFlagData;
+
         private View[,] mapData = new View[FieldWidth, FieldHeight];
-        private string _mapName { get; set; }
-        private string _mapGraphics { get; set; }
-        private string _eventGraphics { get; set; }
 
         public int DrawOrder => throw new NotImplementedException();
 
-        private int _musicNumber = 0;
+        public int _musicNumber = 0;
+        public int _mapIndex;
+        private int _mapData;
+        public int _mapGraphics;
+        public int _eventGraphics;
 
-        public Field(string mapName, string mapGraphics, string eventGraphics)
+        private int[] _chipline = { 0, 0 };
+
+        public Field(int mapIndex, int mapData, int mapGraphics, int eventGraphics, int musicNumber)
         {
-            _mapName = mapName;
-            _mapGraphics = mapGraphics;
-            _eventGraphics = eventGraphics;
+            this._mapIndex = mapIndex;
+            this._mapData = mapData;
+            this._mapGraphics = mapGraphics;
+            this._eventGraphics = eventGraphics;
+            this._musicNumber = musicNumber;
+
 
             for (var y = 0; y < FieldHeight; y++)
             {
                 for (var x = 0; x < FieldWidth; x++)
                 {
-                    mapData[x, y] = new View(RoomWidth, RoomHeight);
+                    this.mapData[x, y] = new View(RoomWidth, RoomHeight);
                 }
             }
 
-            InitializeArea(mapName);
+            hitList = new Dictionary<int, int>();
+            animeList = new List<int[]>();
+            objectSpawnData = new List<ObjectSpawnData>();
+            InitializeArea();
         }
 
-        private void InitializeArea(string mapName)
+        private void InitializeArea()
         {
+            string mapName = "map";
+            if (_mapIndex <= 9)
+                mapName += "0";
+            mapName += _mapIndex.ToString();
+
             string fileName = "Content/data/" + mapName + ".dat";
 
             if (File.Exists(fileName))
@@ -92,6 +113,30 @@ namespace OpenLaMulana
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             throw new NotImplementedException();
+        }
+
+        internal void SetChipline(int chiplineOne, int chiplineTwo)
+        {
+            _chipline[0] = chiplineOne;
+            _chipline[1] = chiplineTwo;
+        }
+
+        internal void AddHit(int index, int value)
+        {
+            hitList.Add(index, value);
+        }
+
+        internal void DefineAnimatedTile(int[] animationInfo)
+        {
+            animeList.Add(animationInfo);
+        }
+
+        internal ObjectSpawnData DefineObjectSpawnData(int eventNumber, int x, int y, int OP1, int OP2, int OP3, int OP4, bool isAFieldObject)
+        {
+            ObjectSpawnData newObj = new ObjectSpawnData(eventNumber, x, y, OP1, OP2, OP3, OP4, isAFieldObject);
+            objectSpawnData.Add(newObj);
+
+            return newObj;
         }
     }
 }

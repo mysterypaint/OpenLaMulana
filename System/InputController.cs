@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using OpenLaMulana.Entities;
+using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.System
 {
@@ -80,19 +81,19 @@ namespace OpenLaMulana.System
 
             if (camMoveX == 1)
             {
-                _world.FieldTransitionRight();
+                _world.FieldTransition(VIEW_DIR.RIGHT);
             }
             else if (camMoveX == -1)
             {
-                _world.FieldTransitionLeft();
+                _world.FieldTransition(VIEW_DIR.LEFT);
             }
             if (camMoveY == 1)
             {
-                _world.FieldTransitionDown();
+                _world.FieldTransition(VIEW_DIR.DOWN);
             }
             else if (camMoveY == -1)
             {
-                _world.FieldTransitionUp();
+                _world.FieldTransition(VIEW_DIR.UP);
             }
 
             if (KeyPressed(Keys.K))

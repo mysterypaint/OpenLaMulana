@@ -1,32 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana
 {
     public class View
     {
-        enum WORLD_DESTINATION_DIRECTIONS
-        {
-            UP,
-            RIGHT,
-            DOWN,
-            LEFT
-        };
-        enum WORLD_DESTINATION_PARAMS
-        {
-            WORLD,      // World may never go below 0
-            FIELD,      // Field may never go below 0
-            X,          // If X is negative, forbid moving toward this direction
-            Y           // Y may never go below 0
-        };
+        private int[] _destWorld = { 0, 0, 0, 0 };   // World may never go below 0
+        private int[] _destField = { 0, 0, 0, 0 };   // Field may never go below 0
+        private int[] _destX = { 0, 0, 0, 0 };       // If X is negative, forbid moving toward this direction
+        private int[] _destY = { 0, 0, 0, 0 };       // Y may never go below 0
 
         public int[,] Tiles { get; set; }
-        private int[] RoomDirections = { 0, 0, 0, 0 };
-        private int[] RoomParams = { 0, 0, 0, 0 };
-        private int RoomNumber = 0; // Unsure what this does... Maybe has to do with sharing room numbers -> how enemies persist/de-spawn?
+        public int _roomNumber { get; set; } = 0; // Unsure what this does... Maybe has to do with sharing room numbers -> how enemies persist/de-spawn?
 
         public View(int roomWidth, int roomHeight)
         {
             Tiles = new int[roomWidth, roomHeight];
+
 
             /*
             for (var y = 0; y < roomHeight; y++)
@@ -37,6 +28,20 @@ namespace OpenLaMulana
                 }
             }
             */
+        }
+
+        internal void DefineViewDestination(VIEW_DIR direction, int destWorld, int destField, int destX, int destY)
+        {
+            _destWorld[(int)direction] = destWorld;
+            _destField[(int)direction] = destField;
+            _destX[(int)direction] = destX;
+            _destY[(int)direction] = destY;
+        }
+
+        internal int[] GetDestinationView(VIEW_DIR direction)
+        {
+            int[] destination = { _destWorld[(int)direction], _destField[(int)direction], _destX[(int)direction], _destY[(int)direction]};
+            return destination;
         }
     }
 }
