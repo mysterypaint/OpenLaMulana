@@ -4,6 +4,13 @@ namespace OpenLaMulana
 {
     public class Tile
     {
+        public enum TileTypes
+        {
+            BLANK,
+            SOLID
+        };
+
+
         public int _tileID = -1;
         public int _currFrame = 0;
         public bool isAnime = false;

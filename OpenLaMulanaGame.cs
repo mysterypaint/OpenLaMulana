@@ -151,14 +151,14 @@ namespace OpenLaMulana
 
             _txProt1 = LoadTexture(gfxPath + "prot1.png");
 
-            _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _sfxJump);
-            _protag.DrawOrder = 100;
-
             _gameFontTex = LoadTexture(gfxPath + "font_EN.png");
 
             _world = new World(_entityManager, _gameFontTex);
-            _inputController = new InputController(_protag, _world);
+            _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _sfxJump);
+            _protag.DrawOrder = 100;
 
+            _inputController = new InputController(_protag, _world);
+            _protag.SetInputController(_inputController);
 
             for (int i = 0; i <= 32; i++)
             {
@@ -359,8 +359,8 @@ namespace OpenLaMulana
                 default:
                 case GameState.Playing:
 
-                    _textManager.DrawText(0, 0, _textManager.GetText(textIndex, Languages.English));
-                    //_textManager.DrawText(0, 0, "Player State: " + _protag.PrintState() + "\\10hsp: " + _protag.hsp.ToString() + "\\10vsp: " + _protag.vsp.ToString());
+                    //_textManager.DrawText(0, 0, _textManager.GetText(textIndex, Languages.English));
+                    _textManager.DrawText(0, 0, "Player State: " + _protag.PrintState() + "\\10hsp: " + _protag.hsp.ToString() + "\\10vsp: " + _protag.vsp.ToString());
                     break;
 
             }

@@ -1,19 +1,20 @@
 ﻿<Properties StartupConfiguration="{DCE086B8-A84F-4448-8554-C2FECACA7E8A}|Default">
   <MonoDevelop.Ide.ItemProperties.OpenLaMulana PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Map/Field.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Map/Tile.cs">
     <Files>
-      <File FileName="OpenLaMulanaGame.cs" Line="362" Column="21" />
-      <File FileName="Entities/Protag.cs" Line="47" Column="38" />
+      <File FileName="OpenLaMulanaGame.cs" Line="363" Column="86" />
+      <File FileName="Entities/Protag.cs" Line="363" Column="42" />
+      <File FileName="System/InputController.cs" Line="42" Column="27" />
       <File FileName="Entities/FlyingDino.cs" Line="33" Column="22" />
       <File FileName="Entities/Obstacle.cs" Line="30" Column="39" />
-      <File FileName="System/InputController.cs" Line="29" Column="21" />
       <File FileName="System/TextManager.cs" Line="111" Column="73" />
       <File FileName="Entities/ObstacleManager.cs" Line="1" Column="1" />
       <File FileName="Entities/IGameEntity.cs" Line="1" Column="1" />
       <File FileName="Entities/ICollidable.cs" Line="1" Column="1" />
-      <File FileName="Entities/PlayerState.cs" Line="1" Column="1" />
+      <File FileName="Entities/PlayerState.cs" Line="10" Column="16" />
       <File FileName="Map/World.cs" Line="166" Column="66" />
-      <File FileName="Map/Field.cs" Line="149" Column="79" />
+      <File FileName="Map/Field.cs" Line="135" Column="10" />
+      <File FileName="Map/Tile.cs" Line="7" Column="11" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -30,7 +31,7 @@
               <Node name="Entities" expanded="True" />
               <Node name="Graphics" expanded="True" />
               <Node name="Map" expanded="True">
-                <Node name="Field.cs" selected="True" />
+                <Node name="Tile.cs" selected="True" />
               </Node>
               <Node name="System" expanded="True" />
             </Node>

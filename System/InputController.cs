@@ -18,6 +18,12 @@ namespace OpenLaMulana.System
 
         bool _isBlocked = false;
 
+        public short dirMoveX, dirMoveY = 0;
+
+        public bool keyJumpPressed { get; private set; }
+        public bool keyJumpHeld { get; private set; }
+        public bool keyWhipPressed { get; private set; }
+
         public InputController(Protag protag, World world)
         {
             _protag = protag;
@@ -27,6 +33,14 @@ namespace OpenLaMulana.System
         public void ProcessControls(GameTime gameTime)
         {
             GetState();
+
+            dirMoveX = (short)(Convert.ToInt16(KeyCheck(Keys.Right)) - Convert.ToInt16(KeyCheck(Keys.Left)));
+            dirMoveY = (short)(Convert.ToInt16(KeyCheck(Keys.Down)) - Convert.ToInt16(KeyCheck(Keys.Up)));
+
+            keyJumpPressed = KeyPressed(Keys.Up);
+            keyJumpHeld = KeyCheck(Keys.Up);
+            keyWhipPressed = KeyPressed(Keys.Z);
+
 
             WorldTransitionTesting();
         }

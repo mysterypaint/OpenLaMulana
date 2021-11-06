@@ -21,8 +21,8 @@ namespace OpenLaMulana.Entities
 
         private List<Field> _fields;
         private List<Texture2D> _Textures = null;
-        private int currRoomX = 0;
-        private int currRoomY = 0;
+        public int currRoomX = 0;
+        public int currRoomY = 0;
 
         public int fieldCount = 0;
 

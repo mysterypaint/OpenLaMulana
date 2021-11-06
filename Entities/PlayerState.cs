@@ -10,6 +10,7 @@ namespace OpenLaMulana.Entities
         WALKING,
         JUMPING,
         FALLING,
+        WHIPPING,
         CUTSCENE,
         PAUSED,
         MAX
