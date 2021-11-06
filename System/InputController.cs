@@ -10,17 +10,17 @@ namespace OpenLaMulana.System
 {
     public class InputController
     {
-
-        private bool _isBlocked;
-        private Protag _trex;
+        private Protag _protag;
         private World _world;
 
         static KeyboardState keyboardState;
         static KeyboardState _previousKeyboardState;
 
-        public InputController(Protag trex, World world)
+        bool _isBlocked = false;
+
+        public InputController(Protag protag, World world)
         {
-            _trex = trex;
+            _protag = protag;
             _world = world;
         }
 
@@ -29,44 +29,6 @@ namespace OpenLaMulana.System
             GetState();
 
             WorldTransitionTesting();
-
-
-            if(!_isBlocked)
-            {
-
-                if(KeyPressed(Keys.Up) || KeyPressed(Keys.Space))
-                {
-
-                    if (_trex.State != TrexState.Jumping)
-                        _trex.BeginJump();
-
-                }
-                else if (_trex.State == TrexState.Jumping && (KeyReleased(Keys.Up) || KeyReleased(Keys.Space)))
-                {
-
-                    _trex.CancelJump();
-
-                }
-                else if (keyboardState.IsKeyDown(Keys.Down))
-                {
-
-                    if (_trex.State == TrexState.Jumping || _trex.State == TrexState.Falling)
-                        _trex.Drop();
-                    else
-                        _trex.Duck();
-
-                }
-                else if (_trex.State == TrexState.Ducking && !keyboardState.IsKeyDown(Keys.Down))
-                {
-
-                    _trex.GetUp();
-
-                }
-
-            }
-
-            _isBlocked = false;
-
         }
 
         public void BlockInputTemporarily()

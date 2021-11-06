@@ -80,7 +80,6 @@ namespace OpenLaMulana
         //private TileManager _tileManager;
         //private ObstacleManager _obstacleManager;
         //private SkyManager _skyManager;
-        private GameOverScreen _gameOverScreen;
 
         private EntityManager _entityManager;
         private SongManager _songManager;
@@ -146,43 +145,19 @@ namespace OpenLaMulana
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //_sfxButtonPress = Content.Load<SoundEffect>(ASSET_NAME_SFX_BUTTON_PRESS);
-            //_sfxHit = Content.Load<SoundEffect>(ASSET_NAME_SFX_HIT);
-            //_sfxScoreReached = Content.Load<SoundEffect>(ASSET_NAME_SFX_SCORE_REACHED);
-            
-
             _sfxPause = Content.Load<SoundEffect>("sound/se00");
             _sfxPauseInstance = _sfxPause.CreateInstance();
             _sfxJump = Content.Load<SoundEffect>("sound/se01");
 
-            //_txProt1 = Content.Load<Texture2D>("graphics/prot1");
-            FileStream fileStream = new FileStream(gfxPath + "prot1.png", FileMode.Open);
-            _txProt1 = Texture2D.FromStream(GraphicsDevice, fileStream);
-            fileStream.Dispose();
+            _txProt1 = LoadTexture(gfxPath + "prot1.png");
 
-            //_fadeInTexture = new Texture2D(GraphicsDevice, 1, 1);
-            //_fadeInTexture.SetData(new Color[] { Color.White });
-
-            _protag = new Protag(_txProt1, new Vector2(TREX_START_POS_X, TREX_START_POS_Y - Protag.DEFAULT_SPRITE_HEIGHT), _sfxJump);
+            _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _sfxJump);
             _protag.DrawOrder = 100;
-            _protag.JumpComplete += trex_JumpComplete;
-            _protag.Died += trex_Died;
 
-            //_scoreBoard = new ScoreBoard(_spriteSheetTexture, new Vector2(SCORE_BOARD_POS_X, SCORE_BOARD_POS_Y), _protag, _sfxScoreReached);
-            //_scoreBoard.Score = 498;
-            //_scoreBoard.HighScore = 12345;
-
-            fileStream = new FileStream(gfxPath + "font_EN.png", FileMode.Open);
-            _gameFontTex = Texture2D.FromStream(GraphicsDevice, fileStream);
-            fileStream.Dispose();
+            _gameFontTex = LoadTexture(gfxPath + "font_EN.png");
 
             _world = new World(_entityManager, _gameFontTex);
             _inputController = new InputController(_protag, _world);
-
-
-            //_gameFontTex = Content.Load<Texture2D>("graphics/font_JP");
-            //_gameFontTex = Content.Load<Texture2D>("graphics/font_EN");
-
 
 
             for (int i = 0; i <= 32; i++)
@@ -204,31 +179,12 @@ namespace OpenLaMulana
                     tempTexList.Add(dummy);
                 } else
                 {
-                    fileStream = new FileStream(gfxPath + "mapg" + numStr + ".png", FileMode.Open);
-                    tempTexList.Add(Texture2D.FromStream(GraphicsDevice, fileStream));
-                    fileStream.Dispose();
+                    var tex = LoadTexture(gfxPath + "mapg" + numStr + ".png");
+                    tempTexList.Add(tex);
                 }
             }
 
             _world.SetTexturesList(tempTexList);
-
-
-            /*
-            _songManager = new SongManager();
-            string path = "music/m00.it";// "C:/Users/User/Desktop/ConvertedOST/IT/m00.it";//Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/music/m00";
-
-            Debug.WriteLine(path);
-            Console.WriteLine(path);
-
-            _songManager.InitPlayer();
-            _songManager.LoadSong("test.mp3");
-            //Debug.WriteLine(_songManager.PrintSongName());
-            */
-
-
-            //_tileManager = new TileManager(_spriteSheetTexture, _entityManager, _protag);
-            //_obstacleManager = new ObstacleManager(_entityManager, _protag, _scoreBoard, _spriteSheetTexture);
-            //_skyManager = new SkyManager(_protag, _spriteSheetTexture, _invertedSpriteSheet, _entityManager, _scoreBoard);
 
             _entityManager.AddEntity(_protag);
             _entityManager.AddEntity(_world);
@@ -239,53 +195,25 @@ namespace OpenLaMulana
             _entityManager.AddEntity(_textManager);
             _entityManager.AddEntity(_gameMenu);
 
-            //_entityManager.AddEntity(_tileManager);
-            //_entityManager.AddEntity(_scoreBoard);
-            //_entityManager.AddEntity(_obstacleManager);
-            //_entityManager.AddEntity(_gameOverScreen);
-            //_entityManager.AddEntity(_skyManager);
-
-            //_tileManager.Initialize();
-
             LoadSaveState();
 
         }
 
-        private void trex_Died(object sender, EventArgs e)
+        private Texture2D LoadTexture(string filePath)
         {
-            State = GameState.GameOver;
-            //_obstacleManager.IsEnabled = false;
-            _gameOverScreen.IsEnabled = true;
-
-            //_sfxHit.Play();
-
-            Debug.WriteLine("Game Over: " +  DateTime.Now);
-
-            /*
-            if(_scoreBoard.DisplayScore > _scoreBoard.HighScore)
+            FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            Texture2D tex = Texture2D.FromStream(GraphicsDevice, fileStream);
+            fileStream.Dispose();
+            Color[] buffer = new Color[tex.Width * tex.Height];
+            tex.GetData(buffer);
+            for (int i = 0; i < buffer.Length; i++)
             {
-                Debug.WriteLine("New highscore set: " + _scoreBoard.DisplayScore);
-                _scoreBoard.HighScore = _scoreBoard.DisplayScore;
-                _highscoreDate = DateTime.Now;
-
-                SaveGame();
-
+                if (buffer[i].Equals(new Color(68, 68, 68)))
+                    buffer[i] = Color.FromNonPremultiplied(255, 255, 255, 0);
             }
-            */
+            tex.SetData(buffer);
 
-        }
-
-        private void trex_JumpComplete(object sender, EventArgs e)
-        {
-            
-            if(State == GameState.Transition)
-            {
-                State = GameState.Playing;
-                _protag.Initialize();
-
-                //_obstacleManager.IsEnabled = true;
-            }
-
+            return tex;
         }
 
         protected override void Update(GameTime gameTime)
@@ -335,7 +263,8 @@ namespace OpenLaMulana
                     }
                     break;
                 case GameState.Transition:
-                    //_fadeInTexturePosX += (float)gameTime.ElapsedGameTime.TotalSeconds * FADE_IN_ANIMATION_SPEED;
+                    State = GameState.Playing;
+                    _protag.Initialize();
                     break;
                 case GameState.Initial:
 
@@ -350,7 +279,10 @@ namespace OpenLaMulana
             DecrementCounters();
 
 
-            _entityManager.Update(gameTime);
+            MouseState mouseState = Mouse.GetState();
+
+            if (mouseState.LeftButton == ButtonState.Pressed)
+                _protag.Position = new Vector2(mouseState.X / DISPLAY_ZOOM_FACTOR, mouseState.Y / DISPLAY_ZOOM_FACTOR);
 
             if(keyboardState.IsKeyDown(Keys.F8) && !_previousKeyboardState.IsKeyDown(Keys.F8)) {
 
@@ -368,6 +300,10 @@ namespace OpenLaMulana
             }
 
             _previousKeyboardState = keyboardState;
+
+
+            _entityManager.Update(gameTime);
+
 
         }
 
@@ -409,7 +345,7 @@ namespace OpenLaMulana
             */
 
 
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
 
             _entityManager.Draw(_spriteBatch, gameTime);
 
@@ -422,7 +358,9 @@ namespace OpenLaMulana
                     break;
                 default:
                 case GameState.Playing:
+
                     _textManager.DrawText(0, 0, _textManager.GetText(textIndex, Languages.English));
+                    //_textManager.DrawText(0, 0, "Player State: " + _protag.PrintState() + "\\10hsp: " + _protag.hsp.ToString() + "\\10vsp: " + _protag.vsp.ToString());
                     break;
 
             }
@@ -440,7 +378,7 @@ namespace OpenLaMulana
 
             //_scoreBoard.Score = 0;
             State = GameState.Transition;
-            _protag.BeginJump();
+            //_protag.BeginJump();
 
             return true;
         }
@@ -456,7 +394,7 @@ namespace OpenLaMulana
             //_obstacleManager.Reset();
             //_obstacleManager.IsEnabled = true;
 
-            _gameOverScreen.IsEnabled = false;
+            //_gameOverScreen.IsEnabled = false;
             //_scoreBoard.Score = 0;
 
             //_tileManager.Initialize();

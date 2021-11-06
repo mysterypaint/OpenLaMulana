@@ -31,7 +31,6 @@ namespace OpenLaMulana.Entities
 
         private readonly EntityManager _entityManager;
         private readonly Protag _trex;
-        private readonly ScoreBoard _scoreBoard;
 
         private readonly Random _random;
 
@@ -39,15 +38,26 @@ namespace OpenLaMulana.Entities
 
         public bool IsEnabled { get; set; }
 
-        public bool CanSpawnObstacles => IsEnabled && _scoreBoard.Score >= MIN_SPAWN_DISTANCE;
+        public bool CanSpawnObstacles => IsEnabled;
 
         public int DrawOrder => 0;
 
-        public ObstacleManager(EntityManager entityManager, Protag trex, ScoreBoard scoreBoard, Texture2D spriteSheet)
+        public void Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*
+         * 
+        public ObstacleManager(EntityManager entityManager, Protag trex, Texture2D spriteSheet)
         {
             _entityManager = entityManager;
             _trex = trex;
-            _scoreBoard = scoreBoard;
             _random = new Random();
             _spriteSheet = spriteSheet;
         }
@@ -68,7 +78,7 @@ namespace OpenLaMulana.Entities
                 _currentTargetDistance = _random.NextDouble()
                     * (MAX_OBSTACLE_DISTANCE - MIN_OBSTACLE_DISTANCE) + MIN_OBSTACLE_DISTANCE;
 
-                _currentTargetDistance += (_trex.Speed - Protag.START_SPEED) / (Protag.MAX_SPEED - Protag.START_SPEED) * OBSTACLE_DISTANCE_SPEED_TOLERANCE;
+                //_currentTargetDistance += (_trex.Speed - Protag.START_SPEED) / (Protag.MAX_SPEED - Protag.START_SPEED) * OBSTACLE_DISTANCE_SPEED_TOLERANCE;
 
                 _lastSpawnScore = _scoreBoard.Score;
 
@@ -132,6 +142,7 @@ namespace OpenLaMulana.Entities
             _lastSpawnScore = -1;
 
         }
+        */
 
     }
 }

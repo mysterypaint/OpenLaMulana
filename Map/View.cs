@@ -11,13 +11,12 @@ namespace OpenLaMulana
         private int[] _destX = { 0, 0, 0, 0 };       // If X is negative, forbid moving toward this direction
         private int[] _destY = { 0, 0, 0, 0 };       // Y may never go below 0
 
-        public int[,] Tiles { get; set; }
+        public Tile[,] Tiles { get; set; }
         public int _roomNumber { get; set; } = 0; // Unsure what this does... Maybe has to do with sharing room numbers -> how enemies persist/de-spawn?
 
         public View(int roomWidth, int roomHeight)
         {
-            Tiles = new int[roomWidth, roomHeight];
-
+            Tiles = new Tile[roomWidth, roomHeight];
 
             /*
             for (var y = 0; y < roomHeight; y++)

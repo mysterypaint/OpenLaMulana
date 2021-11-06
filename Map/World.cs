@@ -16,6 +16,7 @@ namespace OpenLaMulana.Entities
         public int DrawOrder { get; set; }
         public const int tileWidth = 8;
         public const int tileHeight = 8;
+
         public int currField { get; set; }  = 1;
 
         private List<Field> _fields;
@@ -28,6 +29,8 @@ namespace OpenLaMulana.Entities
         public static EntityManager s_entityManager;
 
         private TextManager _textManager;
+
+        private int[] currChipLine;
 
         public enum VIEW_DEST
         {
@@ -80,6 +83,17 @@ namespace OpenLaMulana.Entities
                 File.Delete(jpTxtFile);
             }
 
+            foreach (Field f in _fields)
+            {
+                f.InitializeArea();
+            }
+
+            currChipLine = _fields[currField].GetChipline();
+        }
+
+        public Field GetField(int index)
+        {
+            return _fields[index];
         }
 
         // Returns new currentLine; end when it returns -1
@@ -244,6 +258,7 @@ namespace OpenLaMulana.Entities
             var _thisTex = _Textures[_thisField._mapGraphics];
             var currFieldRoomData = _thisField.GetMapData();
             var _thisRoom = currFieldRoomData[currRoomX, currRoomY];
+            var animations = _thisField.animeList;
 
             //mapData[roomX, roomY].Tiles[_rtx, _rty] = tileID;
 
@@ -252,15 +267,44 @@ namespace OpenLaMulana.Entities
             {
                 for (int _x = 0; _x < Field.RoomWidth; _x++)
                 {
-                    int _thisTile = _thisRoom.Tiles[_x, _y];
+                    Tile _thisTile = _thisRoom.Tiles[_x, _y];
 
-                    //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
-                    var _posx = (_x * 8);
-                    var _posy = (_y * 8);
-                    var _texX = (_thisTile % 40) * 8;
-                    var _texY = (_thisTile / 40) * 8;
+                    if (!_thisTile.isAnime)
+                    {
+                        //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
+                        var _posx = (_x * 8);
+                        var _posy = (_y * 8);
+                        var _texX = (_thisTile._tileID % 40) * 8;
+                        var _texY = (_thisTile._tileID / 40) * 8;
 
-                    spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
+                        spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
+                    } else
+                    {
+                        // Handle animated tiles here
+                        var animeSpeed = _thisTile.animeSpeed;
+                        var _animeFrames = _thisTile.GetAnimeFrames();
+                        var maxFrames = _animeFrames.Length;
+
+                        if (animeSpeed > 0) {
+                            if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
+                            {
+                                _thisTile._currFrame++;
+
+                                if (_thisTile._currFrame >= maxFrames)
+                                    _thisTile._currFrame = 0;
+                            }
+                        }
+
+                        var drawingTileID = _animeFrames[_thisTile._currFrame];
+
+                        //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
+                        var _posx = (_x * 8);
+                        var _posy = (_y * 8);
+                        var _texX = (drawingTileID % 40) * 8;
+                        var _texY = (drawingTileID / 40) * 8;
+
+                        spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
+                    }
                 }
             }
 

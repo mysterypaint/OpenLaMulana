@@ -61,12 +61,6 @@ namespace OpenLaMulana.Entities
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            if(_trex.IsAlive)
-            {
-                _animation.Update(gameTime);
-                Position = new Vector2(Position.X - SPEED_PPS * (float)gameTime.ElapsedGameTime.TotalSeconds, Position.Y);
-            }
         }
 
     }

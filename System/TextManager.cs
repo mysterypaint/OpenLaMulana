@@ -23,7 +23,7 @@ namespace OpenLaMulana.System
             MAX
         };
 
-        public int DrawOrder => -999;
+        public int DrawOrder => 999;
         private const int TEXT_WIDTH = 8;
         private const int TEXT_HEIGHT = 8;
         private const int TEXT_TABLE_WIDTH = 16;
@@ -103,15 +103,16 @@ namespace OpenLaMulana.System
 
                 int _drawTile = -1;
                 if (!specialTextControl) {
-                    if (c == '¥')
+                    if (c == '¥' || c == '\\')
                     {
                         strPos++;
-                        
-                        while (Char.IsDigit(str[strPos]))
+                        c = str[strPos];
+
+                        while (Char.IsDigit(str[strPos]) && (strPos + 1) < str.Length)
                         {
                             textControl += c;
                             strPos++;
-
+                            c = str[strPos];
                             if (strPos >= str.Length)
                                 break;
                         }

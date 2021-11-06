@@ -13,10 +13,10 @@ namespace OpenLaMulana
         public const int FieldHeight = 5;
         public const int RoomWidth = 32;  // How many 8x8 tiles a room is wide
         public const int RoomHeight = 22; // How many 8x8 tiles a room is tall
-
+        public const int ANIME_TILES_BEGIN = 1160;
         private Dictionary<int, int> hitList;   // lol (also, I have no idea what this does... probably hit-detection-related?
 
-        private List<int[]> animeList;
+        public List<int[]> animeList;
         private List<ObjectSpawnData> objectSpawnData;
         private List<int[]> objectStartFlagData;
 
@@ -52,10 +52,9 @@ namespace OpenLaMulana
             hitList = new Dictionary<int, int>();
             animeList = new List<int[]>();
             objectSpawnData = new List<ObjectSpawnData>();
-            InitializeArea();
         }
 
-        private void InitializeArea()
+        public void InitializeArea()
         {
             string mapName = "map";
             if (_mapIndex <= 9)
@@ -92,12 +91,26 @@ namespace OpenLaMulana
                         int _rtx = i % RoomWidth; // Relative Room Tile X
                         int _rty = (i / (RoomWidth * FieldWidth)) % RoomHeight; // Relative Room Tile Y
 
-                        mapData[roomX, roomY].Tiles[_rtx, _rty] = tileID;
+                        int[] animatedTileInfo = null;
+
+                        foreach (int[] j in animeList)
+                        {
+                            int aniIndex = j[0];
+                            if (aniIndex + ANIME_TILES_BEGIN == tileID)
+                                animatedTileInfo = j;
+                        }
+
+                        mapData[roomX, roomY].Tiles[_rtx, _rty] = new Tile(tileID, animatedTileInfo);
 
                         i++;
                     }
                 }
             }
+        }
+
+        internal int[] GetChipline()
+        {
+            return _chipline;
         }
 
         public View[,] GetMapData()
@@ -131,9 +144,9 @@ namespace OpenLaMulana
             animeList.Add(animationInfo);
         }
 
-        internal ObjectSpawnData DefineObjectSpawnData(int eventNumber, int x, int y, int OP1, int OP2, int OP3, int OP4, bool isAFieldObject)
+        internal ObjectSpawnData DefineObjectSpawnData(int eventNumber, int tileX, int tileY, int OP1, int OP2, int OP3, int OP4, bool isAFieldObject)
         {
-            ObjectSpawnData newObj = new ObjectSpawnData(eventNumber, x, y, OP1, OP2, OP3, OP4, isAFieldObject);
+            ObjectSpawnData newObj = new ObjectSpawnData(eventNumber, tileX / 2048, tileY / 2048, OP1, OP2, OP3, OP4, isAFieldObject);
             objectSpawnData.Add(newObj);
 
             return newObj;

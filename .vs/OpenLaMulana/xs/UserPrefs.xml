@@ -1,19 +1,19 @@
 ﻿<Properties StartupConfiguration="{DCE086B8-A84F-4448-8554-C2FECACA7E8A}|Default">
   <MonoDevelop.Ide.ItemProperties.OpenLaMulana PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Map/World.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Map/Field.cs">
     <Files>
-      <File FileName="OpenLaMulanaGame.cs" Line="478" Column="32" />
-      <File FileName="Entities/EntityManager.cs" Line="1" Column="1" />
-      <File FileName="Map/World.cs" Line="168" Column="31" />
-      <File FileName="Map/Field.cs" Line="115" Column="49" />
-      <File FileName="Map/ObjectSpawnData.cs" />
-      <File FileName="System/PseudoXML.cs" />
-      <File FileName="Map/GameMenu.cs" />
-      <File FileName="System/TextManager.cs" />
-      <File FileName="System/GameState.cs" />
-      <File FileName="Map/ObjectStartFlags.cs" />
-      <File FileName="Map/View.cs" />
-      <File FileName="System/InputController.cs" Line="83" Column="20" />
+      <File FileName="OpenLaMulanaGame.cs" Line="362" Column="21" />
+      <File FileName="Entities/Protag.cs" Line="47" Column="38" />
+      <File FileName="Entities/FlyingDino.cs" Line="33" Column="22" />
+      <File FileName="Entities/Obstacle.cs" Line="30" Column="39" />
+      <File FileName="System/InputController.cs" Line="29" Column="21" />
+      <File FileName="System/TextManager.cs" Line="111" Column="73" />
+      <File FileName="Entities/ObstacleManager.cs" Line="1" Column="1" />
+      <File FileName="Entities/IGameEntity.cs" Line="1" Column="1" />
+      <File FileName="Entities/ICollidable.cs" Line="1" Column="1" />
+      <File FileName="Entities/PlayerState.cs" Line="1" Column="1" />
+      <File FileName="Map/World.cs" Line="166" Column="66" />
+      <File FileName="Map/Field.cs" Line="149" Column="79" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -24,12 +24,13 @@
               <Node name="Audio" expanded="True" />
               <Node name="Content" expanded="True">
                 <Node name="bin" expanded="True" />
+                <Node name="bmp_graphics" expanded="True" />
                 <Node name="data" expanded="True" />
               </Node>
               <Node name="Entities" expanded="True" />
               <Node name="Graphics" expanded="True" />
               <Node name="Map" expanded="True">
-                <Node name="World.cs" selected="True" />
+                <Node name="Field.cs" selected="True" />
               </Node>
               <Node name="System" expanded="True" />
             </Node>

@@ -27,7 +27,7 @@ namespace OpenLaMulana.Entities
 
         public virtual void Update(GameTime gameTime)
         {
-            float posX = Position.X - _trex.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float posX = Position.X;// - _trex.Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             Position = new Vector2(posX, Position.Y);
 
@@ -42,7 +42,7 @@ namespace OpenLaMulana.Entities
 
             if(obstacleCollisionBox.Intersects(trexCollisionBox))
             {
-                _trex.Die();
+                //_trex.Die();
             }
 
         } 
