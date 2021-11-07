@@ -2,17 +2,13 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Tracing;
-using System.Text;
 using OpenLaMulana.Graphics;
-using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.System;
 using static OpenLaMulana.Tile;
 
 namespace OpenLaMulana.Entities
 {
+
     public class Protag : IGameEntity, ICollidable
     {
         enum Facing
@@ -27,11 +23,6 @@ namespace OpenLaMulana.Entities
 
         private SoundEffect _jumpSound;
 
-        private Random _random;
-
-        public event EventHandler JumpComplete;
-        public event EventHandler Died;
-
         public PlayerState State { get; private set; }
         PlayerState prev_state = PlayerState.IDLE;
 
@@ -42,21 +33,22 @@ namespace OpenLaMulana.Entities
         public int moveY = 0;
         public float hsp = 0;
         public float vsp = 0;
-        private bool hasBoots = false;
-        float move_speed = 0.4f;
+        private bool hasBoots = true;
+        private bool hasFeather = true;
+        float move_speed = 0.8f;
         int jumps = 0;
         int jumps_max = 2;
-        float grav = 0.09f;
-        int jump_speed = 3;
+        float grav = 0.34f;
+        int jump_speed = 5;
         double grav_max = 0.8;
         bool grounded = false;
         static int jump_timer_max = 4;
         int jump_timer = jump_timer_max;
-        static int second_jump_timer_max = 20;
+        static int second_jump_timer_max = 10;
         int second_jump_timer = second_jump_timer_max;
         int fall_timer = 0;
-        int fall_timer_max = 40;
-        int whip_cooldown_timer_max = 29;
+        readonly int fall_timer_max = 40;
+        readonly int whip_cooldown_timer_max = 29;
         int whip_cooldown_timer = 0;
         float img_index = 0;
         float img_index_offset = 0;
@@ -72,6 +64,9 @@ namespace OpenLaMulana.Entities
 
         private InputController _inputController = null;
 
+        public short bBoxOriginX { get; set; }
+        public short bBoxOriginY { get; set; }
+
         public int DrawOrder { get; set; }
 
         public Rectangle CollisionBox
@@ -79,10 +74,10 @@ namespace OpenLaMulana.Entities
             get
             {
                 Rectangle box = new Rectangle(
-                    (int)Math.Round(Position.X),
-                    (int)Math.Round(Position.Y),
-                    16,
-                    16
+                    (int)Math.Round(Position.X - bBoxOriginX),
+                    (int)Math.Round(Position.Y - bBoxOriginY),
+                    10,
+                    12
                 );
                 //box.Inflate(-COLLISION_BOX_INSET, -COLLISION_BOX_INSET);
                 return box;
@@ -92,15 +87,19 @@ namespace OpenLaMulana.Entities
         public Protag(Texture2D spriteSheet, World world, Vector2 position, SoundEffect jumpSound)
         {
             _world = world;
-
             Position = position;
             State = PlayerState.IDLE;
 
+
+            bBoxOriginX = 5;
+            bBoxOriginY = 12;
+
             _jumpSound = jumpSound;
 
-            _random = new Random();
+            _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
 
-            _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16);
+            if (!hasFeather)
+                second_jump_timer_max = -1;
         }
 
         public void Initialize()
@@ -111,6 +110,8 @@ namespace OpenLaMulana.Entities
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             _idleSprite.Draw(spriteBatch, Position);
+
+            RectangleSprite.DrawRectangle(spriteBatch, CollisionBox, Color.Red, 1);
         }
 
         public void Update(GameTime gameTime)
@@ -124,9 +125,9 @@ namespace OpenLaMulana.Entities
                 //default_animation()
             }
             if (!hasBoots)
-                move_speed = 0.4f;
-            else
                 move_speed = 0.8f;
+            else
+                move_speed = 1.6f;
             if (State != PlayerState.WHIPPING && whip_cooldown_timer <= ((whip_cooldown_timer_max - 1) / 2) && (!straight_fall))
             {
                 if (grounded || whip_cooldown_timer > 0)
@@ -144,9 +145,9 @@ namespace OpenLaMulana.Entities
                             img_index = 0;
                             img_index_offset = 0;
                             if (!hasBoots)
-                                img_speed = 0.06f;
+                                img_speed = 0.12f;
                             else
-                                img_speed = 0.09f;
+                                img_speed = 0.18f;
                         }
                     }
                     else
@@ -165,7 +166,7 @@ namespace OpenLaMulana.Entities
                 move_x = 0;
             }
             if (move_x == 0 && grounded)
-                hsp *= 0.2f;
+                hsp *= 0.4f;
 
             if (PlaceMeeting(posX, (posY + 1), TileTypes.SOLID))
             {
@@ -217,9 +218,12 @@ namespace OpenLaMulana.Entities
             if (_inputController.keyJumpHeld)
                 jump_timer--;
             else if (vsp < 0)
-                vsp = Math.Max(vsp, 0.04f);
+                vsp = Math.Max(vsp, 0.08f);
             if (jumps == 1)
-                second_jump_timer--;
+            {
+                if (second_jump_timer > 0)
+                    second_jump_timer--;
+            }
             if (jumps > 1 && _inputController.keyJumpHeld && jump_timer == 0 && vsp <= 0)
             {
                 vsp = (-jump_speed);
@@ -235,7 +239,7 @@ namespace OpenLaMulana.Entities
                 }
                 grounded = false;
             }
-            else if (second_jump_timer <= 0 && jumps == 1 && _inputController.keyJumpPressed && (vsp <= 0 || (State == PlayerState.FALLING && fall_timer > 0)))
+            else if (second_jump_timer == 0 && jumps == 1 && _inputController.keyJumpPressed && (vsp <= 0 || (State == PlayerState.FALLING && fall_timer > 0)))
             {
                 vsp = (-jump_speed);
                 //audio_play_sound(sfxJump, 0, false);
@@ -243,10 +247,10 @@ namespace OpenLaMulana.Entities
                 //default_animation()
                 jumps--;
             }
-            if ((vsp + grav) < 3)
+            if ((vsp + grav) < 6)
                 vsp += grav;
             else
-                vsp = 4f;
+                vsp = 8f;
             if (PlaceMeeting((posX + hsp), posY, TileTypes.SOLID))
             {
                 while (!PlaceMeeting((posX + Math.Sign(hsp)), posY, TileTypes.SOLID))
@@ -384,7 +388,7 @@ namespace OpenLaMulana.Entities
 
             if (!(rtx >= 0 && rtx <= Field.RoomWidth - 1 &&
                 rty >= 0 && rty <= Field.RoomHeight - 1))
-                return false;
+                return true;
 
             var checkingTileID = currRoom.Tiles[(int)rtx, (int)rty]._tileID;
 

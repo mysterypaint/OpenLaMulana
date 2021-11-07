@@ -17,6 +17,9 @@ namespace OpenLaMulana.Graphics
         public int Width { get; set; }
         public int Height { get; set; }
 
+        public int OriginX { get; set; }
+        public int OriginY { get; set; }
+
         public Color TintColor { get; set; } = Color.White;
 
         public Sprite(Texture2D texture, int x, int y, int width, int height)
@@ -26,12 +29,25 @@ namespace OpenLaMulana.Graphics
             Y = y;
             Width = width;
             Height = height;
+            OriginX = 0;
+            OriginY = 0;
+        }
+
+        public Sprite(Texture2D texture, int x, int y, int width, int height, int originX, int originY)
+        {
+            Texture = texture;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            OriginX = originX;
+            OriginY = originY;
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
 
-            spriteBatch.Draw(Texture, position, new Rectangle(X, Y, Width, Height), TintColor);
+            spriteBatch.Draw(Texture, new Vector2((int)Math.Round(position.X - OriginX), (int)Math.Round(position.Y - OriginY)), new Rectangle(X, Y, Width, Height), TintColor);
 
         }
 
