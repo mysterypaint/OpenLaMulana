@@ -102,7 +102,7 @@ namespace OpenLaMulana.Entities
         {
             var chipline = _world.GetField(_world.currField).GetChipline();
 
-            CollideAndMove(move_speed, vsp, chipline);
+            CollideAndMove(move_speed, move_speed, chipline);
             prev_state = State;
         }
 
@@ -261,32 +261,17 @@ namespace OpenLaMulana.Entities
 
             if (_inputController.keyJumpHeld && dy <= 0 && grounded)
             {
-                dy = (-jump_speed);
-
                 State = PlayerState.JUMPING;
-
-                grounded = false;
             }
 
-            if (dy < grav_max)
-                dy += grav;
-
-            moveY = (short)Math.Sign(dy);// _inputController.dirMoveY;
+            moveY = _inputController.dirMoveY;
             if (moveY < 0)
             {
                 facingY = Facing.UP;
-                State = PlayerState.JUMPING;
             }
             else
             {
                 facingY = Facing.DOWN;
-                State = PlayerState.IDLE;
-
-                if (dy > 0)
-                {
-                    if (!grounded)
-                        State = PlayerState.FALLING;
-                }
             }
 
 
@@ -334,16 +319,13 @@ namespace OpenLaMulana.Entities
                     {
                         posY = ty;
                         dy = 0;
-                        grounded = true;
-
-                        State = PlayerState.IDLE;
                     }
                     posY += dy;
 
                 }
                 else if (facingY == Facing.UP)
                 {
-                    //dy = -move_speed;
+                    dy = -move_speed;
 
                     bboxTileYMin = (int)Math.Floor(bboxTop / _tileHeight);
                     bboxTileYMax = (int)Math.Floor((bboxTop + dy) / _tileHeight) - 1;
@@ -381,7 +363,6 @@ namespace OpenLaMulana.Entities
                     {
                         posY = ty + bBoxOriginY + 1;
                         dy = 0;
-                        State = PlayerState.FALLING;
                     }
                     posY += dy + vsp;
                 }
@@ -389,8 +370,6 @@ namespace OpenLaMulana.Entities
 
             // Update the actual position
             Position = new Vector2(posX, posY);
-            vsp = dy;
-
             /*
             if (_world == null)
                 return false;
