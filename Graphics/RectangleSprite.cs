@@ -18,10 +18,10 @@ namespace OpenLaMulana.Entities
             var _x = (int)Math.Round((float)rectangle.X);
             var _y = (int)Math.Round((float)rectangle.Y);
 
-            spriteBatch.Draw(_pointTexture, new Rectangle(_x, _y, lineWidth, rectangle.Height + lineWidth - 1), color); // bbox left
-            spriteBatch.Draw(_pointTexture, new Rectangle(_x, _y, rectangle.Width + lineWidth - 1, lineWidth), color); // bbox top
-            spriteBatch.Draw(_pointTexture, new Rectangle(_x + rectangle.Width - 1, _y, lineWidth, rectangle.Height + lineWidth - 1), color); // bbox right
-            spriteBatch.Draw(_pointTexture, new Rectangle(_x, _y + rectangle.Height - 1, rectangle.Width + lineWidth - 1, lineWidth), color); // bbox bottom
+            spriteBatch.Draw(_pointTexture, new Rectangle(_x, _y, lineWidth, rectangle.Height + lineWidth), color); // bbox left
+            spriteBatch.Draw(_pointTexture, new Rectangle(_x, _y, rectangle.Width + lineWidth, lineWidth), color); // bbox top
+            spriteBatch.Draw(_pointTexture, new Rectangle(_x + rectangle.Width, _y, lineWidth, rectangle.Height + lineWidth), color); // bbox right
+            spriteBatch.Draw(_pointTexture, new Rectangle(_x, _y + rectangle.Height, rectangle.Width + lineWidth, lineWidth), color); // bbox bottom
         }
     }
 }

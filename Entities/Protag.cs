@@ -11,7 +11,7 @@ namespace OpenLaMulana.Entities
 
     public class Protag : IGameEntity, ICollidable
     {
-        enum Facing
+        public enum Facing
         {
             LEFT,
             UP,
@@ -29,40 +29,26 @@ namespace OpenLaMulana.Entities
         private World _world;
 
         public Vector2 Position { get; set; }
-        public int moveX = 0;
-        public int moveY = 0;
+        public short moveX = 0;
+        public short moveY = 0;
         public float hsp = 0;
         public float vsp = 0;
-        private bool hasBoots = true;
-        private bool hasFeather = true;
-        float move_speed = 0.8f;
-        int jumps = 0;
-        int jumps_max = 2;
+
         float grav = 0.34f;
-        int jump_speed = 5;
         double grav_max = 0.8;
         bool grounded = false;
-        static int jump_timer_max = 4;
-        int jump_timer = jump_timer_max;
-        static int second_jump_timer_max = 10;
-        int second_jump_timer = second_jump_timer_max;
-        int fall_timer = 0;
-        readonly int fall_timer_max = 40;
-        readonly int whip_cooldown_timer_max = 29;
-        int whip_cooldown_timer = 0;
-        float img_index = 0;
-        float img_index_offset = 0;
-        int img_anim_max = 1;
-        float img_speed = 0;
-        int state = 0;
-        int p_facing_x = 1;
-        bool straight_fall = true;
-        int move_x = 0;
+        int jump_speed = 5;
 
-        private Facing facingX = Facing.RIGHT;
-        private Facing facingY = Facing.DOWN;
+        private bool hasBoots = true;
+        private bool hasFeather = true;
+        private float _tileWidth, _tileHeight;
+        float move_speed = 1f;
+
+        public Facing facingX = Facing.RIGHT;
+        public Facing facingY = Facing.DOWN;
 
         private InputController _inputController = null;
+        private int HUD_TILE_HEIGHT = 2;
 
         public short bBoxOriginX { get; set; }
         public short bBoxOriginY { get; set; }
@@ -76,8 +62,8 @@ namespace OpenLaMulana.Entities
                 Rectangle box = new Rectangle(
                     (int)Math.Round(Position.X - bBoxOriginX),
                     (int)Math.Round(Position.Y - bBoxOriginY),
-                    10,
-                    12
+                    9,
+                    11
                 );
                 //box.Inflate(-COLLISION_BOX_INSET, -COLLISION_BOX_INSET);
                 return box;
@@ -90,16 +76,14 @@ namespace OpenLaMulana.Entities
             Position = position;
             State = PlayerState.IDLE;
 
-
+            _tileWidth = World.tileWidth;
+            _tileHeight = World.tileHeight;
             bBoxOriginX = 5;
             bBoxOriginY = 12;
 
             _jumpSound = jumpSound;
 
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
-
-            if (!hasFeather)
-                second_jump_timer_max = -1;
         }
 
         public void Initialize()
@@ -116,264 +100,298 @@ namespace OpenLaMulana.Entities
 
         public void Update(GameTime gameTime)
         {
+            var chipline = _world.GetField(_world.currField).GetChipline();
+
+            CollideAndMove(move_speed, vsp, chipline);
+            prev_state = State;
+        }
+
+        private void CollideAndMove(float dx, float dy, int[] chipline)
+        {
             var posX = Position.X;
             var posY = Position.Y;
 
-            if (vsp > 0)
-            {
-                State = PlayerState.FALLING;
-                //default_animation()
-            }
-            if (!hasBoots)
-                move_speed = 0.8f;
-            else
-                move_speed = 1.6f;
-            if (State != PlayerState.WHIPPING && whip_cooldown_timer <= ((whip_cooldown_timer_max - 1) / 2) && (!straight_fall))
-            {
-                if (grounded || whip_cooldown_timer > 0)
-                    move_x = _inputController.dirMoveX;
+            int bboxTileXMin, bboxTileXMax, bboxTileYMin, bboxTileYMax;
+            var bboxLeft = CollisionBox.Left;
+            var bboxRight = CollisionBox.Right;
+            var bboxTop = CollisionBox.Top;
+            var bboxBottom = CollisionBox.Bottom;
+            /*
+            Decompose movement into X and Y axes, step one at a time. If you’re planning on implementing slopes afterwards, step X first, then Y.
+            Otherwise, the order shouldn’t matter much. Then, for each axis:
+            */
 
+            // Step X
 
-                if (PlaceMeeting(posX, (posY + 1), TileTypes.SOLID))
+            // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
+            //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
+
+            moveX = _inputController.dirMoveX;
+            if (moveX == 1)
+                facingX = Facing.RIGHT;
+            else if (moveX == -1)
+                facingX = Facing.LEFT;
+
+            if (moveX != 0)
+            {
+                View currRoom = _world.GetField(_world.currField).GetMapData()[_world.currRoomX, _world.currRoomY]; // TODO: Update this variable only whenever a map change occurs
+                
+
+                if (facingX == Facing.RIGHT)
                 {
-                    if (move_x != 0)
+
+                    // Figure which lines of tiles the bounding box intersects with – this will give you a minimum and maximum tile value on the OPPOSITE axis.
+                    // For example, if we’re walking left, perhaps the player intersects with horizontal rows 32, 33 and 34(that is, tiles with y = 32 * TS, y = 33 * TS, and y = 34 * TS, where TS = tile size).
+
+                    dx = move_speed;
+
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _tileHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMax = (int)Math.Floor(bboxBottom / _tileHeight) - HUD_TILE_HEIGHT;
+
+                    bboxTileXMin = (int)Math.Floor(bboxRight / _tileWidth);
+                    bboxTileXMax = (int)Math.Floor((bboxRight + dx) / _tileWidth) + 1;
+
+
+                    // Scan along those lines of tiles and towards the direction of movement until you find the closest static obstacle. Then loop through every moving obstacle,
+                    // and determine which is the closest obstacle that is actually on your path.
+                    var closestTile = 255;
+                    for (var y = bboxTileYMin; y <= bboxTileYMax; y++)
                     {
-                        if (State != PlayerState.WALKING)
+                        for (var x = bboxTileXMax; x >= bboxTileXMin; x--)
                         {
-                            State = PlayerState.WALKING;
-                            img_anim_max = 2;
-                            img_index = 0;
-                            img_index_offset = 0;
-                            if (!hasBoots)
-                                img_speed = 0.12f;
+                            if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
+                            {
+                                if (currRoom.Tiles[x, y]._tileID >= chipline[0] && currRoom.Tiles[x, y]._tileID < chipline[1])
+                                {
+                                    if (closestTile > x)
+                                        closestTile = x;
+                                }
+                            }
                             else
-                                img_speed = 0.18f;
+                            {
+                                /*
+                                if (x < 0)
+                                    closestTile = 0;
+                                else
+                                    closestTile = Field.RoomWidth;
+                                */
+                            }
                         }
                     }
-                    else
-                    {
-                        State = PlayerState.IDLE;
-                        //default_animation();
-                    }
-                }
-            }
-            else if (grounded)
-                move_x = 0;
-            if (prev_state == PlayerState.WALKING && State == PlayerState.FALLING)
-            {
-                straight_fall = true;
-                hsp = 0;
-                move_x = 0;
-            }
-            if (move_x == 0 && grounded)
-                hsp *= 0.4f;
 
-            if (PlaceMeeting(posX, (posY + 1), TileTypes.SOLID))
-            {
-                if (straight_fall)
-                {
-                    straight_fall = false;
-                    //audio_play_sound(sfxGrounded, 0, false)
+                    // The total movement of the player along that direction is then the minimum between the distance to closest obstacle,
+                    // and the amount that you wanted to move in the first place.
+                    int tx = closestTile * World.tileWidth;
+                    dx = Math.Min(dx, tx - bboxRight + 1);
+
+                    // Move player to the new position.
+
+                    if (bboxRight + dx >= tx)
+                    {
+                        posX = tx - bBoxOriginX;
+                        dx = 0;
+                    }
+                    posX += dx;
+
                 }
-                jumps = jumps_max;
-                second_jump_timer = second_jump_timer_max;
-                if (!_inputController.keyJumpHeld)
-                    jump_timer = jump_timer_max;
-                if (State != PlayerState.WHIPPING && State != PlayerState.WALKING)
+                else if (facingX == Facing.LEFT)
                 {
-                    State = PlayerState.IDLE;
-                    //default_animation()
+
+                    // Figure which lines of tiles the bounding box intersects with – this will give you a minimum and maximum tile value on the OPPOSITE axis.
+                    // For example, if we’re walking left, perhaps the player intersects with horizontal rows 32, 33 and 34(that is, tiles with y = 32 * TS, y = 33 * TS, and y = 34 * TS, where TS = tile size).
+
+                    dx = -move_speed;
+
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _tileHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMax = (int)Math.Floor(bboxBottom / _tileHeight) - HUD_TILE_HEIGHT;
+
+                    bboxTileXMin = (int)Math.Floor(bboxLeft / _tileWidth);
+                    bboxTileXMax = (int)Math.Floor((bboxLeft + dx) / _tileWidth) - 1;
+
+
+                    // Scan along those lines of tiles and towards the direction of movement until you find the closest static obstacle. Then loop through every moving obstacle,
+                    // and determine which is the closest obstacle that is actually on your path.
+                    var closestTile = -255;
+                    for (var y = bboxTileYMin; y <= bboxTileYMax; y++)
+                    {
+                        for (var x = bboxTileXMax; x <= bboxTileXMin; x++)
+                        {
+                            if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
+                            {
+                                if (currRoom.Tiles[x, y]._tileID >= chipline[0] && currRoom.Tiles[x, y]._tileID < chipline[1])
+                                {
+                                    if (closestTile < x)
+                                        closestTile = x;
+                                }
+                            }
+                            else
+                            {
+                                /*
+                                if (x < 0)
+                                    closestTile = -1;
+                                else
+                                    closestTile = Field.RoomWidth;
+                                */
+                            }
+                        }
+                    }
+                    //closestTile = 1;
+                    // The total movement of the player along that direction is then the minimum between the distance to closest obstacle,
+                    // and the amount that you wanted to move in the first place.
+                    int tx = (closestTile * World.tileWidth) + World.tileWidth - 1;
+
+                    //movingDistance = Math.Sign(movingDistance) * Math.Min(Math.Abs(movingDistance), Math.Abs(bboxLeft - tx - 1));
+
+                    // Move player to the new position.
+
+                    if (bboxLeft + dx <= tx)
+                    {
+                        posX = tx + bBoxOriginX + 1;
+                        dx = 0;
+                    }
+                    posX += dx;
                 }
             }
-            hsp = (move_x * move_speed);
-            if (whip_cooldown_timer <= 0 && _inputController.keyWhipPressed)
+
+            // With this new position, step the other coordinate, if still not done.
+            Position = new Vector2(posX, posY);
+
+            // Step Y
+
+
+            if (_inputController.keyJumpHeld && dy <= 0 && grounded)
             {
-                if (p_facing_x == 1)
-                {
-                    //var _whip = instance_create_depth((posX - 16), posY, -999, PlayerWhip)
-                    //_whip.image_index = 33;
-                }
-                else
-                {
-                    //_whip = instance_create_depth((posX + 13), (posY - 5), -999, PlayerWhip)
-                    //_whip.image_index = 35;
-                }
-                //audio_stop_sound(sfxPlayerWhip);
-                //audio_play_sound(sfxPlayerWhip, 0, false);
-                //whip_cooldown_timer = whip_cooldown_timer_max;
-            }
-            if (whip_cooldown_timer > 0)
-            {
-                State = PlayerState.WHIPPING;
-                //default_animation();
-                whip_cooldown_timer--;
-            }
-            if (whip_cooldown_timer == ((whip_cooldown_timer_max - 1) / 2))
-            {
-                //audio_stop_sound(sfxPlayerWhip)
-                //audio_play_sound(sfxPlayerWhip2, 0, false)
-            }
-            if (fall_timer > 0)
-                fall_timer--;
-            if (_inputController.keyJumpHeld)
-                jump_timer--;
-            else if (vsp < 0)
-                vsp = Math.Max(vsp, 0.08f);
-            if (jumps == 1)
-            {
-                if (second_jump_timer > 0)
-                    second_jump_timer--;
-            }
-            if (jumps > 1 && _inputController.keyJumpHeld && jump_timer == 0 && vsp <= 0)
-            {
-                vsp = (-jump_speed);
-                fall_timer = fall_timer_max;
-                if (jumps == jumps_max)
-                    hsp *= 2;
+                dy = (-jump_speed);
+
                 State = PlayerState.JUMPING;
-                //default_animation()
-                jumps--;
-                if (jumps == 1)
-                {
-                    //audio_play_sound(sfxJump, 0, false)
-                }
+
                 grounded = false;
             }
-            else if (second_jump_timer == 0 && jumps == 1 && _inputController.keyJumpPressed && (vsp <= 0 || (State == PlayerState.FALLING && fall_timer > 0)))
+
+            if (dy < grav_max)
+                dy += grav;
+
+            moveY = (short)Math.Sign(dy);// _inputController.dirMoveY;
+            if (moveY < 0)
             {
-                vsp = (-jump_speed);
-                //audio_play_sound(sfxJump, 0, false);
+                facingY = Facing.UP;
                 State = PlayerState.JUMPING;
-                //default_animation()
-                jumps--;
             }
-            if ((vsp + grav) < 6)
-                vsp += grav;
             else
-                vsp = 8f;
-            if (PlaceMeeting((posX + hsp), posY, TileTypes.SOLID))
             {
-                while (!PlaceMeeting((posX + Math.Sign(hsp)), posY, TileTypes.SOLID))
-                    posX += Math.Sign(hsp);
-                hsp = 0;
-            }
-            posX += hsp;
-            if (PlaceMeeting(posX, (posY + vsp), TileTypes.SOLID))
-            {
-                while (!PlaceMeeting(posX, (posY + Math.Sign(vsp)), TileTypes.SOLID))
-                    posY += Math.Sign(vsp);
-                vsp = 0;
-                if (!grounded)
+                facingY = Facing.DOWN;
+                State = PlayerState.IDLE;
+
+                if (dy > 0)
                 {
-                    //audio_stop_sound(sfxGrounded)
-                    //audio_play_sound(sfxGrounded, 0, false)
-                    hsp = 0;
+                    if (!grounded)
+                        State = PlayerState.FALLING;
                 }
-                grounded = true;
             }
-            posY += vsp;
-            if (move_x == 1)
-                p_facing_x = 1;
-            else if (move_x == -1)
-                p_facing_x = 0;
-            switch (State)
+
+
+            if (moveY != 0)
             {
-                case PlayerState.IDLE:
-                default:
-                    if (p_facing_x == 1)
+                View currRoom = _world.GetField(_world.currField).GetMapData()[_world.currRoomX, _world.currRoomY]; // TODO: Update this variable only whenever a map change occurs
+
+                if (facingY == Facing.DOWN)
+                {
+                    bboxTileYMin = (int)Math.Floor(bboxBottom / _tileHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMax = (int)Math.Floor((bboxBottom + dy) / _tileHeight) - HUD_TILE_HEIGHT;
+
+                    bboxTileXMin = (int)Math.Floor(bboxLeft / _tileWidth);
+                    bboxTileXMax = (int)Math.Floor(bboxRight / _tileWidth);
+
+                    var closestTile = 255;
+                    for (var x = bboxTileXMin; x <= bboxTileXMax; x++)
                     {
-                        img_index_offset = 0;
-                        if (_inputController.keyJumpHeld && jump_timer > 0)
-                            img_index_offset = 6;
-                    }
-                    else
-                    {
-                        img_index_offset = 2;
-                        if (_inputController.keyJumpHeld && jump_timer > 0)
-                            img_index_offset = 8;
-                    }
-                    break;
-                case PlayerState.WALKING:
-                    if (p_facing_x == 1)
-                    {
-                        img_index_offset %= 2;
-                        if (_inputController.keyJumpHeld && jump_timer > 0)
-                            img_index_offset = 6;
-                    }
-                    else
-                    {
-                        img_index_offset = (2 + (img_index_offset % 2));
-                        if (_inputController.keyJumpHeld && jump_timer > 0)
-                            img_index_offset = 8;
-                    }
-                    break;
-                case PlayerState.JUMPING:
-                    if (p_facing_x == 1)
-                        img_index_offset = 6;
-                    else
-                        img_index_offset = 8;
-                    break;
-                case PlayerState.FALLING:
-                    if (p_facing_x == 1)
-                        img_index_offset = 7;
-                    else
-                        img_index_offset = 9;
-                    break;
-                case PlayerState.WHIPPING:
-                    var xoff = -5;
-                    var yoff = -11;
-                    if (whip_cooldown_timer > (whip_cooldown_timer_max / 2))
-                    {
-                        if (p_facing_x == 1)
+                        for (var y = bboxTileYMin; y <= bboxTileYMax; y++)
                         {
-                            img_index_offset = 16;
-                            //PlayerWhip.image_index = 32;
-                            //PlayerWhip.posX = (posX - 3 + xoff);
-                            //PlayerWhip.posY = (posY - 5 + yoff);
-                        }
-                        else
-                        {
-                            //PlayerWhip.image_index = 34;
-                            //PlayerWhip.posX = (posX + 13 + xoff);
-                            //PlayerWhip.posY = (posY - 5 + yoff);
-                            img_index_offset = 18;
+                            if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
+                            {
+                                if (currRoom.Tiles[x, y]._tileID >= chipline[0] && currRoom.Tiles[x, y]._tileID < chipline[1])
+                                {
+                                    if (closestTile > y)
+                                        closestTile = y;
+                                }
+                            }
+                            else
+                            {
+                                // TODO: Treat screen edges like walls if the View doesn't transition to another screen in all 4 directions. Is most likely how the original game is coded, too (do not treat it like a floor, though: let the player keep falling
+                                /*
+                                if (y < 0)
+                                    closestTile = -1;
+                                else
+                                    closestTile = Field.RoomHeight;
+                                */
+                            }
                         }
                     }
-                    else if (whip_cooldown_timer > 0)
+
+                    int ty = (closestTile + HUD_TILE_HEIGHT) * World.tileHeight;
+
+                    if (bboxBottom + dy >= ty)
                     {
-                        if (p_facing_x == 1)
-                        {
-                            img_index_offset = 17;
-                            //PlayerWhip.image_index = 33;
-                            //PlayerWhip.posX = (posX + 21 + xoff);
-                            //PlayerWhip.posY = (posY + 11 + yoff);
-                        }
-                        else
-                        {
-                            ;                           //PlayerWhip.image_index = 35;
-                                                        //PlayerWhip.posX = (posX - 11 + xoff);
-                                                        //PlayerWhip.posY = (posY + 11 + yoff);
-                            img_index_offset = 19;
-                        }
-                    }
-                    else
-                    {
+                        posY = ty;
+                        dy = 0;
+                        grounded = true;
+
                         State = PlayerState.IDLE;
-                        //default_animation();
-                        //instance_destroy(PlayerWhip);
                     }
-                    break;
+                    posY += dy;
+
+                }
+                else if (facingY == Facing.UP)
+                {
+                    //dy = -move_speed;
+
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _tileHeight);
+                    bboxTileYMax = (int)Math.Floor((bboxTop + dy) / _tileHeight) - 1;
+
+                    bboxTileXMin = (int)Math.Floor(bboxLeft / _tileWidth);
+                    bboxTileXMax = (int)Math.Floor(bboxRight / _tileWidth);
+
+                    var closestTile = -255;
+                    for (var x = bboxTileXMin; x <= bboxTileXMax; x++)
+                    {
+                        for (var y = bboxTileYMax; y < bboxTileYMin; y++)
+                        {
+                            if (x >= 0 && y >= HUD_TILE_HEIGHT && x < Field.RoomWidth && y < Field.RoomHeight + HUD_TILE_HEIGHT)
+                            {
+                                if (currRoom.Tiles[x, y - HUD_TILE_HEIGHT]._tileID >= chipline[0] && currRoom.Tiles[x, y - HUD_TILE_HEIGHT]._tileID < chipline[1])
+                                {
+                                    if (y - HUD_TILE_HEIGHT > closestTile)
+                                        closestTile = y - HUD_TILE_HEIGHT;
+                                }
+                            }
+                            else
+                            {
+                                /*
+                                if (y < 0)
+                                    closestTile = -1 + HUD_TILE_HEIGHT;
+                                else
+                                    closestTile = Field.RoomHeight - HUD_TILE_HEIGHT;
+                                */
+                            }
+                        }
+                    }
+
+                    int ty = ((closestTile + HUD_TILE_HEIGHT) * World.tileWidth) + World.tileWidth - 1;
+                    if (bboxTop + dy <= ty)
+                    {
+                        posY = ty + bBoxOriginY + 1;
+                        dy = 0;
+                        State = PlayerState.FALLING;
+                    }
+                    posY += dy + vsp;
+                }
             }
 
             // Update the actual position
             Position = new Vector2(posX, posY);
+            vsp = dy;
 
-            img_index += img_speed;
-            prev_state = State;
-        }
-
-        private bool PlaceMeeting(float xCheck, float yCheck, TileTypes tileType)
-        {
+            /*
             if (_world == null)
                 return false;
             var currField = _world.GetField(_world.currField);
@@ -396,6 +414,7 @@ namespace OpenLaMulana.Entities
                 return true;
             else
                 return false;
+            */
         }
 
         public void SetInputController(InputController inputController)

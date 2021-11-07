@@ -360,7 +360,11 @@ namespace OpenLaMulana
                 case GameState.Playing:
 
                     //_textManager.DrawText(0, 0, _textManager.GetText(textIndex, Languages.English));
-                    _textManager.DrawText(0, 0, "Player State: " + _protag.PrintState() + "\\10hsp: " + _protag.hsp.ToString() + "\\10vsp: " + _protag.vsp.ToString());
+                    _textManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
+                        + "\\10bboxLeft: " + Math.Floor(_protag.CollisionBox.Left / (float)World.tileHeight).ToString()
+                        + "\\10bboxBottom: " + Math.Floor(_protag.CollisionBox.Bottom / (float)World.tileHeight).ToString()
+                    +"\\10bboxRight: " + Math.Floor(_protag.CollisionBox.Right / (float)World.tileHeight).ToString()
+                    + "\\10bboxTop: " + Math.Floor(_protag.CollisionBox.Top / (float)World.tileHeight).ToString());
                     break;
 
             }
