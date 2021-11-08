@@ -161,7 +161,7 @@ namespace OpenLaMulana.Entities
                         {
                             if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
                             {
-                                if (currRoom.Tiles[x, y]._tileID >= chipline[0] && currRoom.Tiles[x, y]._tileID < chipline[1])
+                                if (currRoom.Tiles[x, y].tileID >= chipline[0] && currRoom.Tiles[x, y].tileID < chipline[1])
                                 {
                                     if (closestTile > x)
                                         closestTile = x;
@@ -218,7 +218,7 @@ namespace OpenLaMulana.Entities
                         {
                             if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
                             {
-                                if (currRoom.Tiles[x, y]._tileID >= chipline[0] && currRoom.Tiles[x, y]._tileID < chipline[1])
+                                if (currRoom.Tiles[x, y].tileID >= chipline[0] && currRoom.Tiles[x, y].tileID < chipline[1])
                                 {
                                     if (closestTile < x)
                                         closestTile = x;
@@ -294,7 +294,7 @@ namespace OpenLaMulana.Entities
                         {
                             if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
                             {
-                                if (currRoom.Tiles[x, y]._tileID >= chipline[0] && currRoom.Tiles[x, y]._tileID < chipline[1])
+                                if (currRoom.Tiles[x, y].tileID >= chipline[0] && currRoom.Tiles[x, y].tileID < chipline[1])
                                 {
                                     if (closestTile > y)
                                         closestTile = y;
@@ -340,7 +340,7 @@ namespace OpenLaMulana.Entities
                         {
                             if (x >= 0 && y >= HUD_TILE_HEIGHT && x < Field.RoomWidth && y < Field.RoomHeight + HUD_TILE_HEIGHT)
                             {
-                                if (currRoom.Tiles[x, y - HUD_TILE_HEIGHT]._tileID >= chipline[0] && currRoom.Tiles[x, y - HUD_TILE_HEIGHT]._tileID < chipline[1])
+                                if (currRoom.Tiles[x, y - HUD_TILE_HEIGHT].tileID >= chipline[0] && currRoom.Tiles[x, y - HUD_TILE_HEIGHT].tileID < chipline[1])
                                 {
                                     if (y - HUD_TILE_HEIGHT > closestTile)
                                         closestTile = y - HUD_TILE_HEIGHT;
@@ -403,7 +403,6 @@ namespace OpenLaMulana.Entities
 
         internal string PrintState()
         {
-            string str = "Undefined";
             switch (State)
             {
                 case PlayerState.IDLE:
@@ -423,7 +422,7 @@ namespace OpenLaMulana.Entities
                 case PlayerState.WHIPPING:
                     return "Whipping";
             }
-            return str;
+            return "Undefined";
         }
     }
 }

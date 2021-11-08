@@ -11,15 +11,15 @@ namespace OpenLaMulana
         };
 
 
-        public int _tileID = -1;
-        public int _currFrame = 0;
+        public int tileID = -1;
+        public int currFrame = 0;
         public bool isAnime = false;
         public int animeSpeed = 0;
         private int[] _animeFrames = null;
 
         public Tile(short tileID, int[] animeTileInfo)
         {
-            this._tileID = tileID;
+            this.tileID = tileID;
             //Array.Copy(a, 1, b, 0, 3);
             //animatedTileInfo;
 

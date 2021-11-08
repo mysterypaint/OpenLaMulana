@@ -274,8 +274,8 @@ namespace OpenLaMulana.Entities
                         //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
                         var _posx = (_x * 8);
                         var _posy = (_y * 8);
-                        var _texX = (_thisTile._tileID % 40) * 8;
-                        var _texY = (_thisTile._tileID / 40) * 8;
+                        var _texX = (_thisTile.tileID % 40) * 8;
+                        var _texY = (_thisTile.tileID / 40) * 8;
 
                         spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
                     } else
@@ -288,14 +288,14 @@ namespace OpenLaMulana.Entities
                         if (animeSpeed > 0) {
                             if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
                             {
-                                _thisTile._currFrame++;
+                                _thisTile.currFrame++;
 
-                                if (_thisTile._currFrame >= maxFrames)
-                                    _thisTile._currFrame = 0;
+                                if (_thisTile.currFrame >= maxFrames)
+                                    _thisTile.currFrame = 0;
                             }
                         }
 
-                        var drawingTileID = _animeFrames[_thisTile._currFrame];
+                        var drawingTileID = _animeFrames[_thisTile.currFrame];
 
                         //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
                         var _posx = (_x * 8);
