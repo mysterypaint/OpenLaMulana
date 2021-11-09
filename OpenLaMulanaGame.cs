@@ -5,17 +5,13 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Diagnostics;
 using OpenLaMulana.Entities;
-using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
-using OpenLaMulana.Extensions;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Reflection;
 using System.Collections.Generic;
 
 namespace OpenLaMulana
 {
-
     public class OpenLaMulanaGame : Game
     {
         public enum DisplayMode
@@ -85,6 +81,9 @@ namespace OpenLaMulana
         private SongManager _songManager;
         private TextManager _textManager;
         private GameMenu _gameMenu;
+        private SaveData _saveData;
+
+        public static GameRNG gameRNG;
 
         private KeyboardState _previousKeyboardState;
 
@@ -92,6 +91,7 @@ namespace OpenLaMulana
 
         private Matrix _transformMatrix = Matrix.Identity;
         private int pauseToggleTimer = 0;
+
 
         public GameState State { get; private set; }
 
@@ -112,6 +112,12 @@ namespace OpenLaMulana
             this.IsMouseVisible = true;
             //this.Window.AllowUserResizing = true;
 
+            gameRNG = new GameRNG();
+            _saveData = new SaveData();
+            _saveData.ReadEncryptedSave("lamulana.sa0");
+            _saveData.WriteDecryptedSave("lamulana_dec.sa0");
+            _saveData.WriteEncryptedSave("lamulana_enc.sa0");
+
             _entityManager = new EntityManager();
             State = GameState.Initial;
             //_fadeInTexturePosX = Protag.DEFAULT_SPRITE_WIDTH;
@@ -129,7 +135,6 @@ namespace OpenLaMulana
             _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
             _graphics.SynchronizeWithVerticalRetrace = true;
             _graphics.ApplyChanges();
-
 
             DISPLAY_ZOOM_FACTOR = 3;
             if (DISPLAY_ZOOM_FACTOR > 4)
@@ -152,6 +157,8 @@ namespace OpenLaMulana
             _txProt1 = LoadTexture(gfxPath + "prot1.png");
 
             _gameFontTex = LoadTexture(gfxPath + "font_EN.png");
+
+            long val = gameRNG.RollDice(9);
 
             _world = new World(_entityManager, _gameFontTex);
             _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _sfxJump);
