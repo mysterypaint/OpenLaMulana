@@ -13,7 +13,7 @@ namespace OpenLaMulana
 
         public void InitPlayer()
         {
-            Music.Play(76); // 71
+            Music.Play(0); // 71
         }
 
         public void LoadSong(string fileName)
