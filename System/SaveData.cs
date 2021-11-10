@@ -49,7 +49,7 @@ namespace OpenLaMulana.System
         };
 
         private const int SAVE_SIZE = 1459; // 0x5B3 bytes of data
-        byte globalKey;
+        byte globalSaveEncryptionKey;
 
         EncryptionBlock[] saveFile;
 
@@ -67,7 +67,7 @@ namespace OpenLaMulana.System
             {
                 if (i >= saveFile.Length)
                 {
-                    globalKey = data[offset];
+                    globalSaveEncryptionKey = data[offset];
                     break;
                 }
                 saveFile[i] = SetEncryptionBlock(saveFile[i], offset, data, regionSizes[i]);
@@ -124,14 +124,14 @@ namespace OpenLaMulana.System
             }
         }
 
-        public void WriteEncryptedSave(string fileName)
+        public void WriteEncryptedSave(string fileName, long rngState)
         {
             byte[] outData = new byte[SAVE_SIZE];
 
             int i = 0;
             foreach (EncryptionBlock eb in saveFile)
             {
-                saveFile[i] = EncryptSaveBlock(eb);
+                saveFile[i] = EncryptSaveBlock(eb, rngState);
                 i++;
             }
 
@@ -204,9 +204,20 @@ namespace OpenLaMulana.System
 
             return checksum == saveFile[blockIndex].Checksum;
         }
-        private EncryptionBlock EncryptSaveBlock(EncryptionBlock eb)
+        private EncryptionBlock EncryptSaveBlock(EncryptionBlock eb, long rngState)
         {
-            // TODO: Do the exact opposite of the DecryptSaveBlock() function above
+            /*
+            byte checksum = 0x0;
+            for (int i = 0; i < eb.Data.Length; i++)
+            {
+                rngState = (byte)(109 * rngState + 1021);
+                eb.Data[i] = (byte) ~(eb.Data[i] ^ ((byte) rngState));
+
+                checksum += (byte)(i + eb.Data[i]);
+            }
+            eb.Key = (byte)rngState;
+            eb.Checksum = checksum;
+            */
             return eb;
         }
     }

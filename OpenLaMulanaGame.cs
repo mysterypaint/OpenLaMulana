@@ -116,7 +116,13 @@ namespace OpenLaMulana
             _saveData = new SaveData();
             _saveData.ReadEncryptedSave("lamulana.sa0");
             _saveData.WriteDecryptedSave("lamulana_dec.sa0");
-            _saveData.WriteEncryptedSave("lamulana_enc.sa0");
+            //gameRNG.Advance();
+
+
+            DateTime bootTime = DateTime.Now;
+            long sRNG = new DateTimeOffset(bootTime).ToUnixTimeMilliseconds();
+
+            _saveData.WriteEncryptedSave("lamulana_enc.sa0", sRNG);
 
             _entityManager = new EntityManager();
             State = GameState.Initial;
@@ -160,6 +166,9 @@ namespace OpenLaMulana
 
             long val = gameRNG.RollDice(9);
 
+            _songManager = new SongManager();
+            _songManager.InitPlayer();
+
             _world = new World(_entityManager, _gameFontTex);
             _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _sfxJump);
             _protag.DrawOrder = 100;
@@ -198,7 +207,7 @@ namespace OpenLaMulana
 
             _textManager = _world.GetTextManager();
             
-            _gameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, _textManager); 
+            _gameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, _textManager);
             _entityManager.AddEntity(_textManager);
             _entityManager.AddEntity(_gameMenu);
 
