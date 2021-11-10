@@ -53,6 +53,7 @@ dkms.conf
 
 # Game assets
 Icon.ico
+Icon.bmp
 [Cc]ontent/[Gg]raphics/*.png
 [Cc]ontent/[Gg]raphics/*.bmp
 *.xnb
