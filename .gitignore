@@ -52,10 +52,9 @@ Mkfile.old
 dkms.conf
 
 # Game assets
-*.ico
 Icon.ico
-*.png
-*.bmp
+[Cc]ontent/[Gg]raphics/*.png
+[Cc]ontent/[Gg]raphics/*.bmp
 *.xnb
 *.wav
 *.sgt
