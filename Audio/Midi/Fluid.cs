@@ -65,17 +65,15 @@ namespace OpenLaMulana.Audio.Midi
         public byte[] midBuffer = null;
 
 #if _WINDOWS
-#if _X64
-        private const string fluidLibName = "x64/libfluidsynth.dll";
-#elif _X86
-        private const string fluidLibName = "x86/libfluidsynth.dll";
-#endif
+    private const string fluidLibName = "x86/libfluidsynth.dll";
 #else
-        private const string fluidLibName = "fluidsynth";
+    private const string fluidLibName = "x64/libfluidsynth.dll";
 #endif
 
         internal static class NativeMethods
         {
+
+
 #region P/INVOKES
             [DllImport(fluidLibName)]
             internal static extern IntPtr new_fluid_settings();
@@ -775,6 +773,11 @@ namespace OpenLaMulana.Audio.Midi
             public ushort wGridsPerBeat;
         }
 
+        public struct DMUS_IO_TRACK_EXTRAS_HEADER
+        {
+            public UInt32 dwFlags;
+        }
+
         public struct DMUS_IO_TEMPO_ITEM
         {
             public int lTime;
@@ -853,6 +856,7 @@ namespace OpenLaMulana.Audio.Midi
         public static List<DMUS_IO_TIMESIGNATURE_ITEM> tims;
         private static List<DMUS_IO_TRACK_HEADER> trkh;
         public static DMUS_IO_TEMPO_ITEM tetr;
+        public static DMUS_IO_TRACK_EXTRAS_HEADER trkx;
         private static DMUS_IO_CHORD crdh;
         private static List<DMUS_IO_SUBCHORD> crdb;
         public static List<DMUS_IO_SEQ_ITEM> seqt;
@@ -880,7 +884,8 @@ namespace OpenLaMulana.Audio.Midi
             synth = NativeMethods.new_fluid_synth(settings);
             driver = NativeMethods.new_fluid_audio_driver(settings, synth);
             var music_pt = "Content/music/";
-            var dlsPath = Path.Combine(music_pt, "SanbikiScc.dls");
+            var dlsName = "gm.dls";// "SanbikiScc.dls";
+            var dlsPath = Path.Combine(music_pt, dlsName);
             NativeMethods.fluid_synth_sfload(synth, dlsPath, 1); //we should allow user to choose other SoundFont if he wants to
             player = NativeMethods.new_fluid_player(synth);
             handles = new GCHandle[4];
@@ -949,12 +954,20 @@ namespace OpenLaMulana.Audio.Midi
             OpenLaMulana.Audio.Midi.MidiProcessor midiProcessor = new OpenLaMulana.Audio.Midi.MidiProcessor(lbinbins, tetr, seqt, tims);
             var mid = midiProcessor.Process();
 
+            //string directory = "";
+            string midiFile = "out.mid";// Path.Combine(directory, "out.mid");
+            //Directory.CreateDirectory(directory);
+            if (File.Exists(midiFile))
+                File.Delete(midiFile);
+
             using (var ms = new MemoryStream())
             {
                 // pull request to get this added to naudio
                 // https://github.com/naudio/NAudio/pull/499
                 OpenLaMulana.Audio.Midi.MidiFile.Export(ms, mid);
+
                 midBuffer = ms.ToArray();
+                File.WriteAllBytes(midiFile, midBuffer);
             }
         }
 
@@ -1038,10 +1051,22 @@ namespace OpenLaMulana.Audio.Midi
                 var trkhEntry = Extended.ByteArrayToStructure<DMUS_IO_TRACK_HEADER>(br.ReadBytes((int)br.ReadUInt32()));
                 trkh.Add(trkhEntry);
                 var moduleName = string.IsNullOrEmpty(trkhEntry.Ckid) ? trkhEntry.FccType : trkhEntry.Ckid;
+
+                fourCc = ReadFourCc(br);
+
+                if (fourCc == "trkx")
+                {
+                    // Optional track flags
+                    var trkxChunkSize = br.ReadUInt32();
+                    trkx = Extended.ByteArrayToStructure<DMUS_IO_TRACK_EXTRAS_HEADER>(br.ReadBytes((int)trkxChunkSize));
+                    if (moduleName.ToLower() != "dmbt")
+                        fourCc = ReadFourCc(br);
+                }
+
                 switch (moduleName.ToLower())
                 {
                     case "cord": //Chord track list =[DONE]
-                        if ((fourCc = ReadFourCc(br)) != "LIST")
+                        if (fourCc != "LIST")
                         { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected cord/LIST, got={fourCc}"); break; }
                         var cordListChunkSize = br.ReadUInt32();
                         if ((fourCc = ReadFourCc(br)) != "cord")
@@ -1063,7 +1088,7 @@ namespace OpenLaMulana.Audio.Midi
                         break;
 
                     case "tetr":
-                        if ((fourCc = ReadFourCc(br)) != "tetr")
+                        if (fourCc != "tetr")
                         { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected tetr/tetr, got={fourCc}"); break; }
                         var tetrChunkSize = br.ReadUInt32();
                         var tetrEntrySize = br.ReadUInt32();
@@ -1077,7 +1102,7 @@ namespace OpenLaMulana.Audio.Midi
                         break;
 
                     case "seqt": //Sequence Track Chunk
-                        if ((fourCc = ReadFourCc(br)) != "seqt")
+                        if (fourCc != "seqt")
                         { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected seqt/seqt, got={fourCc}"); break; }
                         var seqtChunkSize = br.ReadUInt32();
                         if ((fourCc = ReadFourCc(br)) != "evtl")
@@ -1097,7 +1122,14 @@ namespace OpenLaMulana.Audio.Midi
                         break;
 
                     case "tims": //Time Signature Track List  =[DONE]
-                        if ((fourCc = ReadFourCc(br)) != "tims")
+                        if (fourCc == "LIST")
+                        {
+                            // Optional track flags
+                            var timsListChunkSize = br.ReadUInt32();
+                            fourCc = ReadFourCc(br); // Second "TIMS" before "tims"; just eat it
+                            fourCc = ReadFourCc(br);
+                        }
+                        if (fourCc != "tims")
                         { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected tims/tims, got={fourCc}"); break; }
                         var timsChunkSize = br.ReadUInt32();
                         var timsEntrySize = br.ReadUInt32();
@@ -1107,7 +1139,8 @@ namespace OpenLaMulana.Audio.Midi
 
                     case "dmbt": //Band segment
                         fs.Seek(12, SeekOrigin.Current); //We are skipping RIFF and the segment size. Useless for us
-                        if ((fourCc = ReadFourCc(br)) != "LIST")
+                        fourCc = ReadFourCc(br);
+                        if (fourCc != "LIST")
                         { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected dmbt/LIST, got={fourCc}"); break; }
                         var lbdlChunkSize = br.ReadUInt32();
                         if ((fourCc = ReadFourCc(br)) != "lbdl")
@@ -1117,8 +1150,9 @@ namespace OpenLaMulana.Audio.Midi
                         _ = br.ReadUInt32();
                         if ((fourCc = ReadFourCc(br)) != "lbnd")
                         { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected dmbt/lbnd, got={fourCc}"); break; }
-                        if ((fourCc = ReadFourCc(br)) != "bdih")
-                        { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected dmbt/bdih, got={fourCc}"); break; }
+                        fourCc = ReadFourCc(br);
+                        if (fourCc != "bdih" && fourCc != "bd2h")
+                        { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected dmbt/bdih or dmbt/bd2h, got={fourCc}"); break; }
                         fs.Seek(br.ReadUInt32(), SeekOrigin.Current);
                         if ((fourCc = ReadFourCc(br)) != "RIFF")
                         { Debug.WriteLine($"init_debugger_Audio::ReadSegmentForm: expected dmbt/RIFF, got={fourCc}"); break; }

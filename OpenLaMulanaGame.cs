@@ -114,15 +114,15 @@ namespace OpenLaMulana
 
             gameRNG = new GameRNG();
             _saveData = new SaveData();
-            _saveData.ReadEncryptedSave("lamulana.sa0");
-            _saveData.WriteDecryptedSave("lamulana_dec.sa0");
+            //_saveData.ReadEncryptedSave("lamulana.sa0");
+            //_saveData.WriteDecryptedSave("lamulana_dec.sa0");
             //gameRNG.Advance();
 
 
             DateTime bootTime = DateTime.Now;
             long sRNG = new DateTimeOffset(bootTime).ToUnixTimeMilliseconds();
 
-            _saveData.WriteEncryptedSave("lamulana_enc.sa0", sRNG);
+            //_saveData.WriteEncryptedSave("lamulana_enc.sa0", sRNG);
 
             _entityManager = new EntityManager();
             State = GameState.Initial;
