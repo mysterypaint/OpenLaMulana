@@ -27,7 +27,7 @@ namespace OpenLaMulana.Entities
         public int fieldCount = 0;
 
         public static EntityManager s_entityManager;
-
+        private AudioManager _audioManager;
         private TextManager _textManager;
 
         private int[] currChipLine;
@@ -48,10 +48,11 @@ namespace OpenLaMulana.Entities
             LEFT
         };
 
-        public World(EntityManager entityManager, Texture2D _gameFontTex)
+        public World(EntityManager entityManager, Texture2D _gameFontTex, AudioManager audioManager)
         {
             s_entityManager = entityManager;
-            
+
+            _audioManager = audioManager;
             _fields = new List<Field>();
 
             _textManager = new TextManager(_gameFontTex);
@@ -327,6 +328,7 @@ namespace OpenLaMulana.Entities
             currField = destField;
             currRoomX = destRoomX;
             currRoomY = destRoomY;
+            _audioManager.ChangeSongs(_fields[destField]._musicNumber);
         }
 
         internal TextManager GetTextManager()

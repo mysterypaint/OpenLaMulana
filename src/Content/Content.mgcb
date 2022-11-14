@@ -670,6 +670,9 @@
 #begin music/SanbikiSCC.it
 /copy:music/SanbikiSCC.it
 
+#begin music/SanbikiScc.sf2
+/copy:music/SanbikiScc.sf2
+
 #begin sound/se00.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1233,3 +1236,4 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/se5C.wav
+

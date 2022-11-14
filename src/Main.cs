@@ -9,6 +9,8 @@ using OpenLaMulana.System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Generic;
+using MeltySynth;
+using OpenLaMulana.Audio;
 
 namespace OpenLaMulana
 {
@@ -46,6 +48,7 @@ namespace OpenLaMulana
         private const float FADE_IN_ANIMATION_SPEED = 820f;
 
         private const string SAVE_FILE_NAME = "Save.dat";
+        private const string musPath = "Content/music/";
         private const string gfxPath = "Content/graphics/";
 
         public int DISPLAY_ZOOM_FACTOR = 3;
@@ -53,10 +56,6 @@ namespace OpenLaMulana
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-
-        //private SoundEffect _sfxHit;
-        //private SoundEffect _sfxButtonPress;
-        //private SoundEffect _sfxScoreReached;
 
         private SoundEffect _sfxPause;
         private SoundEffectInstance _sfxPauseInstance;
@@ -78,7 +77,7 @@ namespace OpenLaMulana
         //private SkyManager _skyManager;
 
         private EntityManager _entityManager;
-        private SongManager _songManager;
+        private AudioManager _audioManager;
         private TextManager _textManager;
         private GameMenu _gameMenu;
         private SaveData _saveData;
@@ -154,6 +153,9 @@ namespace OpenLaMulana
 
         protected override void LoadContent()
         {
+            _audioManager = new AudioManager();
+            _audioManager.LoadContent(musPath);
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _sfxPause = Content.Load<SoundEffect>("sound/se00");
@@ -166,10 +168,8 @@ namespace OpenLaMulana
 
             long val = gameRNG.RollDice(9);
 
-            _songManager = new SongManager();
-            _songManager.InitPlayer();
 
-            _world = new World(_entityManager, _gameFontTex);
+            _world = new World(_entityManager, _gameFontTex, _audioManager);
             _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _sfxJump);
             _protag.DrawOrder = 100;
 
@@ -215,6 +215,11 @@ namespace OpenLaMulana
 
         }
 
+        protected override void UnloadContent()
+        {
+            _audioManager.UnloadContent();
+            //base.UnloadContent();
+        }
         private Texture2D LoadTexture(string filePath)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open);
@@ -237,8 +242,7 @@ namespace OpenLaMulana
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
+            _audioManager.Update(gameTime);
             base.Update(gameTime);
 
             KeyboardState keyboardState = Keyboard.GetState();
@@ -340,11 +344,13 @@ namespace OpenLaMulana
             {
                 pauseToggleTimer = 30;
                 State = GameState.Paused;
+                _audioManager.PauseMusic();
             }
             else if (State == GameState.Paused)
             {
                 State = GameState.Playing;
                 pauseToggleTimer = 30;
+                _audioManager.ResumeMusic();
             }
 
 
