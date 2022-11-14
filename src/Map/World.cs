@@ -65,8 +65,8 @@ namespace OpenLaMulana.Entities
             string engTxtFile = "Content/data/script_ENG_UTF8.txt";
 
             // Decrypt "Content/data/script.dat" and the English-Translated counterpart file
-            PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, OpenLaMulanaGame.Languages.Japanese);
-            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, OpenLaMulanaGame.Languages.English);
+            PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, Main.Languages.Japanese);
+            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, Main.Languages.English);
 
             string[] data = File.ReadAllLines(jpTxtFile);
 
@@ -237,7 +237,7 @@ namespace OpenLaMulana.Entities
             return outArgs;
         }
 
-        internal void InitGameText(OpenLaMulanaGame.Languages lang, List<string> data)
+        internal void InitGameText(Main.Languages lang, List<string> data)
         {
             _textManager.SetDialogue(lang, data);
         }
@@ -277,7 +277,7 @@ namespace OpenLaMulana.Entities
                         var _texX = (_thisTile.tileID % 40) * 8;
                         var _texY = (_thisTile.tileID / 40) * 8;
 
-                        spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
+                        spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, Main.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
                     } else
                     {
                         // Handle animated tiles here
@@ -303,7 +303,7 @@ namespace OpenLaMulana.Entities
                         var _texX = (drawingTileID % 40) * 8;
                         var _texY = (drawingTileID / 40) * 8;
 
-                        spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, OpenLaMulanaGame.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
+                        spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, Main.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
                     }
                 }
             }

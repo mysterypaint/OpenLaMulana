@@ -113,7 +113,7 @@ namespace OpenLaMulana.Entities
 
                 float posY = isLarge ? LARGE_CACTUS_POS_Y : SMALL_CACTUS_POS_Y;
 
-                obstacle = new CactusGroup(_spriteSheet, isLarge, randomGroupSize, _trex, new Vector2(OpenLaMulanaGame.WINDOW_WIDTH, posY));
+                obstacle = new CactusGroup(_spriteSheet, isLarge, randomGroupSize, _trex, new Vector2(OpenLaMulana.WINDOW_WIDTH, posY));
 
             }
             else
@@ -121,7 +121,7 @@ namespace OpenLaMulana.Entities
                 int verticalPosIndex = _random.Next(0, FLYING_DINO_Y_POSITIONS.Length);
                 float posY = FLYING_DINO_Y_POSITIONS[verticalPosIndex];
 
-                obstacle = new FlyingDino(_trex, new Vector2(OpenLaMulanaGame.WINDOW_WIDTH, posY), _spriteSheet);
+                obstacle = new FlyingDino(_trex, new Vector2(OpenLaMulana.WINDOW_WIDTH, posY), _spriteSheet);
             }
 
             obstacle.DrawOrder = OBSTACLE_DRAW_ORDER;

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana
 {
-    public class OpenLaMulanaGame : Game
+    public class Main : Game
     {
         public enum DisplayMode
         {
@@ -99,12 +99,12 @@ namespace OpenLaMulana
 
         public float ZoomFactor => WindowDisplayMode == DisplayMode.Default ? 1 : DISPLAY_ZOOM_FACTOR;
 
-        public OpenLaMulanaGame()
+        public Main()
         {
             _graphics = new GraphicsDeviceManager(this);
             //_graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
-            
+
             // 30fps game
             this.IsFixedTimeStep = true;//false;
             this.TargetElapsedTime = TimeSpan.FromSeconds(1d / 30d); //60);
@@ -206,7 +206,7 @@ namespace OpenLaMulana
             _entityManager.AddEntity(_world);
 
             _textManager = _world.GetTextManager();
-            
+
             _gameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, _textManager);
             _entityManager.AddEntity(_textManager);
             _entityManager.AddEntity(_gameMenu);

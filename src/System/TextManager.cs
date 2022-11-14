@@ -63,15 +63,15 @@ namespace OpenLaMulana.System
             }
         }
 
-        public void SetDialogue(OpenLaMulanaGame.Languages lang, List<string> data)
+        public void SetDialogue(Main.Languages lang, List<string> data)
         {
             switch (lang)
             {
                 default:
-                case OpenLaMulanaGame.Languages.English:
+                case Main.Languages.English:
                     _dialogueEN = data;
                     break;
-                case OpenLaMulanaGame.Languages.Japanese:
+                case Main.Languages.Japanese:
                     _dialogueJP = data;
                     break;
             }
@@ -204,17 +204,17 @@ namespace OpenLaMulana.System
             
         }
 
-        internal string GetText(int index, OpenLaMulanaGame.Languages lang)
+        internal string GetText(int index, Main.Languages lang)
         {
             List<string> _dialogue;
 
             switch (lang)
             {
                 default:
-                case OpenLaMulanaGame.Languages.English:
+                case Main.Languages.English:
                     _dialogue = _dialogueEN;
                     break;
-                case OpenLaMulanaGame.Languages.Japanese:
+                case Main.Languages.Japanese:
                     _dialogue = _dialogueJP;
                     break;
             }
@@ -222,17 +222,17 @@ namespace OpenLaMulana.System
             return _dialogue[index];
         }
 
-        internal int GetTextCount(OpenLaMulanaGame.Languages lang)
+        internal int GetTextCount(Main.Languages lang)
         {
             List<string> _dialogue;
 
             switch (lang)
             {
                 default:
-                case OpenLaMulanaGame.Languages.English:
+                case Main.Languages.English:
                     _dialogue = _dialogueEN;
                     break;
-                case OpenLaMulanaGame.Languages.Japanese:
+                case Main.Languages.Japanese:
                     _dialogue = _dialogueJP;
                     break;
             }
