@@ -129,7 +129,6 @@ ipch/
 
 # Visual Studio 2015 cache/options directory
 .vs/
-.config/
 
 # Guidance Automation Toolkit
 *.gpState

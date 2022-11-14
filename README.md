@@ -3,8 +3,7 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 
 # Dependencies
 - [MonoGame](https://www.monogame.net/)
-- [.NET runtime 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
-
+- [.NET SDK 7.0](https://dotnet.microsoft.com/en-us/download)
 # Asset Preparation
 The game assets are not included on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/mL4Q3QAI#nxgzOz6jjN_GyfgQk7YaHZxReqnyNl4ObmhIxl56yoE).
 - The archive's "Icon.bmp/Icon.ico" both go in the same directory as the .sln, and the archive's ``/Content/`` folder should also be copied to the ``OpenLamulana/src/`` directory.
@@ -21,8 +20,8 @@ Otherwise, you must do the following to compile this project from source:
 Then, just run the .exe and you should be good to go!
 
 # Compiling
-- Ensure that .NET and MonoGame are up-to-date
+- Ensure that .NET and MonoGame are up-to-date, or set up: [Instructions here](https://docs.monogame.net/articles/getting_started/0_getting_started.html)
 - Clone the repo
 - Include the assets in the ``OpenLaMulana/src/`` and ``OpenLaMulana/src/Content/`` folders respectively (explained in more detail above)
 - Rip and convert the game's .ico to .bmp, resize it to a 256x256 transparent .bmp as "Icon.bmp", then place both the resized .bmp and .ico in the same folder as the .sln
-- Open the .sln in Visual Studio; Compile and Build
+- Open the .sln in Visual Studio and Build
