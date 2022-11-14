@@ -6,16 +6,17 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 - [.NET runtime 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 # Asset Preparation
-The game assets are not included on this repo. You must do the following to compile this project from source:
+The game assets are not included on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/mL4Q3QAI#nxgzOz6jjN_GyfgQk7YaHZxReqnyNl4ObmhIxl56yoE).
+- The archive's "Icon.bmp/Icon.ico" both go in the same directory as the .sln, and the archive's ``/Content/`` folder should also be copied to the ``OpenLamulana/src/`` directory.
+
+Otherwise, you must do the following to compile this project from source:
 
 - Download the [original game](https://archive.org/details/La-Mulana)
-- Move the /data/, /graphics/, /music/, and /sound/ folders to OpenLaMulana/Content/
-- All of the .bmps in the /graphics/ folder must be converted from .bmp to .png
-- From the [original game jukebox](https://archive.org/details/la-mulana-jukebox), please also copy "m58.sgt" through "m75.sgt" to /Content/music/
+- Move the ``/data/``, ``/graphics/``, ``/music/``, and ``/sound/`` folders to ``OpenLaMulana/Content/``
+- All of the .bmp files in the ``/graphics/`` folder must be converted from .bmp to .png
+- From the [original game jukebox](https://archive.org/details/la-mulana-jukebox), please also copy "m58.sgt" through "m75.sgt" to ``/Content/music/``
 - All of the .sgt files must be converted to .mid. This can be done using [DirectMusic Producer DX9](https://archive.org/details/direct-music-producer-9)
 - Finally, you will also want to provide an "Icon.ico" and a 256x256 "Icon.bmp", which should go in the same directory as the .sln.
-
-Alternatively for the time being, I will host the assets here: [MEGA](https://mega.nz/file/mL4Q3QAI#nxgzOz6jjN_GyfgQk7YaHZxReqnyNl4ObmhIxl56yoE). The archive's "Icon.bmp/Icon.ico" both go in the same directory as the .sln, and the archive's ``/Content/`` folder should also be copied to the ``OpenLamulana/src/`` directory.
 
 Then, just run the .exe and you should be good to go!
 
