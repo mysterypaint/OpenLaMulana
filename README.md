@@ -7,10 +7,10 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 - [MIDICSV](https://www.fourmilab.ch/webtools/midicsv/) (Only for asset generation)
 
 ## Asset Preparation
-###The game assets are not provided on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/vCox2JQb#fidYAlPIQHK4FbV29zFDfN857zXxMen_VDV_ybkqO3w)
+### The game assets are not provided on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/vCox2JQb#fidYAlPIQHK4FbV29zFDfN857zXxMen_VDV_ybkqO3w)
 - The archive's ``Icon.bmp`` and ``Icon.ico`` both go in the same directory as the .sln, and the archive's ``/Content/`` folder should also be copied to the ``OpenLamulana/src/`` directory.
 
-###Otherwise, you must do the following to compile this project from source:
+### Otherwise, you must do the following to compile this project from source:
 
 - Download the [original game](https://archive.org/details/La-Mulana)
 - Move the ``/data/``, ``/graphics/``, and ``/sound/`` folders to ``OpenLaMulana/Content/``
