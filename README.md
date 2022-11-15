@@ -7,7 +7,7 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 - [MIDICSV](https://www.fourmilab.ch/webtools/midicsv/) (Only for asset generation)
 
 ## Asset Preparation
-### The game assets are not provided on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/vCox2JQb#fidYAlPIQHK4FbV29zFDfN857zXxMen_VDV_ybkqO3w)
+### The game assets are not provided on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/rHwjUDJK#frkwBaS_XQuM9-vROcw11Cp6947Ix0xeq70akLTIeVM)
 - The archive's ``Icon.bmp`` and ``Icon.ico`` both go in the same directory as the .sln, and the archive's ``/Content/`` folder should also be copied to the ``OpenLamulana/src/`` directory.
 
 ### Otherwise, you must do the following to compile this project from source:
@@ -19,11 +19,11 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 - All of the .sgt files must be converted to .mid. This can be done using [DirectMusic Producer DX9](https://archive.org/details/direct-music-producer-9)
 - The converted .mid files must be annotated with "Loop" and "LoopEnd" MIDI Marker Meta Messages. I provided a tool to convert them automatically:
   - **Mac/Linux**: `$ brew install midicsv`
+	- Place all the converted .sgt->.mid files in ``OpenLaMulana/MIDILooper/input/``.
 	- Compile ``MidiLooper.sln``
-	- Place all the MIDIs in ``/input/``
 	- Execute the ``MidiLooper`` program
   - **Windows**: add both ``midicsv.exe`` and ``csvmidi.exe`` from [this archive](https://www.fourmilab.ch/webtools/midicsv/midicsv-1.1.tar.gz) to your ``PATH``, or put them in the working directory of MidiLooper
-  	- The working directory would be ``OpenLaMulana/MIDILooper/bin/Debug/net7.0`` after compiling the project; Put all your MIDIs in the /input/ folder.)
+  	- The working directory would be ``OpenLaMulana/MIDILooper/bin/Debug/net7.0`` after compiling the project; Put all your MIDIs in the ``OpenLaMulana/MIDILooper/input/`` folder.)
   - The modified .mid files should now be in ``/output/``, ready to copy to the main project
 
 - The .dls in the ``/music/`` folder must be converted to .sf2 format. This can be done with [Vienna](http://www.synthfont.com/Downloads.html)

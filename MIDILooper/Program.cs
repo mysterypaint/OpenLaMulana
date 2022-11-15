@@ -77,7 +77,7 @@ class Program
 	        -1,	//	m56
 	        0,	//	m57
 	        16,	//	m58
-	        2*4,	//	m59
+	        2,	//	m59
 	        3*9,	//	m60
 	        16,	//	m61
 	        6*4,	//	m62
@@ -92,11 +92,11 @@ class Program
 	        0,	//	m71
 	        4,	//	m72
 	        16,	//	m73
-	        (17*4)+1,	//	m74
+	        (16*4)+1,	//	m74
 	        0,	//	m75
         };
 
-        int[] loopExceptionTracks = { 10, 7, 11, 19, 21, 22, 28, 30, 35, 36, 37, 40, 41, 42, 48, 54, 56, 57, 60, 61, 63, 70, 71, 74};
+        int[] loopExceptionTracks = { 10, 7, 11, 19, 21, 22, 28, 30, 35, 36, 37, 40, 41, 42, 48, 54, 56, 57, 59, 60, 61, 63, 70, 71, 74};
         /*
         for (int i = 0; i < 75; i++) {
             string preInd = "";
@@ -252,6 +252,9 @@ class Program
             lastEventTick = (ticksPerQuarter * ((36 * 4) + 3));
 
         int closestBeatInTicks = (int)(Math.Round((double)lastEventTick / ticksPerQuarter) * ticksPerQuarter);
+
+        if (songIndex == 59)
+            closestBeatInTicks += (ticksPerQuarter / 2);
 
         string endOfTrack1 = contents[globalEndTrackLine];
         string[] endTrackArgs = endOfTrack1.Split(", ");
