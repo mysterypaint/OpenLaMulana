@@ -34,7 +34,7 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 - Clone the repo
 - Include the assets in the ``OpenLaMulana/src/`` and ``OpenLaMulana/src/Content/`` folders respectively (explained in more detail above)
 - Rip and convert the game&apos;s .ico to .bmp, resize it to a 256x256 transparent .bmp as ``Icon.bmp``, then place both the resized .bmp and .ico in the same folder as the .sln
-- Launch ``OpenLaMulana.sln`` in Visual Studio and Build
+- [Build the project from CLI](https://docs.monogame.net/articles/packaging_games.html)
 
 ### Special Thanks
 - sinshu, MeltySynth Library - [MeltySynth](https://github.com/sinshu/meltysynth)
