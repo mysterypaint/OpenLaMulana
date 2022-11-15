@@ -70,6 +70,7 @@ namespace OpenLaMulana
         //private ScoreBoard _scoreBoard;
 
         private InputController _inputController;
+        private Jukebox _jukebox;
         private World _world;
 
         //private TileManager _tileManager;
@@ -168,12 +169,12 @@ namespace OpenLaMulana
 
             long val = gameRNG.RollDice(9);
 
-
             _world = new World(_entityManager, _gameFontTex, _audioManager);
+            _jukebox = new Jukebox(_audioManager, _world.GetTextManager(), currLang);
             _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _sfxJump);
             _protag.DrawOrder = 100;
 
-            _inputController = new InputController(_protag, _world);
+            _inputController = new InputController(_protag, _world, _jukebox);
             _protag.SetInputController(_inputController);
 
             for (int i = 0; i <= 32; i++)
@@ -204,6 +205,7 @@ namespace OpenLaMulana
 
             _entityManager.AddEntity(_protag);
             _entityManager.AddEntity(_world);
+            _entityManager.AddEntity(_audioManager);
 
             _textManager = _world.GetTextManager();
 
@@ -277,6 +279,8 @@ namespace OpenLaMulana
 
                     break;
                 case GameState.Paused:
+                    JukeboxRoutine();
+                    _audioManager.PauseMusic();
                     if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
                     {
                         ToggleGamePause();
@@ -285,6 +289,11 @@ namespace OpenLaMulana
                 case GameState.Transition:
                     State = GameState.Playing;
                     _protag.Initialize();
+                    break;
+                case GameState.MSXInventory:
+                    break;
+                case GameState.MSXEmulator:
+                    JukeboxRoutine();
                     break;
                 case GameState.Initial:
 
@@ -376,17 +385,29 @@ namespace OpenLaMulana
                 case GameState.Initial:
                 case GameState.Transition:
                     //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
-                    _textManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps"); //"Hello world! I hope you are, well!¥10¥20¥21"
+                    //_textManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
+                    _textManager.DrawText(0, 0, "Press Enter to Begin");
                     break;
                 default:
+                case GameState.MSXInventory:
+                    break;
+                case GameState.MSXEmulator:
+                    break;
+                case GameState.Paused:
+                    _jukebox.Draw(_spriteBatch, gameTime);
+                    break;
                 case GameState.Playing:
-
-                    //_textManager.DrawText(0, 0, _textManager.GetText(textIndex, Languages.English));
+                    _jukebox.Draw(_spriteBatch, gameTime);
+                    /*
                     _textManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
-                        + "\\10bboxLeft: " + Math.Floor(_protag.CollisionBox.Left / (float)World.tileHeight).ToString()
-                        + "\\10bboxBottom: " + Math.Floor(_protag.CollisionBox.Bottom / (float)World.tileHeight).ToString()
-                    +"\\10bboxRight: " + Math.Floor(_protag.CollisionBox.Right / (float)World.tileHeight).ToString()
-                    + "\\10bboxTop: " + Math.Floor(_protag.CollisionBox.Top / (float)World.tileHeight).ToString());
+                        + "\nWASD, JK: Move between rooms\nF2: Open MSX [Jukebox]");*/
+
+                    /*"\\10bboxLeft: " + Math.Floor(_protag.CollisionBox.Left / (float)World.tileHeight).ToString()
+                    + "\\10bboxBottom: " + Math.Floor(_protag.CollisionBox.Bottom / (float)World.tileHeight).ToString()
+                + "\\10bboxRight: " + Math.Floor(_protag.CollisionBox.Right / (float)World.tileHeight).ToString()
+                + "\\10bboxTop: " + Math.Floor(_protag.CollisionBox.Top / (float)World.tileHeight).ToString());
+                    (/
+                    */
                     break;
 
             }
@@ -395,6 +416,11 @@ namespace OpenLaMulana
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void JukeboxRoutine()
+        {
+
         }
 
         private bool StartGame()

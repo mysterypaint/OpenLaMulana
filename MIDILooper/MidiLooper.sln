@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1704.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MidiLooper", "MidiLooper.csproj", "{0A0C5517-4EFB-4166-A885-EC996BD9ABFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A0C5517-4EFB-4166-A885-EC996BD9ABFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A0C5517-4EFB-4166-A885-EC996BD9ABFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A0C5517-4EFB-4166-A885-EC996BD9ABFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A0C5517-4EFB-4166-A885-EC996BD9ABFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1164B875-A463-4A2C-A3ED-41E90EB89E9B}
+	EndGlobalSection
+EndGlobal

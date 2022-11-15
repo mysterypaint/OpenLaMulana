@@ -11,7 +11,7 @@ using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.System
 {
-    class TextManager : IGameEntity
+    public class TextManager : IGameEntity
     {
         public enum TextModes
         {

@@ -280,6 +280,10 @@ namespace MeltySynth
                                 ticks.Add(tick);
                                 return (messages, ticks);
 
+                            case 0x06: // Meta Message
+                                messages.Add(Message.MetaMessage(ReadMetaMessage(reader)));
+                                ticks.Add(tick);
+                                break;
                             case 0x51: // Tempo
                                 messages.Add(Message.TempoChange(ReadTempo(reader)));
                                 ticks.Add(tick);
@@ -311,6 +315,23 @@ namespace MeltySynth
 
                 lastStatus = first;
             }
+        }
+
+        private static string ReadMetaMessage(BinaryReader reader)
+        {
+            var size = reader.ReadIntVariableLength();
+            var data = reader.ReadBytes(size);
+
+            for (var i = 0; i < data.Length; i++)
+            {
+                var value = data[i];
+                if (!(32 <= value && value <= 126))
+                {
+                    data[i] = (byte)'?';
+                }
+            }
+
+            return Encoding.ASCII.GetString(data, 0, data.Length);
         }
 
         private static (Message[], TimeSpan[]) MergeTracks(List<Message>[] messageLists, List<int>[] tickLists, int resolution)
@@ -508,6 +529,18 @@ namespace MeltySynth
 
                     default:
                         return "CH" + channel + ": " + command.ToString("X2") + ", " + data1.ToString("X2") + ", " + data2.ToString("X2");
+                }
+            }
+
+            internal static Message MetaMessage(string msg)
+            {
+                switch (msg.ToLower())
+                {
+                    default:
+                    case "loop":
+                        return new Message((int)MessageType.LoopStart, 0, 0, 0);
+                    case "loopend":
+                        return new Message((int)MessageType.LoopEnd, 0, 0, 0);
                 }
             }
 

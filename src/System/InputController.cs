@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using OpenLaMulana.Entities;
 using static OpenLaMulana.Entities.World;
+using OpenLaMulana.Audio;
 
 namespace OpenLaMulana.System
 {
@@ -12,6 +13,7 @@ namespace OpenLaMulana.System
     {
         private Protag _protag;
         private World _world;
+        private Jukebox _jukebox;
 
         static KeyboardState keyboardState;
         static KeyboardState _previousKeyboardState;
@@ -24,10 +26,11 @@ namespace OpenLaMulana.System
         public bool keyJumpHeld { get; private set; }
         public bool keyWhipPressed { get; private set; }
 
-        public InputController(Protag protag, World world)
+        public InputController(Protag protag, World world, Jukebox jukebox)
         {
             _protag = protag;
             _world = world;
+            _jukebox = jukebox;
         }
 
         public void ProcessControls(GameTime gameTime)
@@ -40,10 +43,20 @@ namespace OpenLaMulana.System
             keyJumpPressed = KeyPressed(Keys.Up);
             keyJumpHeld = KeyCheck(Keys.Up);
             keyWhipPressed = KeyPressed(Keys.Z);
+            bool keyCancelPressed = KeyPressed(Keys.J);
+            bool keyConfirmPressed = KeyPressed(Keys.K);
 
 
-            WorldTransitionTesting();
+            //WorldTransitionTesting();
+            JukeboxControls(keyCancelPressed, keyConfirmPressed);
         }
+
+        private void JukeboxControls(bool keyCancelPressed, bool keyConfirmPressed)
+        {
+
+            int selectionMoveX = Convert.ToInt32(KeyPressed(Keys.D)) - Convert.ToInt32(KeyPressed(Keys.A));
+            _jukebox.Control(selectionMoveX, keyCancelPressed, keyConfirmPressed);
+    }
 
         public void BlockInputTemporarily()
         {

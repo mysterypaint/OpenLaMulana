@@ -48,7 +48,7 @@ namespace MeltySynth
         /// </summary>
         /// <param name="midiFile">The MIDI file to be played.</param>
         /// <param name="loop">If <c>true</c>, the MIDI file loops after reaching the end.</param>
-        public void Play(MidiFile midiFile, bool loop)
+        public void Play(MidiFile midiFile, bool loop = false)
         {
             if (midiFile == null)
             {
@@ -128,6 +128,7 @@ namespace MeltySynth
                     {
                         if (onSendMessage == null)
                         {
+                            //if (msg.Channel == 0x8)
                             synthesizer.ProcessMidiMessage(msg.Channel, msg.Command, msg.Data1, msg.Data2);
                         }
                         else
@@ -135,7 +136,7 @@ namespace MeltySynth
                             onSendMessage(synthesizer, msg.Channel, msg.Command, msg.Data1, msg.Data2);
                         }
                     }
-                    else if (loop)
+                    else //if (loop)
                     {
                         if (msg.Type == MidiFile.MessageType.LoopStart)
                         {

@@ -31,7 +31,7 @@ namespace OpenLaMulana.Audio
             dynamicSound.BufferNeeded += (s, e) => SubmitBuffer();
         }
 
-        public void Play(MidiFile midiFile, bool loop)
+        public void Play(MidiFile midiFile, bool loop = false)
         {
             sequencer.Play(midiFile, loop);
             

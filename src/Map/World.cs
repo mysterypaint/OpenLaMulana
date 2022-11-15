@@ -250,7 +250,6 @@ namespace OpenLaMulana.Entities
 
         public void Update(GameTime gameTime)
         {
-            
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

@@ -6,6 +6,9 @@
         Transition,
         Playing,
         GameOver,
-        Paused
+        Paused,
+        MSXInventory,
+        MSXRoms,
+        MSXEmulator
     }
 }
