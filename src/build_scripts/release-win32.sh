@@ -15,10 +15,11 @@ cp ../artifacts/windows/OpenLaMulana.pdb winbuild || exit 1
 cp ../artifacts/windows/SDL2.dll winbuild || exit 1
 cp ../artifacts/windows/soft_oal.dll winbuild || exit 1
 cp -r ../artifacts/windows/Content winbuild || exit 1
+cp ../../LICENSE winbuild/License.txt || exit 1
 
 cd winbuild
 
-zip -r oll-win-x86.zip OpenLaMulana.exe OpenLaMulana.pdb SDL2.dll soft_oal.dll Content
+zip -r oll-win-x86.zip OpenLaMulana.exe OpenLaMulana.pdb SDL2.dll soft_oal.dll Content License.txt
 
 cd ..
 

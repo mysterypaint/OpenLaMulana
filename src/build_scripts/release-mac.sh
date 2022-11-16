@@ -15,10 +15,11 @@ cp ../artifacts/osx/OpenLaMulana.pdb osxbuild || exit 1
 cp ../artifacts/osx/libopenal.1.dylib osxbuild || exit 1
 cp ../artifacts/osx/libSDL2.dylib osxbuild || exit 1
 cp -r ../artifacts/osx/Content osxbuild || exit 1
+cp ../../LICENSE osxbuild/License.txt || exit 1
 
 cd osxbuild
 
-zip -r oll-osx-x64.zip OpenLaMulana OpenLaMulana.pdb libopenal.1.dylib libSDL2.dylib Content
+zip -r oll-osx-x64.zip OpenLaMulana OpenLaMulana.pdb libopenal.1.dylib libSDL2.dylib Content License.txt
 
 cd ..
 

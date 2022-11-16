@@ -15,10 +15,11 @@ cp ../artifacts/linux/OpenLaMulana.pdb linuxbuild || exit 1
 cp ../artifacts/linux/libopenal.so.1 linuxbuild || exit 1
 cp ../artifacts/linux/libSDL2-2.0.so.0 linuxbuild || exit 1
 cp -r ../artifacts/linux/Content linuxbuild || exit 1
+cp ../../LICENSE linuxbuild/License.txt || exit 1
 
 cd linuxbuild
 
-zip -r oll-linux-x64.zip OpenLaMulana OpenLaMulana.pdb libopenal.so.1 libSDL2-2.0.so.0 Content
+zip -r oll-linux-x64.zip OpenLaMulana OpenLaMulana.pdb libopenal.so.1 libSDL2-2.0.so.0 Content License.txt
 
 cd ..
 
