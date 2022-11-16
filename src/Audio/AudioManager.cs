@@ -1,10 +1,13 @@
 ﻿using MeltySynth;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace OpenLaMulana
@@ -19,13 +22,22 @@ namespace OpenLaMulana
 
         public int DrawOrder => 0;
 
+        public float AudioManBGMVolScale { get; private set; } = 0.8f;
+        public float AudioManSFXVolScale { get; private set; } = 1.0f;
+
+        private static Dictionary<SFX, SoundEffect> _sfxBank = new Dictionary<SFX, SoundEffect>();
+
         public AudioManager()
         {
         }
 
-        public void LoadContent(string musPath)
+        public void LoadContent(string musPath, ContentManager content)
         {
-            midiPlayer = new MidiPlayer(musPath + "SanbikiScc.sf2");
+            int sampleRate = 44100;
+
+            SynthesizerSettings settings = new SynthesizerSettings(sampleRate);
+            midiPlayer = new MidiPlayer(musPath + "SanbikiScc.sf2", settings);
+            midiPlayer.SetMasterVolume(AudioManBGMVolScale * 1.0f);
 
             for (var i = 0; i <= 75; i++)
             {
@@ -36,6 +48,22 @@ namespace OpenLaMulana
                 bgmFNames[i] = "m" + fName;
                 songs.Add(new MidiFile(Path.Combine(musPath, bgmFNames[i] + ".mid")));
             }
+
+            var sfxList = Enum.GetValues(typeof(SFX));
+
+            foreach(SFX sfx in sfxList)
+            {
+                if (sfx == SFX.MAX)
+                    break;
+                string fName = "se";
+                int sfxID = (int)sfx;
+                if (sfxID < 0xA)
+                    fName += 0;
+                fName += sfxID.ToString();
+                _sfxBank[sfx] = content.Load<SoundEffect>(Path.Combine("sound", fName));
+            }
+
+            SoundEffect.MasterVolume = 1;
         }
 
         public void UnloadContent()
@@ -52,6 +80,7 @@ namespace OpenLaMulana
             if (midiPlayer.State == SoundState.Stopped && currSongID >= 0)
             {
                 midiPlayer.Play(songs[currSongID], true);
+                Debug.WriteLine(midiPlayer.GetMasterVolume());
             }
         }
 
@@ -100,12 +129,40 @@ namespace OpenLaMulana
             }
         }
 
+        internal void SetMasterBGMVolume(float newVal)
+        {
+            midiPlayer.SetMasterVolume(AudioManBGMVolScale * newVal);
+        }
+
+        internal float GetMasterBGMVolume()
+        {
+            return midiPlayer.GetMasterVolume();
+        }
+
+        internal void SetMasterSFXVolume(float newVal)
+        {
+            SoundEffect.MasterVolume = AudioManSFXVolScale * newVal; // SoundEffect.MasterVolume and SoundEffectInstance.Volume both range from 0.0f to 1.0f
+        }
+
+        internal float GetMasterSFXVolume()
+        {
+            return SoundEffect.MasterVolume;
+        }
+
         void IGameEntity.Update(GameTime gameTime)
         {
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+        }
+
+        internal void PlaySFX(SFX sfxId)
+        {
+            SoundEffectInstance inst = _sfxBank[sfxId].CreateInstance();
+
+            inst.Stop();
+            inst.Play();
         }
     }
 }

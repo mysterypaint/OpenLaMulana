@@ -53,10 +53,6 @@ namespace OpenLaMulana
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private SoundEffect _sfxPause;
-        private SoundEffectInstance _sfxPauseInstance;
-        private SoundEffect _sfxJump;
-
         private Texture2D _txProt1;
         private Texture2D _gameFontTex;
 
@@ -142,13 +138,9 @@ namespace OpenLaMulana
         protected override void LoadContent()
         {
             _audioManager = new AudioManager();
-            _audioManager.LoadContent(musPath);
+            _audioManager.LoadContent(musPath, Content);
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _sfxPause = Content.Load<SoundEffect>("sound/se00");
-            _sfxPauseInstance = _sfxPause.CreateInstance();
-            _sfxJump = Content.Load<SoundEffect>("sound/se01");
 
             _txProt1 = LoadTexture(gfxPath + "prot1.png");
 
@@ -158,7 +150,7 @@ namespace OpenLaMulana
 
             _world = new World(_entityManager, _gameFontTex, _audioManager);
             _jukebox = new Jukebox(_audioManager, _world.GetTextManager(), currLang);
-            _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _sfxJump);
+            _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _audioManager);
             _protag.DrawOrder = 100;
 
             _inputController = new InputController(_protag, _world, _jukebox);
@@ -335,8 +327,8 @@ namespace OpenLaMulana
         {
             if (_pauseToggleTimer > 0)
                 return;
-            _sfxPauseInstance.Stop();
-            _sfxPauseInstance.Play();
+
+            _audioManager.PlaySFX(SFX.PAUSE);
 
             if (State == GameState.Playing)
             {

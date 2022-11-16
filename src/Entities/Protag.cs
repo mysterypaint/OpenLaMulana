@@ -20,14 +20,14 @@ namespace OpenLaMulana.Entities
 
         private Sprite _idleSprite;
 
-        private SoundEffect _jumpSound;
-
         public PlayerState State { get; private set; }
         PlayerState prev_state = PlayerState.IDLE;
 
         private World _world;
+        private AudioManager _audioManager;
 
         public Vector2 Position { get; set; }
+
         public short moveX = 0;
         public short moveY = 0;
         public float hsp = 0;
@@ -69,18 +69,18 @@ namespace OpenLaMulana.Entities
             }
         }
 
-        public Protag(Texture2D spriteSheet, World world, Vector2 position, SoundEffect jumpSound)
+        public Protag(Texture2D spriteSheet, World world, Vector2 position, AudioManager audioManager)
         {
             _world = world;
             Position = position;
+            _audioManager = audioManager;
+
             State = PlayerState.IDLE;
 
             _tileWidth = World.tileWidth;
             _tileHeight = World.tileHeight;
             bBoxOriginX = 5;
             bBoxOriginY = 12;
-
-            _jumpSound = jumpSound;
 
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
         }
@@ -256,7 +256,8 @@ namespace OpenLaMulana.Entities
             Position = new Vector2(posX, posY);
 
             // Step Y
-
+            if (_inputController.KeyJumpPressed)
+                _audioManager.PlaySFX(SFX.P_JUMP);
 
             if (_inputController.KeyJumpHeld && dy <= 0 && grounded)
             {

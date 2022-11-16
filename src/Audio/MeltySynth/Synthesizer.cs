@@ -151,6 +151,21 @@ namespace MeltySynth
                 reverbInput = new float[blockSize];
                 reverbOutputLeft = new float[blockSize];
                 reverbOutputRight = new float[blockSize];
+                reverb.RoomSize = 0.70f;
+                reverb.Wet = 0.45f;
+
+                /*
+                 * 
+        private const float fixedGain = 0.015F;
+        private const float scaleWet = 3F;
+        private const float scaleDamp = 0.4F;
+        private const float scaleRoom = 0.28F;
+        private const float offsetRoom = 0.7F;
+        private const float initialRoom = 0.5F;
+        private const float initialDamp = 0.5F;
+        private const float initialWet = 1F / scaleWet;
+        private const float initialWidth = 1F;
+        private const int stereoSpread = 23;*/
 
                 chorus = new Chorus(sampleRate, 0.002, 0.0019, 0.4);
                 chorusInputLeft = new float[blockSize];

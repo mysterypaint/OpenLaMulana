@@ -16,9 +16,10 @@ namespace OpenLaMulana.Audio
         private DynamicSoundEffectInstance dynamicSound;
         private byte[] buffer;
 
-        public MidiPlayer(string soundFontPath)
+        public MidiPlayer(string soundFontPath, SynthesizerSettings settings)
         {
-            synthesizer = new Synthesizer(soundFontPath, sampleRate);
+            synthesizer = new Synthesizer(soundFontPath, settings);
+
             sequencer = new MidiFileSequencer(synthesizer);
 
             dynamicSound = new DynamicSoundEffectInstance(sampleRate, AudioChannels.Stereo);
@@ -68,6 +69,15 @@ namespace OpenLaMulana.Audio
         {
             sequencer.Speed = 1;
             sequencer.NoteOffAll(true);
+        }
+
+        internal void SetMasterVolume(float newVal)
+        {
+            synthesizer.MasterVolume = newVal;
+        }
+        internal float GetMasterVolume()
+        {
+            return synthesizer.MasterVolume;
         }
 
         public SoundState State => dynamicSound.State;
