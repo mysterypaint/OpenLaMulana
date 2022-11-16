@@ -7,8 +7,8 @@
 
         public ObjectStartFlag(int _value, bool _initiallyDisabled)
         {
-            this.value = _value;
-            this.initiallyDisabled = _initiallyDisabled;
+            value = _value;
+            initiallyDisabled = _initiallyDisabled;
         }
 
         private bool initiallyEnabled { get; set; } = false;

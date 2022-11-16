@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using static OpenLaMulana.Entities.World;
+﻿using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana
 {
@@ -39,7 +37,7 @@ namespace OpenLaMulana
 
         internal int[] GetDestinationView(VIEW_DIR direction)
         {
-            int[] destination = { _destWorld[(int)direction], _destField[(int)direction], _destX[(int)direction], _destY[(int)direction]};
+            int[] destination = { _destWorld[(int)direction], _destField[(int)direction], _destX[(int)direction], _destY[(int)direction] };
             return destination;
         }
     }

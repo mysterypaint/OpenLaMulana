@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MeltySynth
+﻿namespace MeltySynth
 {
     /// <summary>
     /// Specifies the non-standard loop extension for MIDI files.

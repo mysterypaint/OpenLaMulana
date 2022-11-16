@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.System;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenLaMulana.Audio
 {
@@ -56,7 +51,7 @@ namespace OpenLaMulana.Audio
                 str += "[Playing]";
             else
                 str += "[Stopped]";
-            _textManager.DrawText(0, 8*22, String.Format("{0}:{1} {2}", selectedSong, GetSongName(_currLang), str));
+            _textManager.DrawText(0, 8 * 22, String.Format("{0}:{1} {2}", selectedSong, GetSongName(_currLang), str));
             _textManager.DrawText(0, 0, "W/D to cycle tracks\\10J/K to Stop/Play\\10Enter to Pause");
         }
 
@@ -85,7 +80,8 @@ namespace OpenLaMulana.Audio
             return _audioManager.IsPlaying();
         }
 
-        internal string GetSongName(Main.Languages lang) {
+        internal string GetSongName(Main.Languages lang)
+        {
             switch (lang)
             {
                 default:
@@ -94,7 +90,7 @@ namespace OpenLaMulana.Audio
                 case Main.Languages.Japanese:
                     return trackNamesJP[selectedSong];
             }
-    }
+        }
 
         private void InitializeComments()
         {

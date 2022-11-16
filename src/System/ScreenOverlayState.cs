@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OpenLaMulana
+﻿namespace OpenLaMulana
 {
     public enum ScreenOverlayState
     {

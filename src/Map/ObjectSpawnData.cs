@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace OpenLaMulana
 {
@@ -17,14 +16,14 @@ namespace OpenLaMulana
 
         public ObjectSpawnData(int eventNumber, int x, int y, int OP1, int OP2, int OP3, int OP4, bool isAFieldObject)
         {
-            this._eventNumber = eventNumber;
-            this._x = x;
-            this._y = y;
-            this._OP1 = OP1;
-            this._OP2 = OP2;
-            this._OP3 = OP3;
-            this._OP4 = OP4;
-            this._isAFieldObject = isAFieldObject;
+            _eventNumber = eventNumber;
+            _x = x;
+            _y = y;
+            _OP1 = OP1;
+            _OP2 = OP2;
+            _OP3 = OP3;
+            _OP4 = OP4;
+            _isAFieldObject = isAFieldObject;
 
             startFlags = new List<ObjectStartFlag>();
         }

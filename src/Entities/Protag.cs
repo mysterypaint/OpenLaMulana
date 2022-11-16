@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
-using static OpenLaMulana.Tile;
+using System;
 
 namespace OpenLaMulana.Entities
 {
@@ -126,7 +125,7 @@ namespace OpenLaMulana.Entities
             // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
             //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-            moveX = _inputController.dirMoveX;
+            moveX = _inputController.DirMoveX;
             if (moveX == 1)
                 facingX = Facing.RIGHT;
             else if (moveX == -1)
@@ -135,7 +134,7 @@ namespace OpenLaMulana.Entities
             if (moveX != 0)
             {
                 View currRoom = _world.GetField(_world.currField).GetMapData()[_world.currRoomX, _world.currRoomY]; // TODO: Update this variable only whenever a map change occurs
-                
+
 
                 if (facingX == Facing.RIGHT)
                 {
@@ -259,12 +258,12 @@ namespace OpenLaMulana.Entities
             // Step Y
 
 
-            if (_inputController.keyJumpHeld && dy <= 0 && grounded)
+            if (_inputController.KeyJumpHeld && dy <= 0 && grounded)
             {
                 State = PlayerState.JUMPING;
             }
 
-            moveY = _inputController.dirMoveY;
+            moveY = _inputController.DirMoveY;
             if (moveY < 0)
             {
                 facingY = Facing.UP;

@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OpenLaMulana.Graphics
 {
     public class SpriteAnimationFrame
     {
         private Sprite _sprite;
-        
-        public Sprite Sprite {
+
+        public Sprite Sprite
+        {
             get
             {
                 return _sprite;

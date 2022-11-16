@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.System;
-using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities
 {
@@ -14,18 +13,18 @@ namespace OpenLaMulana.Entities
 
         public GameMenu(ScreenOverlayState screen, TextManager textManager)
         {
-            _currentScreen = (int) screen;
+            _currentScreen = (int)screen;
             _textManager = textManager;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            
+
         }
 
         public void Update(GameTime gameTime)
         {
-            
+
         }
 
     }

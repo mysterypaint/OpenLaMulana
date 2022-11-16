@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MeltySynth
+﻿namespace MeltySynth
 {
     internal sealed class Lfo
     {
@@ -26,7 +24,7 @@ namespace MeltySynth
                 active = true;
 
                 this.delay = delay;
-                this.period = 1.0 / frequency;
+                period = 1.0 / frequency;
 
                 processedSampleCount = 0;
                 value = 0;

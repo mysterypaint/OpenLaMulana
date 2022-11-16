@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace OpenLaMulana.Graphics
 {
@@ -70,7 +69,7 @@ namespace OpenLaMulana.Graphics
 
         public void Update(GameTime gameTime)
         {
-            if(IsPlaying)
+            if (IsPlaying)
             {
 
                 PlaybackProgress += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -136,7 +135,7 @@ namespace OpenLaMulana.Graphics
 
             SpriteAnimation anim = new SpriteAnimation();
 
-            for(int i = 0; i < frameCount; i++)
+            for (int i = 0; i < frameCount; i++)
             {
                 Sprite sprite = new Sprite(texture, startPos.X + i * offset.X, startPos.Y + i * offset.Y, width, height);
                 anim.AddFrame(sprite, frameLength * i);
@@ -148,7 +147,7 @@ namespace OpenLaMulana.Graphics
 
             return anim;
 
-        } 
+        }
 
     }
 }

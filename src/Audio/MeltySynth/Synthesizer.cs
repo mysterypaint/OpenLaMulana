@@ -97,10 +97,10 @@ namespace MeltySynth
             }
 
             this.soundFont = soundFont;
-            this.sampleRate = settings.SampleRate;
-            this.blockSize = settings.BlockSize;
-            this.maximumPolyphony = settings.MaximumPolyphony;
-            this.enableReverbAndChorus = settings.EnableReverbAndChorus;
+            sampleRate = settings.SampleRate;
+            blockSize = settings.BlockSize;
+            maximumPolyphony = settings.MaximumPolyphony;
+            enableReverbAndChorus = settings.EnableReverbAndChorus;
 
             minimumVoiceDuration = sampleRate / 500;
 

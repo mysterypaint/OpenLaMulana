@@ -2,9 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OpenLaMulana.Entities
 {
@@ -20,7 +19,7 @@ namespace OpenLaMulana.Entities
         public void Update(GameTime gameTime)
         {
 
-            foreach(IGameEntity entity in _entities)
+            foreach (IGameEntity entity in _entities)
             {
 
                 if (_entitiesToRemove.Contains(entity))
@@ -30,7 +29,7 @@ namespace OpenLaMulana.Entities
 
             }
 
-            foreach(IGameEntity entity in _entitiesToAdd)
+            foreach (IGameEntity entity in _entitiesToAdd)
             {
                 _entities.Add(entity);
             }
@@ -47,7 +46,7 @@ namespace OpenLaMulana.Entities
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            foreach(IGameEntity entity in _entities.OrderBy(e => e.DrawOrder))
+            foreach (IGameEntity entity in _entities.OrderBy(e => e.DrawOrder))
             {
 
                 entity.Draw(spriteBatch, gameTime);

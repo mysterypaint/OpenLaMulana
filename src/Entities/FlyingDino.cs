@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using OpenLaMulana.Graphics;
+using System;
 
 namespace OpenLaMulana.Entities
 {

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenLaMulana.System
 {
@@ -28,7 +24,8 @@ namespace OpenLaMulana.System
             }
         }
 
-        enum SAVE_REGIONS {
+        enum SAVE_REGIONS
+        {
             FLAGS,
             TREASURES,
             TREASURESMENU,
@@ -57,12 +54,12 @@ namespace OpenLaMulana.System
         {
             saveFile = new EncryptionBlock[(int)SAVE_REGIONS.MAX];
 
-            int[] regionSizes = { 870, 60, 40, 24, 5, 24, 10, 20, 1, 2, 2, 4, 4, 336, 4, 20};
+            int[] regionSizes = { 870, 60, 40, 24, 5, 24, 10, 20, 1, 2, 2, 4, 4, 336, 4, 20 };
 
             byte[] data = File.ReadAllBytes(fileName);
-            
+
             int i = 0;
-            
+
             for (int offset = 0; offset < data.Length; offset++)
             {
                 if (i >= saveFile.Length)
@@ -176,7 +173,7 @@ namespace OpenLaMulana.System
                 result += (eb.Checksum + eb.Key);
             }
 
-            return (byte) result;
+            return (byte)result;
         }
 
         private EncryptionBlock SetEncryptionBlock(EncryptionBlock saveRegion, int offset, byte[] data, int blockSize)

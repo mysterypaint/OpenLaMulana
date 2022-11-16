@@ -230,7 +230,7 @@ namespace MeltySynth
             get => onSendMessage;
             set => onSendMessage = value;
         }
-        
+
 
         /// <summary>
         /// Represents the method that is called each time a MIDI message is processed during playback.

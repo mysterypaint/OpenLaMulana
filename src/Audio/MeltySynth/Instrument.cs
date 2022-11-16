@@ -22,7 +22,7 @@ namespace MeltySynth
 
         private Instrument(InstrumentInfo info, Zone[] zones, SampleHeader[] samples)
         {
-            this.name = info.Name;
+            name = info.Name;
 
             var zoneCount = info.ZoneEndIndex - info.ZoneStartIndex + 1;
             if (zoneCount <= 0)

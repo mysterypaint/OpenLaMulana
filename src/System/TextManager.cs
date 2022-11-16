@@ -3,11 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.System
 {
@@ -52,8 +48,9 @@ namespace OpenLaMulana.System
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             var i = 0;
-            if (queuedText.Count > 0) {
-                foreach(string str in queuedText)
+            if (queuedText.Count > 0)
+            {
+                foreach (string str in queuedText)
                 {
                     DisplayString(spriteBatch, str, i);
                     i++;
@@ -94,7 +91,7 @@ namespace OpenLaMulana.System
             int j = 0;
             bool linebreak = false;
             bool specialTextControl = false;
-            
+
 
             for (int strPos = 0; strPos < str.Length; strPos++)
             {
@@ -102,7 +99,8 @@ namespace OpenLaMulana.System
                 char c = str[strPos];
 
                 int _drawTile = -1;
-                if (!specialTextControl) {
+                if (!specialTextControl)
+                {
                     if (c == '¥' || c == '\\')
                     {
                         strPos++;
@@ -165,7 +163,8 @@ namespace OpenLaMulana.System
             var _oty = 0;
             int thisChar = c;
 
-            if (drawTile <= -1) {
+            if (drawTile <= -1)
+            {
                 _oty = 1;
                 thisChar = (int)c - 32;
 
@@ -201,7 +200,7 @@ namespace OpenLaMulana.System
 
         public void Update(GameTime gameTime)
         {
-            
+
         }
 
         internal string GetText(int index, Main.Languages lang)

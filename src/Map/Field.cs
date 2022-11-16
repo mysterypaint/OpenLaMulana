@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace OpenLaMulana
 {
@@ -34,11 +34,11 @@ namespace OpenLaMulana
 
         public Field(int mapIndex, int mapData, int mapGraphics, int eventGraphics, int musicNumber)
         {
-            this._mapIndex = mapIndex;
-            this._mapData = mapData;
-            this._mapGraphics = mapGraphics;
-            this._eventGraphics = eventGraphics;
-            this._musicNumber = musicNumber;
+            _mapIndex = mapIndex;
+            _mapData = mapData;
+            _mapGraphics = mapGraphics;
+            _eventGraphics = eventGraphics;
+            _musicNumber = musicNumber;
 
 
             for (var y = 0; y < FieldHeight; y++)

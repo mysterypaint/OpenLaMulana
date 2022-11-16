@@ -25,7 +25,7 @@ namespace OpenLaMulana
 
             if (animeTileInfo != null)
             {
-                this._animeFrames = new int[animeTileInfo.Length - 1];
+                _animeFrames = new int[animeTileInfo.Length - 1];
                 Array.Copy(animeTileInfo, 2, _animeFrames, 1, animeTileInfo.Length - 2);
                 _animeFrames[0] = animeTileInfo[0] + Field.ANIME_TILES_BEGIN;
                 animeSpeed = animeTileInfo[1];

@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace OpenLaMulana.Entities
 {
@@ -45,12 +42,12 @@ namespace OpenLaMulana.Entities
             Rectangle obstacleCollisionBox = CollisionBox;
             Rectangle trexCollisionBox = _trex.CollisionBox;
 
-            if(obstacleCollisionBox.Intersects(trexCollisionBox))
+            if (obstacleCollisionBox.Intersects(trexCollisionBox))
             {
                 //_trex.Die();
             }
 
-        } 
+        }
 
     }
 }

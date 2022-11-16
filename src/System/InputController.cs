@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenLaMulana.Entities;
-using static OpenLaMulana.Entities.World;
 using OpenLaMulana.Audio;
+using OpenLaMulana.Entities;
+using System;
+using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.System
 {
@@ -15,16 +13,16 @@ namespace OpenLaMulana.System
         private World _world;
         private Jukebox _jukebox;
 
-        static KeyboardState keyboardState;
-        static KeyboardState _previousKeyboardState;
+        static KeyboardState t_keyboardState;
+        static KeyboardState t_previousKeyboardState;
 
         bool _isBlocked = false;
 
-        public short dirMoveX, dirMoveY = 0;
+        public short DirMoveX, DirMoveY = 0;
 
-        public bool keyJumpPressed { get; private set; }
-        public bool keyJumpHeld { get; private set; }
-        public bool keyWhipPressed { get; private set; }
+        public bool KeyJumpPressed { get; private set; }
+        public bool KeyJumpHeld { get; private set; }
+        public bool KeyWhipPressed { get; private set; }
 
         public InputController(Protag protag, World world, Jukebox jukebox)
         {
@@ -37,12 +35,12 @@ namespace OpenLaMulana.System
         {
             GetState();
 
-            dirMoveX = (short)(Convert.ToInt16(KeyCheck(Keys.Right)) - Convert.ToInt16(KeyCheck(Keys.Left)));
-            dirMoveY = (short)(Convert.ToInt16(KeyCheck(Keys.Down)) - Convert.ToInt16(KeyCheck(Keys.Up)));
+            DirMoveX = (short)(Convert.ToInt16(KeyCheck(Keys.Right)) - Convert.ToInt16(KeyCheck(Keys.Left)));
+            DirMoveY = (short)(Convert.ToInt16(KeyCheck(Keys.Down)) - Convert.ToInt16(KeyCheck(Keys.Up)));
 
-            keyJumpPressed = KeyPressed(Keys.Up);
-            keyJumpHeld = KeyCheck(Keys.Up);
-            keyWhipPressed = KeyPressed(Keys.Z);
+            KeyJumpPressed = KeyPressed(Keys.Up);
+            KeyJumpHeld = KeyCheck(Keys.Up);
+            KeyWhipPressed = KeyPressed(Keys.Z);
             bool keyCancelPressed = KeyPressed(Keys.J);
             bool keyConfirmPressed = KeyPressed(Keys.K);
 
@@ -56,7 +54,7 @@ namespace OpenLaMulana.System
 
             int selectionMoveX = Convert.ToInt32(KeyPressed(Keys.D)) - Convert.ToInt32(KeyPressed(Keys.A));
             _jukebox.Control(selectionMoveX, keyCancelPressed, keyConfirmPressed);
-    }
+        }
 
         public void BlockInputTemporarily()
         {
@@ -103,24 +101,24 @@ namespace OpenLaMulana.System
 
         public static KeyboardState GetState()
         {
-            _previousKeyboardState = keyboardState;
-            keyboardState = Keyboard.GetState();
-            return keyboardState;
+            t_previousKeyboardState = t_keyboardState;
+            t_keyboardState = Keyboard.GetState();
+            return t_keyboardState;
         }
 
         public static bool KeyPressed(Keys key)
         {
-            return keyboardState.IsKeyDown(key) && !_previousKeyboardState.IsKeyDown(key);
+            return t_keyboardState.IsKeyDown(key) && !t_previousKeyboardState.IsKeyDown(key);
         }
 
         public static bool KeyReleased(Keys key)
         {
-            return _previousKeyboardState.IsKeyDown(key);
+            return t_previousKeyboardState.IsKeyDown(key);
         }
 
         public static bool KeyCheck(Keys key)
         {
-            return keyboardState.IsKeyDown(key);
+            return t_keyboardState.IsKeyDown(key);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MeltySynth
+﻿namespace MeltySynth
 {
     /// <summary>
     /// Specifies how the synthesizer loops the sample.

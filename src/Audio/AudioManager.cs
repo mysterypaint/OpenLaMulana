@@ -4,11 +4,8 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace OpenLaMulana
 {
@@ -82,7 +79,8 @@ namespace OpenLaMulana
         {
             if (currSongID != musicNumber)
             {
-                if (!isJukebox) {
+                if (!isJukebox)
+                {
                     if (musicNumber == 1)
                     {
                         if (currSongID == 39)

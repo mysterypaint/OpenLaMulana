@@ -25,9 +25,9 @@ namespace MeltySynth
             CheckSampleRate(sampleRate);
 
             this.sampleRate = sampleRate;
-            this.blockSize = DefaultBlockSize;
-            this.maximumPolyphony = DefaultMaximumPolyphony;
-            this.enableReverbAndChorus = DefaultEnableReverbAndChorus;
+            blockSize = DefaultBlockSize;
+            maximumPolyphony = DefaultMaximumPolyphony;
+            enableReverbAndChorus = DefaultEnableReverbAndChorus;
         }
 
         private static void CheckSampleRate(int value)

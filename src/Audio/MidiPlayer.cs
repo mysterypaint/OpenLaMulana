@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
+﻿using MeltySynth;
 using Microsoft.Xna.Framework.Audio;
-using MeltySynth;
+using System;
+using System.Runtime.InteropServices;
 
 namespace OpenLaMulana.Audio
 {
@@ -34,7 +30,7 @@ namespace OpenLaMulana.Audio
         public void Play(MidiFile midiFile, bool loop = false)
         {
             sequencer.Play(midiFile, loop);
-            
+
             if (dynamicSound.State != SoundState.Playing)
             {
                 SubmitBuffer();

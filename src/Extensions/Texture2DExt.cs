@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace OpenLaMulana.Extensions
 {
@@ -14,7 +12,7 @@ namespace OpenLaMulana.Extensions
         {
             if (texture is null)
                 throw new ArgumentNullException(nameof(texture));
-            
+
             Texture2D result = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);
 
             Color[] pixelData = new Color[texture.Width * texture.Height];
@@ -26,7 +24,7 @@ namespace OpenLaMulana.Extensions
             result.SetData(invertedPixelData);
 
             return result;
-            
+
         }
 
     }

@@ -82,7 +82,7 @@ namespace MeltySynth
 
         public void Start(RegionPair region, int channel, int key, int velocity)
         {
-            this.exclusiveClass = region.ExclusiveClass;
+            exclusiveClass = region.ExclusiveClass;
             this.channel = channel;
             this.key = key;
             this.velocity = velocity;

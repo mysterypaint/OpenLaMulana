@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MeltySynth
+﻿namespace MeltySynth
 {
     internal sealed class Channel
     {

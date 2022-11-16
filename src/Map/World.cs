@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Xml;
-using System.Collections;
 using OpenLaMulana.System;
-using System.Text.RegularExpressions;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace OpenLaMulana.Entities
 {
@@ -17,7 +13,7 @@ namespace OpenLaMulana.Entities
         public const int tileWidth = 8;
         public const int tileHeight = 8;
 
-        public int currField { get; set; }  = 1;
+        public int currField { get; set; } = 1;
 
         private List<Field> _fields;
         private List<Texture2D> _Textures = null;
@@ -59,7 +55,7 @@ namespace OpenLaMulana.Entities
 
 
             // Define the font table for the game
-            Dictionary<int, string>  s_charSet = _textManager.GetCharSet();
+            Dictionary<int, string> s_charSet = _textManager.GetCharSet();
             s_charSet = PseudoXML.DefineCharSet(s_charSet);
 
             string jpTxtFile = "Content/data/script_JPN_UTF8.txt";
@@ -124,7 +120,8 @@ namespace OpenLaMulana.Entities
                     type = "Undefined";
                     currentLine++;
                     continue;
-                } else
+                }
+                else
                 {
                     // "MAP"
                     type = splitTrimmedLine.Substring(1, splitTrimmedLine.Length - 1);
@@ -278,14 +275,16 @@ namespace OpenLaMulana.Entities
                         var _texY = (_thisTile.tileID / 40) * 8;
 
                         spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, Main.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
-                    } else
+                    }
+                    else
                     {
                         // Handle animated tiles here
                         var animeSpeed = _thisTile.animeSpeed;
                         var _animeFrames = _thisTile.GetAnimeFrames();
                         var maxFrames = _animeFrames.Length;
 
-                        if (animeSpeed > 0) {
+                        if (animeSpeed > 0)
+                        {
                             if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
                             {
                                 _thisTile.currFrame++;

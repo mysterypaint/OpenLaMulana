@@ -2,15 +2,14 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Diagnostics;
+using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
 using OpenLaMulana.System;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Collections.Generic;
-using MeltySynth;
-using OpenLaMulana.Audio;
 
 namespace OpenLaMulana
 {
@@ -36,14 +35,11 @@ namespace OpenLaMulana
         public const int WINDOW_WIDTH = 256;
         public const int WINDOW_HEIGHT = 192;
 
-        public const int TREX_START_POS_Y = 8*12;
-        public const int TREX_START_POS_X = WINDOW_WIDTH/2;
+        public const int TREX_START_POS_Y = 8 * 12;
+        public const int TREX_START_POS_X = WINDOW_WIDTH / 2;
 
         public const int HUD_WIDTH = 256;
         public const int HUD_HEIGHT = 16;
-
-        //private const int SCORE_BOARD_POS_X = WINDOW_WIDTH - 130;
-        //private const int SCORE_BOARD_POS_Y = 10;
 
         private const float FADE_IN_ANIMATION_SPEED = 820f;
 
@@ -51,8 +47,8 @@ namespace OpenLaMulana
         private const string musPath = "Content/music/";
         private const string gfxPath = "Content/graphics/";
 
-        public int DISPLAY_ZOOM_FACTOR = 3;
-        private int DISPLAY_ZOOM_MAX = 10;
+        private int _displayZoomFactor = 3;
+        private int _displayZoomMax = 10;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -67,15 +63,10 @@ namespace OpenLaMulana
         private float _fadeInTexturePosX;
 
         private Protag _protag;
-        //private ScoreBoard _scoreBoard;
 
         private InputController _inputController;
         private Jukebox _jukebox;
         private World _world;
-
-        //private TileManager _tileManager;
-        //private ObstacleManager _obstacleManager;
-        //private SkyManager _skyManager;
 
         private EntityManager _entityManager;
         private AudioManager _audioManager;
@@ -83,21 +74,18 @@ namespace OpenLaMulana
         private GameMenu _gameMenu;
         private SaveData _saveData;
 
-        public static GameRNG gameRNG;
+        private static GameRNG t_gameRNG;
 
         private KeyboardState _previousKeyboardState;
 
-        //private DateTime _highscoreDate;
-
         private Matrix _transformMatrix = Matrix.Identity;
-        private int pauseToggleTimer = 0;
-
+        private int _pauseToggleTimer = 0;
 
         public GameState State { get; private set; }
 
         public DisplayMode WindowDisplayMode { get; set; } = DisplayMode.Default;
 
-        public float ZoomFactor => WindowDisplayMode == DisplayMode.Default ? 1 : DISPLAY_ZOOM_FACTOR;
+        public float ZoomFactor => WindowDisplayMode == DisplayMode.Default ? 1 : _displayZoomFactor;
 
         public Main()
         {
@@ -106,18 +94,17 @@ namespace OpenLaMulana
             Content.RootDirectory = "Content";
 
             // 30fps game
-            this.IsFixedTimeStep = true;//false;
-            this.TargetElapsedTime = TimeSpan.FromSeconds(1d / 30d); //60);
+            IsFixedTimeStep = true;//false;
+            TargetElapsedTime = TimeSpan.FromSeconds(1d / 30d); //60);
 
-            this.IsMouseVisible = true;
+            IsMouseVisible = true;
             //this.Window.AllowUserResizing = true;
 
-            gameRNG = new GameRNG();
+            t_gameRNG = new GameRNG();
             _saveData = new SaveData();
             //_saveData.ReadEncryptedSave("lamulana.sa0");
             //_saveData.WriteDecryptedSave("lamulana_dec.sa0");
             //gameRNG.Advance();
-
 
             DateTime bootTime = DateTime.Now;
             long sRNG = new DateTimeOffset(bootTime).ToUnixTimeMilliseconds();
@@ -142,9 +129,9 @@ namespace OpenLaMulana
             _graphics.SynchronizeWithVerticalRetrace = true;
             _graphics.ApplyChanges();
 
-            DISPLAY_ZOOM_FACTOR = 3;
-            if (DISPLAY_ZOOM_FACTOR > 4)
-                DISPLAY_ZOOM_FACTOR = 1;
+            _displayZoomFactor = 3;
+            if (_displayZoomFactor > 4)
+                _displayZoomFactor = 1;
             ToggleDisplayMode();
 
         }
@@ -167,7 +154,7 @@ namespace OpenLaMulana
 
             _gameFontTex = LoadTexture(gfxPath + "font_EN.png");
 
-            long val = gameRNG.RollDice(9);
+            long val = t_gameRNG.RollDice(9);
 
             _world = new World(_entityManager, _gameFontTex, _audioManager);
             _jukebox = new Jukebox(_audioManager, _world.GetTextManager(), currLang);
@@ -194,7 +181,8 @@ namespace OpenLaMulana
                     Texture2D dummy = new Texture2D(GraphicsDevice, 1, 1);
                     dummy.SetData(new Color[] { Color.White });
                     tempTexList.Add(dummy);
-                } else
+                }
+                else
                 {
                     var tex = LoadTexture(gfxPath + "mapg" + numStr + ".png");
                     tempTexList.Add(tex);
@@ -311,9 +299,10 @@ namespace OpenLaMulana
             MouseState mouseState = Mouse.GetState();
 
             if (mouseState.LeftButton == ButtonState.Pressed)
-                _protag.Position = new Vector2(mouseState.X / DISPLAY_ZOOM_FACTOR, mouseState.Y / DISPLAY_ZOOM_FACTOR);
+                _protag.Position = new Vector2(mouseState.X / _displayZoomFactor, mouseState.Y / _displayZoomFactor);
 
-            if(keyboardState.IsKeyDown(Keys.F8) && !_previousKeyboardState.IsKeyDown(Keys.F8)) {
+            if (keyboardState.IsKeyDown(Keys.F8) && !_previousKeyboardState.IsKeyDown(Keys.F8))
+            {
 
                 ResetSaveState();
 
@@ -321,9 +310,9 @@ namespace OpenLaMulana
 
             if (keyboardState.IsKeyDown(Keys.F7) && !_previousKeyboardState.IsKeyDown(Keys.F7) && !_graphics.IsFullScreen)
             {
-                DISPLAY_ZOOM_FACTOR += 1;
-                if (DISPLAY_ZOOM_FACTOR > DISPLAY_ZOOM_MAX)
-                    DISPLAY_ZOOM_FACTOR = 1;
+                _displayZoomFactor += 1;
+                if (_displayZoomFactor > _displayZoomMax)
+                    _displayZoomFactor = 1;
                 ToggleDisplayMode();
 
             }
@@ -338,27 +327,27 @@ namespace OpenLaMulana
 
         private void DecrementCounters()
         {
-            if (pauseToggleTimer > 0)
-                pauseToggleTimer--;
+            if (_pauseToggleTimer > 0)
+                _pauseToggleTimer--;
         }
 
         private void ToggleGamePause()
         {
-            if (pauseToggleTimer > 0)
+            if (_pauseToggleTimer > 0)
                 return;
             _sfxPauseInstance.Stop();
             _sfxPauseInstance.Play();
 
             if (State == GameState.Playing)
             {
-                pauseToggleTimer = 30;
+                _pauseToggleTimer = 30;
                 State = GameState.Paused;
                 _audioManager.PauseMusic();
             }
             else if (State == GameState.Paused)
             {
                 State = GameState.Playing;
-                pauseToggleTimer = 30;
+                _pauseToggleTimer = 30;
                 _audioManager.ResumeMusic();
             }
 
@@ -380,7 +369,7 @@ namespace OpenLaMulana
 
             _entityManager.Draw(_spriteBatch, gameTime);
 
-            switch(State)
+            switch (State)
             {
                 case GameState.Initial:
                 case GameState.Transition:
@@ -473,7 +462,7 @@ namespace OpenLaMulana
                     binaryFormatter.Serialize(fileStream, saveState);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine("An error occurred while saving the game: " + ex.Message);
             }
@@ -489,7 +478,7 @@ namespace OpenLaMulana
                     BinaryFormatter binaryFormatter = new BinaryFormatter();
                     SaveState saveState = binaryFormatter.Deserialize(fileStream) as SaveState;
 
-                    if(saveState != null)
+                    if (saveState != null)
                     {
                         //if(_scoreBoard != null)
                         //    _scoreBoard.HighScore = saveState.Highscore;
@@ -517,9 +506,9 @@ namespace OpenLaMulana
 
         private void ToggleDisplayMode()
         {
-            _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * DISPLAY_ZOOM_FACTOR;
-            _graphics.PreferredBackBufferWidth = WINDOW_WIDTH * DISPLAY_ZOOM_FACTOR;
-            _transformMatrix = Matrix.Identity * Matrix.CreateScale(DISPLAY_ZOOM_FACTOR, DISPLAY_ZOOM_FACTOR, 1); //_transformMatrix = Matrix.Identity;
+            _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * _displayZoomFactor;
+            _graphics.PreferredBackBufferWidth = WINDOW_WIDTH * _displayZoomFactor;
+            _transformMatrix = Matrix.Identity * Matrix.CreateScale(_displayZoomFactor, _displayZoomFactor, 1); //_transformMatrix = Matrix.Identity;
             _graphics.ApplyChanges();
 
         }
