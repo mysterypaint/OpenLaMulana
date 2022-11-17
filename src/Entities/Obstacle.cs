@@ -14,15 +14,15 @@ namespace OpenLaMulana.Entities
 
         public Vector2 Position { get; protected set; }
 
-        public short bBoxOriginX { get; set; }
-        public short bBoxOriginY { get; set; }
+        public short BBoxOriginX { get; set; }
+        public short BBoxOriginY { get; set; }
 
         protected Obstacle(Protag trex, Vector2 position)
         {
             _trex = trex;
             Position = position;
-            bBoxOriginX = 0;
-            bBoxOriginY = 0;
+            BBoxOriginX = 0;
+            BBoxOriginY = 0;
         }
 
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);

@@ -1,6 +1,6 @@
 ﻿namespace OpenLaMulana
 {
-    internal class ObjectStartFlag
+    public class ObjectStartFlag
     {
         private int value = 0;
         private bool initiallyDisabled;

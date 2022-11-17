@@ -152,7 +152,7 @@ namespace MeltySynth
                 reverbOutputLeft = new float[blockSize];
                 reverbOutputRight = new float[blockSize];
                 reverb.RoomSize = 0.70f;
-                reverb.Wet = 0.45f;
+                reverb.Wet = 0.50f;
 
                 /*
                  * 

@@ -44,14 +44,12 @@ namespace OpenLaMulana.System
             bool keyCancelPressed = KeyPressed(Keys.J);
             bool keyConfirmPressed = KeyPressed(Keys.K);
 
-
-            //WorldTransitionTesting();
-            JukeboxControls(keyCancelPressed, keyConfirmPressed);
+            WorldTransitionTesting();
+            //JukeboxControls(keyCancelPressed, keyConfirmPressed);
         }
 
         private void JukeboxControls(bool keyCancelPressed, bool keyConfirmPressed)
         {
-
             int selectionMoveX = Convert.ToInt32(KeyPressed(Keys.D)) - Convert.ToInt32(KeyPressed(Keys.A));
             _jukebox.Control(selectionMoveX, keyCancelPressed, keyConfirmPressed);
         }
@@ -85,17 +83,17 @@ namespace OpenLaMulana.System
 
             if (KeyPressed(Keys.K))
             {
-                var newVal = _world.currField + 1;
-                if (newVal > _world.fieldCount - 1)
+                var newVal = _world.CurrField + 1;
+                if (newVal > _world.FieldCount - 1)
                     newVal = 0;
-                _world.currField = newVal;
+                _world.CurrField = newVal;
             }
             else if (KeyPressed(Keys.J))
             {
-                var newVal = _world.currField - 1;
+                var newVal = _world.CurrField - 1;
                 if (newVal < 0)
-                    newVal = _world.fieldCount - 1;
-                _world.currField = newVal;
+                    newVal = _world.FieldCount - 1;
+                _world.CurrField = newVal;
             }
         }
 

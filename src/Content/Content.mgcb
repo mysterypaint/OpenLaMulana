@@ -433,6 +433,9 @@
 #begin graphics/stdemo1.png
 /copy:graphics/stdemo1.png
 
+#begin graphics/system/entityTemplate.png
+/copy:graphics/system/entityTemplate.png
+
 #begin graphics/title.png
 /copy:graphics/title.png
 

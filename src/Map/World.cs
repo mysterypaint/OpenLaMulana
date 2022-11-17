@@ -9,24 +9,67 @@ namespace OpenLaMulana.Entities
 {
     public partial class World : IGameEntity
     {
+        /*
+         * In-game flags can be used from 0 to 7999. There are three types of flags, each with different behavior.
+
+Numbers 0 to 39: Even if it is turned on, it will be reset if you move the room. It is suitable for the type of device that switches screens and starts over again. It is also used as a spare flag when constructing a complicated device.
+
+Numbers 40-6999: Normal flags. On/off information is memorized when saving. It is used for devices that become clear once solved.
+
+Numbers 7000 to 7999: The state is recorded during the game, but it is not reflected in the save data. Even if it is on, it will be turned off when loading. Mainly used for pots that respawn when loaded.
+
+There are also flags monitored by the system in-game. They are deeply involved in the mystery of the game, so please do not change the usage of the following items. See game specs, flags for details.
+
+Please refer to the LA-MULANA Flag List for the list of flags used in the actual game.
+　
+        */
+
         public int DrawOrder { get; set; }
-        public const int tileWidth = 8;
-        public const int tileHeight = 8;
+        public const int CHIP_SIZE = 8;
+        public const int FIELD_WIDTH = 4;
+        public const int FIELD_HEIGHT = 5;
+        public const int ROOM_WIDTH = 32;  // How many 8x8 tiles a room is wide
+        public const int ROOM_HEIGHT = 22; // How many 8x8 tiles a room is tall
+        public const int ANIME_TILES_BEGIN = 1160;
 
-        public int currField { get; set; } = 1;
+        public enum SpecialChipTypes
+        {
+            BACKGROUND = 0,
+            LEFT_SIDE_OF_STAIRS = 1,
+            ASCENDING_SLOPE = 2,
+            ASCENDING_SLOPE_LEFT = 3,
+            ASCENDING_STAIRS_RIGHT = 4,
+            ASCENDING_STAIRS_LEFT = 5,
+            ASCENDING_RIGHT_BEHIND_STAIRS = 6,
+            ASCENDING_BACK_LEFT = 7,
+            ICE_SLOPE_RIGHT = 12,
+            ICE_SLOPE_LEFT = 13,
+            WATER = 64,
+            WATER_STREAM_UP = 65,
+            WATER_STREAM_RIGHT = 66,
+            WATER_STREAM_DOWN = 67,
+            WATER_STREAM_LEFT = 68,
+            LAVA = 69,
+            WATERFALL = 76,
+            CLINGABLE_WALL = 128,
+            ICE = 129,
+            UNCLINGABLE_WALL = 255,
+            MAX
+        };
 
+        public int CurrField { get; set; } = 1;
         private List<Field> _fields;
         private List<Texture2D> _Textures = null;
-        public int currRoomX = 0;
-        public int currRoomY = 0;
-
-        public int fieldCount = 0;
+        public int CurrViewX = 0;
+        public int CurrViewY = 0;
+        public int FieldCount = 0;
 
         public static EntityManager s_entityManager;
         private AudioManager _audioManager;
         private TextManager _textManager;
 
-        private int[] currChipLine;
+        private int[] _currChipLine;
+        internal static Texture2D _genericEntityTex;
 
         public enum VIEW_DEST
         {
@@ -44,7 +87,7 @@ namespace OpenLaMulana.Entities
             LEFT
         };
 
-        public World(EntityManager entityManager, Texture2D _gameFontTex, AudioManager audioManager)
+        public World(EntityManager entityManager, Texture2D _gameFontTex, Texture2D genericEntityTex, AudioManager audioManager)
         {
             s_entityManager = entityManager;
 
@@ -53,6 +96,7 @@ namespace OpenLaMulana.Entities
 
             _textManager = new TextManager(_gameFontTex);
 
+            _genericEntityTex = genericEntityTex;
 
             // Define the font table for the game
             Dictionary<int, string> s_charSet = _textManager.GetCharSet();
@@ -69,7 +113,7 @@ namespace OpenLaMulana.Entities
 
             ParseXmlRecursive(this, data, 0);
 
-            fieldCount = _fields.Count;
+            FieldCount = _fields.Count;
 
             if (File.Exists(engTxtFile))
             {
@@ -85,7 +129,7 @@ namespace OpenLaMulana.Entities
                 f.InitializeArea();
             }
 
-            currChipLine = _fields[currField].GetChipline();
+            _currChipLine = _fields[CurrField].GetChipline();
         }
 
         public Field GetField(int index)
@@ -131,7 +175,7 @@ namespace OpenLaMulana.Entities
                 {
                     case "FIELD":
                         args = parseArgs(line);
-                        Field f = new Field(args[0], args[1], args[2], args[3], args[4]);
+                        Field f = new Field(args[0], args[1], args[3], args[4], s_entityManager, _textManager, this, args[2]);
                         _fields.Add(f);
                         fieldViews = f.GetMapData();
                         currView = null;
@@ -160,10 +204,8 @@ namespace OpenLaMulana.Entities
                     case "OBJECT":
                         args = parseArgs(line);
                         currField = (Field)currentObject;
-                        if (currView == null) // Spawn a Field-global entity
-                            currObjSpawnData = currField.DefineObjectSpawnData(args[0], args[1], args[2], args[3], args[4], args[5], args[6], currView == null);
-                        else // Spawn a View-specific entity
-                            currObjSpawnData = currField.DefineObjectSpawnData(args[0], args[1], args[2], args[3], args[4], args[5], args[6], currView == null);
+                        // Spawn a Field-global entity or spawn a View-specific entity, depending on if currView == null
+                        currObjSpawnData = currField.DefineObjectSpawnData(args[0], args[1], args[2], args[3], args[4], args[5], args[6], currView);
                         currentLine++;
                         break;
                     case "START":
@@ -182,7 +224,7 @@ namespace OpenLaMulana.Entities
                         int roomNumber = args[2];
                         currField = (Field)currentObject;
                         currView = currField.GetMapData()[roomX, roomY];
-                        currView._roomNumber = roomNumber;
+                        currView.RoomNumber = roomNumber;
                         currentLine++;
                         break;
                     case "UP":
@@ -251,83 +293,50 @@ namespace OpenLaMulana.Entities
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            var _thisField = _fields[currField];
-            var _thisTex = _Textures[_thisField._mapGraphics];
-            var currFieldRoomData = _thisField.GetMapData();
-            var _thisRoom = currFieldRoomData[currRoomX, currRoomY];
-            var animations = _thisField.animeList;
-
-            //mapData[roomX, roomY].Tiles[_rtx, _rty] = tileID;
-
-            // Loop through every single Room[_x][_y] tile to draw every single tile in a given room
-            for (int _y = 0; _y < Field.RoomHeight; _y++)
-            {
-                for (int _x = 0; _x < Field.RoomWidth; _x++)
-                {
-                    Tile _thisTile = _thisRoom.Tiles[_x, _y];
-
-                    if (!_thisTile.isAnime)
-                    {
-                        //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
-                        var _posx = (_x * 8);
-                        var _posy = (_y * 8);
-                        var _texX = (_thisTile.tileID % 40) * 8;
-                        var _texY = (_thisTile.tileID / 40) * 8;
-
-                        spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, Main.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
-                    }
-                    else
-                    {
-                        // Handle animated tiles here
-                        var animeSpeed = _thisTile.animeSpeed;
-                        var _animeFrames = _thisTile.GetAnimeFrames();
-                        var maxFrames = _animeFrames.Length;
-
-                        if (animeSpeed > 0)
-                        {
-                            if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
-                            {
-                                _thisTile.currFrame++;
-
-                                if (_thisTile.currFrame >= maxFrames)
-                                    _thisTile.currFrame = 0;
-                            }
-                        }
-
-                        var drawingTileID = _animeFrames[_thisTile.currFrame];
-
-                        //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
-                        var _posx = (_x * 8);
-                        var _posy = (_y * 8);
-                        var _texX = (drawingTileID % 40) * 8;
-                        var _texY = (drawingTileID / 40) * 8;
-
-                        spriteBatch.Draw(_Textures[_thisField._mapGraphics], new Vector2(_posx, Main.HUD_HEIGHT + _posy), new Rectangle(_texX, _texY, tileWidth, tileHeight), Color.White);
-                    }
-                }
-            }
-
+            var thisField = _fields[CurrField];
+            var thisTex = _Textures[thisField.MapGraphics];
+            thisField.DrawRoom(thisTex, CurrViewX, CurrViewY, spriteBatch, gameTime);
         }
 
         public void FieldTransition(VIEW_DIR movingDirection)
         {
-            var thisFieldMapData = _fields[currField].GetMapData();
-            View thisView = thisFieldMapData[currRoomX, currRoomY];
+            // Grab the View we are transitioning to
+            Field thisField = _fields[CurrField];
+            var thisFieldMapData = thisField.GetMapData();
+            View thisView = thisFieldMapData[CurrViewX, CurrViewY];
             int[] viewDest = thisView.GetDestinationView(movingDirection);
 
-            //currRoomX = viewDest[(int)VIEW_DEST.WORLD];
+            // Remember the parameters that our destination View contains
             int destField = viewDest[(int)VIEW_DEST.FIELD];
-            int destRoomX = viewDest[(int)VIEW_DEST.X];
-            int destRoomY = viewDest[(int)VIEW_DEST.Y];
+            int destViewX = viewDest[(int)VIEW_DEST.X];
+            int destViewY = viewDest[(int)VIEW_DEST.Y];
 
-            if (destField <= -1 || destRoomX <= -1 || destRoomY <= -1 || destRoomX > Field.FieldWidth - 1 || destRoomY > Field.FieldHeight - 1)
+            // Do not transition if the destination field goes out of the map bounds (4x5)
+            if (destField < 0 || destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
                 return;
 
-            currField = destField;
-            currRoomX = destRoomX;
-            currRoomY = destRoomY;
-            _audioManager.ChangeSongs(_fields[destField]._musicNumber);
-        }
+            // If we're moving to a new Field, g
+            if (CurrField != destField) {
+                thisField.DeleteAllFieldAndRoomEntities();
+                thisField.UnlockAllViewSpawning(); // Give permission back to all the views to allow them to spawn entities
+            }
+            else // Otherwise, if moving to a new View within the same Field, ensure that they share the same RoomNumber/Region of rooms, before we delete the older spawns
+                thisField.DeleteOldRoomEntities(thisView, thisField.GetView(destViewX, destViewY));
+
+            // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
+            CurrField = destField;
+            CurrViewX = destViewX;
+            CurrViewY = destViewY;
+            Field nextField = _fields[destField];
+            var nextFieldMapData = nextField.GetMapData();
+            View nextView = nextFieldMapData[destViewX, destViewY];
+
+            // Change the BGM, if applicable
+            _audioManager.ChangeSongs(_fields[destField].MusicNumber);
+
+            // Finally, spawn the new entities for the destination View, but let the destination Field keep track of ALL of the entities (Field Entities, View Entities)
+            nextField.SpawnEntities(nextView, nextField, thisView, thisField); // "thisField" was the previous Field we were on, regardless if we moved Fields or not
+    }
 
         internal TextManager GetTextManager()
         {

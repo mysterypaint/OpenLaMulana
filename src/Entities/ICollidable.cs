@@ -6,7 +6,7 @@ namespace OpenLaMulana.Entities
     {
         Rectangle CollisionBox { get; }
 
-        short bBoxOriginX { get; set; }
-        short bBoxOriginY { get; set; }
+        short BBoxOriginX { get; set; }
+        short BBoxOriginY { get; set; }
     }
 }

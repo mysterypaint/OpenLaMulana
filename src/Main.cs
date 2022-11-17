@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
+using OpenLaMulana.Entities.WorldEntities;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
@@ -34,9 +35,6 @@ namespace OpenLaMulana
 
         public const int WINDOW_WIDTH = 256;
         public const int WINDOW_HEIGHT = 192;
-
-        public const int TREX_START_POS_Y = 8 * 12;
-        public const int TREX_START_POS_X = WINDOW_WIDTH / 2;
 
         public const int HUD_WIDTH = 256;
         public const int HUD_HEIGHT = 16;
@@ -134,6 +132,7 @@ namespace OpenLaMulana
 
         List<Texture2D> tempTexList = new List<Texture2D>();
         private int textIndex;
+        private Texture2D _genericEntityTex;
 
         protected override void LoadContent()
         {
@@ -145,10 +144,11 @@ namespace OpenLaMulana
             _txProt1 = LoadTexture(gfxPath + "prot1.png");
 
             _gameFontTex = LoadTexture(gfxPath + "font_EN.png");
+            _genericEntityTex = LoadTexture(Path.Combine(gfxPath, "system", "entityTemplate.png"));
 
             long val = t_gameRNG.RollDice(9);
 
-            _world = new World(_entityManager, _gameFontTex, _audioManager);
+            _world = new World(_entityManager, _gameFontTex, _genericEntityTex, _audioManager);
             _jukebox = new Jukebox(_audioManager, _world.GetTextManager(), currLang);
             _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _audioManager);
             _protag.DrawOrder = 100;
@@ -194,13 +194,11 @@ namespace OpenLaMulana
             _entityManager.AddEntity(_gameMenu);
 
             LoadSaveState();
-
         }
 
         protected override void UnloadContent()
         {
             _audioManager.UnloadContent();
-            //base.UnloadContent();
         }
         private Texture2D LoadTexture(string filePath)
         {
@@ -219,6 +217,10 @@ namespace OpenLaMulana
             return tex;
         }
 
+        public World GetWorld()
+        {
+            return _world;
+        }
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -229,7 +231,6 @@ namespace OpenLaMulana
 
             KeyboardState keyboardState = Keyboard.GetState();
             bool isStartKeyPressed, wasStartKeyPressed, isAltKeyDown;
-
 
             isStartKeyPressed = keyboardState.IsKeyDown(Keys.Enter);
             wasStartKeyPressed = _previousKeyboardState.IsKeyDown(Keys.Enter);
@@ -249,14 +250,6 @@ namespace OpenLaMulana
                     {
                         ToggleGamePause();
                     }
-
-                    if (gameTime.TotalGameTime.Ticks % 5 == 0)
-                    {
-                        textIndex++;
-                        if (textIndex >= _textManager.GetTextCount(currLang))
-                            textIndex = 0;
-                    }
-
                     break;
                 case GameState.Paused:
                     JukeboxRoutine();
@@ -276,7 +269,6 @@ namespace OpenLaMulana
                     JukeboxRoutine();
                     break;
                 case GameState.Initial:
-
                     if (isStartKeyPressed && !wasStartKeyPressed)
                     {
                         StartGame();
@@ -287,7 +279,6 @@ namespace OpenLaMulana
 
             DecrementCounters();
 
-
             MouseState mouseState = Mouse.GetState();
 
             if (mouseState.LeftButton == ButtonState.Pressed)
@@ -295,9 +286,7 @@ namespace OpenLaMulana
 
             if (keyboardState.IsKeyDown(Keys.F8) && !_previousKeyboardState.IsKeyDown(Keys.F8))
             {
-
                 ResetSaveState();
-
             }
 
             if (keyboardState.IsKeyDown(Keys.F7) && !_previousKeyboardState.IsKeyDown(Keys.F7) && !_graphics.IsFullScreen)
@@ -311,10 +300,7 @@ namespace OpenLaMulana
 
             _previousKeyboardState = keyboardState;
 
-
             _entityManager.Update(gameTime);
-
-
         }
 
         private void DecrementCounters()
@@ -342,20 +328,11 @@ namespace OpenLaMulana
                 _pauseToggleTimer = 30;
                 _audioManager.ResumeMusic();
             }
-
-
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            /*
-            if (_skyManager == null)
-                GraphicsDevice.Clear(Color.White);
-            else
-                GraphicsDevice.Clear(_skyManager.ClearColor);
-            */
-
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
 
@@ -375,10 +352,25 @@ namespace OpenLaMulana
                 case GameState.MSXEmulator:
                     break;
                 case GameState.Paused:
-                    _jukebox.Draw(_spriteBatch, gameTime);
+                    //_jukebox.Draw(_spriteBatch, gameTime);
                     break;
                 case GameState.Playing:
-                    _jukebox.Draw(_spriteBatch, gameTime);
+                    //_jukebox.Draw(_spriteBatch, gameTime);
+
+                    View[,] thisFieldMapData = _world.GetField(_world.CurrField).GetMapData();
+                    View thisView = thisFieldMapData[_world.CurrViewX, _world.CurrViewY];
+
+                    /*
+                    int[] viewDest = thisView.GetDestinationView(movingDirection);
+
+                    //currRoomX = viewDest[(int)VIEW_DEST.WORLD];
+                    int destField = viewDest[(int)VIEW_DEST.FIELD];
+                    int destRoomX = viewDest[(int)VIEW_DEST.X];
+                    int destRoomY = viewDest[(int)VIEW_DEST.Y];*/
+
+                    List<IGameEntity> fieldEntities = _world.GetField(_world.CurrField).GetFieldEntities();
+                    List<IGameEntity> roomEntities = _world.GetField(_world.CurrField).GetRoomEntities();
+                    _textManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
                     /*
                     _textManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
                         + "\nWASD, JK: Move between rooms\nF2: Open MSX [Jukebox]");*/
@@ -392,7 +384,6 @@ namespace OpenLaMulana
                     break;
 
             }
-
 
             _spriteBatch.End();
 
@@ -423,15 +414,6 @@ namespace OpenLaMulana
 
             State = GameState.Playing;
             _protag.Initialize();
-
-            //_obstacleManager.Reset();
-            //_obstacleManager.IsEnabled = true;
-
-            //_gameOverScreen.IsEnabled = false;
-            //_scoreBoard.Score = 0;
-
-            //_tileManager.Initialize();
-
             _inputController.BlockInputTemporarily();
 
             return true;
@@ -502,7 +484,7 @@ namespace OpenLaMulana
             _graphics.PreferredBackBufferWidth = WINDOW_WIDTH * _displayZoomFactor;
             _transformMatrix = Matrix.Identity * Matrix.CreateScale(_displayZoomFactor, _displayZoomFactor, 1); //_transformMatrix = Matrix.Identity;
             _graphics.ApplyChanges();
-
+            Window.Position = new Point((GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (_graphics.PreferredBackBufferWidth / 2), (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (_graphics.PreferredBackBufferHeight / 2));
         }
 
     }

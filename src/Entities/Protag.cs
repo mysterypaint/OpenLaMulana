@@ -28,20 +28,20 @@ namespace OpenLaMulana.Entities
 
         public Vector2 Position { get; set; }
 
-        public short moveX = 0;
-        public short moveY = 0;
-        public float hsp = 0;
-        public float vsp = 0;
+        public short MoveX = 0;
+        public short MoveY = 0;
+        public float Hsp = 0;
+        public float Vsp = 0;
 
-        float grav = 0.34f;
-        double grav_max = 0.8;
-        bool grounded = false;
-        int jump_speed = 5;
+        float _grav = 0.34f;
+        double _gravMax = 0.8;
+        bool _grounded = false;
+        int jumpSpeed = 5;
 
-        private bool hasBoots = true;
-        private bool hasFeather = true;
-        private float _tileWidth, _tileHeight;
-        float move_speed = 1f;
+        private bool _hasBoots = true;
+        private bool _hasFeather = true;
+        private float _chipWidth, _chipHeight;
+        float _moveSpeed = 1f;
 
         public Facing facingX = Facing.RIGHT;
         public Facing facingY = Facing.DOWN;
@@ -49,18 +49,28 @@ namespace OpenLaMulana.Entities
         private InputController _inputController = null;
         private int HUD_TILE_HEIGHT = 2;
 
-        public short bBoxOriginX { get; set; }
-        public short bBoxOriginY { get; set; }
+        public short BBoxOriginX { get; set; }
+        public short BBoxOriginY { get; set; }
 
         public int DrawOrder { get; set; }
+
+        /*
+         * Weapon attack powerThe attack power of each weapon is as follows. This number also applies to breaking wall events, etc.
+
+Whip: 2 Knife: 3 Chain Whip: 4 Ax: 5 Sword: 5 Key Sword: 1 Mace: 6
+Shuriken: 2 Throwing Sword: 3 (Penetrating) Cannon: 4 Spear: 3 Bomb: 2x4 Gun: 20
+rom Strengthening by cartridge combination is as follows.
+Video Hustler + Break Shot: Knife and key sword attack power +2
+Castlevania Dracula + Tile Magician: Whip attack power +2
+        */
 
         public Rectangle CollisionBox
         {
             get
             {
                 Rectangle box = new Rectangle(
-                    (int)Math.Round(Position.X - bBoxOriginX),
-                    (int)Math.Round(Position.Y - bBoxOriginY),
+                    (int)Math.Round(Position.X - BBoxOriginX),
+                    (int)Math.Round(Position.Y - BBoxOriginY),
                     9,
                     11
                 );
@@ -77,10 +87,10 @@ namespace OpenLaMulana.Entities
 
             State = PlayerState.IDLE;
 
-            _tileWidth = World.tileWidth;
-            _tileHeight = World.tileHeight;
-            bBoxOriginX = 5;
-            bBoxOriginY = 12;
+            _chipWidth = World.CHIP_SIZE;
+            _chipHeight = World.CHIP_SIZE;
+            BBoxOriginX = 5;
+            BBoxOriginY = 12;
 
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
         }
@@ -99,9 +109,9 @@ namespace OpenLaMulana.Entities
 
         public void Update(GameTime gameTime)
         {
-            var chipline = _world.GetField(_world.currField).GetChipline();
+            var chipline = _world.GetField(_world.CurrField).GetChipline();
 
-            CollideAndMove(move_speed, move_speed, chipline);
+            CollideAndMove(_moveSpeed, _moveSpeed, chipline);
             prev_state = State;
         }
 
@@ -120,20 +130,20 @@ namespace OpenLaMulana.Entities
             Otherwise, the order shouldn’t matter much. Then, for each axis:
             */
 
-            // Step X
+        // Step X
 
-            // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
-            //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
+        // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
+        //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-            moveX = _inputController.DirMoveX;
-            if (moveX == 1)
+        MoveX = _inputController.DirMoveX;
+            if (MoveX == 1)
                 facingX = Facing.RIGHT;
-            else if (moveX == -1)
+            else if (MoveX == -1)
                 facingX = Facing.LEFT;
 
-            if (moveX != 0)
+            if (MoveX != 0)
             {
-                View currRoom = _world.GetField(_world.currField).GetMapData()[_world.currRoomX, _world.currRoomY]; // TODO: Update this variable only whenever a map change occurs
+                View currRoom = _world.GetField(_world.CurrField).GetMapData()[_world.CurrViewX, _world.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
 
 
                 if (facingX == Facing.RIGHT)
@@ -142,13 +152,13 @@ namespace OpenLaMulana.Entities
                     // Figure which lines of tiles the bounding box intersects with – this will give you a minimum and maximum tile value on the OPPOSITE axis.
                     // For example, if we’re walking left, perhaps the player intersects with horizontal rows 32, 33 and 34(that is, tiles with y = 32 * TS, y = 33 * TS, and y = 34 * TS, where TS = tile size).
 
-                    dx = move_speed;
+                    dx = _moveSpeed;
 
-                    bboxTileYMin = (int)Math.Floor(bboxTop / _tileHeight) - HUD_TILE_HEIGHT;
-                    bboxTileYMax = (int)Math.Floor(bboxBottom / _tileHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight) - HUD_TILE_HEIGHT;
 
-                    bboxTileXMin = (int)Math.Floor(bboxRight / _tileWidth);
-                    bboxTileXMax = (int)Math.Floor((bboxRight + dx) / _tileWidth) + 1;
+                    bboxTileXMin = (int)Math.Floor(bboxRight / _chipWidth);
+                    bboxTileXMax = (int)Math.Floor((bboxRight + dx) / _chipWidth) + 1;
 
 
                     // Scan along those lines of tiles and towards the direction of movement until you find the closest static obstacle. Then loop through every moving obstacle,
@@ -158,9 +168,9 @@ namespace OpenLaMulana.Entities
                     {
                         for (var x = bboxTileXMax; x >= bboxTileXMin; x--)
                         {
-                            if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
+                            if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
                             {
-                                if (currRoom.Tiles[x, y].tileID >= chipline[0] && currRoom.Tiles[x, y].tileID < chipline[1])
+                                if (currRoom.Chips[x, y].tileID >= chipline[0] && currRoom.Chips[x, y].tileID < chipline[1])
                                 {
                                     if (closestTile > x)
                                         closestTile = x;
@@ -172,7 +182,7 @@ namespace OpenLaMulana.Entities
                                 if (x < 0)
                                     closestTile = 0;
                                 else
-                                    closestTile = Field.RoomWidth;
+                                    closestTile = World.ROOM_WIDTH;
                                 */
                             }
                         }
@@ -180,14 +190,14 @@ namespace OpenLaMulana.Entities
 
                     // The total movement of the player along that direction is then the minimum between the distance to closest obstacle,
                     // and the amount that you wanted to move in the first place.
-                    int tx = closestTile * World.tileWidth;
+                    int tx = closestTile * World.CHIP_SIZE;
                     dx = Math.Min(dx, tx - bboxRight + 1);
 
                     // Move player to the new position.
 
                     if (bboxRight + dx >= tx)
                     {
-                        posX = tx - bBoxOriginX;
+                        posX = tx - BBoxOriginX;
                         dx = 0;
                     }
                     posX += dx;
@@ -199,13 +209,13 @@ namespace OpenLaMulana.Entities
                     // Figure which lines of tiles the bounding box intersects with – this will give you a minimum and maximum tile value on the OPPOSITE axis.
                     // For example, if we’re walking left, perhaps the player intersects with horizontal rows 32, 33 and 34(that is, tiles with y = 32 * TS, y = 33 * TS, and y = 34 * TS, where TS = tile size).
 
-                    dx = -move_speed;
+                    dx = -_moveSpeed;
 
-                    bboxTileYMin = (int)Math.Floor(bboxTop / _tileHeight) - HUD_TILE_HEIGHT;
-                    bboxTileYMax = (int)Math.Floor(bboxBottom / _tileHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight) - HUD_TILE_HEIGHT;
 
-                    bboxTileXMin = (int)Math.Floor(bboxLeft / _tileWidth);
-                    bboxTileXMax = (int)Math.Floor((bboxLeft + dx) / _tileWidth) - 1;
+                    bboxTileXMin = (int)Math.Floor(bboxLeft / _chipWidth);
+                    bboxTileXMax = (int)Math.Floor((bboxLeft + dx) / _chipWidth) - 1;
 
 
                     // Scan along those lines of tiles and towards the direction of movement until you find the closest static obstacle. Then loop through every moving obstacle,
@@ -215,9 +225,9 @@ namespace OpenLaMulana.Entities
                     {
                         for (var x = bboxTileXMax; x <= bboxTileXMin; x++)
                         {
-                            if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
+                            if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
                             {
-                                if (currRoom.Tiles[x, y].tileID >= chipline[0] && currRoom.Tiles[x, y].tileID < chipline[1])
+                                if (currRoom.Chips[x, y].tileID >= chipline[0] && currRoom.Chips[x, y].tileID < chipline[1])
                                 {
                                     if (closestTile < x)
                                         closestTile = x;
@@ -229,7 +239,7 @@ namespace OpenLaMulana.Entities
                                 if (x < 0)
                                     closestTile = -1;
                                 else
-                                    closestTile = Field.RoomWidth;
+                                    closestTile = World.ROOM_WIDTH;
                                 */
                             }
                         }
@@ -237,7 +247,7 @@ namespace OpenLaMulana.Entities
                     //closestTile = 1;
                     // The total movement of the player along that direction is then the minimum between the distance to closest obstacle,
                     // and the amount that you wanted to move in the first place.
-                    int tx = (closestTile * World.tileWidth) + World.tileWidth - 1;
+                    int tx = (closestTile * World.CHIP_SIZE) + World.CHIP_SIZE - 1;
 
                     //movingDistance = Math.Sign(movingDistance) * Math.Min(Math.Abs(movingDistance), Math.Abs(bboxLeft - tx - 1));
 
@@ -245,7 +255,7 @@ namespace OpenLaMulana.Entities
 
                     if (bboxLeft + dx <= tx)
                     {
-                        posX = tx + bBoxOriginX + 1;
+                        posX = tx + BBoxOriginX + 1;
                         dx = 0;
                     }
                     posX += dx;
@@ -259,13 +269,13 @@ namespace OpenLaMulana.Entities
             if (_inputController.KeyJumpPressed)
                 _audioManager.PlaySFX(SFX.P_JUMP);
 
-            if (_inputController.KeyJumpHeld && dy <= 0 && grounded)
+            if (_inputController.KeyJumpHeld && dy <= 0 && _grounded)
             {
                 State = PlayerState.JUMPING;
             }
 
-            moveY = _inputController.DirMoveY;
-            if (moveY < 0)
+            MoveY = _inputController.DirMoveY;
+            if (MoveY < 0)
             {
                 facingY = Facing.UP;
             }
@@ -275,26 +285,26 @@ namespace OpenLaMulana.Entities
             }
 
 
-            if (moveY != 0)
+            if (MoveY != 0)
             {
-                View currRoom = _world.GetField(_world.currField).GetMapData()[_world.currRoomX, _world.currRoomY]; // TODO: Update this variable only whenever a map change occurs
+                View currRoom = _world.GetField(_world.CurrField).GetMapData()[_world.CurrViewX, _world.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
 
                 if (facingY == Facing.DOWN)
                 {
-                    bboxTileYMin = (int)Math.Floor(bboxBottom / _tileHeight) - HUD_TILE_HEIGHT;
-                    bboxTileYMax = (int)Math.Floor((bboxBottom + dy) / _tileHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMin = (int)Math.Floor(bboxBottom / _chipHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMax = (int)Math.Floor((bboxBottom + dy) / _chipHeight) - HUD_TILE_HEIGHT;
 
-                    bboxTileXMin = (int)Math.Floor(bboxLeft / _tileWidth);
-                    bboxTileXMax = (int)Math.Floor(bboxRight / _tileWidth);
+                    bboxTileXMin = (int)Math.Floor(bboxLeft / _chipWidth);
+                    bboxTileXMax = (int)Math.Floor(bboxRight / _chipWidth);
 
                     var closestTile = 255;
                     for (var x = bboxTileXMin; x <= bboxTileXMax; x++)
                     {
                         for (var y = bboxTileYMin; y <= bboxTileYMax; y++)
                         {
-                            if (x >= 0 && y >= 0 && x < Field.RoomWidth && y < Field.RoomHeight)
+                            if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
                             {
-                                if (currRoom.Tiles[x, y].tileID >= chipline[0] && currRoom.Tiles[x, y].tileID < chipline[1])
+                                if (currRoom.Chips[x, y].tileID >= chipline[0] && currRoom.Chips[x, y].tileID < chipline[1])
                                 {
                                     if (closestTile > y)
                                         closestTile = y;
@@ -307,13 +317,13 @@ namespace OpenLaMulana.Entities
                                 if (y < 0)
                                     closestTile = -1;
                                 else
-                                    closestTile = Field.RoomHeight;
+                                    closestTile = World.ROOM_HEIGHT;
                                 */
                             }
                         }
                     }
 
-                    int ty = (closestTile + HUD_TILE_HEIGHT) * World.tileHeight;
+                    int ty = (closestTile + HUD_TILE_HEIGHT) * World.CHIP_SIZE;
 
                     if (bboxBottom + dy >= ty)
                     {
@@ -325,22 +335,22 @@ namespace OpenLaMulana.Entities
                 }
                 else if (facingY == Facing.UP)
                 {
-                    dy = -move_speed;
+                    dy = -_moveSpeed;
 
-                    bboxTileYMin = (int)Math.Floor(bboxTop / _tileHeight);
-                    bboxTileYMax = (int)Math.Floor((bboxTop + dy) / _tileHeight) - 1;
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight);
+                    bboxTileYMax = (int)Math.Floor((bboxTop + dy) / _chipHeight) - 1;
 
-                    bboxTileXMin = (int)Math.Floor(bboxLeft / _tileWidth);
-                    bboxTileXMax = (int)Math.Floor(bboxRight / _tileWidth);
+                    bboxTileXMin = (int)Math.Floor(bboxLeft / _chipWidth);
+                    bboxTileXMax = (int)Math.Floor(bboxRight / _chipWidth);
 
                     var closestTile = -255;
                     for (var x = bboxTileXMin; x <= bboxTileXMax; x++)
                     {
                         for (var y = bboxTileYMax; y < bboxTileYMin; y++)
                         {
-                            if (x >= 0 && y >= HUD_TILE_HEIGHT && x < Field.RoomWidth && y < Field.RoomHeight + HUD_TILE_HEIGHT)
+                            if (x >= 0 && y >= HUD_TILE_HEIGHT && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT + HUD_TILE_HEIGHT)
                             {
-                                if (currRoom.Tiles[x, y - HUD_TILE_HEIGHT].tileID >= chipline[0] && currRoom.Tiles[x, y - HUD_TILE_HEIGHT].tileID < chipline[1])
+                                if (currRoom.Chips[x, y - HUD_TILE_HEIGHT].tileID >= chipline[0] && currRoom.Chips[x, y - HUD_TILE_HEIGHT].tileID < chipline[1])
                                 {
                                     if (y - HUD_TILE_HEIGHT > closestTile)
                                         closestTile = y - HUD_TILE_HEIGHT;
@@ -352,19 +362,19 @@ namespace OpenLaMulana.Entities
                                 if (y < 0)
                                     closestTile = -1 + HUD_TILE_HEIGHT;
                                 else
-                                    closestTile = Field.RoomHeight - HUD_TILE_HEIGHT;
+                                    closestTile = World.ROOM_HEIGHT - HUD_TILE_HEIGHT;
                                 */
                             }
                         }
                     }
 
-                    int ty = ((closestTile + HUD_TILE_HEIGHT) * World.tileWidth) + World.tileWidth - 1;
+                    int ty = ((closestTile + HUD_TILE_HEIGHT) * World.CHIP_SIZE) + World.CHIP_SIZE - 1;
                     if (bboxTop + dy <= ty)
                     {
-                        posY = ty + bBoxOriginY + 1;
+                        posY = ty + BBoxOriginY + 1;
                         dy = 0;
                     }
-                    posY += dy + vsp;
+                    posY += dy + Vsp;
                 }
             }
 
@@ -383,8 +393,8 @@ namespace OpenLaMulana.Entities
 
             var chipline = currField.GetChipline();
 
-            if (!(rtx >= 0 && rtx <= Field.RoomWidth - 1 &&
-                rty >= 0 && rty <= Field.RoomHeight - 1))
+            if (!(rtx >= 0 && rtx <= World.ROOM_WIDTH - 1 &&
+                rty >= 0 && rty <= World.ROOM_HEIGHT - 1))
                 return true;
 
             var checkingTileID = currRoom.Tiles[(int)rtx, (int)rty]._tileID;
