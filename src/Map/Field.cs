@@ -254,8 +254,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             // We are moving to a new field, so we should spawn all the destination Field's global entities right now
             if (destField.MapIndex != prevField.MapIndex)
             {
-                /*
-                foreach (ObjectSpawnData fieldObj in _fieldSpawnData) {
+                foreach (ObjectSpawnData fieldObj in destField._fieldSpawnData) {
                     IGameEntity newObj = SpawnEntity(fieldObj, destView);
 
                     if (newObj != null)
@@ -267,7 +266,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 Field pf = destView.GetParentField();
                 foreach (View view in pf._views) {
                     view.CanSpawnEntities = true;
-                }*/
+                }
             }
             destView.CanSpawnEntities = false;
             _visitedViews.Add(destView); // Keep track of all the views we've visited since entering this region/room

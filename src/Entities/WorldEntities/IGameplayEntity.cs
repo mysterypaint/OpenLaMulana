@@ -11,22 +11,32 @@ namespace OpenLaMulana.Entities.WorldEntities
         public int DrawOrder => 0;
         internal Texture2D _tex;
         internal World _world;
-        public Vector2 Position;
+        public Vector2 RelativeViewPos;
         private bool _spawnIsGlobal { get; set; } = false;
-        public Vector2 TilePosition { get; }
+        public Vector2 RelativeViewTilePos { get; }
 
-        internal View _parentView;
+        internal View _parentView = null;
         internal Point viewCoords= new Point(-1, -1);
 
         public IGameplayEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, Texture2D tex, World world, View destView)
         {
             _tex = tex;
             _world = world;
-            _parentView = destView;
-            viewCoords = new Point(_parentView.X, _parentView.Y);
             _spawnIsGlobal = spawnIsGlobal;
-            TilePosition = new Vector2(x, y);
-            Position = new Vector2((x ) * World.CHIP_SIZE, (y ) * World.CHIP_SIZE);
+
+            if (!_spawnIsGlobal)
+            {
+                RelativeViewTilePos = new Vector2(x, y);
+                RelativeViewPos = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
+                _parentView = destView;
+                viewCoords = new Point(_parentView.X, _parentView.Y);
+            }
+            else
+            {
+                RelativeViewTilePos = new Vector2(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
+                viewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);
+                RelativeViewPos = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -37,7 +47,10 @@ namespace OpenLaMulana.Entities.WorldEntities
                     srcRect = new Rectangle(0, 0, 16, 16);
                 else
                     srcRect = new Rectangle(16, 0, 16, 16);
-                Rectangle destRect = new Rectangle((int)TilePosition.X % World.ROOM_WIDTH * World.CHIP_SIZE, (int)(TilePosition.Y % World.ROOM_HEIGHT) * World.CHIP_SIZE + Main.HUD_HEIGHT, 8, 8);
+                Rectangle destRect = new Rectangle(
+                    (int)RelativeViewPos.X,
+                    (int)RelativeViewPos.Y + Main.HUD_HEIGHT,
+                    8, 8);
                 spriteBatch.Draw(_tex, destRect, srcRect, Color.White);
                     //_textManager.DrawText((int)Position.X, (int)Position.Y, "ok");
             }
