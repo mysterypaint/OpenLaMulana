@@ -22,10 +22,14 @@ Fields 31,32: Used for mini games. Field 31 will be the PR3 map. Field 32 is for
 Some Guardians are forced to relocate after the battle ends. See Guardian commentary. (/_RESOURCE/02-04.html)*/
 
         public int DrawOrder => throw new NotImplementedException();
+
+        public int WorldID { get; internal set; } = 0;
+
         public int MusicNumber = 0;
         public int MapIndex;
         public int MapGraphics;
         public int EventGraphics;
+        public int ID = 0;
 
         private int _mapData = 0;
         private Dictionary<int, int> _hitList;   // Starting from ChipLine2 counting upward, this array defines the behavior of each tile in progressive order.
@@ -39,7 +43,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         private static List<IGameEntity> _fieldEntities = new List<IGameEntity>();
         private static List<IGameEntity> _roomEntities = new List<IGameEntity>();
         private World _world;
-        public Field(int mapIndex, int mapData, int eventGraphics, int musicNumber, EntityManager s_entityManager, TextManager textManager, World world, int mapGraphics = 65535)
+        
+        public Field(int mapIndex, int mapData, int eventGraphics, int musicNumber, EntityManager s_entityManager, TextManager textManager, World world, int mapGraphics = 65535, int id = 0, int worldID = 0)
         {
             MapIndex = mapIndex;
             _mapData = mapData;
@@ -49,6 +54,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             _s_entityManager = s_entityManager;
             _textManager = textManager;
             _world = world;
+            ID = id;
+            WorldID = worldID;
 
             for (var y = 0; y < World.FIELD_HEIGHT; y++)
             {
@@ -184,15 +191,19 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
         internal void DeleteOldRoomEntities(View prevView, View destView)
         {
-            if (prevView.RoomNumber == destView.RoomNumber)
-                return; // Don't delete any room entities, because we are in the same room/region of Views
+            if (prevView.RoomNumber == destView.RoomNumber) {
+                if (prevView.GetParentField() == destView.GetParentField())
+                {
+                    return; // Don't delete any room entities, because we are not only in the same Field, but also in the same room/region of Views
+                }
+            }
             else {
                 // Otherwise, we should delete all room entities from the previous View's Field
                 var prevViewRoomEntities = prevView.GetParentField().GetRoomEntities();
                 foreach (IGameEntity rE in prevViewRoomEntities) {
                     _s_entityManager.RemoveEntity(rE);
                 }
-                _roomEntities.Clear();
+                prevView.GetParentField().GetRoomEntities().Clear();
             }
         }
 
@@ -290,7 +301,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 default:
                 case 0:
                     // TODO: Don't forget to check startFlags here before spawning anything!
-                    newObj = new IGameplayEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, World._genericEntityTex, _world, destView);
+                    newObj = new IWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, World._genericEntityTex, _world, destView);
                     break;
             }
 

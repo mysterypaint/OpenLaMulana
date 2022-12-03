@@ -400,6 +400,8 @@ namespace OpenLaMulana
             if (State != GameState.Initial)
                 return false;
 
+            _world.InitWorldEntities();
+
             //_scoreBoard.Score = 0;
             State = GameState.Transition;
             //_protag.BeginJump();

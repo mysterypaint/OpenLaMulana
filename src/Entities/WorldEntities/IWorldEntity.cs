@@ -6,7 +6,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    public class IGameplayEntity : IGameEntity
+    public class IWorldEntity : IGameEntity
     {
         public int DrawOrder => 0;
         internal Texture2D _tex;
@@ -18,7 +18,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         internal View _parentView = null;
         internal Point viewCoords= new Point(-1, -1);
 
-        public IGameplayEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, Texture2D tex, World world, View destView)
+        public IWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, Texture2D tex, World world, View destView)
         {
             _tex = tex;
             _world = world;

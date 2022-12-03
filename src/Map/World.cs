@@ -4,6 +4,7 @@ using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace OpenLaMulana.Entities
 {
@@ -76,7 +77,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             WORLD,
             FIELD,
             X,
-            Y
+            Y,
+            MAX
         };
 
         public enum VIEW_DIR
@@ -84,7 +86,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             UP,
             RIGHT,
             DOWN,
-            LEFT
+            LEFT,
+            SELF,
+            MAX
         };
 
         public World(EntityManager entityManager, Texture2D _gameFontTex, Texture2D genericEntityTex, AudioManager audioManager)
@@ -137,6 +141,15 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             return _fields[index];
         }
 
+        public void InitWorldEntities()
+        {
+            Field thisField = _fields[CurrField];
+            var thisFieldMapData = thisField.GetMapData();
+            View thisView = thisFieldMapData[CurrViewX, CurrViewY];
+
+            UpdateEntities(CurrField, thisField, thisView, CurrViewX, CurrViewY);
+        }
+
         // Returns new currentLine; end when it returns -1
         public int ParseXmlRecursive(IGameEntity currentObject, string[] xml, int currentLine)
         {
@@ -149,6 +162,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             ObjectSpawnData currObjSpawnData = null;
             View currView = null;
             View[,] fieldViews = null;
+            int numFields = 0;
+            int numWorlds = 0;
 
             do
             {
@@ -175,7 +190,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 {
                     case "FIELD":
                         args = parseArgs(line);
-                        Field f = new Field(args[0], args[1], args[3], args[4], s_entityManager, _textManager, this, args[2]);
+                        Field f = new Field(args[0], args[1], args[3], args[4], s_entityManager, _textManager, this, args[2], numFields, numWorlds);
+                        numFields++;
                         _fields.Add(f);
                         fieldViews = f.GetMapData();
                         currView = null;
@@ -249,6 +265,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                         break;
                     //case "TALK": // We don't care about the dialogue because it is already stored by this point, in all supported languages
                     //case "WORLD": // Don't need more than one world...
+                    //    numWorlds++;
+                    //    break;
                     //default:
                     //    currentLine = ParseXmlRecursive(currentObject, xml, currentLine + 1);
                     //    break;
@@ -315,12 +333,18 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             if (destField < 0 || destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
                 return;
 
-            // If we're moving to a new Field, g
-            if (CurrField != destField) {
+            UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
+    }
+
+        private void UpdateEntities(int destField, Field thisField, View thisView, int destViewX, int destViewY)
+        {
+            // If we're moving to a new Field, get rid of all the entities from the previous Field
+            if (CurrField != destField)
+            {
                 thisField.DeleteAllFieldAndRoomEntities();
                 thisField.UnlockAllViewSpawning(); // Give permission back to all the views to allow them to spawn entities
             }
-            else // Otherwise, if moving to a new View within the same Field, ensure that they share the same RoomNumber/Region of rooms, before we delete the older spawns
+            else // Otherwise, if moving to a new View within the same Field, delete the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
                 thisField.DeleteOldRoomEntities(thisView, thisField.GetView(destViewX, destViewY));
 
             // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
@@ -336,7 +360,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Finally, spawn the new entities for the destination View, but let the destination Field keep track of ALL of the entities (Field Entities, View Entities)
             nextField.SpawnEntities(nextView, nextField, thisView, thisField); // "thisField" was the previous Field we were on, regardless if we moved Fields or not
-    }
+        }
 
         internal TextManager GetTextManager()
         {

@@ -50,7 +50,20 @@ namespace OpenLaMulana
 
         internal int[] GetDestinationView(VIEW_DIR direction)
         {
-            int[] destination = { _destWorld[(int)direction], _destField[(int)direction], _destX[(int)direction], _destY[(int)direction] };
+            int[] destination = new int[4];
+
+            if (direction != VIEW_DIR.SELF) {
+                destination[0] = _destWorld[(int)direction];
+                destination[1] = _destField[(int)direction];
+                destination[2] = _destX[(int)direction];
+                destination[3] = _destY[(int)direction];
+            }
+            else {
+                destination[0] = _destWorld[_parentField.WorldID];
+                destination[1] = _destField[_parentField.ID];
+                destination[2] = _destX[X];
+                destination[3] = _destY[Y];
+            }
             return destination;
         }
 
