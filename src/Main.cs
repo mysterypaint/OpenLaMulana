@@ -57,7 +57,7 @@ namespace OpenLaMulana
         private float _fadeInTexturePosX;
 
         private Protag _protag;
-
+        private Camera _camera;
         private InputController _inputController;
         private Jukebox _jukebox;
         private World _world;
@@ -128,6 +128,10 @@ namespace OpenLaMulana
                 _displayZoomFactor = 1;
             ToggleDisplayMode();
 
+
+            _camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
+
+
         }
 
         List<Texture2D> tempTexList = new List<Texture2D>();
@@ -150,11 +154,17 @@ namespace OpenLaMulana
 
             _world = new World(_entityManager, _gameFontTex, _genericEntityTex, _audioManager);
             _jukebox = new Jukebox(_audioManager, _world.GetTextManager(), currLang);
-            _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _audioManager);
+            _camera = new Camera(_world.GetTextManager(), _world);
+            _camera.GraphicsDevice = GraphicsDevice;
+            _camera.SpriteBatch = _spriteBatch;
+            _world.SetCamera(_camera);
+            _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _audioManager, _camera);
+            _camera.SetProtag(_protag);
             _protag.DrawOrder = 100;
 
             _inputController = new InputController(_protag, _world, _jukebox);
             _protag.SetInputController(_inputController);
+            _camera.SetInputController(_inputController);
 
             for (int i = 0; i <= 32; i++)
             {
@@ -226,6 +236,7 @@ namespace OpenLaMulana
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _camera.Update(gameTime);
             _audioManager.Update(gameTime);
             base.Update(gameTime);
 
@@ -333,8 +344,10 @@ namespace OpenLaMulana
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            //  _camera.GetTransformation(GraphicsDevice)
+//            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _camera.GetTransformation(GraphicsDevice));
 
             _entityManager.Draw(_spriteBatch, gameTime);
 
@@ -485,6 +498,9 @@ namespace OpenLaMulana
             _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * _displayZoomFactor;
             _graphics.PreferredBackBufferWidth = WINDOW_WIDTH * _displayZoomFactor;
             _transformMatrix = Matrix.Identity * Matrix.CreateScale(_displayZoomFactor, _displayZoomFactor, 1); //_transformMatrix = Matrix.Identity;
+
+            _camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
+
             _graphics.ApplyChanges();
             Window.Position = new Point((GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (_graphics.PreferredBackBufferWidth / 2), (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (_graphics.PreferredBackBufferHeight / 2));
         }

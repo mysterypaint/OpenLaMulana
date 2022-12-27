@@ -4,6 +4,7 @@ using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace OpenLaMulana.Entities
@@ -31,6 +32,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public const int FIELD_HEIGHT = 5;
         public const int ROOM_WIDTH = 32;  // How many 8x8 tiles a room is wide
         public const int ROOM_HEIGHT = 22; // How many 8x8 tiles a room is tall
+        public const int HUD_HEIGHT = CHIP_SIZE * 2;
         public const int ANIME_TILES_BEGIN = 1160;
 
         public enum SpecialChipTypes
@@ -71,6 +73,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         private int[] _currChipLine;
         internal static Texture2D _genericEntityTex;
+        private Camera _camera;
+        private ActiveView[] activeViews;
 
         public enum VIEW_DEST
         {
@@ -78,6 +82,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             FIELD,
             X,
             Y,
+            MAX
+        };
+
+        public enum AViews
+        {
+            CURR = 0,
+            NEXT = 1,
             MAX
         };
 
@@ -101,6 +112,12 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _textManager = new TextManager(_gameFontTex);
 
             _genericEntityTex = genericEntityTex;
+
+            activeViews = new ActiveView[(int)AViews.MAX];
+            for (var i = 0; i < activeViews.Length; i++)
+            {
+                activeViews[i] = new ActiveView();
+            }
 
             // Define the font table for the game
             Dictionary<int, string> s_charSet = _textManager.GetCharSet();
@@ -146,8 +163,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Field thisField = _fields[CurrField];
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
+            activeViews[(int)AViews.CURR].SetView(thisView);
+            activeViews[(int)AViews.NEXT].SetView(thisView);
 
-            UpdateEntities(CurrField, thisField, thisView, CurrViewX, CurrViewY);
+            //UpdateEntities(CurrField, thisField, thisView, CurrViewX, CurrViewY);
         }
 
         // Returns new currentLine; end when it returns -1
@@ -311,33 +330,73 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            var thisField = _fields[CurrField];
-            var thisTex = _Textures[thisField.MapGraphics];
-            thisField.DrawRoom(thisTex, CurrViewX, CurrViewY, spriteBatch, gameTime);
+            foreach (ActiveView a in activeViews)
+            {
+                if (a == null)
+                    continue;
+                a.DrawView(spriteBatch, gameTime);
+            }
         }
 
         public void FieldTransition(VIEW_DIR movingDirection)
         {
+            // Camera is busy; Do not transition.
+            if (_camera.GetState() != Camera.CamStates.NONE)
+                return;
+
             // Grab the View we are transitioning to
             Field thisField = _fields[CurrField];
+            var thisFieldTex = _Textures[thisField.MapGraphics];
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
             int[] viewDest = thisView.GetDestinationView(movingDirection);
+
 
             // Remember the parameters that our destination View contains
             int destField = viewDest[(int)VIEW_DEST.FIELD];
             int destViewX = viewDest[(int)VIEW_DEST.X];
             int destViewY = viewDest[(int)VIEW_DEST.Y];
 
+
             // Do not transition if the destination field goes out of the map bounds (4x5)
             if (destField < 0 || destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
                 return;
 
-            UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
-    }
+            // Determine the next field and its texture
+            Field nextField = _fields[destField];
+            var nextFieldTex = _Textures[nextField.MapGraphics];
 
-        private void UpdateEntities(int destField, Field thisField, View thisView, int destViewX, int destViewY)
-        {
+            // Set the transitioning Active View to the next field + its texture
+
+            ActiveView nextAV = activeViews[(int)AViews.NEXT];
+
+            switch (movingDirection)
+            {
+                case World.VIEW_DIR.LEFT:
+                    nextAV.Position = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    break;
+                case World.VIEW_DIR.DOWN:
+                    nextAV.Position = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE) * 1);
+                    break;
+                case World.VIEW_DIR.RIGHT:
+                    nextAV.Position = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    break;
+                case World.VIEW_DIR.UP:
+                    nextAV.Position = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    break;
+            }
+
+            nextAV.SetField(nextField);
+            nextAV.SetFieldTex(nextFieldTex);
+
+            var nextFieldMapData = nextField.GetMapData();
+            View nextView = nextFieldMapData[destViewX, destViewY];
+            nextAV.SetView(nextView);
+
+            // Slide the camera toward the new field
+            _camera.UpdateMoveTarget(movingDirection);
+
+
             // If we're moving to a new Field, get rid of all the entities from the previous Field
             if (CurrField != destField)
             {
@@ -351,12 +410,19 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             CurrField = destField;
             CurrViewX = destViewX;
             CurrViewY = destViewY;
-            Field nextField = _fields[destField];
-            var nextFieldMapData = nextField.GetMapData();
-            View nextView = nextFieldMapData[destViewX, destViewY];
 
             // Change the BGM, if applicable
             _audioManager.ChangeSongs(_fields[destField].MusicNumber);
+            
+            //UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
+        }
+
+        private void UpdateEntities(int destField, Field thisField, View thisView, int destViewX, int destViewY)
+        {
+
+            Field nextField = _fields[destField];
+            var nextFieldMapData = nextField.GetMapData();
+            View nextView = nextFieldMapData[destViewX, destViewY];
 
             // Finally, spawn the new entities for the destination View, but let the destination Field keep track of ALL of the entities (Field Entities, View Entities)
             nextField.SpawnEntities(nextView, nextField, thisView, thisField); // "thisField" was the previous Field we were on, regardless if we moved Fields or not
@@ -365,6 +431,18 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         internal TextManager GetTextManager()
         {
             return _textManager;
+        }
+
+        internal void SetCamera(Camera camera)
+        {
+            _camera = camera;
+        }
+
+        internal void UpdateCurrActiveView()
+        {
+            activeViews[(int)AViews.CURR].SetView(activeViews[(int)AViews.NEXT].GetView());
+            activeViews[(int)AViews.CURR].SetField(activeViews[(int)AViews.NEXT].GetField());
+            activeViews[(int)AViews.CURR].SetFieldTex(activeViews[(int)AViews.NEXT].GetFieldTex());
         }
     }
 }

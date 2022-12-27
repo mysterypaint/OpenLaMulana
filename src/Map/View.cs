@@ -77,7 +77,7 @@ namespace OpenLaMulana
             throw new NotImplementedException();
         }
 
-        internal void Draw(Texture2D texture, SpriteBatch spriteBatch, GameTime gameTime)
+        internal void Draw(Texture2D texture, SpriteBatch spriteBatch, GameTime gameTime, Vector2 offsetVec)
         {
             // Loop through every single Room[_x][_y] Chip to draw every single Chip in a given room
             for (int y = 0; y < World.ROOM_HEIGHT; y++)
@@ -96,7 +96,7 @@ namespace OpenLaMulana
                         var texX = (thisChip.tileID % 40) * 8;
                         var texY = (thisChip.tileID / 40) * 8;
 
-                        spriteBatch.Draw(texture, new Vector2(posX, Main.HUD_HEIGHT + posY), new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
+                        spriteBatch.Draw(texture, new Vector2(posX, Main.HUD_HEIGHT + posY) + offsetVec, new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
                     }
                     else
                     {
@@ -124,7 +124,7 @@ namespace OpenLaMulana
                         var texX = (drawingTileID % 40) * 8;
                         var texY = (drawingTileID / 40) * 8;
 
-                        spriteBatch.Draw(texture, new Vector2(posX, Main.HUD_HEIGHT + posY), new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
+                        spriteBatch.Draw(texture, new Vector2(posX, Main.HUD_HEIGHT + posY) + offsetVec, new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
                     }
                 }
             }

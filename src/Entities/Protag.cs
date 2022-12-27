@@ -25,6 +25,7 @@ namespace OpenLaMulana.Entities
 
         private World _world;
         private AudioManager _audioManager;
+        private Camera _camera;
 
         public Vector2 Position { get; set; }
 
@@ -79,11 +80,15 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             }
         }
 
-        public Protag(Texture2D spriteSheet, World world, Vector2 position, AudioManager audioManager)
+        public const int SPRITE_WIDTH = 16;
+        public const int SPRITE_HEIGHT = 16;
+
+        public Protag(Texture2D spriteSheet, World world, Vector2 position, AudioManager audioManager, Camera camera)
         {
             _world = world;
             Position = position;
             _audioManager = audioManager;
+            _camera = camera;
 
             State = PlayerState.IDLE;
 

@@ -177,11 +177,11 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             return newObjData;
         }
 
-        internal void DrawRoom(Texture2D texture, int currRoomX, int currRoomY, SpriteBatch spriteBatch, GameTime gameTime)
+        internal void DrawRoom(Texture2D texture, int currRoomX, int currRoomY, SpriteBatch spriteBatch, GameTime gameTime, Vector2 offsetVec)
         {
             var thisRoom = _views[currRoomX, currRoomY];
             
-            thisRoom.Draw(texture, spriteBatch, gameTime);
+            thisRoom.Draw(texture, spriteBatch, gameTime, offsetVec);
         }
 
         internal View GetView(int destViewX, int destViewY)
