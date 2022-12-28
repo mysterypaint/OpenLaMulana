@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <AssemblyName>La.MuLANA</AssemblyName>
+    <AssemblyName>OpenLaMulana</AssemblyName>
     <RollForward>Major</RollForward>
     <PublishReadyToRun>false</PublishReadyToRun>
     <PublishTrimmed>true</PublishTrimmed>
