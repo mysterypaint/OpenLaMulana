@@ -199,10 +199,6 @@ static float Lerp(float start_value, float end_value, float pct)
                 }
             }
 
-
-
-
-
             Position = new Vector2(posX, posY); //_inputController.DirMoveY
         }
 

@@ -332,8 +332,17 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         {
             foreach (ActiveView a in activeViews)
             {
+                // Do not attempt to draw null
                 if (a == null)
                     continue;
+
+                // Only draw the current active view if the Camera is not moving
+                if (a != activeViews[(int)AViews.CURR]) {
+                    if (_camera.GetState() == Camera.CamStates.NONE)
+                        continue;
+                }
+
+                // Draw the current view
                 a.DrawView(spriteBatch, gameTime);
             }
         }
