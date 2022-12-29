@@ -13,8 +13,14 @@ namespace OpenLaMulana.Entities
 
         private readonly List<IGameEntity> _entitiesToAdd = new List<IGameEntity>();
         private readonly List<IGameEntity> _entitiesToRemove = new List<IGameEntity>();
-
+        
+        //private Effect _shdHueShift;
         public IEnumerable<IGameEntity> Entities => new ReadOnlyCollection<IGameEntity>(_entities);
+
+        /*
+        public void InitShaders(Effect shdHueShift) {
+            _shdHueShift = shdHueShift;
+        }*/
 
         public void Update(GameTime gameTime)
         {

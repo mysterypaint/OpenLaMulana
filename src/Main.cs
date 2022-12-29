@@ -50,9 +50,9 @@ namespace OpenLaMulana
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-
         private Texture2D _txProt1;
         private Texture2D _gameFontTex;
+        private List<Texture2D> _tempTexList = new List<Texture2D>();
 
         private float _fadeInTexturePosX;
 
@@ -75,8 +75,21 @@ namespace OpenLaMulana
         private Matrix _transformMatrix = Matrix.Identity;
         private int _pauseToggleTimer = 0;
 
+        private int _textIndex;
+        private Texture2D _genericEntityTex;
+        private float _shdHueShiftTime = 0.0f;
+        private int _shaderMode = 0;
+        private Effect activeShader = null;
+        private Effect _shdTransition, _shdHueShift;
+
         public GameState State { get; private set; }
 
+        public enum Shaders {
+            NONE,
+            TRANSITION,
+            HUE_SHIFT,
+            MAX
+        };
         public DisplayMode WindowDisplayMode { get; set; } = DisplayMode.Default;
 
         public float ZoomFactor => WindowDisplayMode == DisplayMode.Default ? 1 : _displayZoomFactor;
@@ -84,7 +97,7 @@ namespace OpenLaMulana
         public Main()
         {
             _graphics = new GraphicsDeviceManager(this);
-            //_graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
 
             // 30fps game
@@ -133,17 +146,16 @@ namespace OpenLaMulana
 
 
         }
-
-        List<Texture2D> tempTexList = new List<Texture2D>();
-        private int textIndex;
-        private Texture2D _genericEntityTex;
-
         protected override void LoadContent()
         {
             _audioManager = new AudioManager();
             _audioManager.LoadContent(musPath, Content);
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _shdTransition = Content.Load<Effect>("shaders/shdTransition");
+            _shdHueShift = Content.Load<Effect>("shaders/shdHueShift");
+
+            _shaderMode = (int)Shaders.NONE;
 
             _txProt1 = LoadTexture(gfxPath + "prot1.png");
 
@@ -182,16 +194,16 @@ namespace OpenLaMulana
                 {
                     Texture2D dummy = new Texture2D(GraphicsDevice, 1, 1);
                     dummy.SetData(new Color[] { Color.White });
-                    tempTexList.Add(dummy);
+                    _tempTexList.Add(dummy);
                 }
                 else
                 {
                     var tex = LoadTexture(gfxPath + "mapg" + numStr + ".png");
-                    tempTexList.Add(tex);
+                    _tempTexList.Add(tex);
                 }
             }
 
-            _world.SetTexturesList(tempTexList);
+            _world.SetTexturesList(_tempTexList);
 
             _entityManager.AddEntity(_protag);
             _entityManager.AddEntity(_world);
@@ -217,9 +229,11 @@ namespace OpenLaMulana
             fileStream.Dispose();
             Color[] buffer = new Color[tex.Width * tex.Height];
             tex.GetData(buffer);
+            Color colGray = new Color(68, 68, 68);
             for (int i = 0; i < buffer.Length; i++)
             {
-                if (buffer[i].Equals(new Color(68, 68, 68)))
+                // Replace all transparent gray pixels in every loaded texture with White, Alpha 0
+                if (buffer[i].Equals(colGray))
                     buffer[i] = Color.FromNonPremultiplied(255, 255, 255, 0);
             }
             tex.SetData(buffer);
@@ -297,7 +311,10 @@ namespace OpenLaMulana
 
             if (keyboardState.IsKeyDown(Keys.F8) && !_previousKeyboardState.IsKeyDown(Keys.F8))
             {
-                ResetSaveState();
+                //ResetSaveState();
+                _shaderMode++;
+                if (_shaderMode >= (int)Shaders.MAX)
+                    _shaderMode = 0;
             }
 
             if (keyboardState.IsKeyDown(Keys.F7) && !_previousKeyboardState.IsKeyDown(Keys.F7) && !_graphics.IsFullScreen)
@@ -345,10 +362,32 @@ namespace OpenLaMulana
         {
             GraphicsDevice.Clear(Color.Black);
             //  _camera.GetTransformation(GraphicsDevice)
-//            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
+            //            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _camera.GetTransformation(GraphicsDevice));
+            switch (_shaderMode) {
+                default:
+                case (int)Shaders.NONE:
+                    if (activeShader != null)
+                        activeShader = null;
+                    break;
+                case (int)Shaders.HUE_SHIFT:
+                    if (activeShader != _shdHueShift)
+                        activeShader = _shdHueShift;
+                    _shdHueShift.Parameters["time"].SetValue(_shdHueShiftTime);
+                    _shdHueShiftTime = 2.6f * (float)gameTime.TotalGameTime.TotalSeconds;
+                    break;
+                case (int)Shaders.TRANSITION:
+                    if (activeShader != _shdTransition)
+                        activeShader = _shdTransition;
+                    break;
+            }
 
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                samplerState: SamplerState.PointClamp,
+                transformMatrix: _camera.GetTransformation(GraphicsDevice),
+                effect: activeShader);
+
+            //_shdHueShift.CurrentTechnique.Passes[0].Apply();
             _entityManager.Draw(_spriteBatch, gameTime);
 
             switch (State)

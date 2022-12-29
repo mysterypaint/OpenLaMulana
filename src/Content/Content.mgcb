@@ -676,6 +676,18 @@
 #begin music/SanbikiScc.sf2
 /copy:music/SanbikiScc.sf2
 
+#begin shaders/shdHueShift.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/shdHueShift.fx
+
+#begin shaders/shdTransition.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/shdTransition.fx
+
 #begin sound/se00.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
