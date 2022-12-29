@@ -30,16 +30,17 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
     - Please create the ``music`` directory if it does not already exist.
 
 - The .dls in the ``/music/`` folder must be converted to .sf2 format. This can be done with [Vienna](http://www.synthfont.com/Downloads.html)
-- Finally, you will also want to provide an ``Icon.ico`` and a 256x256 ``Icon.bmp``, which should go in the same directory as the .sln.
+- Finally, you will also want to provide an ``Icon.ico`` and a 256x256 ``Icon.bmp``, which should go in the same directory as the .sln, in the ``/src/`` directory.
+  - You could rip and convert the game&apos;s .ico to .bmp, resize it to a 256x256 transparent .bmp as ``Icon.bmp``, then place both the resized .bmp and .ico in the same folder as the .sln. MonoGame is a bit finnicky about these files: You may have the best luck grabbing an Icon.bmp from an existing MonoGame project online, then deleting+pasting its contents within an image editing program, like [GIMP](https://www.gimp.org/) or [Aseprite](https://www.aseprite.org/). The exported .bmp can be converted to .ico using a web tool like this one: https://favicon.io/favicon-converter/
 
 # Compiling
 - First, ensure that .NET and MonoGame are up-to-date, or set up: [Instructions here](https://docs.monogame.net/articles/getting_started/0_getting_started.html)
 - Clone the repo
 - Include the assets in the ``OpenLaMulana/src/`` and ``OpenLaMulana/src/Content/`` folders respectively (explained in more detail above)
-- Rip and convert the game&apos;s .ico to .bmp, resize it to a 256x256 transparent .bmp as ``Icon.bmp``, then place both the resized .bmp and .ico in the same folder as the .sln
 - [Build the project from CLI](https://docs.monogame.net/articles/packaging_games.html)
   - Alternatively, you can use the build scripts provided in the ``/src/build_scripts/`` folder. For Mac/Linux users, ``build_all.sh`` will execute all of the shell scripts in that folder. For Windows users, launch ``build_all.bat`` instead.
   - The output directory should be at ``OpenLaMulana/src/artifacts/``, or ``OpenLaMulana/src/build_scripts/publish/``, if you ran a script to compile.
+  - If you wish to compile (and test) within Visual Studio, you must first compile the assets using the MonoGame Content Builder. Typically (after installing MonoGame as an extension within Visual Studio), this can be done by double-clicking on Content.mgcb within the Solution Explorer, then compiling all the assets within the window that pops up. This must be done every time an asset is included or removed from the project.
 
 ### Special Thanks
 - sinshu, MeltySynth Library - [MeltySynth](https://github.com/sinshu/meltysynth)
