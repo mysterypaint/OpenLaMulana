@@ -4,7 +4,10 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 ## Dependencies
 - [MonoGame](https://www.monogame.net/)
 - [.NET SDK 7.0](https://dotnet.microsoft.com/en-us/download)
-- [MIDICSV](https://www.fourmilab.ch/webtools/midicsv/) (Only for asset generation)
+- **Windows Only**: [Visual Studio 2013 Redistributable](https://aka.ms/highdpimfc2013x64enu)
+  - This may only be required if [the shaders fail to compile in MGCB](https://flatredball.gitbook.io/monogame-troubleshooting/monogame-troubleshooting/building-content-content-pipeline)
+- **Mac/Linux Only**: Wine64 (Sorry x86 AMD Mac Users: I need to find a working solution for compiling natively. Otherwise, compile from another OS for macOS)
+- [MIDICSV](https://www.fourmilab.ch/webtools/midicsv/) (**Only for asset generation**)
 
 ## Asset Preparation
 ### The game assets are not provided on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/fXBySIaL#TP3yM2AIIz960RnSqH6Jjno9xCKh3NHCnqJ2iI3dRtk)
