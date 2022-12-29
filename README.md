@@ -6,8 +6,8 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 - [.NET SDK 7.0](https://dotnet.microsoft.com/en-us/download)
 - **Windows Only**: [Visual Studio 2013 Redistributable](https://aka.ms/highdpimfc2013x64enu)
   - This may only be required if [the shaders fail to compile in MGCB](https://flatredball.gitbook.io/monogame-troubleshooting/monogame-troubleshooting/building-content-content-pipeline)
-- **Mac/Linux Only**: Wine64 (Sorry x86 AMD Mac Users: I need to find a working solution for compiling natively. Otherwise, compile from another OS for macOS)
-- [MIDICSV](https://www.fourmilab.ch/webtools/midicsv/) (**Only for asset generation**)
+- **Mac/Linux Only**: [Wine64](https://wiki.winehq.org/FAQ#Installing_Wine) (Sorry, AMD x86 macOS Users: I need to find a working solution for compiling natively. Otherwise, compile from another OS for macOS.)
+- [MIDICSV](https://www.fourmilab.ch/webtools/midicsv/) (**Only for asset generation)
 
 ## Asset Preparation
 ### The game assets are not provided on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/fXBySIaL#TP3yM2AIIz960RnSqH6Jjno9xCKh3NHCnqJ2iI3dRtk)
@@ -18,8 +18,7 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 - Download the [original game](https://archive.org/details/La-Mulana)
 - Move the ``/data/``, ``/graphics/``, and ``/sound/`` folders to ``OpenLaMulana/Content/``
 - All of the .bmp files in the ``/graphics/`` folder must be converted from .bmp to .png
-- From the [original game jukebox](https://archive.org/details/la-mulana-jukebox), please also copy all of its .sgt files to ``/Content/music/``. Replace any/all conflicting files.
-- All of the .sgt files must be converted to .mid. This can be done using [DirectMusic Producer DX9](https://archive.org/details/direct-music-producer-9)
+- All of the .sgt files [from the original game jukebox](https://archive.org/details/la-mulana-jukebox) in the ``/music/`` folder must be converted to .mid, then moved to OpenLamulana in the ``/src/Content/music/`` directory (please create the ``music`` directory if it does not already exist). This can be done using [DirectMusic Producer DX9](https://archive.org/details/direct-music-producer-9)
 - The converted .mid files must be annotated with "Loop" and "LoopEnd" MIDI Marker Meta Messages. I provided a tool to convert them automatically:
   - **Mac/Linux**: `$ brew install midicsv`
 	- Place all the converted .sgt->.mid files in ``OpenLaMulana/MIDILooper/input/``.
@@ -27,7 +26,8 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 	- Execute the ``MidiLooper`` program
   - **Windows**: add both ``midicsv.exe`` and ``csvmidi.exe`` from [this archive](https://www.fourmilab.ch/webtools/midicsv/midicsv-1.1.tar.gz) to your ``PATH``, or put them in the working directory of MidiLooper
   	- The working directory would be ``OpenLaMulana/MIDILooper/bin/Debug/net7.0`` after compiling the project; Put all your MIDIs in the ``OpenLaMulana/MIDILooper/input/`` folder.)
-  - The modified .mid files should now be in ``/output/``, ready to copy to the main project
+  - The modified .mid files should now be in ``/output/``, ready to copy to the main project, in the ``/src/Content/music/`` directory.
+    - Please create the ``music`` directory if it does not already exist.
 
 - The .dls in the ``/music/`` folder must be converted to .sf2 format. This can be done with [Vienna](http://www.synthfont.com/Downloads.html)
 - Finally, you will also want to provide an ``Icon.ico`` and a 256x256 ``Icon.bmp``, which should go in the same directory as the .sln.
