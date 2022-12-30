@@ -6,6 +6,7 @@ namespace OpenLaMulana.Entities
     public interface IGameEntity
     {
         int DrawOrder { get; }
+        //Effect activeShader { get; }
 
         void Update(GameTime gameTime);
 

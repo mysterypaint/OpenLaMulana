@@ -5,7 +5,7 @@ using System.IO;
 namespace OpenLaMulana.System
 {
     // Special thanks to worsety for info on this class!
-    class SaveData
+    public class SaveData
     {
         struct EncryptionBlock
         {

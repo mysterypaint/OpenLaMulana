@@ -60,15 +60,15 @@ namespace OpenLaMulana.System
             }
         }
 
-        public void SetDialogue(Main.Languages lang, List<string> data)
+        public void SetDialogue(Global.Languages lang, List<string> data)
         {
             switch (lang)
             {
                 default:
-                case Main.Languages.English:
+                case Global.Languages.English:
                     _dialogueEN = data;
                     break;
-                case Main.Languages.Japanese:
+                case Global.Languages.Japanese:
                     _dialogueJP = data;
                     break;
             }
@@ -203,17 +203,17 @@ namespace OpenLaMulana.System
 
         }
 
-        internal string GetText(int index, Main.Languages lang)
+        internal string GetText(int index, Global.Languages lang)
         {
             List<string> _dialogue;
 
             switch (lang)
             {
                 default:
-                case Main.Languages.English:
+                case Global.Languages.English:
                     _dialogue = _dialogueEN;
                     break;
-                case Main.Languages.Japanese:
+                case Global.Languages.Japanese:
                     _dialogue = _dialogueJP;
                     break;
             }
@@ -221,17 +221,17 @@ namespace OpenLaMulana.System
             return _dialogue[index];
         }
 
-        internal int GetTextCount(Main.Languages lang)
+        internal int GetTextCount(Global.Languages lang)
         {
             List<string> _dialogue;
 
             switch (lang)
             {
                 default:
-                case Main.Languages.English:
+                case Global.Languages.English:
                     _dialogue = _dialogueEN;
                     break;
-                case Main.Languages.Japanese:
+                case Global.Languages.Japanese:
                     _dialogue = _dialogueJP;
                     break;
             }

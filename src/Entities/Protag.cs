@@ -22,11 +22,6 @@ namespace OpenLaMulana.Entities
 
         public PlayerState State { get; private set; }
         PlayerState prev_state = PlayerState.IDLE;
-
-        private World _world;
-        private AudioManager _audioManager;
-        private Camera _camera;
-
         public Vector2 Position { get; set; }
 
         public short MoveX = 0;
@@ -46,8 +41,6 @@ namespace OpenLaMulana.Entities
 
         public Facing facingX = Facing.RIGHT;
         public Facing facingY = Facing.DOWN;
-
-        private InputController _inputController = null;
         private int HUD_TILE_HEIGHT = 2;
 
         public short BBoxOriginX { get; set; }
@@ -83,13 +76,9 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         public const int SPRITE_WIDTH = 16;
         public const int SPRITE_HEIGHT = 16;
 
-        public Protag(Texture2D spriteSheet, World world, Vector2 position, AudioManager audioManager, Camera camera)
+        public Protag(Texture2D spriteSheet, Vector2 position)
         {
-            _world = world;
             Position = position;
-            _audioManager = audioManager;
-            _camera = camera;
-
             State = PlayerState.IDLE;
 
             _chipWidth = World.CHIP_SIZE;
@@ -107,6 +96,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+
             _idleSprite.Draw(spriteBatch, Position);
 
             RectangleSprite.DrawRectangle(spriteBatch, CollisionBox, Color.Red, 1);
@@ -114,7 +104,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public void Update(GameTime gameTime)
         {
-            var chipline = _world.GetField(_world.CurrField).GetChipline();
+            var chipline = Global.World.GetField(Global.World.CurrField).GetChipline();
 
             CollideAndMove(_moveSpeed, _moveSpeed, chipline);
             prev_state = State;
@@ -140,7 +130,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
         //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-        MoveX = _inputController.DirMoveX;
+        MoveX = Global.InputController.DirMoveX;
             if (MoveX == 1)
                 facingX = Facing.RIGHT;
             else if (MoveX == -1)
@@ -148,7 +138,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             if (MoveX != 0)
             {
-                View currRoom = _world.GetField(_world.CurrField).GetMapData()[_world.CurrViewX, _world.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
+                View currRoom = Global.World.GetField(Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
 
 
                 if (facingX == Facing.RIGHT)
@@ -271,15 +261,15 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Position = new Vector2(posX, posY);
 
             // Step Y
-            if (_inputController.KeyJumpPressed)
-                _audioManager.PlaySFX(SFX.P_JUMP);
+            if (Global.InputController.KeyJumpPressed)
+                Global.AudioManager.PlaySFX(SFX.P_JUMP);
 
-            if (_inputController.KeyJumpHeld && dy <= 0 && _grounded)
+            if (Global.InputController.KeyJumpHeld && dy <= 0 && _grounded)
             {
                 State = PlayerState.JUMPING;
             }
 
-            MoveY = _inputController.DirMoveY;
+            MoveY = Global.InputController.DirMoveY;
             if (MoveY < 0)
             {
                 facingY = Facing.UP;
@@ -292,7 +282,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             if (MoveY != 0)
             {
-                View currRoom = _world.GetField(_world.CurrField).GetMapData()[_world.CurrViewX, _world.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
+                View currRoom = Global.World.GetField(Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
 
                 if (facingY == Facing.DOWN)
                 {
@@ -386,11 +376,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             // Update the actual position
             Position = new Vector2(posX, posY);
             /*
-            if (_world == null)
+            if (Global.World == null)
                 return false;
-            var currField = _world.GetField(_world.currField);
-            var rx = _world.currRoomX;
-            var ry = _world.currRoomY;
+            var currField = Global.World.GetField(Global.World.currField);
+            var rx = Global.World.currRoomX;
+            var ry = Global.World.currRoomY;
             var currRoom = currField.GetMapData()[rx, ry];
 
             var rtx = Math.Floor(xCheck / World.tileWidth);
@@ -409,11 +399,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             else
                 return false;
             */
-        }
-
-        public void SetInputController(InputController inputController)
-        {
-            _inputController = inputController;
         }
 
         internal string PrintState()

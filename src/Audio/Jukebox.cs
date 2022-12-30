@@ -16,16 +16,10 @@ namespace OpenLaMulana.Audio
 
         private int selectedSong = 2;
         private int totalSongs = 75;
-        private AudioManager _audioManager;
-        private TextManager _textManager;
-        Main.Languages _currLang;
 
-        public Jukebox(AudioManager audioManager, TextManager textManager, Main.Languages currLang)
+        public Jukebox()
         {
-            _currLang = currLang;
-            _textManager = textManager;
             InitializeComments();
-            _audioManager = audioManager;
         }
 
         public int DrawOrder => 0;
@@ -36,7 +30,7 @@ namespace OpenLaMulana.Audio
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            //_textManager.DrawText(0, 0, _textManager.GetText(textIndex, Languages.English));
+            //Globals.TextManager.DrawText(0, 0, Globals.TextManager.GetText(textIndex, Languages.English));
             int songID = GetCurrentSongID();
             int isPlaying = IsPlaying();
 
@@ -51,8 +45,8 @@ namespace OpenLaMulana.Audio
                 str += "[Playing]";
             else
                 str += "[Stopped]";
-            _textManager.DrawText(0, 8 * 22, String.Format("{0}:{1} {2}", selectedSong, GetSongName(_currLang), str));
-            _textManager.DrawText(0, 0, "W/D to cycle tracks\\10J/K to Stop/Play\\10Enter to Pause");
+            Global.TextManager.DrawText(0, 8 * 22, String.Format("{0}:{1} {2}", selectedSong, GetSongName(), str));
+            Global.TextManager.DrawText(0, 0, "W/D to cycle tracks\\10J/K to Stop/Play\\10Enter to Pause");
         }
 
 
@@ -65,9 +59,9 @@ namespace OpenLaMulana.Audio
                 selectedSong = 0;
 
             if (keyConfirmPressed)
-                _audioManager.ChangeSongs(JukeboxSongOrder[selectedSong], true);
+                Global.AudioManager.ChangeSongs(JukeboxSongOrder[selectedSong], true);
             if (keyCancelPressed)
-                _audioManager.StopMusic();
+                Global.AudioManager.StopMusic();
         }
 
         internal int GetCurrentSongID()
@@ -77,17 +71,17 @@ namespace OpenLaMulana.Audio
 
         internal int IsPlaying()
         {
-            return _audioManager.IsPlaying();
+            return Global.AudioManager.IsPlaying();
         }
 
-        internal string GetSongName(Main.Languages lang)
+        internal string GetSongName()
         {
-            switch (lang)
+            switch (Global.CurrLang)
             {
                 default:
-                case Main.Languages.English:
+                case Global.Languages.English:
                     return trackNamesEN[selectedSong];
-                case Main.Languages.Japanese:
+                case Global.Languages.Japanese:
                     return trackNamesJP[selectedSong];
             }
         }

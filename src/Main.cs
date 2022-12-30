@@ -14,32 +14,17 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace OpenLaMulana
 {
-    public class Main : Game
+    public partial class Main : Game
     {
-        public enum DisplayMode
-        {
-            Default,
-            Zoomed
-        }
-
-        public enum Languages
-        {
-            English,
-            Japanese,
-            Max
-        };
+        public GameState State { get; private set; }
+        public Global.DisplayMode WindowDisplayMode { get; set; } = Global.DisplayMode.Default;
 
         public const string GAME_TITLE = "La.MuLANA";
-
-        public Languages currLang = Languages.English;
-
         public const int WINDOW_WIDTH = 256;
         public const int WINDOW_HEIGHT = 192;
-
         public const int HUD_WIDTH = 256;
         public const int HUD_HEIGHT = 16;
-
-        private const float FADE_IN_ANIMATION_SPEED = 820f;
+        public float ZoomFactor => WindowDisplayMode == Global.DisplayMode.Default ? 1 : _displayZoomFactor;
 
         private const string SAVE_FILE_NAME = "Save.dat";
         private const string musPath = "Content/music/";
@@ -47,57 +32,24 @@ namespace OpenLaMulana
 
         private int _displayZoomFactor = 3;
         private int _displayZoomMax = 10;
+        private int _pauseToggleTimer = 0;
+        private int _shaderMode = 0;
+        private float _shdHueShiftTime = 0.0f;
 
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
         private Texture2D _txProt1;
         private Texture2D _gameFontTex;
-        private List<Texture2D> _tempTexList = new List<Texture2D>();
-
-        private float _fadeInTexturePosX;
-
-        private Protag _protag;
-        private Camera _camera;
-        private InputController _inputController;
-        private Jukebox _jukebox;
-        private World _world;
-
-        private EntityManager _entityManager;
-        private AudioManager _audioManager;
-        private TextManager _textManager;
-        private GameMenu _gameMenu;
-        private SaveData _saveData;
-
-        private static GameRNG t_gameRNG;
-
-        private KeyboardState _previousKeyboardState;
-
-        private Matrix _transformMatrix = Matrix.Identity;
-        private int _pauseToggleTimer = 0;
-
-        private int _textIndex;
         private Texture2D _genericEntityTex;
-        private float _shdHueShiftTime = 0.0f;
-        private int _shaderMode = 0;
+        private List<Texture2D> _tempTexList = new List<Texture2D>();
+        private Protag _protag;
+        private Jukebox _jukebox;
+        private KeyboardState _previousKeyboardState;
+        private Matrix _transformMatrix;
         private Effect activeShader = null;
-        private Effect _shdTransition, _shdHueShift;
-
-        public GameState State { get; private set; }
-
-        public enum Shaders {
-            NONE,
-            TRANSITION,
-            HUE_SHIFT,
-            MAX
-        };
-        public DisplayMode WindowDisplayMode { get; set; } = DisplayMode.Default;
-
-        public float ZoomFactor => WindowDisplayMode == DisplayMode.Default ? 1 : _displayZoomFactor;
 
         public Main()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            Global.GraphicsDeviceManager = new GraphicsDeviceManager(this);
+            Global.GraphicsDeviceManager.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
 
             // 30fps game
@@ -107,18 +59,18 @@ namespace OpenLaMulana
             IsMouseVisible = true;
             //this.Window.AllowUserResizing = true;
 
-            t_gameRNG = new GameRNG();
-            _saveData = new SaveData();
-            //_saveData.ReadEncryptedSave("lamulana.sa0");
-            //_saveData.WriteDecryptedSave("lamulana_dec.sa0");
+            Global.GameRNG = new GameRNG();
+            Global.SaveData = new SaveData();
+            //Globals.SaveData.ReadEncryptedSave("lamulana.sa0");
+            //Globals.SaveData.WriteDecryptedSave("lamulana_dec.sa0");
             //gameRNG.Advance();
 
             DateTime bootTime = DateTime.Now;
             long sRNG = new DateTimeOffset(bootTime).ToUnixTimeMilliseconds();
 
-            //_saveData.WriteEncryptedSave("lamulana_enc.sa0", sRNG);
+            //Globals.SaveData.WriteEncryptedSave("lamulana_enc.sa0", sRNG);
 
-            _entityManager = new EntityManager();
+            Global.EntityManager = new EntityManager();
             State = GameState.Initial;
             //_fadeInTexturePosX = Protag.DEFAULT_SPRITE_WIDTH;
         }
@@ -131,52 +83,44 @@ namespace OpenLaMulana
 
             Window.Title = GAME_TITLE;
 
-            _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
-            _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
-            _graphics.SynchronizeWithVerticalRetrace = true;
-            _graphics.ApplyChanges();
+            Global.GraphicsDeviceManager.PreferredBackBufferHeight = WINDOW_HEIGHT;
+            Global.GraphicsDeviceManager.PreferredBackBufferWidth = WINDOW_WIDTH;
+            Global.GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            Global.GraphicsDeviceManager.ApplyChanges();
 
             _displayZoomFactor = 3;
             if (_displayZoomFactor > 4)
                 _displayZoomFactor = 1;
             ToggleDisplayMode();
 
-
-            _camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
-
-
+            Global.Camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
         }
         protected override void LoadContent()
         {
-            _audioManager = new AudioManager();
-            _audioManager.LoadContent(musPath, Content);
+            Global.AudioManager = new AudioManager();
+            Global.AudioManager.LoadContent(musPath, Content);
 
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _shdTransition = Content.Load<Effect>("shaders/shdTransition");
-            _shdHueShift = Content.Load<Effect>("shaders/shdHueShift");
+            Global.SpriteBatch = new SpriteBatch(GraphicsDevice);
+            Global.ShdTransition = Content.Load<Effect>("shaders/shdTransition");
+            Global.ShdHueShift = Content.Load<Effect>("shaders/shdHueShift");
 
-            _shaderMode = (int)Shaders.NONE;
+            _shaderMode = (int)Global.Shaders.NONE;
 
             _txProt1 = LoadTexture(gfxPath + "prot1.png");
 
             _gameFontTex = LoadTexture(gfxPath + "font_EN.png");
             _genericEntityTex = LoadTexture(Path.Combine(gfxPath, "system", "entityTemplate.png"));
 
-            long val = t_gameRNG.RollDice(9);
+            long val = Global.GameRNG.RollDice(9);
 
-            _world = new World(_entityManager, _gameFontTex, _genericEntityTex, _audioManager);
-            _jukebox = new Jukebox(_audioManager, _world.GetTextManager(), currLang);
-            _camera = new Camera(_world.GetTextManager(), _world);
-            _camera.GraphicsDevice = GraphicsDevice;
-            _camera.SpriteBatch = _spriteBatch;
-            _world.SetCamera(_camera);
-            _protag = new Protag(_txProt1, _world, new Vector2(0, 0), _audioManager, _camera);
-            _camera.SetProtag(_protag);
+            Global.World = new World(_gameFontTex, _genericEntityTex);
+            _jukebox = new Jukebox();
+            Global.Camera = new Camera();
+            _protag = new Protag(_txProt1, new Vector2(0, 0));
+            Global.Camera.SetProtag(_protag);
             _protag.DrawOrder = 100;
 
-            _inputController = new InputController(_protag, _world, _jukebox);
-            _protag.SetInputController(_inputController);
-            _camera.SetInputController(_inputController);
+            Global.InputController = new InputController(_protag, _jukebox);
 
             for (int i = 0; i <= 32; i++)
             {
@@ -203,24 +147,24 @@ namespace OpenLaMulana
                 }
             }
 
-            _world.SetTexturesList(_tempTexList);
+            Global.World.SetTexturesList(_tempTexList);
 
-            _entityManager.AddEntity(_protag);
-            _entityManager.AddEntity(_world);
-            _entityManager.AddEntity(_audioManager);
+            Global.EntityManager.AddEntity(_protag);
+            Global.EntityManager.AddEntity(Global.World);
+            Global.EntityManager.AddEntity(Global.AudioManager);
 
-            _textManager = _world.GetTextManager();
+            Global.TextManager = Global.World.GetTextManager();
 
-            _gameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, _textManager);
-            _entityManager.AddEntity(_textManager);
-            _entityManager.AddEntity(_gameMenu);
+            Global.GameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, Global.TextManager);
+            Global.EntityManager.AddEntity(Global.TextManager);
+            Global.EntityManager.AddEntity(Global.GameMenu);
 
             LoadSaveState();
         }
 
         protected override void UnloadContent()
         {
-            _audioManager.UnloadContent();
+            Global.AudioManager.UnloadContent();
         }
         private Texture2D LoadTexture(string filePath)
         {
@@ -243,15 +187,15 @@ namespace OpenLaMulana
 
         public World GetWorld()
         {
-            return _world;
+            return Global.World;
         }
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _camera.Update(gameTime);
-            _audioManager.Update(gameTime);
+            Global.Camera.Update(gameTime);
+            Global.AudioManager.Update(gameTime);
             base.Update(gameTime);
 
             KeyboardState keyboardState = Keyboard.GetState();
@@ -262,14 +206,14 @@ namespace OpenLaMulana
             isAltKeyDown = (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt));
             if (isAltKeyDown && (isStartKeyPressed && !wasStartKeyPressed))
             {
-                _graphics.ToggleFullScreen();
-                _graphics.ApplyChanges();
+                Global.GraphicsDeviceManager.ToggleFullScreen();
+                Global.GraphicsDeviceManager.ApplyChanges();
             }
 
             switch (State)
             {
                 case GameState.Playing:
-                    _inputController.ProcessControls(gameTime);
+                    Global.InputController.ProcessControls(gameTime);
 
                     if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
                     {
@@ -278,7 +222,7 @@ namespace OpenLaMulana
                     break;
                 case GameState.Paused:
                     JukeboxRoutine();
-                    _audioManager.PauseMusic();
+                    Global.AudioManager.PauseMusic();
                     if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
                     {
                         ToggleGamePause();
@@ -313,11 +257,11 @@ namespace OpenLaMulana
             {
                 //ResetSaveState();
                 _shaderMode++;
-                if (_shaderMode >= (int)Shaders.MAX)
+                if (_shaderMode >= (int)Global.Shaders.MAX)
                     _shaderMode = 0;
             }
 
-            if (keyboardState.IsKeyDown(Keys.F7) && !_previousKeyboardState.IsKeyDown(Keys.F7) && !_graphics.IsFullScreen)
+            if (keyboardState.IsKeyDown(Keys.F7) && !_previousKeyboardState.IsKeyDown(Keys.F7) && !Global.GraphicsDeviceManager.IsFullScreen)
             {
                 _displayZoomFactor += 1;
                 if (_displayZoomFactor > _displayZoomMax)
@@ -328,7 +272,7 @@ namespace OpenLaMulana
 
             _previousKeyboardState = keyboardState;
 
-            _entityManager.Update(gameTime);
+            Global.EntityManager.Update(gameTime);
         }
 
         private void DecrementCounters()
@@ -342,61 +286,62 @@ namespace OpenLaMulana
             if (_pauseToggleTimer > 0)
                 return;
 
-            _audioManager.PlaySFX(SFX.PAUSE);
+            Global.AudioManager.PlaySFX(SFX.PAUSE);
 
             if (State == GameState.Playing)
             {
                 _pauseToggleTimer = 30;
                 State = GameState.Paused;
-                _audioManager.PauseMusic();
+                Global.AudioManager.PauseMusic();
             }
             else if (State == GameState.Paused)
             {
                 State = GameState.Playing;
                 _pauseToggleTimer = 30;
-                _audioManager.ResumeMusic();
+                Global.AudioManager.ResumeMusic();
             }
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            //  _camera.GetTransformation(GraphicsDevice)
+            //  Globals.Camera.GetTransformation(GraphicsDevice)
             //            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
 
             switch (_shaderMode) {
                 default:
-                case (int)Shaders.NONE:
+                case (int)Global.Shaders.NONE:
                     if (activeShader != null)
                         activeShader = null;
                     break;
-                case (int)Shaders.HUE_SHIFT:
-                    if (activeShader != _shdHueShift)
-                        activeShader = _shdHueShift;
-                    _shdHueShift.Parameters["time"].SetValue(_shdHueShiftTime);
-                    _shdHueShiftTime = 2.6f * (float)gameTime.TotalGameTime.TotalSeconds;
+                case (int)Global.Shaders.HUE_SHIFT:
+                    if (activeShader != Global.ShdHueShift)
+                        activeShader = Global.ShdHueShift;
+                    Global.ShdHueShift.Parameters["time"].SetValue(_shdHueShiftTime);
+
+                    _shdHueShiftTime = Math.Clamp((2.6f * (float)gameTime.TotalGameTime.TotalSeconds) % 0.9f, 0.01f, 0.9f);
                     break;
-                case (int)Shaders.TRANSITION:
-                    if (activeShader != _shdTransition)
-                        activeShader = _shdTransition;
+                case (int)Global.Shaders.TRANSITION:
+                    if (activeShader != Global.ShdTransition)
+                        activeShader = Global.ShdTransition;
                     break;
             }
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+            Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 samplerState: SamplerState.PointClamp,
-                transformMatrix: _camera.GetTransformation(GraphicsDevice),
+                transformMatrix: Global.Camera.GetTransformation(GraphicsDevice),
                 effect: activeShader);
 
             //_shdHueShift.CurrentTechnique.Passes[0].Apply();
-            _entityManager.Draw(_spriteBatch, gameTime);
+            Global.EntityManager.Draw(Global.SpriteBatch, gameTime);
 
             switch (State)
             {
                 case GameState.Initial:
                 case GameState.Transition:
                     //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
-                    //_textManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
-                    _textManager.DrawText(0, 0, "Press Enter to Begin");
+                    //Globals.TextManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
+                    Global.TextManager.DrawText(0, 0, "Press Enter to Begin");
                     break;
                 default:
                 case GameState.MSXInventory:
@@ -409,8 +354,8 @@ namespace OpenLaMulana
                 case GameState.Playing:
                     //_jukebox.Draw(_spriteBatch, gameTime);
 
-                    View[,] thisFieldMapData = _world.GetField(_world.CurrField).GetMapData();
-                    View thisView = thisFieldMapData[_world.CurrViewX, _world.CurrViewY];
+                    View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();
+                    View thisView = thisFieldMapData[Global.World.CurrViewX, Global.World.CurrViewY];
 
                     /*
                     int[] viewDest = thisView.GetDestinationView(movingDirection);
@@ -420,11 +365,11 @@ namespace OpenLaMulana
                     int destRoomX = viewDest[(int)VIEW_DEST.X];
                     int destRoomY = viewDest[(int)VIEW_DEST.Y];*/
 
-                    List<IGameEntity> fieldEntities = _world.GetField(_world.CurrField).GetFieldEntities();
-                    List<IGameEntity> roomEntities = _world.GetField(_world.CurrField).GetRoomEntities();
-                    _textManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
+                    List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+                    List<IGameEntity> roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
+                    Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
                     /*
-                    _textManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
+                    Globals.TextManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
                         + "\nWASD, JK: Move between rooms\nF2: Open MSX [Jukebox]");*/
 
                     /*"\\10bboxLeft: " + Math.Floor(_protag.CollisionBox.Left / (float)World.tileHeight).ToString()
@@ -437,7 +382,7 @@ namespace OpenLaMulana
 
             }
 
-            _spriteBatch.End();
+            Global.SpriteBatch.End();
 
             base.Draw(gameTime);
         }
@@ -452,7 +397,7 @@ namespace OpenLaMulana
             if (State != GameState.Initial)
                 return false;
 
-            _world.InitWorldEntities();
+            Global.World.InitWorldEntities();
 
             //_scoreBoard.Score = 0;
             State = GameState.Transition;
@@ -468,7 +413,7 @@ namespace OpenLaMulana
 
             State = GameState.Playing;
             _protag.Initialize();
-            _inputController.BlockInputTemporarily();
+            Global.InputController.BlockInputTemporarily();
 
             return true;
 
@@ -534,14 +479,14 @@ namespace OpenLaMulana
 
         private void ToggleDisplayMode()
         {
-            _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT * _displayZoomFactor;
-            _graphics.PreferredBackBufferWidth = WINDOW_WIDTH * _displayZoomFactor;
+            Global.GraphicsDeviceManager.PreferredBackBufferHeight = WINDOW_HEIGHT * _displayZoomFactor;
+            Global.GraphicsDeviceManager.PreferredBackBufferWidth = WINDOW_WIDTH * _displayZoomFactor;
             _transformMatrix = Matrix.Identity * Matrix.CreateScale(_displayZoomFactor, _displayZoomFactor, 1); //_transformMatrix = Matrix.Identity;
 
-            _camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
+            Global.Camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
 
-            _graphics.ApplyChanges();
-            Window.Position = new Point((GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (_graphics.PreferredBackBufferWidth / 2), (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (_graphics.PreferredBackBufferHeight / 2));
+            Global.GraphicsDeviceManager.ApplyChanges();
+            Window.Position = new Point((GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (Global.GraphicsDeviceManager.PreferredBackBufferWidth / 2), (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (Global.GraphicsDeviceManager.PreferredBackBufferHeight / 2));
         }
 
     }

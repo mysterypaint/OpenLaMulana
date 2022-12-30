@@ -4,7 +4,7 @@ using OpenLaMulana.System;
 
 namespace OpenLaMulana.Entities
 {
-    internal class GameMenu : IGameEntity
+    public class GameMenu : IGameEntity
     {
         public int DrawOrder => -160;
 

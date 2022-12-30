@@ -67,13 +67,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public int CurrViewY = 0;
         public int FieldCount = 0;
 
-        public static EntityManager s_entityManager;
-        private AudioManager _audioManager;
-        private TextManager _textManager;
-
         private int[] _currChipLine;
         internal static Texture2D _genericEntityTex;
-        private Camera _camera;
         private ActiveView[] activeViews;
 
         public enum VIEW_DEST
@@ -84,6 +79,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Y,
             MAX
         };
+
 
         public enum AViews
         {
@@ -102,14 +98,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         };
 
-        public World(EntityManager entityManager, Texture2D _gameFontTex, Texture2D genericEntityTex, AudioManager audioManager)
+        public World(Texture2D _gameFontTex, Texture2D genericEntityTex)
         {
-            s_entityManager = entityManager;
-
-            _audioManager = audioManager;
             _fields = new List<Field>();
 
-            _textManager = new TextManager(_gameFontTex);
+            Global.TextManager = new TextManager(_gameFontTex);
 
             _genericEntityTex = genericEntityTex;
 
@@ -120,15 +113,15 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             }
 
             // Define the font table for the game
-            Dictionary<int, string> s_charSet = _textManager.GetCharSet();
+            Dictionary<int, string> s_charSet = Global.TextManager.GetCharSet();
             s_charSet = PseudoXML.DefineCharSet(s_charSet);
 
             string jpTxtFile = "Content/data/script_JPN_UTF8.txt";
             string engTxtFile = "Content/data/script_ENG_UTF8.txt";
 
             // Decrypt "Content/data/script.dat" and the English-Translated counterpart file
-            PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, Main.Languages.Japanese);
-            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, Main.Languages.English);
+            PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, Global.Languages.Japanese);
+            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, Global.Languages.English);
 
             string[] data = File.ReadAllLines(jpTxtFile);
 
@@ -209,7 +202,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 {
                     case "FIELD":
                         args = parseArgs(line);
-                        Field f = new Field(args[0], args[1], args[3], args[4], s_entityManager, _textManager, this, args[2], numFields, numWorlds);
+                        Field f = new Field(args[0], args[1], args[3], args[4], Global.EntityManager, Global.TextManager, this, args[2], numFields, numWorlds);
                         numFields++;
                         _fields.Add(f);
                         fieldViews = f.GetMapData();
@@ -314,9 +307,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             return outArgs;
         }
 
-        internal void InitGameText(Main.Languages lang, List<string> data)
+        internal void InitGameText(Global.Languages lang, List<string> data)
         {
-            _textManager.SetDialogue(lang, data);
+            Global.TextManager.SetDialogue(lang, data);
         }
 
         public void SetTexturesList(List<Texture2D> inTexList)
@@ -338,7 +331,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
                 // Only draw the current active view if the Camera is not moving
                 if (a != activeViews[(int)AViews.CURR]) {
-                    if (_camera.GetState() == Camera.CamStates.NONE)
+                    if (Global.Camera.GetState() == Camera.CamStates.NONE)
                         continue;
                 }
 
@@ -347,10 +340,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             }
         }
 
-        public void FieldTransition(VIEW_DIR movingDirection)
+        public void FieldTransitionCardinal(VIEW_DIR movingDirection)
         {
             // Camera is busy; Do not transition.
-            if (_camera.GetState() != Camera.CamStates.NONE)
+            if (Global.Camera.GetState() != Camera.CamStates.NONE)
                 return;
 
             // Grab the View we are transitioning to
@@ -403,7 +396,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             nextAV.SetView(nextView);
 
             // Slide the camera toward the new field
-            _camera.UpdateMoveTarget(movingDirection);
+            Global.Camera.UpdateMoveTarget(movingDirection);
 
 
             // If we're moving to a new Field, get rid of all the entities from the previous Field
@@ -421,7 +414,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             CurrViewY = destViewY;
 
             // Change the BGM, if applicable
-            _audioManager.ChangeSongs(_fields[destField].MusicNumber);
+            Global.AudioManager.ChangeSongs(_fields[destField].MusicNumber);
             
             //UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
         }
@@ -439,12 +432,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         internal TextManager GetTextManager()
         {
-            return _textManager;
-        }
-
-        internal void SetCamera(Camera camera)
-        {
-            _camera = camera;
+            return Global.TextManager;
         }
 
         internal void UpdateCurrActiveView()
@@ -452,6 +440,78 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             activeViews[(int)AViews.CURR].SetView(activeViews[(int)AViews.NEXT].GetView());
             activeViews[(int)AViews.CURR].SetField(activeViews[(int)AViews.NEXT].GetField());
             activeViews[(int)AViews.CURR].SetFieldTex(activeViews[(int)AViews.NEXT].GetFieldTex());
+        }
+
+        internal void FieldTransitionPixelate(int warpType, int destField, int destViewX, int destViewY)
+        {
+            // Camera is busy; Do not transition.
+            if (Global.Camera.GetState() != Camera.CamStates.NONE)
+                return;
+
+            // Grab the View we are transitioning to
+            Field thisField = _fields[CurrField];
+            var thisFieldTex = _Textures[thisField.MapGraphics];
+            var thisFieldMapData = thisField.GetMapData();
+            View thisView = thisFieldMapData[CurrViewX, CurrViewY];
+
+
+            // Do not transition if the destination field goes out of the map bounds (4x5)
+            if (destField < 0 || destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
+                return;
+
+            // Determine the next field and its texture
+            Field nextField = _fields[destField];
+            var nextFieldTex = _Textures[nextField.MapGraphics];
+
+            // Set the transitioning Active View to the next field + its texture
+
+            ActiveView nextAV = activeViews[(int)AViews.NEXT];
+
+            switch (World.VIEW_DIR.RIGHT)
+            {
+                case World.VIEW_DIR.LEFT:
+                    nextAV.Position = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    break;
+                case World.VIEW_DIR.DOWN:
+                    nextAV.Position = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE) * 1);
+                    break;
+                case World.VIEW_DIR.RIGHT:
+                    nextAV.Position = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    break;
+                case World.VIEW_DIR.UP:
+                    nextAV.Position = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    break;
+            }
+
+            nextAV.SetField(nextField);
+            nextAV.SetFieldTex(nextFieldTex);
+
+            var nextFieldMapData = nextField.GetMapData();
+            View nextView = nextFieldMapData[destViewX, destViewY];
+            nextAV.SetView(nextView);
+
+            // Slide the camera toward the new field
+            Global.Camera.UpdateMoveTarget(World.VIEW_DIR.RIGHT);
+
+
+            // If we're moving to a new Field, get rid of all the entities from the previous Field
+            if (CurrField != destField)
+            {
+                thisField.DeleteAllFieldAndRoomEntities();
+                thisField.UnlockAllViewSpawning(); // Give permission back to all the views to allow them to spawn entities
+            }
+            else // Otherwise, if moving to a new View within the same Field, delete the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
+                thisField.DeleteOldRoomEntities(thisView, thisField.GetView(destViewX, destViewY));
+
+            // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
+            CurrField = destField;
+            CurrViewX = destViewX;
+            CurrViewY = destViewY;
+
+            // Change the BGM, if applicable
+            Global.AudioManager.ChangeSongs(_fields[destField].MusicNumber);
+
+            //UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
         }
     }
 }

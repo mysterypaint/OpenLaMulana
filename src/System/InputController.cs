@@ -4,13 +4,13 @@ using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
 using System;
 using static OpenLaMulana.Entities.World;
+using static OpenLaMulana.System.Camera;
 
 namespace OpenLaMulana.System
 {
     public class InputController
     {
         private Protag _protag;
-        private World _world;
         private Jukebox _jukebox;
 
         static KeyboardState t_keyboardState;
@@ -24,10 +24,9 @@ namespace OpenLaMulana.System
         public bool KeyJumpHeld { get; private set; }
         public bool KeyWhipPressed { get; private set; }
 
-        public InputController(Protag protag, World world, Jukebox jukebox)
+        public InputController(Protag protag, Jukebox jukebox)
         {
             _protag = protag;
-            _world = world;
             _jukebox = jukebox;
         }
 
@@ -66,34 +65,43 @@ namespace OpenLaMulana.System
 
             if (camMoveX == 1)
             {
-                _world.FieldTransition(VIEW_DIR.RIGHT);
+                Global.World.FieldTransitionCardinal(VIEW_DIR.RIGHT);
             }
             else if (camMoveX == -1)
             {
-                _world.FieldTransition(VIEW_DIR.LEFT);
+                Global.World.FieldTransitionCardinal(VIEW_DIR.LEFT);
             }
             if (camMoveY == 1)
             {
-                _world.FieldTransition(VIEW_DIR.DOWN);
+                Global.World.FieldTransitionCardinal(VIEW_DIR.DOWN);
             }
             else if (camMoveY == -1)
             {
-                _world.FieldTransition(VIEW_DIR.UP);
+                Global.World.FieldTransitionCardinal(VIEW_DIR.UP);
             }
 
             if (KeyPressed(Keys.K))
             {
-                var newVal = _world.CurrField + 1;
-                if (newVal > _world.FieldCount - 1)
+                var newVal = Global.World.CurrField + 1;
+                if (newVal > Global.World.FieldCount - 1)
                     newVal = 0;
-                _world.CurrField = newVal;
+                Global.World.CurrField = newVal;
             }
             else if (KeyPressed(Keys.J))
             {
-                var newVal = _world.CurrField - 1;
+                var newVal = Global.World.CurrField - 1;
                 if (newVal < 0)
-                    newVal = _world.FieldCount - 1;
-                _world.CurrField = newVal;
+                    newVal = Global.World.FieldCount - 1;
+                Global.World.CurrField = newVal;
+            }
+            else if (KeyPressed(Keys.T))
+            {
+                //Global.Camera.SetState((int)CamStates.TRANSITION_PIXELATE_1);
+
+                //Global.World.FieldTransitionPixelate(0, 3, 0, 0);
+
+                Global.World.FieldTransitionPixelate(0, -1, 0, 0);
+                //Global.World.FieldTransitionPixelate(1, 9, 3, 2);
             }
         }
 
