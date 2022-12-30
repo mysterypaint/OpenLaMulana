@@ -16,7 +16,7 @@ namespace OpenLaMulana
     {
         private MidiPlayer midiPlayer;
         private List<MidiFile> songs = new List<MidiFile>();
-        private int currSongID = 0;//17;
+        private int currSongID = -1;//17;
         private string[] bgmFNames = new string[76];
         private bool guidanceGateFirstTime = true;
 

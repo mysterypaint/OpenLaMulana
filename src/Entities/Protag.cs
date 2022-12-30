@@ -21,32 +21,29 @@ namespace OpenLaMulana.Entities
         private Sprite _idleSprite;
 
         public PlayerState State { get; private set; }
-        PlayerState prev_state = PlayerState.IDLE;
+        private PlayerState _prevState = PlayerState.IDLE;
         public Vector2 Position { get; set; }
-
-        public short MoveX = 0;
-        public short MoveY = 0;
-        public float Hsp = 0;
-        public float Vsp = 0;
-
-        float _grav = 0.34f;
-        double _gravMax = 0.8;
-        bool _grounded = false;
-        int jumpSpeed = 5;
-
-        private bool _hasBoots = true;
-        private bool _hasFeather = true;
-        private float _chipWidth, _chipHeight;
-        float _moveSpeed = 1f;
-
-        public Facing facingX = Facing.RIGHT;
-        public Facing facingY = Facing.DOWN;
-        private int HUD_TILE_HEIGHT = 2;
-
+        public Facing FacingX = Facing.RIGHT;
+        public Facing FacingY = Facing.DOWN;
         public short BBoxOriginX { get; set; }
         public short BBoxOriginY { get; set; }
-
         public int DrawOrder { get; set; }
+
+        private const int HudTileHeight = 2;
+        private int _jumpSpeed = 5;
+        private short _moveX = 0;
+        private short _moveY = 0;
+        private float _grav = 0.34f;
+        private float _hsp = 0;
+        private float _vsp = 0;
+        private float _chipWidth, _chipHeight;
+        private float _moveSpeed = 1f;
+        private double _gravMax = 0.8;
+
+        private bool _grounded = false;
+        private bool _hasBoots = true;
+        private bool _hasFeather = true;
+
 
         /*
          * Weapon attack powerThe attack power of each weapon is as follows. This number also applies to breaking wall events, etc.
@@ -79,12 +76,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         public Protag(Texture2D spriteSheet, Vector2 position)
         {
             Position = position;
-            State = PlayerState.IDLE;
 
-            _chipWidth = World.CHIP_SIZE;
-            _chipHeight = World.CHIP_SIZE;
-            BBoxOriginX = 5;
-            BBoxOriginY = 12;
+            Initialize();
 
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
         }
@@ -92,11 +85,14 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         public void Initialize()
         {
             State = PlayerState.IDLE;
+            _chipWidth = World.CHIP_SIZE;
+            _chipHeight = World.CHIP_SIZE;
+            BBoxOriginX = 5;
+            BBoxOriginY = 12;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-
             _idleSprite.Draw(spriteBatch, Position);
 
             RectangleSprite.DrawRectangle(spriteBatch, CollisionBox, Color.Red, 1);
@@ -107,7 +103,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             var chipline = Global.World.GetField(Global.World.CurrField).GetChipline();
 
             CollideAndMove(_moveSpeed, _moveSpeed, chipline);
-            prev_state = State;
+            _prevState = State;
         }
 
         private void CollideAndMove(float dx, float dy, int[] chipline)
@@ -130,18 +126,18 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
         //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-        MoveX = Global.InputController.DirMoveX;
-            if (MoveX == 1)
-                facingX = Facing.RIGHT;
-            else if (MoveX == -1)
-                facingX = Facing.LEFT;
+        _moveX = Global.InputController.DirMoveX;
+            if (_moveX == 1)
+                FacingX = Facing.RIGHT;
+            else if (_moveX == -1)
+                FacingX = Facing.LEFT;
 
-            if (MoveX != 0)
+            if (_moveX != 0)
             {
                 View currRoom = Global.World.GetField(Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
 
 
-                if (facingX == Facing.RIGHT)
+                if (FacingX == Facing.RIGHT)
                 {
 
                     // Figure which lines of tiles the bounding box intersects with – this will give you a minimum and maximum tile value on the OPPOSITE axis.
@@ -149,8 +145,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
                     dx = _moveSpeed;
 
-                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight) - HUD_TILE_HEIGHT;
-                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight) - HudTileHeight;
+                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight) - HudTileHeight;
 
                     bboxTileXMin = (int)Math.Floor(bboxRight / _chipWidth);
                     bboxTileXMax = (int)Math.Floor((bboxRight + dx) / _chipWidth) + 1;
@@ -198,7 +194,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     posX += dx;
 
                 }
-                else if (facingX == Facing.LEFT)
+                else if (FacingX == Facing.LEFT)
                 {
 
                     // Figure which lines of tiles the bounding box intersects with – this will give you a minimum and maximum tile value on the OPPOSITE axis.
@@ -206,8 +202,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
                     dx = -_moveSpeed;
 
-                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight) - HUD_TILE_HEIGHT;
-                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight) - HudTileHeight;
+                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight) - HudTileHeight;
 
                     bboxTileXMin = (int)Math.Floor(bboxLeft / _chipWidth);
                     bboxTileXMax = (int)Math.Floor((bboxLeft + dx) / _chipWidth) - 1;
@@ -269,25 +265,25 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 State = PlayerState.JUMPING;
             }
 
-            MoveY = Global.InputController.DirMoveY;
-            if (MoveY < 0)
+            _moveY = Global.InputController.DirMoveY;
+            if (_moveY < 0)
             {
-                facingY = Facing.UP;
+                FacingY = Facing.UP;
             }
             else
             {
-                facingY = Facing.DOWN;
+                FacingY = Facing.DOWN;
             }
 
 
-            if (MoveY != 0)
+            if (_moveY != 0)
             {
                 View currRoom = Global.World.GetField(Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
 
-                if (facingY == Facing.DOWN)
+                if (FacingY == Facing.DOWN)
                 {
-                    bboxTileYMin = (int)Math.Floor(bboxBottom / _chipHeight) - HUD_TILE_HEIGHT;
-                    bboxTileYMax = (int)Math.Floor((bboxBottom + dy) / _chipHeight) - HUD_TILE_HEIGHT;
+                    bboxTileYMin = (int)Math.Floor(bboxBottom / _chipHeight) - HudTileHeight;
+                    bboxTileYMax = (int)Math.Floor((bboxBottom + dy) / _chipHeight) - HudTileHeight;
 
                     bboxTileXMin = (int)Math.Floor(bboxLeft / _chipWidth);
                     bboxTileXMax = (int)Math.Floor(bboxRight / _chipWidth);
@@ -318,7 +314,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         }
                     }
 
-                    int ty = (closestTile + HUD_TILE_HEIGHT) * World.CHIP_SIZE;
+                    int ty = (closestTile + HudTileHeight) * World.CHIP_SIZE;
 
                     if (bboxBottom + dy >= ty)
                     {
@@ -328,7 +324,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     posY += dy;
 
                 }
-                else if (facingY == Facing.UP)
+                else if (FacingY == Facing.UP)
                 {
                     dy = -_moveSpeed;
 
@@ -343,12 +339,12 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         for (var y = bboxTileYMax; y < bboxTileYMin; y++)
                         {
-                            if (x >= 0 && y >= HUD_TILE_HEIGHT && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT + HUD_TILE_HEIGHT)
+                            if (x >= 0 && y >= HudTileHeight && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT + HudTileHeight)
                             {
-                                if (currRoom.Chips[x, y - HUD_TILE_HEIGHT].tileID >= chipline[0] && currRoom.Chips[x, y - HUD_TILE_HEIGHT].tileID < chipline[1])
+                                if (currRoom.Chips[x, y - HudTileHeight].tileID >= chipline[0] && currRoom.Chips[x, y - HudTileHeight].tileID < chipline[1])
                                 {
-                                    if (y - HUD_TILE_HEIGHT > closestTile)
-                                        closestTile = y - HUD_TILE_HEIGHT;
+                                    if (y - HudTileHeight > closestTile)
+                                        closestTile = y - HudTileHeight;
                                 }
                             }
                             else
@@ -363,13 +359,13 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         }
                     }
 
-                    int ty = ((closestTile + HUD_TILE_HEIGHT) * World.CHIP_SIZE) + World.CHIP_SIZE - 1;
+                    int ty = ((closestTile + HudTileHeight) * World.CHIP_SIZE) + World.CHIP_SIZE - 1;
                     if (bboxTop + dy <= ty)
                     {
                         posY = ty + BBoxOriginY + 1;
                         dy = 0;
                     }
-                    posY += dy + Vsp;
+                    posY += dy + _vsp;
                 }
             }
 
@@ -424,5 +420,15 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             }
             return "Undefined";
         }
+
+        public void SetHsp(int hsp)
+        {
+            _hsp = hsp;
+        }
+        public void SetVsp(int vsp)
+        {
+            _vsp = vsp;
+        }
+
     }
 }

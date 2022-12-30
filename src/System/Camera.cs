@@ -109,7 +109,7 @@ namespace OpenLaMulana.System
                     break;
                 case (int)CamStates.TRANSITION_CARDINAL:
                     float posX = Position.X;
-                    _protag.Hsp = 0;
+                    _protag.SetHsp(0);
                     float newPlayerX = _protag.Position.X;
 
                     float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -158,7 +158,7 @@ namespace OpenLaMulana.System
 
 
                     float posY = Position.Y;
-                    _protag.Vsp = 0;
+                    _protag.SetVsp(0);
                     float newPlayerY = _protag.Position.Y;
 
                     if (_moveToY < 0)

@@ -11,7 +11,7 @@ namespace OpenLaMulana.Entities
         private int _currentScreen;
         private TextManager _textManager;
 
-        public GameMenu(ScreenOverlayState screen, TextManager textManager)
+        public GameMenu(Global.ScreenOverlayState screen, TextManager textManager)
         {
             _currentScreen = (int)screen;
             _textManager = textManager;

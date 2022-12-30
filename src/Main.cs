@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities;
+using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace OpenLaMulana
 {
     public partial class Main : Game
     {
-        public GameState State { get; private set; }
+        public Global.GameState State { get; private set; }
         public Global.DisplayMode WindowDisplayMode { get; set; } = Global.DisplayMode.Default;
 
         public const string GAME_TITLE = "La.MuLANA";
@@ -28,7 +29,6 @@ namespace OpenLaMulana
 
         private const string SAVE_FILE_NAME = "Save.dat";
         private const string musPath = "Content/music/";
-        private const string gfxPath = "Content/graphics/";
 
         private int _displayZoomFactor = 3;
         private int _displayZoomMax = 10;
@@ -71,7 +71,7 @@ namespace OpenLaMulana
             //Globals.SaveData.WriteEncryptedSave("lamulana_enc.sa0", sRNG);
 
             Global.EntityManager = new EntityManager();
-            State = GameState.Initial;
+            State = Global.GameState.INITIAL;
             //_fadeInTexturePosX = Protag.DEFAULT_SPRITE_WIDTH;
         }
 
@@ -106,10 +106,13 @@ namespace OpenLaMulana
 
             _shaderMode = (int)Global.Shaders.NONE;
 
-            _txProt1 = LoadTexture(gfxPath + "prot1.png");
+            Global.TextureManager = new TextureManager();
+            Global.TextureManager.InitTextures(GraphicsDevice);
 
-            _gameFontTex = LoadTexture(gfxPath + "font_EN.png");
-            _genericEntityTex = LoadTexture(Path.Combine(gfxPath, "system", "entityTemplate.png"));
+            _txProt1 = Global.TextureManager.GetTexture(Global.Textures.PROT1);
+
+            _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
+            _genericEntityTex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
 
             long val = Global.GameRNG.RollDice(9);
 
@@ -122,40 +125,13 @@ namespace OpenLaMulana
 
             Global.InputController = new InputController(_protag, _jukebox);
 
-            for (int i = 0; i <= 32; i++)
-            {
-                string numStr;
-                if (i <= 9)
-                {
-                    numStr = "0" + i.ToString();
-                }
-                else
-                {
-                    numStr = i.ToString();
-                }
-
-                if (i > 22 && i < 31)
-                {
-                    Texture2D dummy = new Texture2D(GraphicsDevice, 1, 1);
-                    dummy.SetData(new Color[] { Color.White });
-                    _tempTexList.Add(dummy);
-                }
-                else
-                {
-                    var tex = LoadTexture(gfxPath + "mapg" + numStr + ".png");
-                    _tempTexList.Add(tex);
-                }
-            }
-
-            Global.World.SetTexturesList(_tempTexList);
-
             Global.EntityManager.AddEntity(_protag);
             Global.EntityManager.AddEntity(Global.World);
             Global.EntityManager.AddEntity(Global.AudioManager);
 
             Global.TextManager = Global.World.GetTextManager();
 
-            Global.GameMenu = new GameMenu(ScreenOverlayState.INVISIBLE, Global.TextManager);
+            Global.GameMenu = new GameMenu(Global.ScreenOverlayState.INVISIBLE, Global.TextManager);
             Global.EntityManager.AddEntity(Global.TextManager);
             Global.EntityManager.AddEntity(Global.GameMenu);
 
@@ -166,29 +142,12 @@ namespace OpenLaMulana
         {
             Global.AudioManager.UnloadContent();
         }
-        private Texture2D LoadTexture(string filePath)
-        {
-            FileStream fileStream = new FileStream(filePath, FileMode.Open);
-            Texture2D tex = Texture2D.FromStream(GraphicsDevice, fileStream);
-            fileStream.Dispose();
-            Color[] buffer = new Color[tex.Width * tex.Height];
-            tex.GetData(buffer);
-            Color colGray = new Color(68, 68, 68);
-            for (int i = 0; i < buffer.Length; i++)
-            {
-                // Replace all transparent gray pixels in every loaded texture with White, Alpha 0
-                if (buffer[i].Equals(colGray))
-                    buffer[i] = Color.FromNonPremultiplied(255, 255, 255, 0);
-            }
-            tex.SetData(buffer);
-
-            return tex;
-        }
 
         public World GetWorld()
         {
             return Global.World;
         }
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -212,7 +171,7 @@ namespace OpenLaMulana
 
             switch (State)
             {
-                case GameState.Playing:
+                case Global.GameState.PLAYING:
                     Global.InputController.ProcessControls(gameTime);
 
                     if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
@@ -220,7 +179,7 @@ namespace OpenLaMulana
                         ToggleGamePause();
                     }
                     break;
-                case GameState.Paused:
+                case Global.GameState.PAUSED:
                     JukeboxRoutine();
                     Global.AudioManager.PauseMusic();
                     if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
@@ -228,20 +187,19 @@ namespace OpenLaMulana
                         ToggleGamePause();
                     }
                     break;
-                case GameState.Transition:
-                    State = GameState.Playing;
+                case Global.GameState.TRANSITION:
+                    State = Global.GameState.PLAYING;
                     _protag.Initialize();
                     break;
-                case GameState.MSXInventory:
+                case Global.GameState.MSX_INVENTORY:
                     break;
-                case GameState.MSXEmulator:
+                case Global.GameState.MSX_EMULATOR:
                     JukeboxRoutine();
                     break;
-                case GameState.Initial:
+                case Global.GameState.INITIAL:
                     if (isStartKeyPressed && !wasStartKeyPressed)
                     {
                         StartGame();
-
                     }
                     break;
             }
@@ -288,15 +246,15 @@ namespace OpenLaMulana
 
             Global.AudioManager.PlaySFX(SFX.PAUSE);
 
-            if (State == GameState.Playing)
+            if (State == Global.GameState.PLAYING)
             {
                 _pauseToggleTimer = 30;
-                State = GameState.Paused;
+                State = Global.GameState.PAUSED;
                 Global.AudioManager.PauseMusic();
             }
-            else if (State == GameState.Paused)
+            else if (State == Global.GameState.PAUSED)
             {
-                State = GameState.Playing;
+                State = Global.GameState.PLAYING;
                 _pauseToggleTimer = 30;
                 Global.AudioManager.ResumeMusic();
             }
@@ -337,21 +295,21 @@ namespace OpenLaMulana
 
             switch (State)
             {
-                case GameState.Initial:
-                case GameState.Transition:
+                case Global.GameState.INITIAL:
+                case Global.GameState.TRANSITION:
                     //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
                     //Globals.TextManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
                     Global.TextManager.DrawText(0, 0, "Press Enter to Begin");
                     break;
                 default:
-                case GameState.MSXInventory:
+                case Global.GameState.MSX_INVENTORY:
                     break;
-                case GameState.MSXEmulator:
+                case Global.GameState.MSX_EMULATOR:
                     break;
-                case GameState.Paused:
+                case Global.GameState.PAUSED:
                     //_jukebox.Draw(_spriteBatch, gameTime);
                     break;
-                case GameState.Playing:
+                case Global.GameState.PLAYING:
                     //_jukebox.Draw(_spriteBatch, gameTime);
 
                     View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();
@@ -365,7 +323,7 @@ namespace OpenLaMulana
                     int destRoomX = viewDest[(int)VIEW_DEST.X];
                     int destRoomY = viewDest[(int)VIEW_DEST.Y];*/
 
-                    List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+            List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
                     List<IGameEntity> roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
                     Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
                     /*
@@ -394,24 +352,23 @@ namespace OpenLaMulana
 
         private bool StartGame()
         {
-            if (State != GameState.Initial)
+            if (State != Global.GameState.INITIAL)
                 return false;
 
             Global.World.InitWorldEntities();
+            
+            Global.AudioManager.ChangeSongs(0);
 
-            //_scoreBoard.Score = 0;
-            State = GameState.Transition;
-            //_protag.BeginJump();
-
+            State = Global.GameState.TRANSITION;
             return true;
         }
 
         public bool Replay()
         {
-            if (State != GameState.GameOver)
+            if (State != Global.GameState.GAME_OVER)
                 return false;
 
-            State = GameState.Playing;
+            State = Global.GameState.PLAYING;
             _protag.Initialize();
             Global.InputController.BlockInputTemporarily();
 

@@ -61,13 +61,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         };
 
         public int CurrField { get; set; } = 1;
-        private List<Field> _fields;
-        private List<Texture2D> _Textures = null;
-        public int CurrViewX = 0;
-        public int CurrViewY = 0;
-        public int FieldCount = 0;
-
+        public int CurrViewX, CurrViewY, FieldCount = 0;
         private int[] _currChipLine;
+        private List<Field> _fields;
+        private List<Texture2D> _fieldTextures, _bossTextures, _otherTextures;
         internal static Texture2D _genericEntityTex;
         private ActiveView[] activeViews;
 
@@ -312,11 +309,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Global.TextManager.SetDialogue(lang, data);
         }
 
-        public void SetTexturesList(List<Texture2D> inTexList)
-        {
-            _Textures = inTexList;
-        }
-
         public void Update(GameTime gameTime)
         {
         }
@@ -348,7 +340,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Grab the View we are transitioning to
             Field thisField = _fields[CurrField];
-            var thisFieldTex = _Textures[thisField.MapGraphics];
+            Global.Textures correctedTexID = Global.TextureManager.GetMappedWorldTexID(thisField.MapGraphics);
+            var thisFieldTex = Global.TextureManager.GetTexture(correctedTexID);
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
             int[] viewDest = thisView.GetDestinationView(movingDirection);
@@ -366,7 +359,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Determine the next field and its texture
             Field nextField = _fields[destField];
-            var nextFieldTex = _Textures[nextField.MapGraphics];
+            correctedTexID = Global.TextureManager.GetMappedWorldTexID(nextField.MapGraphics);
+           var nextFieldTex = Global.TextureManager.GetTexture(correctedTexID);
 
             // Set the transitioning Active View to the next field + its texture
 
@@ -450,7 +444,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Grab the View we are transitioning to
             Field thisField = _fields[CurrField];
-            var thisFieldTex = _Textures[thisField.MapGraphics];
+            var thisFieldTex = _fieldTextures[thisField.MapGraphics];
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
 
@@ -461,7 +455,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Determine the next field and its texture
             Field nextField = _fields[destField];
-            var nextFieldTex = _Textures[nextField.MapGraphics];
+            var nextFieldTex = _fieldTextures[nextField.MapGraphics];
 
             // Set the transitioning Active View to the next field + its texture
 
