@@ -7,14 +7,8 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-Texture2D SpriteTexture;
 sampler s0;
 extern float time;
-
-sampler2D SpriteTextureSampler = sampler_state
-{
-	Texture = <SpriteTexture>;
-};
 
 struct VertexShaderOutput
 {
@@ -36,17 +30,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	float4 texColor = tex2D(s0, input.TextureCoordinates);
     float4 transpWhite = float4(1, 1, 1, 0);
 	
-	//float4 color = ScreenTexture.Sample(TextureSampler, texCoord.xy);
-    /*
-	if (all(texColor == transpWhite)) {
-        //texColor = _Color1out;
-		clip(-1);
-    }*/
-	
     texColor = all(texColor == transpWhite) ? -1 : texColor;
-	
     clip(texColor);
-	//color.gb = color.r;
 	
     texColor.rgb *= Hsv2rgb(float3(time, 1, 1));
     return texColor;

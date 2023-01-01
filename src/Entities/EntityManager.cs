@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using static OpenLaMulana.Entities.World;
+using static OpenLaMulana.System.Camera;
 
 namespace OpenLaMulana.Entities
 {
@@ -62,27 +63,60 @@ namespace OpenLaMulana.Entities
                         break;
                     case World:
                         World worldEnt = (World)entity;
-
-                        // Draw the non-shader layers
-                        Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                        switch (Global.Camera.GetState())
+                        {
+                            default:
+                            case CamStates.NONE:
+                                // No fancy shaders: Draw everything normally
+                                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                                    samplerState: SamplerState.PointClamp,
+                                    transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
+                                    effect: worldEnt.ActiveShader);
+                                worldEnt.Draw(spriteBatch, gameTime);
+                                Global.SpriteBatch.End();
+                                break;
+                            case CamStates.TRANSITION_PIXELATE:
+                                // Draw the Current View to a Render Target
+                                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                             samplerState: SamplerState.PointClamp,
-                            transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
+                            transformMatrix: null,
                             effect: null);
-                        worldEnt.Draw(spriteBatch, gameTime, ShaderDrawingState.NO_SHADER);
-                        Global.SpriteBatch.End();
+                                worldEnt.DrawPixelate(spriteBatch, gameTime, ShaderDrawingState.CURR_VIEW);
+                                Global.SpriteBatch.End();
 
-                        // Draw the transition layers to the render target
-                        Global.SpriteBatch.Begin();
-                        worldEnt.Draw(spriteBatch, gameTime, ShaderDrawingState.RENDER_TARGET);
-                        Global.SpriteBatch.End();
+                                // Draw the transition layer to a Render Target
+                                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                                    samplerState: SamplerState.PointClamp,
+                                    transformMatrix: null,
+                                    effect: Global.ShdBinary);
+                                worldEnt.DrawPixelate(spriteBatch, gameTime, ShaderDrawingState.TRANSITION_LAYER);
+                                Global.SpriteBatch.End();
 
-                        // Finally, draw the shader transition layer to the screen
-                        Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                            samplerState: SamplerState.PointClamp,
-                            transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
-                            effect: worldEnt.ActiveShader);
-                        worldEnt.Draw(spriteBatch, gameTime, ShaderDrawingState.FIRST_LAYER);
-                        Global.SpriteBatch.End();
+                                // Draw the Destination View to a Render Target
+                                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                                    samplerState: SamplerState.PointClamp,
+                                    transformMatrix: null,
+                                    effect: null);
+                                worldEnt.DrawPixelate(spriteBatch, gameTime, ShaderDrawingState.DEST_VIEW);
+                                Global.SpriteBatch.End();
+
+                                // Draw everything to a final Render Target using the Transition shader
+                                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                                    samplerState: SamplerState.PointClamp,
+                                    transformMatrix: null,
+                                    effect: worldEnt.ActiveShader);
+                                worldEnt.DrawPixelate(spriteBatch, gameTime, ShaderDrawingState.OUTPUT_1X);
+                                Global.SpriteBatch.End();
+
+                                // Finally, draw the final render target to the screen, blowing up the transform
+                                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                                    samplerState: SamplerState.PointClamp,
+                                    transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
+                                    effect: worldEnt.ActiveShader);
+                                worldEnt.DrawPixelate(spriteBatch, gameTime, ShaderDrawingState.OUTPUT);
+                                Global.SpriteBatch.End();
+                                break;
+                        }
                         break;
                 }
             }

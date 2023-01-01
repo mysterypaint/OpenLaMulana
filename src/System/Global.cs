@@ -27,6 +27,7 @@ namespace OpenLaMulana
             NONE,
             TRANSITION,
             HUE_SHIFT,
+            BINARY,
             MAX
         };
         public enum GameState
@@ -155,7 +156,7 @@ namespace OpenLaMulana
             MAX
         };
 
-        public static Effect ShdTransition, ShdHueShift;
+        public static Effect ShdTransition, ShdHueShift, ShdBinary;
 
         public static GraphicsDevice GraphicsDevice;
         public static GraphicsDeviceManager GraphicsDeviceManager;

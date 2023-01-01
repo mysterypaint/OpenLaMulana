@@ -98,6 +98,8 @@ namespace OpenLaMulana.System
             {
                 //Global.Camera.SetState((int)CamStates.TRANSITION_PIXELATE_1);
 
+                Global.AudioManager.ChangeSongs(22);
+                //Global.AudioManager.ChangeSongs(25);
                 Global.World.FieldTransitionPixelate(0, 3, 0, 0);
 
                 //Global.World.FieldTransitionPixelate(0, -1, 0, 0);

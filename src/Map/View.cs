@@ -124,6 +124,7 @@ namespace OpenLaMulana
                         var texX = (drawingTileID % 40) * 8;
                         var texY = (drawingTileID / 40) * 8;
 
+
                         spriteBatch.Draw(texture, new Vector2(posX, Main.HUD_HEIGHT + posY) + offsetVec, new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
                     }
                 }

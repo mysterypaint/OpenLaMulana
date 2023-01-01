@@ -84,10 +84,17 @@ namespace OpenLaMulana.System
         //private int cardinalTransitionTimer = 0;
         public Matrix GetTransformation(GraphicsDevice graphicsDevice)
         {
-            Transform = Matrix.CreateTranslation(new Vector3(-Position.X - (BaseWindowSize.X / 2), -Position.Y - (BaseWindowSize.Y / 2), 0)) *
+            Transform = Matrix.CreateTranslation(new Vector3(-Position.X - (BaseWindowSize.X / 2), -Position.Y - (BaseWindowSize.Y / 2), 0))
+                * Matrix.Identity
+                * Matrix.CreateRotationZ(Rotation)
+                * Matrix.CreateScale(DisplayZoomFactor, DisplayZoomFactor, 1)
+                * Matrix.CreateTranslation(new Vector3(_viewWidth * 0.5f, _viewHeight * 0.5f, 0));
+            /*
+            Matrix.CreateTranslation(new Vector3(-Position.X - (BaseWindowSize.X / 2), -Position.Y - (BaseWindowSize.Y / 2), 0)) *
                 Matrix.CreateRotationZ(Rotation) *
                 Matrix.CreateScale(new Vector3(DisplayZoomFactor, DisplayZoomFactor, 1)) *
                 Matrix.CreateTranslation(new Vector3(_viewWidth * 0.5f, _viewHeight * 0.5f, 0));
+            */
             return Transform;
         }
 
@@ -98,14 +105,13 @@ namespace OpenLaMulana.System
 
         public void Update(GameTime gameTime)
         {
-
             switch (_state)
             {
                 case (int)CamStates.NONE:
                     break;
                 case (int)CamStates.TRANSITION_PIXELATE:
                     // Perform this when done to update visuals
-                    Global.World.UpdateCurrActiveView();
+                    //Global.World.UpdateCurrActiveView();
                     //_state = (int)CamStates.NONE;
                     //Global.World.activeShader = null;
                     break;

@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using static OpenLaMulana.Global;
 using static OpenLaMulana.System.Camera;
 
@@ -32,9 +34,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public enum ShaderDrawingState
         {
             NO_SHADER = 0,
-            FIRST_LAYER,
-            RENDER_TARGET,
-            SECOND_LAYER,
+            CURR_VIEW,
+            DEST_VIEW,
+            TRANSITION_LAYER,
+            OUTPUT_1X,
+            OUTPUT,
             MAX
         }
 
@@ -82,7 +86,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         private List<Texture2D> _fieldTextures, _bossTextures, _otherTextures;
         internal static Texture2D _genericEntityTex;
         private ActiveView[] _activeViews;
-        private RenderTarget2D _transitionRenderTarget;
+        private RenderTarget2D _bkgRenderTarget, _transitionRenderTarget, _destRenderTarget, _outputRenderTarget;
+        private bool _abortDrawing = false;
+        private bool _disposedRenderTargetsFlag = false;
 
         public enum VIEW_DEST
         {
@@ -116,17 +122,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             Texture2D gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
             Global.TextManager = new TextManager(gameFontTex);
-
-            _transitionRenderTarget = new RenderTarget2D(
-                Global.GraphicsDevice,
-                //Global.GraphicsDevice.PresentationParameters.BackBufferWidth,
-                //Global.GraphicsDevice.PresentationParameters.BackBufferHeight,
-                Main.WINDOW_WIDTH,
-                Main.WINDOW_HEIGHT,
-                false,
-                SurfaceFormat.Color,
-                DepthFormat.None);
-
             _genericEntityTex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
 
             _activeViews = new ActiveView[(int)AViews.MAX];
@@ -338,111 +333,182 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public void Update(GameTime gameTime)
         {
         }
-
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            Global.GraphicsDevice.SetRenderTarget(null);
+            foreach (ActiveView a in _activeViews)
+            {
+                // Do not attempt to draw null
+                if (a == null)
+                    continue;
+
+                // Only draw the current active view if the Camera is not moving
+                if (a != _activeViews[(int)AViews.CURR])
+                {
+                    if (Global.Camera.GetState() == CamStates.NONE)
+                        continue;
+                }
+
+                // Draw the current view
+                a.DrawView(spriteBatch, gameTime);
+            }
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime, ShaderDrawingState shaderState)
+        public void DrawPixelate(SpriteBatch spriteBatch, GameTime gameTime, ShaderDrawingState shaderState)
         {
-            switch (Global.Camera.GetState()) {
+            if (_abortDrawing)
+            {
+                // Make sure we draw normally for this frame
+                if (shaderState == ShaderDrawingState.OUTPUT)
+                    Draw(spriteBatch, gameTime);
+
+                if (_disposedRenderTargetsFlag)
+                    return;
+                Global.GraphicsDevice.SetRenderTarget(null);
+                Global.Camera.SetState((int)CamStates.NONE);
+                ActiveShader = null;
+                _bkgRenderTarget.Dispose();
+                _transitionRenderTarget.Dispose();
+                _destRenderTarget.Dispose();
+                _outputRenderTarget.Dispose();
+                _bkgRenderTarget = null;
+                _transitionRenderTarget = null;
+                _destRenderTarget = null;
+                _outputRenderTarget = null;
+                _disposedRenderTargetsFlag = true;
+                shaderState = ShaderDrawingState.NO_SHADER;
+                return;
+            }
+
+            switch (shaderState)
+            {
                 default:
-                case CamStates.NONE:
-                    if (shaderState != ShaderDrawingState.NO_SHADER)
-                        break;
-                    foreach (ActiveView a in _activeViews)
-                    {
-                        // Do not attempt to draw null
-                        if (a == null)
-                            continue;
-
-                        // Only draw the current active view if the Camera is not moving
-                        if (a != _activeViews[(int)AViews.CURR])
-                        {
-                            if (Global.Camera.GetState() == CamStates.NONE)
-                                continue;
-                        }
-
-                        // Draw the current view
-                        a.DrawView(spriteBatch, gameTime);
-                    }
+                case ShaderDrawingState.CURR_VIEW:
+                    // Draw the current View without any shaders, if it's not null
+                    Global.GraphicsDevice.SetRenderTarget(_bkgRenderTarget);
+                    Global.GraphicsDevice.Clear(Color.Black);
+                    ActiveView currView = _activeViews[(int)AViews.CURR];
+                    if (currView != null)
+                        currView.DrawView(spriteBatch, gameTime);
                     break;
-                case CamStates.TRANSITION_PIXELATE:
-                    switch (shaderState)
+                case ShaderDrawingState.TRANSITION_LAYER:
+                    // Draw all of the raw transition tiles to a render target
+                    Global.GraphicsDevice.SetRenderTarget(_transitionRenderTarget);
+
+                    Global.GraphicsDevice.Clear(Color.Transparent);
+
+
+                    //GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
+                    //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, effect);
+
+
+
+                    // Loop through every single Room[_x][_y] Chip to draw every single Chip in a given room
+                    Texture2D tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
+
+                    for (int y = 0; y < World.ROOM_HEIGHT; y++)
                     {
-                        default:
-                        case ShaderDrawingState.NO_SHADER:
-                            // Draw the current View without any shaders, if it's not null
-                            ActiveView currView = _activeViews[(int)AViews.CURR];
-                            if (currView != null)
-                                currView.DrawView(spriteBatch, gameTime);
-                            break;
-                        case ShaderDrawingState.RENDER_TARGET:
-                            // Draw all of the raw transition tiles to a render target
-                            Global.GraphicsDevice.SetRenderTarget(_transitionRenderTarget);
-                            // Loop through every single Room[_x][_y] Chip to draw every single Chip in a given room
-                            Texture2D tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
+                        for (int x = 0; x < World.ROOM_WIDTH; x++)
+                        {
+                            // Grab the current Chip (tile) we're looking at
+                            Chip thisChip = _transitionView.Chips[x, y];
 
-                            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+                            // Handle animated Chips here
+                            var animeSpeed = thisChip.animeSpeed;
+                            var animeFrames = thisChip.GetAnimeFrames();
+                            var maxFrames = animeFrames.Length;
+
+                            if (animeSpeed > 0)
                             {
-                                for (int x = 0; x < World.ROOM_WIDTH; x++)
+                                if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
                                 {
-                                    // Grab the current Chip (tile) we're looking at
-                                    Chip thisChip = _transitionView.Chips[x, y];
+                                    thisChip.currFrame++;
 
-                                    // Handle animated Chips here
-                                    var animeSpeed = thisChip.animeSpeed;
-                                    var animeFrames = thisChip.GetAnimeFrames();
-                                    var maxFrames = animeFrames.Length;
-
-                                    if (animeSpeed > 0)
+                                    // Play the animation once, then stop and turn off the shader
+                                    if (thisChip.currFrame >= maxFrames)
                                     {
-                                        if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
-                                        {
-                                            thisChip.currFrame++;
-
-                                            // Play the animation once, then stop
-                                            if (thisChip.currFrame >= maxFrames)
-                                            {
-                                                thisChip.currFrame = 0;
-                                                /*
-                                                thisChip.currFrame = maxFrames - 1;
-                                                thisChip.animeSpeed = 0;
-                                                */
-                                            }
-                                        }
+                                        thisChip.currFrame = maxFrames - 1;
+                                        thisChip.animeSpeed = 0;
+                                        _abortDrawing = true;
+                                        UpdateCurrActiveView();
+                                        return;
                                     }
-
-                                    var drawingTileID = animeFrames[(int)thisChip.currFrame];
-
-                                    //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
-                                    var posX = (x * 8);
-                                    var posY = (y * 8);
-                                    var texX = (drawingTileID % 40) * 8;
-                                    var texY = (drawingTileID / 40) * 8;
-
-                                    spriteBatch.Draw(tex, new Vector2(posX, posY), new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
                                 }
                             }
-                            break;
-                        case ShaderDrawingState.FIRST_LAYER:
-                            // Set the render target back to the main backbuffer
-                            Global.GraphicsDevice.SetRenderTarget(null);
 
-                            // This texture now has the grey transition layer we created above. This is when we pass it to shdTransition
-                            Texture2D tempTransitionTex = (Texture2D)_transitionRenderTarget;
+                            var drawingTileID = animeFrames[(int)thisChip.currFrame];
 
+                            //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
+                            var posX = (x * 8);
+                            var posY = (y * 8);
+                            var texX = (drawingTileID % 40) * 8;
+                            var texY = (drawingTileID / 40) * 8;
 
-
-                            // Draw the destination View with the shader enabled, if it's not null
-
-                            ActiveView destView = _activeViews[(int)AViews.DEST];
-                            if (destView != null)
-                                destView.DrawView(spriteBatch, gameTime);
-                            break;
+                            spriteBatch.Draw(tex, new Vector2(posX, posY + HUD_HEIGHT), new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
+                        }
                     }
                     break;
+                case ShaderDrawingState.DEST_VIEW:
+                    Global.GraphicsDevice.SetRenderTarget(_destRenderTarget);
+                    Global.GraphicsDevice.Clear(Color.Transparent);
+
+                    // Draw the destination View with the shader enabled, if it's not null
+                    ActiveView destView = _activeViews[(int)AViews.DEST];
+                    if (destView != null)
+                        destView.DrawView(spriteBatch, gameTime);
+                    break;
+
+                case ShaderDrawingState.OUTPUT_1X:
+                    // Set the render target to draw everything at a 1x resolution
+                    Global.GraphicsDevice.SetRenderTarget(_outputRenderTarget);
+                    // Force everything to be pixel-perfect
+                    Global.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+                    Global.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
+                    Global.GraphicsDevice.SamplerStates[2] = SamplerState.PointClamp;
+
+                    // Pass the other render targets into this temporary 1x output target to the shader
+                    ActiveShader.Parameters["PrevViewTexture"].SetValue(_bkgRenderTarget);       // Snapshot of the Previous View
+                    ActiveShader.Parameters["MaskTexture"].SetValue(_transitionRenderTarget);    // Masking window (the entire [relevant] screen), animated
+                    spriteBatch.Draw(_destRenderTarget, _destRenderTarget.Bounds, Color.White);             // The Destination View, which is also the current Sampling Texture because of the order we are drawing in
+                    break;
+                case ShaderDrawingState.OUTPUT:
+                    // Finally, output the 1x resolution to the final screen output, but blow it up to actual size
+                    Global.GraphicsDevice.SetRenderTarget(null);
+                    spriteBatch.Draw(_outputRenderTarget, _outputRenderTarget.Bounds, Color.White);
+                    break;
             }
+        }
+
+            public void CreateRenderTargets()
+        {
+            _bkgRenderTarget = new RenderTarget2D(
+                Global.GraphicsDevice,
+                Main.WINDOW_WIDTH,
+                Main.WINDOW_HEIGHT,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None);
+            _transitionRenderTarget = new RenderTarget2D(
+                Global.GraphicsDevice,
+                Main.WINDOW_WIDTH,
+                Main.WINDOW_HEIGHT,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None);
+            _destRenderTarget = new RenderTarget2D(
+                Global.GraphicsDevice,
+                Main.WINDOW_WIDTH,
+                Main.WINDOW_HEIGHT,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None);
+            _outputRenderTarget = new RenderTarget2D(
+                Global.GraphicsDevice,
+                Main.WINDOW_WIDTH,
+                Main.WINDOW_HEIGHT,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None);
         }
 
         public void FieldTransitionCardinal(VIEW_DIR movingDirection)
@@ -473,7 +539,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // Determine the next field and its texture
             Field nextField = _fields[destField];
             correctedTexID = Global.TextureManager.GetMappedWorldTexID(nextField.MapGraphics);
-           var nextFieldTex = Global.TextureManager.GetTexture(correctedTexID);
+            var nextFieldTex = Global.TextureManager.GetTexture(correctedTexID);
 
             // Set the transitioning Active View to the next field + its texture
 
@@ -522,7 +588,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Change the BGM, if applicable
             Global.AudioManager.ChangeSongs(_fields[destField].MusicNumber);
-            
+
             //UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
         }
 
@@ -565,8 +631,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
 
-            if (destField < 0) {
-                switch(destField)
+            if (destField < 0)
+            {
+                switch (destField)
                 {
                     default:
                         destField = 0;
@@ -583,9 +650,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                     case -3:
                         // Boss room 3
                         break;
-                    // etc...
+                        // etc...
                 }
-            } else if (destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
+            }
+            else if (destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
             {
                 // Do not transition if the destination field goes out of the map bounds (4x5)
                 return;
@@ -632,6 +700,12 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Global.Camera.UpdateMoveTarget(World.VIEW_DIR.SELF);
             Global.Camera.SetState((int)CamStates.TRANSITION_PIXELATE);
 
+            // Create the Shader Effect's Render Targets
+            CreateRenderTargets();
+            // Reset the abort drawing state
+            _abortDrawing = false;
+            _disposedRenderTargetsFlag = false;
+
             // If we're moving to a new Field, get rid of all the entities from the previous Field
             if (CurrField != destField)
             {
@@ -647,7 +721,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             CurrViewY = destViewY;
 
             // Change the BGM, if applicable
-            Global.AudioManager.ChangeSongs(_fields[destField].MusicNumber);
+            //Global.AudioManager.ChangeSongs(_fields[destField].MusicNumber);
 
             //UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
         }
