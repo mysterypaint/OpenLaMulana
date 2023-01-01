@@ -21,6 +21,7 @@ namespace OpenLaMulana
         private bool guidanceGateFirstTime = true;
 
         public int DrawOrder => 0;
+        public Effect ActiveShader { get; set; } = null;
 
         public float AudioManBGMVolScale { get; private set; } = 0.8f;
         public float AudioManSFXVolScale { get; private set; } = 1.0f;

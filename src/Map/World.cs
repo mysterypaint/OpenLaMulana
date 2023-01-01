@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using static OpenLaMulana.Global;
+using static OpenLaMulana.System.Camera;
 
 namespace OpenLaMulana.Entities
 {
@@ -26,7 +28,18 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 　
         */
 
+
+        public enum ShaderDrawingState
+        {
+            NO_SHADER = 0,
+            FIRST_LAYER,
+            RENDER_TARGET,
+            SECOND_LAYER,
+            MAX
+        }
+
         public int DrawOrder { get; set; }
+        public Effect ActiveShader { get; set; } = null;
         public const int CHIP_SIZE = 8;
         public const int FIELD_WIDTH = 4;
         public const int FIELD_HEIGHT = 5;
@@ -34,6 +47,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public const int ROOM_HEIGHT = 22; // How many 8x8 tiles a room is tall
         public const int HUD_HEIGHT = CHIP_SIZE * 2;
         public const int ANIME_TILES_BEGIN = 1160;
+        private View _transitionView = new View(ROOM_WIDTH, ROOM_HEIGHT, null, 0, 0);
+        private ShaderDrawingState _shdState = ShaderDrawingState.NO_SHADER;
 
         public enum SpecialChipTypes
         {
@@ -66,7 +81,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         private List<Field> _fields;
         private List<Texture2D> _fieldTextures, _bossTextures, _otherTextures;
         internal static Texture2D _genericEntityTex;
-        private ActiveView[] activeViews;
+        private ActiveView[] _activeViews;
+        private RenderTarget2D _transitionRenderTarget;
 
         public enum VIEW_DEST
         {
@@ -77,11 +93,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         };
 
-
         public enum AViews
         {
             CURR = 0,
-            NEXT = 1,
+            DEST = 1,
             MAX
         };
 
@@ -95,18 +110,29 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         };
 
-        public World(Texture2D _gameFontTex, Texture2D genericEntityTex)
+        public World()
         {
             _fields = new List<Field>();
 
-            Global.TextManager = new TextManager(_gameFontTex);
+            Texture2D gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
+            Global.TextManager = new TextManager(gameFontTex);
 
-            _genericEntityTex = genericEntityTex;
+            _transitionRenderTarget = new RenderTarget2D(
+                Global.GraphicsDevice,
+                //Global.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                //Global.GraphicsDevice.PresentationParameters.BackBufferHeight,
+                Main.WINDOW_WIDTH,
+                Main.WINDOW_HEIGHT,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None);
 
-            activeViews = new ActiveView[(int)AViews.MAX];
-            for (var i = 0; i < activeViews.Length; i++)
+            _genericEntityTex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
+
+            _activeViews = new ActiveView[(int)AViews.MAX];
+            for (var i = 0; i < _activeViews.Length; i++)
             {
-                activeViews[i] = new ActiveView();
+                _activeViews[i] = new ActiveView();
             }
 
             // Define the font table for the game
@@ -153,8 +179,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Field thisField = _fields[CurrField];
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
-            activeViews[(int)AViews.CURR].SetView(thisView);
-            activeViews[(int)AViews.NEXT].SetView(thisView);
+            _activeViews[(int)AViews.CURR].SetView(thisView);
+            _activeViews[(int)AViews.DEST].SetView(thisView);
 
             //UpdateEntities(CurrField, thisField, thisView, CurrViewX, CurrViewY);
         }
@@ -315,27 +341,114 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            foreach (ActiveView a in activeViews)
-            {
-                // Do not attempt to draw null
-                if (a == null)
-                    continue;
+        }
 
-                // Only draw the current active view if the Camera is not moving
-                if (a != activeViews[(int)AViews.CURR]) {
-                    if (Global.Camera.GetState() == Camera.CamStates.NONE)
-                        continue;
-                }
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime, ShaderDrawingState shaderState)
+        {
+            switch (Global.Camera.GetState()) {
+                default:
+                case CamStates.NONE:
+                    if (shaderState != ShaderDrawingState.NO_SHADER)
+                        break;
+                    foreach (ActiveView a in _activeViews)
+                    {
+                        // Do not attempt to draw null
+                        if (a == null)
+                            continue;
 
-                // Draw the current view
-                a.DrawView(spriteBatch, gameTime);
+                        // Only draw the current active view if the Camera is not moving
+                        if (a != _activeViews[(int)AViews.CURR])
+                        {
+                            if (Global.Camera.GetState() == CamStates.NONE)
+                                continue;
+                        }
+
+                        // Draw the current view
+                        a.DrawView(spriteBatch, gameTime);
+                    }
+                    break;
+                case CamStates.TRANSITION_PIXELATE:
+                    switch (shaderState)
+                    {
+                        default:
+                        case ShaderDrawingState.NO_SHADER:
+                            // Draw the current View without any shaders, if it's not null
+                            ActiveView currView = _activeViews[(int)AViews.CURR];
+                            if (currView != null)
+                                currView.DrawView(spriteBatch, gameTime);
+                            break;
+                        case ShaderDrawingState.RENDER_TARGET:
+                            // Draw all of the raw transition tiles to a render target
+                            Global.GraphicsDevice.SetRenderTarget(_transitionRenderTarget);
+                            // Loop through every single Room[_x][_y] Chip to draw every single Chip in a given room
+                            Texture2D tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
+
+                            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+                            {
+                                for (int x = 0; x < World.ROOM_WIDTH; x++)
+                                {
+                                    // Grab the current Chip (tile) we're looking at
+                                    Chip thisChip = _transitionView.Chips[x, y];
+
+                                    // Handle animated Chips here
+                                    var animeSpeed = thisChip.animeSpeed;
+                                    var animeFrames = thisChip.GetAnimeFrames();
+                                    var maxFrames = animeFrames.Length;
+
+                                    if (animeSpeed > 0)
+                                    {
+                                        if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
+                                        {
+                                            thisChip.currFrame++;
+
+                                            // Play the animation once, then stop
+                                            if (thisChip.currFrame >= maxFrames)
+                                            {
+                                                thisChip.currFrame = 0;
+                                                /*
+                                                thisChip.currFrame = maxFrames - 1;
+                                                thisChip.animeSpeed = 0;
+                                                */
+                                            }
+                                        }
+                                    }
+
+                                    var drawingTileID = animeFrames[(int)thisChip.currFrame];
+
+                                    //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
+                                    var posX = (x * 8);
+                                    var posY = (y * 8);
+                                    var texX = (drawingTileID % 40) * 8;
+                                    var texY = (drawingTileID / 40) * 8;
+
+                                    spriteBatch.Draw(tex, new Vector2(posX, posY), new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
+                                }
+                            }
+                            break;
+                        case ShaderDrawingState.FIRST_LAYER:
+                            // Set the render target back to the main backbuffer
+                            Global.GraphicsDevice.SetRenderTarget(null);
+
+                            // This texture now has the grey transition layer we created above. This is when we pass it to shdTransition
+                            Texture2D tempTransitionTex = (Texture2D)_transitionRenderTarget;
+
+
+
+                            // Draw the destination View with the shader enabled, if it's not null
+
+                            ActiveView destView = _activeViews[(int)AViews.DEST];
+                            if (destView != null)
+                                destView.DrawView(spriteBatch, gameTime);
+                            break;
+                    }
+                    break;
             }
         }
 
         public void FieldTransitionCardinal(VIEW_DIR movingDirection)
         {
             // Camera is busy; Do not transition.
-            if (Global.Camera.GetState() != Camera.CamStates.NONE)
+            if (Global.Camera.GetState() != CamStates.NONE)
                 return;
 
             // Grab the View we are transitioning to
@@ -364,7 +477,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Set the transitioning Active View to the next field + its texture
 
-            ActiveView nextAV = activeViews[(int)AViews.NEXT];
+            ActiveView nextAV = _activeViews[(int)AViews.DEST];
 
             switch (movingDirection)
             {
@@ -431,51 +544,62 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         internal void UpdateCurrActiveView()
         {
-            activeViews[(int)AViews.CURR].SetView(activeViews[(int)AViews.NEXT].GetView());
-            activeViews[(int)AViews.CURR].SetField(activeViews[(int)AViews.NEXT].GetField());
-            activeViews[(int)AViews.CURR].SetFieldTex(activeViews[(int)AViews.NEXT].GetFieldTex());
+            _activeViews[(int)AViews.CURR].SetView(_activeViews[(int)AViews.DEST].GetView());
+            _activeViews[(int)AViews.CURR].SetField(_activeViews[(int)AViews.DEST].GetField());
+            _activeViews[(int)AViews.CURR].SetFieldTex(_activeViews[(int)AViews.DEST].GetFieldTex());
         }
 
         internal void FieldTransitionPixelate(int warpType, int destField, int destViewX, int destViewY)
         {
             // Camera is busy; Do not transition.
-            if (Global.Camera.GetState() != Camera.CamStates.NONE)
+            Camera.CamStates camState = Global.Camera.GetState();
+            if (camState != CamStates.NONE)
                 return;
+
+            ActiveShader = Global.ShdTransition;
 
             // Grab the View we are transitioning to
             Field thisField = _fields[CurrField];
-            var thisFieldTex = _fieldTextures[thisField.MapGraphics];
+            Global.Textures correctedTexID = Global.TextureManager.GetMappedWorldTexID(thisField.MapGraphics);
+            var thisFieldTex = Global.TextureManager.GetTexture(correctedTexID);
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
 
-
-            // Do not transition if the destination field goes out of the map bounds (4x5)
-            if (destField < 0 || destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
+            if (destField < 0) {
+                switch(destField)
+                {
+                    default:
+                        destField = 0;
+                        // Do not transition if the destination field goes out of the map bounds (4x5)
+                        if (destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
+                            return;
+                        break;
+                    case -1:
+                        // Boss room 1
+                        break;
+                    case -2:
+                        // Boss room 2
+                        break;
+                    case -3:
+                        // Boss room 3
+                        break;
+                    // etc...
+                }
+            } else if (destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
+            {
+                // Do not transition if the destination field goes out of the map bounds (4x5)
                 return;
+            }
 
             // Determine the next field and its texture
             Field nextField = _fields[destField];
-            var nextFieldTex = _fieldTextures[nextField.MapGraphics];
+            correctedTexID = Global.TextureManager.GetMappedWorldTexID(nextField.MapGraphics);
+            var nextFieldTex = Global.TextureManager.GetTexture(correctedTexID);
 
             // Set the transitioning Active View to the next field + its texture
 
-            ActiveView nextAV = activeViews[(int)AViews.NEXT];
-
-            switch (World.VIEW_DIR.RIGHT)
-            {
-                case World.VIEW_DIR.LEFT:
-                    nextAV.Position = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
-                    break;
-                case World.VIEW_DIR.DOWN:
-                    nextAV.Position = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE) * 1);
-                    break;
-                case World.VIEW_DIR.RIGHT:
-                    nextAV.Position = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
-                    break;
-                case World.VIEW_DIR.UP:
-                    nextAV.Position = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
-                    break;
-            }
+            ActiveView nextAV = _activeViews[(int)AViews.DEST];
+            nextAV.Position = new Vector2(0, 0);
 
             nextAV.SetField(nextField);
             nextAV.SetFieldTex(nextFieldTex);
@@ -484,9 +608,29 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             View nextView = nextFieldMapData[destViewX, destViewY];
             nextAV.SetView(nextView);
 
-            // Slide the camera toward the new field
-            Global.Camera.UpdateMoveTarget(World.VIEW_DIR.RIGHT);
+            // Update all the transition tiles to create the transition effect
+            int drawingTileID = (20 * 40) + (40 * warpType);
+            int frame0 = -ANIME_TILES_BEGIN + drawingTileID;
+            int animeSpeed = 3;
+            int[] animatedTileInfo = new int[17];
+            animatedTileInfo[0] = frame0;
+            animatedTileInfo[1] = animeSpeed;
+            for (int i = 1; i <= 15; i++)
+            {
+                animatedTileInfo[1 + i] = frame0 + ANIME_TILES_BEGIN + i;
+            }
 
+            for (var y = 0; y < ROOM_HEIGHT; y++)
+            {
+                for (var x = 0; x < ROOM_WIDTH; x++)
+                {
+                    _transitionView.Chips[x, y] = new Chip((short)drawingTileID, animatedTileInfo);
+                }
+            }
+
+            // Slide the camera toward the new field
+            Global.Camera.UpdateMoveTarget(World.VIEW_DIR.SELF);
+            Global.Camera.SetState((int)CamStates.TRANSITION_PIXELATE);
 
             // If we're moving to a new Field, get rid of all the entities from the previous Field
             if (CurrField != destField)

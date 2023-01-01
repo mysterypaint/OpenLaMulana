@@ -157,6 +157,8 @@ namespace OpenLaMulana
 
         public static Effect ShdTransition, ShdHueShift;
 
+        public static GraphicsDevice GraphicsDevice;
+        public static GraphicsDeviceManager GraphicsDeviceManager;
         public static Camera Camera;
         public static InputController InputController;
         public static World World;
@@ -166,7 +168,6 @@ namespace OpenLaMulana
         public static GameMenu GameMenu;
         public static SaveData SaveData;
         public static GameRNG GameRNG;
-        public static GraphicsDeviceManager GraphicsDeviceManager;
         public static SpriteBatch SpriteBatch;
         public static TextureManager TextureManager;
 

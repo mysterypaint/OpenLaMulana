@@ -9,15 +9,13 @@ using System.Threading.Tasks;
 
 namespace OpenLaMulana.Graphics {
     public class TextureManager {
-        private GraphicsDevice _graphicsDevice;
         private Dictionary<Global.Textures, Texture2D> _texDict = new Dictionary<Global.Textures, Texture2D>();
         private Dictionary<int, Global.Textures> _mappedWorldTexturesJPN = new Dictionary<int, Global.Textures>();
         private Dictionary<int, Global.Textures> _mappedWorldTexturesENG = new Dictionary<int, Global.Textures>();
         public TextureManager() {
         }
 
-        public void InitTextures(GraphicsDevice graphicsDevice) {
-
+        public void InitTextures() {
             string gfxPath = "Content/graphics/";
             string[] allTextures = {
                 "boss00",
@@ -117,8 +115,6 @@ namespace OpenLaMulana.Graphics {
                 "title",
                 "system\\entityTemplate"
             };
-
-            _graphicsDevice = graphicsDevice;
             for (Global.Textures texID = Global.Textures.BOSS00; texID < Global.Textures.MAX; texID++) {
                 string fName = allTextures[(int)texID] + ".png";
 
@@ -153,6 +149,12 @@ namespace OpenLaMulana.Graphics {
             }
         }
 
+        /// <summary>
+        /// The textures for every language is stored in memory, and their shared IDs need to be accounted for.
+        /// This function redirects the map data assets' graphical indexes, so that they know which textures to load internally within this engine.
+        /// </summary>
+        /// <param name="texID"></param>
+        /// <returns></returns>
         public Global.Textures GetMappedWorldTexID(int texID)
         {
             switch(texID)
@@ -184,7 +186,7 @@ namespace OpenLaMulana.Graphics {
         private Texture2D LoadTexture(string filePath)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open);
-            Texture2D tex = Texture2D.FromStream(_graphicsDevice, fileStream);
+            Texture2D tex = Texture2D.FromStream(Global.GraphicsDevice, fileStream);
             fileStream.Dispose();
             Color[] buffer = new Color[tex.Width * tex.Height];
             tex.GetData(buffer);

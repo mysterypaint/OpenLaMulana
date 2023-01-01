@@ -14,6 +14,12 @@ sampler2D SpriteTextureSampler = sampler_state
 	Texture = <SpriteTexture>;
 };
 
+Texture2D mask;
+sampler2D maskSampler = sampler_state
+{
+    Texture = <mask>;
+};
+
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;

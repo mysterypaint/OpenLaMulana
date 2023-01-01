@@ -20,6 +20,8 @@ namespace OpenLaMulana.System
         };
 
         public int DrawOrder => 999;
+        public Effect ActiveShader { get; set; } = null;
+
         private const int TEXT_WIDTH = 8;
         private const int TEXT_HEIGHT = 8;
         private const int TEXT_TABLE_WIDTH = 16;

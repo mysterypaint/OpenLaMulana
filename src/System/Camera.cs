@@ -66,8 +66,7 @@ namespace OpenLaMulana.System
         public enum CamStates {
             NONE,
             TRANSITION_CARDINAL,
-            TRANSITION_PIXELATE_1,
-            TRANSITION_PIXELATE_2,
+            TRANSITION_PIXELATE,
             TRANSITION_WIPE,
             MAX
         };
@@ -104,8 +103,11 @@ namespace OpenLaMulana.System
             {
                 case (int)CamStates.NONE:
                     break;
-                case (int)CamStates.TRANSITION_PIXELATE_1:
+                case (int)CamStates.TRANSITION_PIXELATE:
+                    // Perform this when done to update visuals
+                    Global.World.UpdateCurrActiveView();
                     //_state = (int)CamStates.NONE;
+                    //Global.World.activeShader = null;
                     break;
                 case (int)CamStates.TRANSITION_CARDINAL:
                     float posX = Position.X;
@@ -212,6 +214,12 @@ namespace OpenLaMulana.System
         {
             switch (movingDirection)
             {
+                case World.VIEW_DIR.SELF:
+                    _moveSpeedX = 0;
+                    _moveSpeedY = 0;
+                    _moveToX = 0;
+                    _moveToY = 0;
+                    break;
                 case World.VIEW_DIR.LEFT:
                     _moveSpeedX = -8;
                     _moveSpeedY = 0;

@@ -36,14 +36,9 @@ namespace OpenLaMulana
         private int _shaderMode = 0;
         private float _shdHueShiftTime = 0.0f;
 
-        private Texture2D _txProt1;
-        private Texture2D _gameFontTex;
-        private Texture2D _genericEntityTex;
-        private List<Texture2D> _tempTexList = new List<Texture2D>();
         private Protag _protag;
         private Jukebox _jukebox;
         private KeyboardState _previousKeyboardState;
-        private Matrix _transformMatrix;
         private Effect activeShader = null;
 
         public Main()
@@ -100,28 +95,24 @@ namespace OpenLaMulana
             Global.AudioManager = new AudioManager();
             Global.AudioManager.LoadContent(musPath, Content);
 
-            Global.SpriteBatch = new SpriteBatch(GraphicsDevice);
+            Global.GraphicsDevice = GraphicsDevice;
+            Global.SpriteBatch = new SpriteBatch(Global.GraphicsDevice);
             Global.ShdTransition = Content.Load<Effect>("shaders/shdTransition");
             Global.ShdHueShift = Content.Load<Effect>("shaders/shdHueShift");
 
             _shaderMode = (int)Global.Shaders.NONE;
 
             Global.TextureManager = new TextureManager();
-            Global.TextureManager.InitTextures(GraphicsDevice);
-
-            _txProt1 = Global.TextureManager.GetTexture(Global.Textures.PROT1);
-
-            _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
-            _genericEntityTex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
+            Global.TextureManager.InitTextures();
 
             long val = Global.GameRNG.RollDice(9);
 
-            Global.World = new World(_gameFontTex, _genericEntityTex);
+            Global.World = new World();
             _jukebox = new Jukebox();
             Global.Camera = new Camera();
-            _protag = new Protag(_txProt1, new Vector2(0, 0));
-            Global.Camera.SetProtag(_protag);
+            _protag = new Protag(new Vector2(0, 0));
             _protag.DrawOrder = 100;
+            Global.Camera.SetProtag(_protag);
 
             Global.InputController = new InputController(_protag, _jukebox);
 
@@ -266,7 +257,8 @@ namespace OpenLaMulana
             //  Globals.Camera.GetTransformation(GraphicsDevice)
             //            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, transformMatrix: _transformMatrix);
 
-            switch (_shaderMode) {
+            switch (_shaderMode)
+            {
                 default:
                 case (int)Global.Shaders.NONE:
                     if (activeShader != null)
@@ -285,13 +277,14 @@ namespace OpenLaMulana
                     break;
             }
 
-            Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                samplerState: SamplerState.PointClamp,
-                transformMatrix: Global.Camera.GetTransformation(GraphicsDevice),
-                effect: activeShader);
 
             //_shdHueShift.CurrentTechnique.Passes[0].Apply();
-            Global.EntityManager.Draw(Global.SpriteBatch, gameTime);
+            Global.EntityManager.Draw(Global.SpriteBatch, gameTime, GraphicsDevice);
+
+            Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+            samplerState: SamplerState.PointClamp,
+            transformMatrix: Global.Camera.GetTransformation(GraphicsDevice),
+            effect: activeShader);
 
             switch (State)
             {
@@ -323,7 +316,7 @@ namespace OpenLaMulana
                     int destRoomX = viewDest[(int)VIEW_DEST.X];
                     int destRoomY = viewDest[(int)VIEW_DEST.Y];*/
 
-            List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+                    List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
                     List<IGameEntity> roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
                     Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
                     /*
@@ -356,7 +349,7 @@ namespace OpenLaMulana
                 return false;
 
             Global.World.InitWorldEntities();
-            
+
             Global.AudioManager.ChangeSongs(0);
 
             State = Global.GameState.TRANSITION;
@@ -438,13 +431,9 @@ namespace OpenLaMulana
         {
             Global.GraphicsDeviceManager.PreferredBackBufferHeight = WINDOW_HEIGHT * _displayZoomFactor;
             Global.GraphicsDeviceManager.PreferredBackBufferWidth = WINDOW_WIDTH * _displayZoomFactor;
-            _transformMatrix = Matrix.Identity * Matrix.CreateScale(_displayZoomFactor, _displayZoomFactor, 1); //_transformMatrix = Matrix.Identity;
-
             Global.Camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
-
             Global.GraphicsDeviceManager.ApplyChanges();
             Window.Position = new Point((GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (Global.GraphicsDeviceManager.PreferredBackBufferWidth / 2), (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (Global.GraphicsDeviceManager.PreferredBackBufferHeight / 2));
         }
-
     }
 }

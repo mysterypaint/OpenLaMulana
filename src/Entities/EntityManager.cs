@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities
 {
@@ -16,11 +17,6 @@ namespace OpenLaMulana.Entities
         
         //private Effect _shdHueShift;
         public IEnumerable<IGameEntity> Entities => new ReadOnlyCollection<IGameEntity>(_entities);
-
-        /*
-        public void InitShaders(Effect shdHueShift) {
-            _shdHueShift = shdHueShift;
-        }*/
 
         public void Update(GameTime gameTime)
         {
@@ -50,13 +46,45 @@ namespace OpenLaMulana.Entities
 
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime, GraphicsDevice graphicsDevice)
         {
             foreach (IGameEntity entity in _entities.OrderBy(e => e.DrawOrder))
             {
+                switch(entity)
+                {
+                    default:
+                        Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                            samplerState: SamplerState.PointClamp,
+                            transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
+                            effect: entity.ActiveShader);
+                        entity.Draw(spriteBatch, gameTime);
+                        Global.SpriteBatch.End();
+                        break;
+                    case World:
+                        World worldEnt = (World)entity;
 
-                entity.Draw(spriteBatch, gameTime);
+                        // Draw the non-shader layers
+                        Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                            samplerState: SamplerState.PointClamp,
+                            transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
+                            effect: null);
+                        worldEnt.Draw(spriteBatch, gameTime, ShaderDrawingState.NO_SHADER);
+                        Global.SpriteBatch.End();
 
+                        // Draw the transition layers to the render target
+                        Global.SpriteBatch.Begin();
+                        worldEnt.Draw(spriteBatch, gameTime, ShaderDrawingState.RENDER_TARGET);
+                        Global.SpriteBatch.End();
+
+                        // Finally, draw the shader transition layer to the screen
+                        Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                            samplerState: SamplerState.PointClamp,
+                            transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
+                            effect: worldEnt.ActiveShader);
+                        worldEnt.Draw(spriteBatch, gameTime, ShaderDrawingState.FIRST_LAYER);
+                        Global.SpriteBatch.End();
+                        break;
+                }
             }
 
         }

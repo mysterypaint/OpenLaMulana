@@ -22,7 +22,7 @@ Fields 31,32: Used for mini games. Field 31 will be the PR3 map. Field 32 is for
 Some Guardians are forced to relocate after the battle ends. See Guardian commentary. (/_RESOURCE/02-04.html)*/
 
         public int DrawOrder => throw new NotImplementedException();
-
+        public Effect ActiveShader { get; set; } = null;
         public int WorldID { get; internal set; } = 0;
 
         public int MusicNumber = 0;

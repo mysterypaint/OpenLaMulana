@@ -28,6 +28,7 @@ namespace OpenLaMulana.Entities
         public short BBoxOriginX { get; set; }
         public short BBoxOriginY { get; set; }
         public int DrawOrder { get; set; }
+        public Effect ActiveShader { get; set; } = null;
 
         private const int HudTileHeight = 2;
         private int _jumpSpeed = 5;
@@ -73,12 +74,13 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         public const int SPRITE_WIDTH = 16;
         public const int SPRITE_HEIGHT = 16;
 
-        public Protag(Texture2D spriteSheet, Vector2 position)
+        public Protag(Vector2 position)
         {
             Position = position;
 
             Initialize();
 
+            Texture2D spriteSheet = Global.TextureManager.GetTexture(Global.Textures.PROT1);
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
         }
 
