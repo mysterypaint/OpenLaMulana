@@ -84,6 +84,7 @@ namespace OpenLaMulana
             Global.GraphicsDeviceManager.ApplyChanges();
 
             _displayZoomFactor = 3;
+            _displayZoomMax = CalcDisplayZoomMax();
             if (_displayZoomFactor > 4)
                 _displayZoomFactor = 1;
             ToggleDisplayMode();
@@ -212,16 +213,36 @@ namespace OpenLaMulana
 
             if (keyboardState.IsKeyDown(Keys.F7) && !_previousKeyboardState.IsKeyDown(Keys.F7) && !Global.GraphicsDeviceManager.IsFullScreen)
             {
+                _displayZoomMax = CalcDisplayZoomMax();
                 _displayZoomFactor += 1;
                 if (_displayZoomFactor > _displayZoomMax)
                     _displayZoomFactor = 1;
                 ToggleDisplayMode();
-
             }
 
             _previousKeyboardState = keyboardState;
 
             Global.EntityManager.Update(gameTime);
+        }
+
+        private int CalcDisplayZoomMax()
+        {
+            int idealWidth = 0;
+            int idealHeight = WINDOW_HEIGHT;
+
+            int monitorWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            int monitorHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+            double aspect_ratio = (double)monitorWidth / monitorHeight;
+
+            idealWidth = (int)Math.Round(idealHeight * aspect_ratio);
+
+            // Check for odd numbers
+            if (idealWidth % 2 == 1)
+                idealWidth++;
+
+            int maxZoom = (int)Math.Floor((double)monitorWidth / idealWidth);
+            return maxZoom;
         }
 
         private void DecrementCounters()
