@@ -97,13 +97,15 @@ namespace OpenLaMulana.System
             else if (KeyPressed(Keys.T))
             {
                 //Global.Camera.SetState((int)CamStates.TRANSITION_PIXELATE_1);
+                Camera.CamStates camState = Global.Camera.GetState();
+                if (camState == CamStates.NONE) {
+                    Global.AudioManager.ChangeSongs(22);
+                    //Global.AudioManager.ChangeSongs(25);
+                    Global.World.FieldTransitionPixelate(0, 3, 0, 0);
 
-                Global.AudioManager.ChangeSongs(22);
-                //Global.AudioManager.ChangeSongs(25);
-                Global.World.FieldTransitionPixelate(0, 3, 0, 0);
-
-                //Global.World.FieldTransitionPixelate(0, -1, 0, 0);
-                //Global.World.FieldTransitionPixelate(1, 9, 3, 2);
+                    //Global.World.FieldTransitionPixelate(0, -1, 0, 0);
+                    //Global.World.FieldTransitionPixelate(1, 9, 3, 2);
+                }
             }
         }
 

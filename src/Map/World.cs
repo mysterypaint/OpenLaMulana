@@ -80,10 +80,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         };
 
         public int CurrField { get; set; } = 1;
-        public int CurrViewX, CurrViewY, FieldCount = 0;
+        public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
         private int[] _currChipLine;
         private List<Field> _fields;
-        private List<Texture2D> _fieldTextures, _bossTextures, _otherTextures;
         internal static Texture2D _genericEntityTex;
         private ActiveView[] _activeViews;
         private RenderTarget2D _bkgRenderTarget, _transitionRenderTarget, _destRenderTarget, _outputRenderTarget;
@@ -174,10 +173,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Field thisField = _fields[CurrField];
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
-            _activeViews[(int)AViews.CURR].SetView(thisView);
             _activeViews[(int)AViews.DEST].SetView(thisView);
-
-            //UpdateEntities(CurrField, thisField, thisView, CurrViewX, CurrViewY);
+            _activeViews[(int)AViews.DEST].SetField(thisField);
+            var correctedTexID = Global.TextureManager.GetMappedWorldTexID(thisField.MapGraphics);
+            var nextFieldTex = Global.TextureManager.GetTexture(correctedTexID);
+            _activeViews[(int)AViews.DEST].SetFieldTex(nextFieldTex);
+            UpdateCurrActiveView();
+            UpdateEntities(CurrField, thisField, thisView, CurrViewX, CurrViewY, Vector2.Zero);
         }
 
         // Returns new currentLine; end when it returns -1
@@ -575,8 +577,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // If we're moving to a new Field, get rid of all the entities from the previous Field
             if (CurrField != destField)
             {
+                // Give permission back to all the views to allow them to spawn entities
                 thisField.DeleteAllFieldAndRoomEntities();
-                thisField.UnlockAllViewSpawning(); // Give permission back to all the views to allow them to spawn entities
+                thisField.UnlockAllViewSpawning();
+                thisField.ClearVisitedViews(); 
+                nextField.DeleteAllFieldAndRoomEntities();
+                nextField.UnlockAllViewSpawning();
+                nextField.ClearVisitedViews();
             }
             else // Otherwise, if moving to a new View within the same Field, delete the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
                 thisField.DeleteOldRoomEntities(thisView, thisField.GetView(destViewX, destViewY));
@@ -589,10 +596,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // Change the BGM, if applicable
             Global.AudioManager.ChangeSongs(_fields[destField].MusicNumber);
 
-            //UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
+            UpdateEntities(destField, thisField, thisView, destViewX, destViewY, nextAV.Position);
         }
 
-        private void UpdateEntities(int destField, Field thisField, View thisView, int destViewX, int destViewY)
+        private void UpdateEntities(int destField, Field thisField, View thisView, int destViewX, int destViewY, Vector2 offsetVector)
         {
 
             Field nextField = _fields[destField];
@@ -600,7 +607,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             View nextView = nextFieldMapData[destViewX, destViewY];
 
             // Finally, spawn the new entities for the destination View, but let the destination Field keep track of ALL of the entities (Field Entities, View Entities)
-            nextField.SpawnEntities(nextView, nextField, thisView, thisField); // "thisField" was the previous Field we were on, regardless if we moved Fields or not
+            nextField.SpawnEntities(nextView, nextField, thisView, thisField, offsetVector); // "thisField" was the previous Field we were on, regardless if we moved Fields or not
         }
 
         internal TextManager GetTextManager()
@@ -706,14 +713,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _abortDrawing = false;
             _disposedRenderTargetsFlag = false;
 
-            // If we're moving to a new Field, get rid of all the entities from the previous Field
-            if (CurrField != destField)
-            {
-                thisField.DeleteAllFieldAndRoomEntities();
-                thisField.UnlockAllViewSpawning(); // Give permission back to all the views to allow them to spawn entities
-            }
-            else // Otherwise, if moving to a new View within the same Field, delete the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
-                thisField.DeleteOldRoomEntities(thisView, thisField.GetView(destViewX, destViewY));
+            // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
+            thisField.DeleteAllFieldAndRoomEntities();
+            thisField.UnlockAllViewSpawning();
+            thisField.ClearVisitedViews();
+            nextField.DeleteAllFieldAndRoomEntities();
+            nextField.UnlockAllViewSpawning();
+            nextField.ClearVisitedViews();
 
             // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
             CurrField = destField;
@@ -723,7 +729,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // Change the BGM, if applicable
             //Global.AudioManager.ChangeSongs(_fields[destField].MusicNumber);
 
-            //UpdateEntities(destField, thisField, thisView, destViewX, destViewY);
+            UpdateEntities(destField, thisField, thisView, destViewX, destViewY, Vector2.Zero);
         }
     }
 }

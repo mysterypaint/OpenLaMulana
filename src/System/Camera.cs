@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
+using OpenLaMulana.Entities.WorldEntities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -137,6 +138,7 @@ namespace OpenLaMulana.System
                         {
                             posX = 0;
                             _protag.Position = new Vector2(ROOM_PX_WIDTH + targetX, _protag.Position.Y);
+                            MoveAllRoomEntities(new Vector2(ROOM_PX_WIDTH, 0));
                             _moveSpeedX = 0;
                             _moveToX = 0;
                             Global.World.UpdateCurrActiveView();
@@ -155,6 +157,7 @@ namespace OpenLaMulana.System
                         {
                             posX = 0;
                             _protag.Position = new Vector2(SCREEN_LEFT_EDGE, _protag.Position.Y);
+                            MoveAllRoomEntities(new Vector2(-ROOM_PX_WIDTH, 0));
                             _moveSpeedX = 0;
                             _moveToX = 0;
                             Global.World.UpdateCurrActiveView();
@@ -184,6 +187,7 @@ namespace OpenLaMulana.System
                         {
                             posY = 0;
                             _protag.Position = new Vector2(_protag.Position.X, ROOM_PX_HEIGHT + targetY);
+                            MoveAllRoomEntities(new Vector2(0, ROOM_PX_HEIGHT));
                             _moveSpeedY = 0;
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
@@ -204,6 +208,7 @@ namespace OpenLaMulana.System
                         {
                             posY = 0;
                             _protag.Position = new Vector2(_protag.Position.X, targetY);
+                            MoveAllRoomEntities(new Vector2(0, -ROOM_PX_HEIGHT));
                             _moveSpeedY = 0;
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
@@ -213,6 +218,27 @@ namespace OpenLaMulana.System
 
                     Position = new Vector2(posX, posY); //Global.InputController.DirMoveY
                     break;
+            }
+        }
+
+        private void MoveAllRoomEntities(Vector2 offsetVector)
+        {
+            Field currField = Global.World.GetField(Global.World.CurrField);
+            List<IGameEntity> allFieldEntities = new List<IGameEntity>();
+            allFieldEntities.AddRange(currField.GetRoomEntities());
+            allFieldEntities.AddRange(currField.GetFieldEntities());
+
+            foreach (IGameEntity worldEntity in allFieldEntities)
+            {
+                if (worldEntity is IRoomWorldEntity) {
+                    IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
+                    rE.RelativeViewPos += offsetVector;
+                }
+                if (worldEntity is IGlobalWorldEntity)
+                {
+                    IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
+                    //gE.RelativeViewPos += offsetVector;
+                }
             }
         }
 

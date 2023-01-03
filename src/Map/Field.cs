@@ -227,7 +227,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         private static List<IGameEntity> _fieldEntities = new List<IGameEntity>();
         private static List<IGameEntity> _roomEntities = new List<IGameEntity>();*/
 
-        internal void SpawnEntities(View destView, Field destField, View prevView, Field prevField)
+        internal void SpawnEntities(View destView, Field destField, View prevView, Field prevField, Vector2 offsetVector)
         {
             // Abort if the destination View is not allowed to spawn entities (true on initialization)
             if (!destView.CanSpawnEntities)
@@ -256,7 +256,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
             foreach (ObjectSpawnData viewObjData in viewSpawns)
             {
-                IGameEntity newViewObj = SpawnEntity(viewObjData, destView);
+                IGameEntity newViewObj = SpawnEntityFromData(viewObjData, destView, offsetVector, false);
 
                 if (newViewObj != null)
                     _roomEntities.Add(newViewObj);
@@ -266,7 +266,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             if (destField.MapIndex != prevField.MapIndex)
             {
                 foreach (ObjectSpawnData fieldObj in destField._fieldSpawnData) {
-                    IGameEntity newObj = SpawnEntity(fieldObj, destView);
+                    IGameEntity newObj = SpawnEntityFromData(fieldObj, destView, Vector2.Zero, true);
 
                     if (newObj != null)
                     {
@@ -283,26 +283,40 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             _visitedViews.Add(destView); // Keep track of all the views we've visited since entering this region/room
         }
 
-        private IGameEntity SpawnEntity(ObjectSpawnData newObjData, View destView)
+        private IGameEntity SpawnEntityFromData(ObjectSpawnData newObjData, View destView, Vector2 offsetVector, bool spawnIsGlobal)
         {
             IGameEntity newObj = null;
 
             var eventNumber = newObjData.EventNumber;
-            var x = newObjData.X;
-            var y = newObjData.Y;
+            var x = newObjData.X + (int)Math.Sign(offsetVector.X) * World.ROOM_WIDTH;
+            var y = newObjData.Y + (int)Math.Sign(offsetVector.Y) * World.ROOM_HEIGHT;
             var op1 = newObjData.OP1;
             var op2 = newObjData.OP2;
             var op3 = newObjData.OP3;
             var op4 = newObjData.OP4;
             var startFlags = newObjData.StartFlags;
-            var spawnIsGlobal = newObjData.SpawnIsGlobal;
+            //var spawnIsGlobal = newObjData.SpawnIsGlobal; // No longer needed! Keeping it here just in case, though...
 
-            switch (eventNumber) {
-                default:
-                case 0:
-                    // TODO: Don't forget to check startFlags here before spawning anything!
-                    newObj = new IWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, World._genericEntityTex, _world, destView);
-                    break;
+            if (spawnIsGlobal)
+            {
+                switch (eventNumber)
+                {
+                    default:
+                    case 0:
+                        // TODO: Don't forget to check startFlags here before spawning anything!
+                        newObj = new IGlobalWorldEntity(x, y, op1, op2, op3, op4, World._genericEntityTex, _world, destView);
+                        break;
+                }
+            }
+            else {
+                switch (eventNumber)
+                {
+                    default:
+                    case 0:
+                        // TODO: Don't forget to check startFlags here before spawning anything!
+                        newObj = new IRoomWorldEntity(x, y, op1, op2, op3, op4, World._genericEntityTex, _world, destView);
+                        break;
+                }
             }
 
             if (newObj != null)
@@ -327,6 +341,11 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             {
                 v.CanSpawnEntities = true;
             }
+        }
+
+        internal void ClearVisitedViews()
+        {
+            _visitedViews.Clear();
         }
     }
 }
