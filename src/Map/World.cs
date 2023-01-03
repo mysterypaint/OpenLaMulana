@@ -729,5 +729,19 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             UpdateEntities(destField, thisField, thisView, destViewX, destViewY, Vector2.Zero);
         }
+
+        internal Textures GetCurrMapTexture()
+        {
+            Field thisField = _fields[CurrField];
+            Global.Textures correctedTexID = Global.TextureManager.GetMappedWorldTexID(thisField.MapGraphics);
+            return correctedTexID;
+        }
+
+        internal Textures GetCurrEveTexture()
+        {
+            Field thisField = _fields[CurrField];
+            Global.Textures correctedTexID = Global.TextureManager.GetMappedEventTexID(thisField.EventGraphics);
+            return correctedTexID;
+        }
     }
 }

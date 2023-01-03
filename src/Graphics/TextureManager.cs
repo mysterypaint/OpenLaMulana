@@ -6,12 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenLaMulana.Graphics {
     public class TextureManager {
         private Dictionary<Global.Textures, Texture2D> _texDict = new Dictionary<Global.Textures, Texture2D>();
         private Dictionary<int, Global.Textures> _mappedWorldTexturesJPN = new Dictionary<int, Global.Textures>();
         private Dictionary<int, Global.Textures> _mappedWorldTexturesENG = new Dictionary<int, Global.Textures>();
+        private Dictionary<int, Global.Textures> _mappedEventTexturesJPN = new Dictionary<int, Global.Textures>();
+        private Dictionary<int, Global.Textures> _mappedEventTexturesENG = new Dictionary<int, Global.Textures>();
+
         public TextureManager() {
         }
 
@@ -127,13 +131,15 @@ namespace OpenLaMulana.Graphics {
             int texIndex = 0;
             for (Global.Textures texID = Global.Textures.MAPG00; texID <= Global.Textures.MAPG32_EN; texID++)
             {
-                while (texIndex >= 23 && texIndex <= 30) {
+                while (texIndex >= 23 && texIndex <= 30)
+                {
                     if (texID == Global.Textures.MAPG22_EN)
                         break;
                     texIndex++;
                 }
 
-                switch (texID) {
+                switch (texID)
+                {
                     default:
                         _mappedWorldTexturesJPN.Add(texIndex, texID);
                         texIndex++;
@@ -147,33 +153,27 @@ namespace OpenLaMulana.Graphics {
                         break;
                 }
             }
-        }
 
-        /// <summary>
-        /// The textures for every language is stored in memory, and their shared IDs need to be accounted for.
-        /// This function redirects the map data assets' graphical indexes, so that they know which textures to load internally within this engine.
-        /// </summary>
-        /// <param name="texID"></param>
-        /// <returns></returns>
-        public Global.Textures GetMappedWorldTexID(int texID)
-        {
-            switch(texID)
+            texIndex = 0;
+            for (Global.Textures texID = Global.Textures.EVEG00; texID <= Global.Textures.EVEG22; texID++)
             {
-                default:
-                    return _mappedWorldTexturesJPN[texID];
-                case 18:
-                case 20:
-                case 22:
-                case 31:
-                case 32:
-                    switch (Global.CurrLang)
-                    {
-                        default:
-                        case Global.Languages.Japanese:
-                            return _mappedWorldTexturesJPN[texID];
-                        case Global.Languages.English:
-                            return _mappedWorldTexturesENG[texID];
-                    }
+                switch (texID)
+                {
+                    default:
+                        _mappedEventTexturesJPN.Add(texIndex, texID);
+                        texID++;
+                        _mappedEventTexturesENG.Add(texIndex, texID);
+                        texIndex++;
+                        break;
+                    case Global.Textures.EVEG01:
+                    case Global.Textures.EVEG19:
+                    case Global.Textures.EVEG20:
+                    case Global.Textures.EVEG21:
+                    case Global.Textures.EVEG22:
+                        _mappedEventTexturesJPN.Add(texIndex, texID);
+                        texIndex++;
+                        break;
+                }
             }
         }
 
@@ -200,6 +200,56 @@ namespace OpenLaMulana.Graphics {
             tex.SetData(buffer);
 
             return tex;
+        }
+
+        /// <summary>
+        /// The textures for every language is stored in memory, and their shared IDs need to be accounted for.
+        /// This function redirects the map data assets' graphical indexes, so that they know which textures to load internally within this engine.
+        /// </summary>
+        /// <param name="texID"></param>
+        /// <returns></returns>
+        public Global.Textures GetMappedWorldTexID(int texID)
+        {
+            switch (texID)
+            {
+                default:
+                    return _mappedWorldTexturesJPN[texID];
+                case 18:
+                case 20:
+                case 22:
+                case 31:
+                case 32:
+                    switch (Global.CurrLang)
+                    {
+                        default:
+                        case Global.Languages.Japanese:
+                            return _mappedWorldTexturesJPN[texID];
+                        case Global.Languages.English:
+                            return _mappedWorldTexturesENG[texID];
+                    }
+            }
+        }
+
+        public Global.Textures GetMappedEventTexID(int texID)
+        {
+            switch (texID)
+            {
+                default:
+                    switch (Global.CurrLang)
+                    {
+                        default:
+                        case Global.Languages.Japanese:
+                            return _mappedEventTexturesJPN[texID];
+                        case Global.Languages.English:
+                            return _mappedEventTexturesENG[texID];
+                    }
+                case 1:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                    return _mappedEventTexturesJPN[texID];
+            }
         }
     }
 }
