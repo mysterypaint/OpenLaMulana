@@ -49,5 +49,13 @@ namespace OpenLaMulana.Graphics
 
         }
 
+        internal void DrawScaled(SpriteBatch spriteBatch, Vector2 position, float scaleX, float scaleY)
+        {
+            Rectangle srcRect = new Rectangle(X, Y, Width, Height);
+            Rectangle destRect = new Rectangle(
+                (int)Math.Round(position.X - OriginX),
+                (int)Math.Round(position.Y - OriginY), (int)Math.Round(Width * scaleX), (int)Math.Round(Height * scaleY));
+            spriteBatch.Draw(Texture, destRect, srcRect, TintColor);
+        }
     }
 }

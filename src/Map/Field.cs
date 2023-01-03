@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities;
+using OpenLaMulana.Entities.WorldEntities.Debug;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
@@ -297,18 +298,29 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             var startFlags = newObjData.StartFlags;
             //var spawnIsGlobal = newObjData.SpawnIsGlobal; // No longer needed! Keeping it here just in case, though...
 
-            if (spawnIsGlobal)
-                newObj = new IGlobalWorldEntity(x, y, op1, op2, op3, op4, destView);
-            else
-                newObj = new IRoomWorldEntity(x, y, op1, op2, op3, op4, destView);
             switch ((Global.EntityIDs)eventNumber)
             {
                 default:
                     // TODO: Don't forget to check startFlags here before spawning anything!
+                    if (spawnIsGlobal)
+                        newObj = new GenericGlobalWorldEntity(x, y, op1, op2, op3, op4, destView);
+                    else
+                        newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, destView);
                     break;
-                case Global.EntityIDs.BAT_1:
-                case Global.EntityIDs.BAT_2:
-
+                case Global.EntityIDs.ENEMY_BAT:
+                    newObj = new EnemyBat(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case Global.EntityIDs.TREASURE_CHEST:
+                    newObj = new TreasureChest(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case Global.EntityIDs.BREAKABLE_POT:
+                    newObj = new BreakablePot(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case Global.EntityIDs.RUINS_TABLET:
+                    newObj = new RuinsTablet(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case Global.EntityIDs.ENEMY_SOUL:
+                    newObj = new EnemySoul(x, y, op1, op2, op3, op4, destView);
                     break;
             }
 

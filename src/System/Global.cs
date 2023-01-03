@@ -158,9 +158,12 @@ namespace OpenLaMulana
 
         public enum EntityIDs
         {
-            BAT_1 = 7,
-            BAT_2 = 8
-        };
+            TREASURE_CHEST = 1,
+            ENEMY_BAT = 4,
+            BREAKABLE_POT = 7,
+            RUINS_TABLET = 30,
+            ENEMY_SOUL = 133
+        }
 
         public static Effect ShdTransition, ShdHueShift, ShdBinary;
 

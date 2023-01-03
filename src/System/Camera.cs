@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
-using OpenLaMulana.Entities.WorldEntities;
+using OpenLaMulana.Entities.WorldEntities.Parents;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -232,7 +232,7 @@ namespace OpenLaMulana.System
             {
                 if (worldEntity is IRoomWorldEntity) {
                     IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
-                    rE.RelativeViewPos += offsetVector;
+                    rE.Position += offsetVector;
                 }
                 if (worldEntity is IGlobalWorldEntity)
                 {
