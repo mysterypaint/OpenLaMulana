@@ -156,6 +156,12 @@ namespace OpenLaMulana
             MAX
         };
 
+        public enum EntityIDs
+        {
+            BAT_1 = 7,
+            BAT_2 = 8
+        };
+
         public static Effect ShdTransition, ShdHueShift, ShdBinary;
 
         public static GraphicsDevice GraphicsDevice;
@@ -173,5 +179,5 @@ namespace OpenLaMulana
         public static TextureManager TextureManager;
 
         public static Languages CurrLang = Languages.English;
-    };
+    }
 }

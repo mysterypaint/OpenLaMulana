@@ -83,7 +83,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
         private int[] _currChipLine;
         private List<Field> _fields;
-        internal static Texture2D _genericEntityTex;
         private ActiveView[] _activeViews;
         private RenderTarget2D _bkgRenderTarget, _transitionRenderTarget, _destRenderTarget, _outputRenderTarget;
         private bool _abortDrawing = false;
@@ -121,7 +120,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             Texture2D gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
             Global.TextManager = new TextManager(gameFontTex);
-            _genericEntityTex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
 
             _activeViews = new ActiveView[(int)AViews.MAX];
             for (var i = 0; i < _activeViews.Length; i++)

@@ -18,10 +18,10 @@ namespace OpenLaMulana.Entities.WorldEntities
         internal View _parentView = null;
         internal Point viewCoords = new Point(-1, -1);
 
-        public IGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, Texture2D tex, World world, View destView)
+        public IGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, View destView)
         {
-            _tex = tex;
-            _world = world;
+            _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
+            _world = Global.World;
 
             RelativeViewTilePos = new Vector2(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
             viewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);

@@ -298,25 +298,18 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             //var spawnIsGlobal = newObjData.SpawnIsGlobal; // No longer needed! Keeping it here just in case, though...
 
             if (spawnIsGlobal)
+                newObj = new IGlobalWorldEntity(x, y, op1, op2, op3, op4, destView);
+            else
+                newObj = new IRoomWorldEntity(x, y, op1, op2, op3, op4, destView);
+            switch ((Global.EntityIDs)eventNumber)
             {
-                switch (eventNumber)
-                {
-                    default:
-                    case 0:
-                        // TODO: Don't forget to check startFlags here before spawning anything!
-                        newObj = new IGlobalWorldEntity(x, y, op1, op2, op3, op4, World._genericEntityTex, _world, destView);
-                        break;
-                }
-            }
-            else {
-                switch (eventNumber)
-                {
-                    default:
-                    case 0:
-                        // TODO: Don't forget to check startFlags here before spawning anything!
-                        newObj = new IRoomWorldEntity(x, y, op1, op2, op3, op4, World._genericEntityTex, _world, destView);
-                        break;
-                }
+                default:
+                    // TODO: Don't forget to check startFlags here before spawning anything!
+                    break;
+                case Global.EntityIDs.BAT_1:
+                case Global.EntityIDs.BAT_2:
+
+                    break;
             }
 
             if (newObj != null)
