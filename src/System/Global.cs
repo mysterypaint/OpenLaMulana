@@ -156,15 +156,6 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum EntityIDs
-        {
-            TREASURE_CHEST = 1,
-            ENEMY_BAT = 4,
-            BREAKABLE_POT = 7,
-            RUINS_TABLET = 30,
-            ENEMY_SOUL = 133
-        }
-
         public static Effect ShdTransition, ShdHueShift, ShdBinary;
 
         public static GraphicsDevice GraphicsDevice;

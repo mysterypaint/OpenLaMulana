@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -250,6 +251,20 @@ namespace OpenLaMulana.Graphics {
                 case 22:
                     return _mappedEventTexturesJPN[texID];
             }
+        }
+
+        internal Texture2D MakeTexture(int width, int height, Vector4 color)
+        {
+            Texture2D tex = new Texture2D(Global.GraphicsDevice, width, height);
+            
+            Color[] pixelData = new Color[tex.Width * tex.Height];
+            for (int i = 0; i < pixelData.Length; i++)
+            {
+                pixelData[i] = Color.FromNonPremultiplied(color);
+            }
+
+            tex.SetData(pixelData);
+            return tex;
         }
     }
 }

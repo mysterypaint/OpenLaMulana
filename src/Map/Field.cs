@@ -38,13 +38,13 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         private List<ObjectSpawnData> _fieldSpawnData;
         private View[,] _views = new View[World.FIELD_WIDTH, World.FIELD_HEIGHT];
         private List<View> _visitedViews = new List<View>();
-        private int[] _chipline = { 0, 0, -1};
+        private int[] _chipline = { 0, 0, -1 };
         private EntityManager _s_entityManager;
         private TextManager _textManager;
         private static List<IGameEntity> _fieldEntities = new List<IGameEntity>();
         private static List<IGameEntity> _roomEntities = new List<IGameEntity>();
         private World _world;
-        
+
         public Field(int mapIndex, int mapData, int eventGraphics, int musicNumber, EntityManager s_entityManager, TextManager textManager, World world, int mapGraphics = 65535, int id = 0, int worldID = 0)
         {
             MapIndex = mapIndex;
@@ -168,10 +168,13 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         {
             ObjectSpawnData newObjData = new ObjectSpawnData(eventNumber, tileX / 2048, tileY / 2048, OP1, OP2, OP3, OP4);
 
-            if (currView != null) {
+            if (currView != null)
+            {
                 newObjData.CoordsAreRelativeToView(World.ROOM_WIDTH, World.ROOM_HEIGHT);
                 currView.AddSpawnData(newObjData);
-            } else {
+            }
+            else
+            {
                 _fieldSpawnData.Add(newObjData);
             }
 
@@ -181,7 +184,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         internal void DrawRoom(Texture2D texture, int currRoomX, int currRoomY, SpriteBatch spriteBatch, GameTime gameTime, Vector2 offsetVec)
         {
             var thisRoom = _views[currRoomX, currRoomY];
-            
+
             thisRoom.Draw(texture, spriteBatch, gameTime, offsetVec);
         }
 
@@ -192,16 +195,19 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
         internal void DeleteOldRoomEntities(View prevView, View destView)
         {
-            if (prevView.RoomNumber == destView.RoomNumber) {
+            if (prevView.RoomNumber == destView.RoomNumber)
+            {
                 if (prevView.GetParentField() == destView.GetParentField())
                 {
                     return; // Don't delete any room entities, because we are not only in the same Field, but also in the same room/region of Views
                 }
             }
-            else {
+            else
+            {
                 // Otherwise, we should delete all room entities from the previous View's Field
                 var prevViewRoomEntities = prevView.GetParentField().GetRoomEntities();
-                foreach (IGameEntity rE in prevViewRoomEntities) {
+                foreach (IGameEntity rE in prevViewRoomEntities)
+                {
                     _s_entityManager.RemoveEntity(rE);
                 }
                 prevView.GetParentField().GetRoomEntities().Clear();
@@ -237,7 +243,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             // Check 
             foreach (View v in prevField._visitedViews)
             {
-                if (v.RoomNumber != destView.RoomNumber) {
+                if (v.RoomNumber != destView.RoomNumber)
+                {
                     // We are entering a new region, so we should forget about all the previous rooms we've visited
                     DeleteOldRoomEntities(v, destView);
                     v.GetParentField().UnlockAllViewSpawning();
@@ -266,7 +273,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             // We are moving to a new field, so we should spawn all the destination Field's global entities right now
             if (destField.MapIndex != prevField.MapIndex)
             {
-                foreach (ObjectSpawnData fieldObj in destField._fieldSpawnData) {
+                foreach (ObjectSpawnData fieldObj in destField._fieldSpawnData)
+                {
                     IGameEntity newObj = SpawnEntityFromData(fieldObj, destView, Vector2.Zero, true);
 
                     if (newObj != null)
@@ -276,7 +284,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 }
 
                 Field pf = destView.GetParentField();
-                foreach (View view in pf._views) {
+                foreach (View view in pf._views)
+                {
                     view.CanSpawnEntities = true;
                 }
             }
@@ -298,7 +307,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             var startFlags = newObjData.StartFlags;
             //var spawnIsGlobal = newObjData.SpawnIsGlobal; // No longer needed! Keeping it here just in case, though...
 
-            switch ((Global.EntityIDs)eventNumber)
+            switch ((EntityIDs)eventNumber)
             {
                 default:
                     // TODO: Don't forget to check startFlags here before spawning anything!
@@ -307,20 +316,38 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     else
                         newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, destView);
                     break;
-                case Global.EntityIDs.ENEMY_BAT:
+                case EntityIDs.ENEMY_BAT:
                     newObj = new EnemyBat(x, y, op1, op2, op3, op4, destView);
                     break;
-                case Global.EntityIDs.TREASURE_CHEST:
+                case EntityIDs.TREASURE_CHEST:
                     newObj = new TreasureChest(x, y, op1, op2, op3, op4, destView);
                     break;
-                case Global.EntityIDs.BREAKABLE_POT:
+                case EntityIDs.BREAKABLE_POT:
                     newObj = new BreakablePot(x, y, op1, op2, op3, op4, destView);
                     break;
-                case Global.EntityIDs.RUINS_TABLET:
+                case EntityIDs.MOVING_PLATFORM:
+                    newObj = new MovingPlatform(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.CEILING_SPIKE:
+                    newObj = new CeilingSpike(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.FLOOR_SWITCH:
+                    newObj = new FloorSwitch(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.RUINS_TABLET:
                     newObj = new RuinsTablet(x, y, op1, op2, op3, op4, destView);
                     break;
-                case Global.EntityIDs.ENEMY_SOUL:
+                case EntityIDs.DAIS:
+                    newObj = new Dais(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.BACKGROUND_SIGIL:
+                    newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.ENEMY_SOUL:
                     newObj = new EnemySoul(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.FIELD_TRANSITION:
+                    newObj = new FieldTransition(x, y, op1, op2, op3, op4, destView);
                     break;
             }
 
