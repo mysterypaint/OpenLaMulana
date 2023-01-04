@@ -167,14 +167,27 @@ namespace OpenLaMulana
                 Color[] srcPxData = GetPxData(srcTex, r);
 
                 // Iterate through the bounds of the hole we cut out. For every single pixel, print it to the output sprite, relative to its final texture position
+
+                for (var y = 0; y < r.Height; y++)
+                {
+                    for (var x = 0; x < r.Width; x++)
+                    {
+                        Color color = GetPixel(srcPxData, x, y, r.Width);
+                        SetPixel(mainPxData, (rect.X * _chipSize) + x, (rect.Y * _chipSize) + y, sprWidth * _chipSize, color);
+                    }
+                }
+                /*
                 for (var y = r.Y; y < r.Y + r.Height; y++)
                 {
                     for (var x = r.X; x < r.X + r.Width; x++)
                     {
                         Color color = GetPixel(srcPxData, x - r.X, y - r.Y, r.Width);
-                        SetPixel(mainPxData, x, y, sprWidth * _chipSize, color);
+                        SetPixel(mainPxData, r.X - (int)(origin.X * _chipSize), r.Y - (int)(origin.Y * _chipSize), sprWidth * _chipSize, color);
                     }
                 }
+                */
+
+
             }
 
             tex.SetData(mainPxData);
