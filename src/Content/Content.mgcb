@@ -103,6 +103,9 @@
 #begin data/map20.dat
 /copy:data/map20.dat
 
+#begin data/map21_EN.dat
+/copy:data/map21_EN.dat
+
 #begin data/map21.dat
 /copy:data/map21.dat
 
@@ -145,8 +148,8 @@
 #begin data/map34.dat
 /copy:data/map34.dat
 
-#begin data/script_ENG.dat
-/copy:data/script_ENG.dat
+#begin data/script_EN.dat
+/copy:data/script_EN.dat
 
 #begin data/script.dat
 /copy:data/script.dat

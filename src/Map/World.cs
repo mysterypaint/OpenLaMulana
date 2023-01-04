@@ -136,7 +136,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Decrypt "Content/data/script.dat" and the English-Translated counterpart file
             PseudoXML.DecodeScriptDat("Content/data/script.dat", jpTxtFile, s_charSet, this, Global.Languages.Japanese);
-            PseudoXML.DecodeScriptDat("Content/data/script_ENG.dat", engTxtFile, s_charSet, this, Global.Languages.English);
+            PseudoXML.DecodeScriptDat("Content/data/script_EN.dat", engTxtFile, s_charSet, this, Global.Languages.English);
 
             string[] data = File.ReadAllLines(jpTxtFile);
 
@@ -191,7 +191,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Field currField;
             ObjectSpawnData currObjSpawnData = null;
             View currView = null;
-            View[,] fieldViews = null;
             int numFields = 0;
             int numWorlds = 0;
 
@@ -221,12 +220,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                     case "FIELD":
                         args = parseArgs(line);
                         Field f = new Field(args[0], args[1], args[3], args[4], Global.EntityManager, Global.TextManager, this, args[2], numFields, numWorlds);
-                        numFields++;
                         _fields.Add(f);
-                        fieldViews = f.GetMapData();
+                        numFields++;
                         currView = null;
                         currentObject = f;
-                        //currentLine = ParseXmlRecursive(f, xml, currentLine + 1); // Until we start defining maps for this field, every single object spawn data will be considered a Field object. So, "currentView" is null by default
                         currentLine++;
                         break;
                     case "CHIPLINE":
@@ -276,21 +273,40 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                     case "UP":
                         args = parseArgs(line);
                         currView.DefineViewDestination(VIEW_DIR.UP, args[0], args[1], args[2], args[3]);
+                        if (currView.GetParentField().HasEnglishField()) {
+                            View enView = currView.GetParentField().GetMapData()[currView.X, currView.Y];
+                            enView.DefineViewDestination(VIEW_DIR.UP, args[0], args[1], args[2], args[3]);
+                        }
                         currentLine++;
                         break;
                     case "RIGHT":
                         args = parseArgs(line);
                         currView.DefineViewDestination(VIEW_DIR.RIGHT, args[0], args[1], args[2], args[3]);
+                        if (currView.GetParentField().HasEnglishField())
+                        {
+                            View enView = currView.GetParentField().GetMapData()[currView.X, currView.Y];
+                            enView.DefineViewDestination(VIEW_DIR.RIGHT, args[0], args[1], args[2], args[3]);
+                        }
                         currentLine++;
                         break;
                     case "DOWN":
                         args = parseArgs(line);
                         currView.DefineViewDestination(VIEW_DIR.DOWN, args[0], args[1], args[2], args[3]);
+                        if (currView.GetParentField().HasEnglishField())
+                        {
+                            View enView = currView.GetParentField().GetMapData()[currView.X, currView.Y];
+                            enView.DefineViewDestination(VIEW_DIR.DOWN, args[0], args[1], args[2], args[3]);
+                        }
                         currentLine++;
                         break;
                     case "LEFT":
                         args = parseArgs(line);
                         currView.DefineViewDestination(VIEW_DIR.LEFT, args[0], args[1], args[2], args[3]);
+                        if (currView.GetParentField().HasEnglishField())
+                        {
+                            View enView = currView.GetParentField().GetMapData()[currView.X, currView.Y];
+                            enView.DefineViewDestination(VIEW_DIR.LEFT, args[0], args[1], args[2], args[3]);
+                        }
                         currentLine++;
                         break;
                     //case "TALK": // We don't care about the dialogue because it is already stored by this point, in all supported languages

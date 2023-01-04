@@ -37,7 +37,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         private Dictionary<int, int> _hitList;   // Starting from ChipLine2 counting upward, this array defines the behavior of each tile in progressive order.
         private List<int[]> _animeList;
         private List<ObjectSpawnData> _fieldSpawnData;
-        private View[,] _views = new View[World.FIELD_WIDTH, World.FIELD_HEIGHT];
+        private View[,] _viewsJPN = new View[World.FIELD_WIDTH, World.FIELD_HEIGHT];
+        private View[,] _viewsENG = null;
         private List<View> _visitedViews = new List<View>();
         private int[] _chipline = { 0, 0, -1 };
         private EntityManager _s_entityManager;
@@ -59,12 +60,31 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             ID = id;
             WorldID = worldID;
 
+
+            _viewsJPN = new View[World.FIELD_WIDTH, World.FIELD_HEIGHT];
             for (var y = 0; y < World.FIELD_HEIGHT; y++)
             {
                 for (var x = 0; x < World.FIELD_WIDTH; x++)
                 {
-                    this._views[x, y] = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, this, x, y);
+                    this._viewsJPN[x, y] = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, this, x, y);
                 }
+            }
+
+            switch (ID)
+            {
+                default:
+                    break;
+                case 21:
+                    _viewsENG = new View[World.FIELD_WIDTH, World.FIELD_HEIGHT];
+
+                    for (var y = 0; y < World.FIELD_HEIGHT; y++)
+                    {
+                        for (var x = 0; x < World.FIELD_WIDTH; x++)
+                        {
+                            this._viewsENG[x, y] = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, this, x, y);
+                        }
+                    }
+                    break;
             }
 
             _hitList = new Dictionary<int, int>();
@@ -80,7 +100,22 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             mapName += MapIndex.ToString();
 
             string fileName = "Content/data/" + mapName + ".dat";
+            LoadMap(fileName, Global.Languages.Japanese);
 
+            // Load the English maps (There's only one, but just in case we need to add any more in the future...)
+            switch(ID) {
+                default:
+                    break;
+                case 21:
+                    mapName += "_EN";
+                    fileName = "Content/data/" + mapName + ".dat";
+                    LoadMap(fileName, Global.Languages.English);
+                    break;
+            }
+        }
+
+        private void LoadMap(string fileName, Global.Languages lang)
+        {
             if (File.Exists(fileName))
             {
                 using (BinaryReader reader = new BinaryReader(File.Open(fileName, FileMode.Open)))
@@ -118,7 +153,16 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                                 animatedTileInfo = j;
                         }
 
-                        _views[roomX, roomY].Chips[rtx, rty] = new Chip(tileID, animatedTileInfo);
+                        switch (lang)
+                        {
+                            default:
+                            case Global.Languages.Japanese:
+                                _viewsJPN[roomX, roomY].Chips[rtx, rty] = new Chip(tileID, animatedTileInfo);
+                                break;
+                            case Global.Languages.English:
+                                _viewsENG[roomX, roomY].Chips[rtx, rty] = new Chip(tileID, animatedTileInfo);
+                                break;
+                        }
 
                         i++;
                     }
@@ -133,7 +177,17 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
         public View[,] GetMapData()
         {
-            return _views;
+            switch (Global.CurrLang)
+            {
+                default:
+                case Global.Languages.Japanese:
+                    return _viewsJPN;
+                case Global.Languages.English:
+                    if (_viewsENG != null)
+                        return _viewsENG;
+                    else
+                        return _viewsJPN;
+            }
         }
 
         public void Update(GameTime gameTime)
@@ -184,14 +238,14 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
         internal void DrawRoom(Texture2D texture, int currRoomX, int currRoomY, SpriteBatch spriteBatch, GameTime gameTime, Vector2 offsetVec)
         {
-            var thisRoom = _views[currRoomX, currRoomY];
+            var thisRoom = _viewsJPN[currRoomX, currRoomY];
 
             thisRoom.Draw(texture, spriteBatch, gameTime, offsetVec);
         }
 
         internal View GetView(int destViewX, int destViewY)
         {
-            return _views[destViewX, destViewY];
+            return _viewsJPN[destViewX, destViewY];
         }
 
         internal void DeleteOldRoomEntities(View prevView, View destView)
@@ -285,7 +339,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 }
 
                 Field pf = destView.GetParentField();
-                foreach (View view in pf._views)
+                foreach (View view in pf._viewsJPN)
                 {
                     view.CanSpawnEntities = true;
                 }
@@ -373,7 +427,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
         internal void UnlockAllViewSpawning()
         {
-            foreach (View v in _views)
+            foreach (View v in _viewsJPN)
             {
                 v.CanSpawnEntities = true;
             }
@@ -382,6 +436,11 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         internal void ClearVisitedViews()
         {
             _visitedViews.Clear();
+        }
+
+        internal bool HasEnglishField()
+        {
+            return (_viewsENG != null);
         }
     }
 }
