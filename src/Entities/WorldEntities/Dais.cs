@@ -14,5 +14,16 @@ namespace OpenLaMulana.Entities.WorldEntities
             _tex = Global.TextureManager.MakeTexture(16, 8, new Vector4(0, 255, 0, 255));
             _sprIndex = new Sprite(_tex, 0, 8, 16, 8);
         }
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
+            {
+                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+            }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+        }
     }
 }

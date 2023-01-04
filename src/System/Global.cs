@@ -156,6 +156,12 @@ namespace OpenLaMulana
             MAX
         };
 
+        public enum SpriteDefs
+        {
+            BOSS01,
+            MAX
+        };
+
         public static Effect ShdTransition, ShdHueShift, ShdBinary;
 
         public static GraphicsDevice GraphicsDevice;
@@ -173,5 +179,7 @@ namespace OpenLaMulana
         public static TextureManager TextureManager;
 
         public static Languages CurrLang = Languages.English;
+
+        public static SpriteDefManager SpriteDefManager { get; set; }
     }
 }

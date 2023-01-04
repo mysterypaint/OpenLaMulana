@@ -1258,3 +1258,6 @@
 /processorParam:Quality=Best
 /build:sound/se5C.wav
 
+#begin spritedefs/boss01.spritedef
+/copy:spritedefs/boss01.spritedef
+

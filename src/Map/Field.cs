@@ -317,7 +317,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                         newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.ENEMY_BAT:
-                    newObj = new EnemyBat(x, y, op1, op2, op3, op4, destView);
+                    newObj = new Sakit(x, y, op1, op2, op3, op4, destView);//EnemyBat(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.TREASURE_CHEST:
                     newObj = new TreasureChest(x, y, op1, op2, op3, op4, destView);

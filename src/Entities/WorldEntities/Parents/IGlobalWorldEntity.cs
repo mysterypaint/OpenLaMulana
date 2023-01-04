@@ -32,17 +32,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             RelativeViewPos = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
-            {
-                _spr.DrawScaled(spriteBatch, RelativeViewPos + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                //_textManager.DrawText((int)Position.X, (int)Position.Y, "ok");
-            }
-        }
+        public abstract void Update(GameTime gameTime);
 
-        public void Update(GameTime gameTime)
-        {
-        }
+        public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
     }
 }

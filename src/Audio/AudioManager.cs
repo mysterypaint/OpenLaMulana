@@ -76,7 +76,7 @@ namespace OpenLaMulana
         {
         }
 
-        internal void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             if (midiPlayer.State == SoundState.Stopped && currSongID >= 0)
             {
@@ -148,10 +148,6 @@ namespace OpenLaMulana
         internal float GetMasterSFXVolume()
         {
             return SoundEffect.MasterVolume;
-        }
-
-        void IGameEntity.Update(GameTime gameTime)
-        {
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

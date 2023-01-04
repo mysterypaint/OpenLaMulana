@@ -116,10 +116,12 @@ namespace OpenLaMulana
             Global.Camera.SetProtag(_protag);
 
             Global.InputController = new InputController(_protag, _jukebox);
+            Global.SpriteDefManager = new SpriteDefManager();
 
             Global.EntityManager.AddEntity(_protag);
             Global.EntityManager.AddEntity(Global.World);
             Global.EntityManager.AddEntity(Global.AudioManager);
+            Global.EntityManager.AddEntity(Global.SpriteDefManager);
 
             Global.TextManager = Global.World.GetTextManager();
 

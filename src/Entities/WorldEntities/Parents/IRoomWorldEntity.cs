@@ -33,29 +33,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             viewCoords = new Point(_parentView.X, _parentView.Y);
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
-            {
+        public abstract void Update(GameTime gameTime);
 
-                /*
-                 * Rectangle srcRect;
-
-                srcRect = new Rectangle(0, 0, 16, 16);
-                Rectangle destRect = new Rectangle(
-                    (int)Position.X,
-                    (int)Position.Y + Main.HUD_HEIGHT,
-                    8, 8);
-                spriteBatch.Draw(_tex, destRect, srcRect, Color.White);
-*/
-
-                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                //_textManager.DrawText((int)Position.X, (int)Position.Y, "ok");
-            }
-        }
-
-        public void Update(GameTime gameTime)
-        {
-        }
+        public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
     }
 }
