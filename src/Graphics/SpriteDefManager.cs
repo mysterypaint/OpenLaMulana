@@ -55,7 +55,11 @@ namespace OpenLaMulana
 
         private void InitSpriteDef()
         {
-            string[] allSpriteDefs = { "boss01" };
+            string[] allSpriteDefs = { "boss01",
+                "boss03",
+                "boss04",
+                "boss05"
+            };
 
 
             string spriteDefsPath = "Content/spritedefs/";
@@ -157,6 +161,12 @@ namespace OpenLaMulana
                 default:
                 case Global.SpriteDefs.BOSS01:
                     return Global.TextureManager.GetTexture(Global.Textures.BOSS01);
+                case Global.SpriteDefs.BOSS03:
+                    return Global.TextureManager.GetTexture(Global.Textures.BOSS03);
+                case Global.SpriteDefs.BOSS04:
+                    return Global.TextureManager.GetTexture(Global.Textures.BOSS04);
+                case Global.SpriteDefs.BOSS05:
+                    return Global.TextureManager.GetTexture(Global.Textures.BOSS05);
             }
         }
 

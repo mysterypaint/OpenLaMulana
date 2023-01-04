@@ -7,13 +7,13 @@ using System;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class Sakit : IRoomWorldEntity
+    internal class GuardianSakit : IRoomWorldEntity
     {
         private int spritesMax = 7;
         Sprite[] sprites = new Sprite[7];
         private int _sprNum = 0;
 
-        public Sakit(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
+        public GuardianSakit(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
         {
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS01);
             for (var i = 0; i < spritesMax; i++)

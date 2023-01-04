@@ -159,6 +159,9 @@ namespace OpenLaMulana
         public enum SpriteDefs
         {
             BOSS01,
+            BOSS03,
+            BOSS04,
+            BOSS05,
             MAX
         };
 

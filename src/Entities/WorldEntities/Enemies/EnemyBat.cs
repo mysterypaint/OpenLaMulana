@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 
-namespace OpenLaMulana.Entities.WorldEntities
+namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
     internal class EnemyBat : IEnemyWorldEntity
     {
