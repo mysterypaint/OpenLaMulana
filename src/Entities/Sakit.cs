@@ -9,7 +9,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class Sakit : IRoomWorldEntity
     {
-        private int spritesMax = 7;//7;
+        private int spritesMax = 7;
         Sprite[] sprites = new Sprite[7];
         private int _sprNum = 0;
 
@@ -27,20 +27,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         {
             if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
             {
-
-                /*
-                 * Rectangle srcRect;
-
-                srcRect = new Rectangle(0, 0, 16, 16);
-                Rectangle destRect = new Rectangle(
-                    (int)Position.X,
-                    (int)Position.Y + Main.HUD_HEIGHT,
-                    8, 8);
-                spriteBatch.Draw(_tex, destRect, srcRect, Color.White);
-*/
-
                 _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                //_textManager.DrawText((int)Position.X, (int)Position.Y, "ok");
             }
         }
 

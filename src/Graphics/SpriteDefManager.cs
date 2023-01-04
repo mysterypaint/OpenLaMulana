@@ -19,13 +19,38 @@ namespace OpenLaMulana
     public class SpriteDefManager : IGameEntity
     {
         private Dictionary<Global.SpriteDefs, List<SpriteDef>> _sprDefSheets = new Dictionary<Global.SpriteDefs, List<SpriteDef>>();
-        
+        private Dictionary<Global.SpriteDefs, List<Sprite>> _globalSprites = new Dictionary<SpriteDefs, List<Sprite>>();
+
         private int _chipSize = OpenLaMulana.Entities.World.CHIP_SIZE;
 
         public SpriteDefManager()
         {
             InitSpriteDef();
+            InitSpriteLibrary();
+        }
 
+        private void InitSpriteLibrary()
+        {
+            for (Global.SpriteDefs sheetID = Global.SpriteDefs.BOSS01; sheetID < Global.SpriteDefs.MAX; sheetID++) {
+                List<SpriteDef> spriteDefs = _sprDefSheets[sheetID];
+
+                List<Sprite> spriteSheet = new List<Sprite>();
+                int index = 0;
+                foreach (SpriteDef s in spriteDefs) {
+                    Sprite spr = InitSprite(sheetID, index);
+                    spriteSheet.Add(spr);
+                    index++;
+                }
+
+                _globalSprites.Add(sheetID, spriteSheet);
+            }
+        }
+
+        public Sprite GetSprite(Global.SpriteDefs sheet, int index)
+        {
+            List<Sprite> sprAtlas = _globalSprites[sheet];
+            Sprite spr = sprAtlas[index];
+            return spr;
         }
 
         private void InitSpriteDef()
@@ -139,7 +164,7 @@ namespace OpenLaMulana
         Effect IGameEntity.ActiveShader => null;
 
 
-        internal Sprite GetSprite(SpriteDefs sheetID, int index)
+        internal Sprite InitSprite(SpriteDefs sheetID, int index)
         {
             // Get details about the sprite definition
             List<SpriteDef> defSheet = _sprDefSheets[sheetID];
