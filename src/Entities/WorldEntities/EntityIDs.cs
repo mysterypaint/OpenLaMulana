@@ -10,6 +10,7 @@
         FLOOR_SWITCH = 28,
         RUINS_TABLET = 30,
         DAIS = 34,
+        AKNH = 38,
         BACKGROUND_SIGIL = 47,
         ENEMY_SOUL = 133,
         FIELD_TRANSITION = 135

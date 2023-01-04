@@ -344,6 +344,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.BACKGROUND_SIGIL:
                     newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, destView);
                     break;
+                case EntityIDs.AKNH:
+                    newObj = new Ankh(x, y, op1, op2, op3, op4, destView);
+                    break;
                 case EntityIDs.ENEMY_SOUL:
                     newObj = new EnemySoul(x, y, op1, op2, op3, op4, destView);
                     break;

@@ -16,9 +16,9 @@ namespace OpenLaMulana
     {
         private MidiPlayer midiPlayer;
         private List<MidiFile> songs = new List<MidiFile>();
-        private int currSongID = -1;//17;
-        private string[] bgmFNames = new string[76];
-        private bool guidanceGateFirstTime = true;
+        private int _currSongID = -1;//17;
+        private string[] _bgmFNames = new string[76];
+        private bool _guidanceGateFirstTime = true;
 
         public int DrawOrder => 0;
         public Effect ActiveShader { get; set; } = null;
@@ -46,8 +46,8 @@ namespace OpenLaMulana
                 if (i < 10)
                     fName += "0";
                 fName += i.ToString();
-                bgmFNames[i] = "m" + fName;
-                songs.Add(new MidiFile(Path.Combine(musPath, bgmFNames[i] + ".mid")));
+                _bgmFNames[i] = "m" + fName;
+                songs.Add(new MidiFile(Path.Combine(musPath, _bgmFNames[i] + ".mid")));
             }
 
             var sfxList = Enum.GetValues(typeof(SFX));
@@ -78,9 +78,9 @@ namespace OpenLaMulana
 
         public void Update(GameTime gameTime)
         {
-            if (midiPlayer.State == SoundState.Stopped && currSongID >= 0)
+            if (midiPlayer.State == SoundState.Stopped && _currSongID >= 0)
             {
-                midiPlayer.Play(songs[currSongID], true);
+                midiPlayer.Play(songs[_currSongID], true);
                 Debug.WriteLine(midiPlayer.GetMasterVolume());
             }
         }
@@ -88,12 +88,12 @@ namespace OpenLaMulana
         internal void StopMusic()
         {
             midiPlayer.Stop();
-            currSongID = -1;
+            _currSongID = -1;
         }
 
         internal int IsPlaying()
         {
-            return currSongID;
+            return _currSongID;
         }
 
         internal void PauseMusic()
@@ -105,28 +105,29 @@ namespace OpenLaMulana
         {
             midiPlayer.Resume();
         }
+
         internal void ChangeSongs(int musicNumber, bool isJukebox = false)
         {
-            if (currSongID != musicNumber)
+            if (_currSongID != musicNumber)
             {
                 if (!isJukebox)
                 {
                     if (musicNumber == 1)
                     {
-                        if (currSongID == 39)
+                        if (_currSongID == 39)
                             return;
 
-                        if (guidanceGateFirstTime)
+                        if (_guidanceGateFirstTime)
                         {
                             musicNumber = 39;
-                            guidanceGateFirstTime = false;
+                            _guidanceGateFirstTime = false;
                         }
                     }
                 }
                 midiPlayer.Stop();
                 //midiPlayer.Dispose();
-                currSongID = musicNumber;
-                midiPlayer.Play(songs[currSongID]);
+                _currSongID = musicNumber;
+                midiPlayer.Play(songs[_currSongID]);
             }
         }
 

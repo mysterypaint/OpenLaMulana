@@ -100,6 +100,7 @@ namespace OpenLaMulana
             Global.SpriteBatch = new SpriteBatch(Global.GraphicsDevice);
             Global.ShdTransition = Content.Load<Effect>("shaders/shdTransition");
             Global.ShdHueShift = Content.Load<Effect>("shaders/shdHueShift");
+            Global.ShdMaskingBlack = Content.Load<Effect>("shaders/shdMaskingBlack");
 
             _shaderMode = (int)Global.Shaders.NONE;
 

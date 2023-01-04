@@ -688,6 +688,12 @@
 /processorParam:DebugMode=Auto
 /build:shaders/shdHueShift.fx
 
+#begin shaders/shdMaskingBlack.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/shdMaskingBlack.fx
+
 #begin shaders/shdTransition.fx
 /importer:EffectImporter
 /processor:EffectProcessor

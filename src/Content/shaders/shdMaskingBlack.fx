@@ -19,9 +19,9 @@ struct VertexShaderOutput
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
     float4 texColor = tex2D(s0, input.TextureCoordinates);
-    float4 transpWhite = float4(1, 1, 1, 0);
+    float4 transpBlack = float4(0, 0, 0, 1);
     float4 solidGray = float4(0.5, 0.5, 0.5, 1);
-    texColor = all(texColor == transpWhite) ? -1 : solidGray;
+    texColor = all(texColor == transpBlack) ? -1 : texColor;
 	
     clip(texColor);
     return texColor;

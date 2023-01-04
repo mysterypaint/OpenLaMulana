@@ -165,7 +165,7 @@ namespace OpenLaMulana
             MAX
         };
 
-        public static Effect ShdTransition, ShdHueShift, ShdBinary;
+        public static Effect ShdTransition, ShdHueShift, ShdBinary, ShdMaskingBlack;
 
         public static GraphicsDevice GraphicsDevice;
         public static GraphicsDeviceManager GraphicsDeviceManager;
