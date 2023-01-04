@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities;
-using OpenLaMulana.Entities.WorldEntities.Debug;
+using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
