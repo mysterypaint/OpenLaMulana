@@ -432,7 +432,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                             Chip thisChip = _transitionView.Chips[x, y];
 
                             // Handle animated Chips here
-                            var animeSpeed = thisChip.animeSpeed;
+                            var animeSpeed = thisChip.AnimeSpeed;
                             var animeFrames = thisChip.GetAnimeFrames();
                             var maxFrames = animeFrames.Length;
 
@@ -440,13 +440,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                             {
                                 if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
                                 {
-                                    thisChip.currFrame++;
+                                    thisChip.CurrFrame++;
 
                                     // Play the animation once, then stop and turn off the shader
-                                    if (thisChip.currFrame >= maxFrames)
+                                    if (thisChip.CurrFrame >= maxFrames)
                                     {
-                                        thisChip.currFrame = maxFrames - 1;
-                                        thisChip.animeSpeed = 0;
+                                        thisChip.CurrFrame = maxFrames - 1;
+                                        thisChip.AnimeSpeed = 0;
                                         _abortDrawing = true;
                                         UpdateCurrActiveView();
                                         return;
@@ -454,7 +454,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                                 }
                             }
 
-                            var drawingTileID = animeFrames[(int)thisChip.currFrame];
+                            var drawingTileID = animeFrames[(int)thisChip.CurrFrame];
 
                             //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
                             var posX = (x * 8);

@@ -162,7 +162,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         {
                             if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
                             {
-                                if (currRoom.Chips[x, y].tileID >= chipline[0] && currRoom.Chips[x, y].tileID < chipline[1])
+                                if (currRoom.Chips[x, y].TileID >= chipline[0] && currRoom.Chips[x, y].TileID < chipline[1])
                                 {
                                     if (closestTile > x)
                                         closestTile = x;
@@ -219,7 +219,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         {
                             if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
                             {
-                                if (currRoom.Chips[x, y].tileID >= chipline[0] && currRoom.Chips[x, y].tileID < chipline[1])
+                                if (currRoom.Chips[x, y].TileID >= chipline[0] && currRoom.Chips[x, y].TileID < chipline[1])
                                 {
                                     if (closestTile < x)
                                         closestTile = x;
@@ -294,7 +294,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         {
                             if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
                             {
-                                if (currRoom.Chips[x, y].tileID >= chipline[0] && currRoom.Chips[x, y].tileID < chipline[1])
+                                if (currRoom.Chips[x, y].TileID >= chipline[0] && currRoom.Chips[x, y].TileID < chipline[1])
                                 {
                                     if (closestTile > y)
                                         closestTile = y;
@@ -340,7 +340,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         {
                             if (x >= 0 && y >= HudTileHeight && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT + HudTileHeight)
                             {
-                                if (currRoom.Chips[x, y - HudTileHeight].tileID >= chipline[0] && currRoom.Chips[x, y - HudTileHeight].tileID < chipline[1])
+                                if (currRoom.Chips[x, y - HudTileHeight].TileID >= chipline[0] && currRoom.Chips[x, y - HudTileHeight].TileID < chipline[1])
                                 {
                                     if (y - HudTileHeight > closestTile)
                                         closestTile = y - HudTileHeight;

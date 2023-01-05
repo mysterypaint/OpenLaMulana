@@ -15,6 +15,8 @@ namespace OpenLaMulana
         private int[] _destY = { 0, 0, 0, 0 };       // Y may never go below 0
         private List<ObjectSpawnData> _viewSpawnData;
         private Field _parentField = null;
+        private float _animationFrameTime = 1f / Main.FPS;
+        private float _timeUntilNextFrame = 0.0f;
 
         public Chip[,] Chips { get; set; }
         public int RoomNumber { get; set; } = 0; // Unsure what this does... Maybe has to do with sharing room numbers -> how enemies persist/de-spawn?
@@ -79,6 +81,9 @@ namespace OpenLaMulana
 
         internal void Draw(Texture2D texture, SpriteBatch spriteBatch, GameTime gameTime, Vector2 offsetVec)
         {
+            var gameFrameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _timeUntilNextFrame -= gameFrameTime;
+
             // Loop through every single Room[_x][_y] Chip to draw every single Chip in a given room
             for (int y = 0; y < World.ROOM_HEIGHT; y++)
             {
@@ -88,35 +93,33 @@ namespace OpenLaMulana
                     Chip thisChip = Chips[x, y];
 
                     // Animate the Chip, if applicable
-                    if (!thisChip.isAnime)
+                    if (!thisChip.IsAnime)
                     {
                         // This Chip isn't animated, so we'll just draw it regularly
                         var posX = (x * 8);
                         var posY = (y * 8);
-                        var texX = (thisChip.tileID % 40) * 8;
-                        var texY = (thisChip.tileID / 40) * 8;
+                        var texX = (thisChip.TileID % 40) * 8;
+                        var texY = (thisChip.TileID / 40) * 8;
 
                         spriteBatch.Draw(texture, new Vector2(posX, Main.HUD_HEIGHT + posY) + offsetVec, new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
                     }
                     else
                     {
                         // Handle animated Chips here
-                        var animeSpeed = thisChip.animeSpeed;
+
+                        var animeSpeed = thisChip.AnimeSpeed;
                         var animeFrames = thisChip.GetAnimeFrames();
-                        var maxFrames = animeFrames.Length;
 
                         if (animeSpeed > 0)
                         {
-                            if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
+                            if (_timeUntilNextFrame <= 0)
                             {
-                                thisChip.currFrame++;
-
-                                if (thisChip.currFrame >= maxFrames)
-                                    thisChip.currFrame = 0;
+                                // One in-game frame has elapsed; let the chip know here
+                                thisChip.StepFrame();
                             }
                         }
 
-                        var drawingTileID = animeFrames[(int)thisChip.currFrame];
+                        var drawingTileID = animeFrames[(int)thisChip.CurrFrame];
 
                         //spriteBatch.Draw(_fieldTextures[currField], new Vector2(0, 0), new Rectangle(16, 16, tileWidth, tileHeight), Color.White);
                         var posX = (x * 8);
@@ -128,6 +131,11 @@ namespace OpenLaMulana
                         spriteBatch.Draw(texture, new Vector2(posX, Main.HUD_HEIGHT + posY) + offsetVec, new Rectangle(texX, texY, World.CHIP_SIZE, World.CHIP_SIZE), Color.White);
                     }
                 }
+            }
+
+            if (_timeUntilNextFrame <= 0)
+            {
+                _timeUntilNextFrame += _animationFrameTime;
             }
         }
 

@@ -27,6 +27,8 @@ namespace OpenLaMulana
         public const int HUD_HEIGHT = 16;
         public float ZoomFactor => WindowDisplayMode == Global.DisplayMode.Default ? 1 : _displayZoomFactor;
 
+        public static float FPS { get; internal set; } = 30f;
+
         private const string SAVE_FILE_NAME = "Save.dat";
         private const string musPath = "Content/music/";
 
@@ -49,7 +51,7 @@ namespace OpenLaMulana
 
             // 30fps game
             IsFixedTimeStep = true;//false;
-            TargetElapsedTime = TimeSpan.FromSeconds(1d / 30d); //60);
+            TargetElapsedTime = TimeSpan.FromSeconds(1d / FPS); //60);
 
             IsMouseVisible = true;
             //this.Window.AllowUserResizing = true;
