@@ -14,6 +14,8 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int _sprNum = 0;
         private double timeBeforeDrop = 0.0f;
         private Global.EnemyStates _state = Global.EnemyStates.INIT;
+        private View _bossRoom = null;
+        private int speedUpTimer = 30;
 
         public GuardianEllmac(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
         {
@@ -62,6 +64,20 @@ namespace OpenLaMulana.Entities.WorldEntities
                             View destView = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, null, 0, 0);
                             destView.InitChipData(0, null);
 
+                            for (int y = 0; y < 4; y++)
+                            {
+                                for (int x = 0; x < World.ROOM_WIDTH; x++)
+                                {
+                                    destView.Chips[x, y].TileID = 36 + (x % 4) + (y * 40);
+                                }
+                            }
+                            for (int x = 0; x < World.ROOM_WIDTH; x++)
+                            {
+                                destView.Chips[x, World.ROOM_HEIGHT - 1].TileID = 26 + (x % 2);
+                            }
+
+                            _bossRoom = destView;
+
                             Global.World.FieldTransitionCardinalBoss(World.VIEW_DIR.DOWN, srcView, destView, Global.TextureManager.GetTexture(Global.Textures.BOSS02));
 
                             _state = Global.EnemyStates.ACTIVATING;
@@ -75,6 +91,14 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case Global.EnemyStates.SPEEDING_UP:
+                    if (Global.AnimationTimer.OneFrameElapsed())
+                    {
+                        if (speedUpTimer > 0)
+                            speedUpTimer--;
+                    }
+
+                    if (speedUpTimer <= 0 || speedUpTimer == 2 || speedUpTimer == 5 || speedUpTimer == 7 || speedUpTimer == 9 || speedUpTimer == 15 || speedUpTimer == 23)
+                        ShiftScreenLeft();
                     break;
             }
 
@@ -87,6 +111,19 @@ namespace OpenLaMulana.Entities.WorldEntities
                     _sprNum = 0;
             }*/
             _sprIndex = sprites[_sprNum];
+        }
+
+        private void ShiftScreenLeft()
+        {
+            // Grab the left-most column of the boss arena
+            Chip[] leftMostColumn = new Chip[World.ROOM_HEIGHT];
+            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+            {
+                leftMostColumn[y] = _bossRoom.Chips[0, y];
+            }
+
+            // Shift every single tile in the room toward the left; The left-most column will be written on the far right of the room, effectively wrapping the screen
+            _bossRoom.ShiftTiles(World.VIEW_DIR.LEFT, leftMostColumn);
         }
     }
 }

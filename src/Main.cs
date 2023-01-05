@@ -97,6 +97,7 @@ namespace OpenLaMulana
         {
             Global.AudioManager = new AudioManager();
             Global.AudioManager.LoadContent(musPath, Content);
+            Global.AnimationTimer = new AnimationTimer();
 
             Global.GraphicsDevice = GraphicsDevice;
             Global.SpriteBatch = new SpriteBatch(Global.GraphicsDevice);
@@ -125,6 +126,7 @@ namespace OpenLaMulana
             Global.EntityManager.AddEntity(Global.World);
             Global.EntityManager.AddEntity(Global.AudioManager);
             Global.EntityManager.AddEntity(Global.SpriteDefManager);
+            Global.EntityManager.AddEntity(Global.AnimationTimer);
 
             Global.TextManager = Global.World.GetTextManager();
 

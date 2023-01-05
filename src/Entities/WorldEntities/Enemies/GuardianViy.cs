@@ -12,6 +12,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int spritesMax = 23;
         Sprite[] sprites = new Sprite[23];
         private int _sprNum = 0;
+        private View _bossRoom = null;
 
         public GuardianViy(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
         {
@@ -41,6 +42,20 @@ namespace OpenLaMulana.Entities.WorldEntities
                     _sprNum = 0;
             }
             _sprIndex = sprites[_sprNum];
+        }
+
+
+        private void ShiftScreenDown()
+        {
+            // Grab the bottom-most column of the boss arena
+            Chip[] bottomMostRow = new Chip[World.ROOM_WIDTH];
+            for (int x = 0; x < World.ROOM_WIDTH; x++)
+            {
+                bottomMostRow[x] = _bossRoom.Chips[x, World.ROOM_HEIGHT - 1];
+            }
+
+            // Shift every single tile in the room toward the top; The bottom-most column will be written at the top of the room, effectively wrapping the screen
+            _bossRoom.ShiftTiles(World.VIEW_DIR.DOWN, bottomMostRow);
         }
     }
 }

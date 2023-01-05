@@ -12,6 +12,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int spritesMax = 64;
         Sprite[] sprites = new Sprite[64];
         private int _sprNum = 0;
+        private View _bossRoom = null;
 
         public GuardianPalenque(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
         {
@@ -41,6 +42,19 @@ namespace OpenLaMulana.Entities.WorldEntities
                     _sprNum = 0;
             }
             _sprIndex = sprites[_sprNum];
+        }
+
+        private void ShiftScreenLeft()
+        {
+            // Grab the left-most column of the boss arena
+            Chip[] leftMostColumn = new Chip[World.ROOM_HEIGHT];
+            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+            {
+                leftMostColumn[y] = _bossRoom.Chips[0, y];
+            }
+
+            // Shift every single tile in the room toward the left; The left-most column will be written on the far right of the room, effectively wrapping the screen
+            _bossRoom.ShiftTiles(World.VIEW_DIR.LEFT, leftMostColumn);
         }
     }
 }

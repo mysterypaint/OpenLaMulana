@@ -208,5 +208,6 @@ namespace OpenLaMulana
         public static Languages CurrLang = Languages.English;
 
         public static SpriteDefManager SpriteDefManager { get; set; }
+        public static AnimationTimer AnimationTimer { get; internal set; }
     }
 }
