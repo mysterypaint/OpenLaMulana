@@ -156,6 +156,7 @@ namespace OpenLaMulana
             MAX
         };
 
+        // Ordered by the asset values in Content/data/
         public enum SpriteDefs
         {
             BOSS01,
@@ -164,6 +165,20 @@ namespace OpenLaMulana
             BOSS05,
             MAX
         };
+
+        // Ordered by the asset values in Content/data/
+        public enum BossIDs {
+            AMPHISBAENA = 0,
+            SAKIT = 1,
+            ELLMAC = 2,
+            BAHAMUT = 3,
+            VIY = 4,
+            PALENQUE = 5,
+            BAPHOMET = 6,
+            TIAMAT = 7,
+            MOTHER = 8,
+            MAX
+        }
 
         public static Effect ShdTransition, ShdHueShift, ShdBinary, ShdMaskingBlack;
 

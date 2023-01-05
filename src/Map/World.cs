@@ -87,6 +87,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         private RenderTarget2D _bkgRenderTarget, _transitionRenderTarget, _destRenderTarget, _outputRenderTarget;
         private bool _abortDrawing = false;
         private bool _disposedRenderTargetsFlag = false;
+        private bool _drawBossRoom = false;
 
         public enum VIEW_DEST
         {
@@ -156,6 +157,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             foreach (Field f in _fields)
             {
                 f.InitializeArea();
+                f.InitializeBossRoom();
             }
 
             _currChipLine = _fields[CurrField].GetChipline();
@@ -529,6 +531,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         public void FieldTransitionCardinal(VIEW_DIR movingDirection)
         {
+            _drawBossRoom = false;
+
             // Camera is busy; Do not transition.
             if (Global.Camera.GetState() != CamStates.NONE)
                 return;
@@ -638,6 +642,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         internal void FieldTransitionPixelate(int warpType, int destField, int destViewX, int destViewY)
         {
+            _drawBossRoom = false;
+
             // Camera is busy; Do not transition.
             Camera.CamStates camState = Global.Camera.GetState();
             if (camState != CamStates.NONE)
@@ -652,6 +658,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
 
+            int drawingTileID;
+            int frame0;
+            int animeSpeed;
+            int[] animatedTileInfo;
+
+            ActiveView nextAV;
+
             if (destField < 0)
             {
                 switch (destField)
@@ -663,15 +676,64 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                             return;
                         break;
                     case -1:
-                        // Boss room 1
-                        break;
-                    case -2:
-                        // Boss room 2
-                        break;
-                    case -3:
-                        // Boss room 3
-                        break;
-                        // etc...
+                        // Check and go to a boss room
+                        View[] bossViews = thisField.GetBossViews();
+
+                        // Set the transitioning Active View to the next field + its texture
+
+                        nextAV = _activeViews[(int)AViews.DEST];
+                        nextAV.Position = new Vector2(0, 0);
+
+                        nextAV.SetField(null);
+                        nextAV.SetFieldTex(thisFieldTex);
+                        nextAV.SetView(bossViews[destViewX]);
+
+                        // Update all the transition tiles to create the transition effect
+                        drawingTileID = (20 * 40) + (40 * warpType);
+                        frame0 = -ANIME_TILES_BEGIN + drawingTileID;
+                        animeSpeed = 3;
+                        animatedTileInfo = new int[17];
+
+                        animatedTileInfo[0] = frame0;
+                        animatedTileInfo[1] = animeSpeed;
+                        for (int i = 1; i <= 15; i++)
+                        {
+                            animatedTileInfo[1 + i] = frame0 + ANIME_TILES_BEGIN + i;
+                        }
+
+                        for (var y = 0; y < ROOM_HEIGHT; y++)
+                        {
+                            for (var x = 0; x < ROOM_WIDTH; x++)
+                            {
+                                _transitionView.Chips[x, y] = new Chip((short)drawingTileID, animatedTileInfo);
+                            }
+                        }
+
+                        // Prepare the camera to transition to the new field
+                        Global.Camera.UpdateMoveTarget(World.VIEW_DIR.SELF);
+                        Global.Camera.SetState((int)CamStates.TRANSITION_PIXELATE);
+
+                        // Create the Shader Effect's Render Targets
+                        CreateRenderTargets();
+
+                        // Reset the abort drawing state
+                        _abortDrawing = false;
+                        _disposedRenderTargetsFlag = false;
+
+                        // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
+                        thisField.DeleteAllFieldAndRoomEntities();
+                        thisField.UnlockAllViewSpawning();
+                        thisField.ClearVisitedViews();
+
+                        // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
+
+                        _drawBossRoom = true;
+                        /*
+                        CurrField = destField;
+                        CurrViewX = destViewX;
+                        CurrViewY = destViewY;
+                        */
+                        return;
                 }
             }
             else if (destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
@@ -687,7 +749,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Set the transitioning Active View to the next field + its texture
 
-            ActiveView nextAV = _activeViews[(int)AViews.DEST];
+            nextAV = _activeViews[(int)AViews.DEST];
             nextAV.Position = new Vector2(0, 0);
 
             nextAV.SetField(nextField);
@@ -698,10 +760,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             nextAV.SetView(nextView);
 
             // Update all the transition tiles to create the transition effect
-            int drawingTileID = (20 * 40) + (40 * warpType);
-            int frame0 = -ANIME_TILES_BEGIN + drawingTileID;
-            int animeSpeed = 3;
-            int[] animatedTileInfo = new int[17];
+            drawingTileID = (20 * 40) + (40 * warpType);
+            frame0 = -ANIME_TILES_BEGIN + drawingTileID;
+            animeSpeed = 3;
+            animatedTileInfo = new int[17];
             animatedTileInfo[0] = frame0;
             animatedTileInfo[1] = animeSpeed;
             for (int i = 1; i <= 15; i++)
@@ -717,7 +779,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 }
             }
 
-            // Slide the camera toward the new field
+            // Prepare the camera to transition to the new field
             Global.Camera.UpdateMoveTarget(World.VIEW_DIR.SELF);
             Global.Camera.SetState((int)CamStates.TRANSITION_PIXELATE);
 
@@ -758,6 +820,26 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Field thisField = _fields[CurrField];
             Global.Textures correctedTexID = Global.TextureManager.GetMappedEventTexID(thisField.EventGraphics);
             return correctedTexID;
+        }
+
+        internal View GetCurrentView()
+        {
+            if (!_drawBossRoom)
+                return _fields[CurrField].GetView(Global.World.CurrViewX, Global.World.CurrViewY);
+            else
+            {
+                return _fields[CurrField].GetBossViews()[0];
+            }
+        }
+
+        internal View GetBackupView()
+        {
+            return _activeViews[(int)AViews.CURR].GetView();
+        }
+
+        internal Field GetCurrField()
+        {
+            return _fields[CurrField];
         }
     }
 }

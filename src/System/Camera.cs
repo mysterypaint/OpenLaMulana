@@ -232,7 +232,9 @@ namespace OpenLaMulana.System
             {
                 if (worldEntity is IRoomWorldEntity) {
                     IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
-                    rE.Position += offsetVector;
+
+                    if (!rE.ManuallySpawned)
+                        rE.Position += offsetVector;
                 }
                 if (worldEntity is IGlobalWorldEntity)
                 {

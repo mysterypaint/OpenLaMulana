@@ -134,11 +134,10 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             else if (_moveX == -1)
                 FacingX = Facing.LEFT;
 
+            View currRoom = Global.World.GetCurrentView();// (Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
+
             if (_moveX != 0)
             {
-                View currRoom = Global.World.GetField(Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
-
-
                 if (FacingX == Facing.RIGHT)
                 {
 
@@ -280,8 +279,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             if (_moveY != 0)
             {
-                View currRoom = Global.World.GetField(Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
-
                 if (FacingY == Facing.DOWN)
                 {
                     bboxTileYMin = (int)Math.Floor(bboxBottom / _chipHeight) - HudTileHeight;

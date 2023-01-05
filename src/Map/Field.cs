@@ -46,6 +46,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         private static List<IGameEntity> _fieldEntities = new List<IGameEntity>();
         private static List<IGameEntity> _roomEntities = new List<IGameEntity>();
         private World _world;
+        View[] _bossViews = null;
+        private int _bossID = -1;
 
         public Field(int mapIndex, int mapData, int eventGraphics, int musicNumber, EntityManager s_entityManager, TextManager textManager, World world, int mapGraphics = 65535, int id = 0, int worldID = 0)
         {
@@ -114,10 +116,25 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             }
         }
 
-        private void LoadMap(string fileName, Global.Languages lang)
+        private void LoadMap(string fileName, Global.Languages lang, bool isBossMap = false)
         {
             if (File.Exists(fileName))
             {
+                View[,] bossViewsTemp = null;
+
+                if (isBossMap)
+                {
+                    bossViewsTemp = new View[World.FIELD_WIDTH, World.FIELD_HEIGHT];
+
+                    for (var y = 0; y < World.FIELD_HEIGHT; y++)
+                    {
+                        for (var x = 0; x < World.FIELD_WIDTH; x++)
+                        {
+                            bossViewsTemp[x, y] = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, this, x, y);
+                        }
+                    }
+                }
+
                 using (BinaryReader reader = new BinaryReader(File.Open(fileName, FileMode.Open)))
                 {
                     int i = 0;
@@ -153,19 +170,34 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                                 animatedTileInfo = j;
                         }
 
-                        switch (lang)
+                        if (!isBossMap)
                         {
-                            default:
-                            case Global.Languages.Japanese:
-                                _viewsJPN[roomX, roomY].Chips[rtx, rty] = new Chip(tileID, animatedTileInfo);
-                                break;
-                            case Global.Languages.English:
-                                _viewsENG[roomX, roomY].Chips[rtx, rty] = new Chip(tileID, animatedTileInfo);
-                                break;
+                            switch (lang)
+                            {
+                                default:
+                                case Global.Languages.Japanese:
+                                    _viewsJPN[roomX, roomY].Chips[rtx, rty] = new Chip(tileID, animatedTileInfo);
+                                    break;
+                                case Global.Languages.English:
+                                    _viewsENG[roomX, roomY].Chips[rtx, rty] = new Chip(tileID, animatedTileInfo);
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            bossViewsTemp[roomX, roomY].Chips[rtx, rty] = new Chip(tileID, animatedTileInfo);
                         }
 
                         i++;
                     }
+                }
+
+                if (isBossMap)
+                {
+                    // Only remember the first 2 rooms of the map
+                    _bossViews[0] = bossViewsTemp[0, 0];
+                    _bossViews[1] = bossViewsTemp[1, 0];
+                    _bossViews[2] = bossViewsTemp[2, 0];
                 }
             }
         }
@@ -372,7 +404,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                         newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.ENEMY_BAT:
-                    newObj = new GuardianBahamut(x, y, op1, op2, op3, op4, destView);//EnemyBat(x, y, op1, op2, op3, op4, destView);
+                    newObj = new EnemyBat(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.TREASURE_CHEST:
                     newObj = new TreasureChest(x, y, op1, op2, op3, op4, destView);
@@ -397,6 +429,11 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.BACKGROUND_SIGIL:
                     newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.BIG_ANKH:
+                    if (op1 != 8072 || op2 != 16008 || op3 != 361)
+                        break;
+                    newObj = new Ankh(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.AKNH:
                     newObj = new Ankh(x, y, op1, op2, op3, op4, destView);
@@ -441,6 +478,72 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         internal bool HasEnglishField()
         {
             return (_viewsENG != null);
+        }
+
+        internal void InitializeBossRoom()
+        {
+            if ((ID >= 0 && ID <= 9 && ID != 1 && ID != 7 && ID != 8) || ID == 17 || ID == 19)    // 19 is True Shrine
+            {
+                _bossViews = new View[3];
+                switch (ID)
+                {
+                    default:
+                        break;
+                    case 0:
+                        _bossID = (int)Global.BossIDs.AMPHISBAENA;
+                        break;
+                    case 2:
+                        _bossID = (int)Global.BossIDs.SAKIT;
+                        break;
+                    case 3:
+                        _bossID = (int)Global.BossIDs.ELLMAC;
+                        break;
+                    case 4:
+                        _bossID = (int)Global.BossIDs.BAHAMUT;
+                        break;
+                    case 5:
+                        _bossID = (int)Global.BossIDs.VIY;
+                        break;
+                    case 6:
+                        _bossID = (int)Global.BossIDs.PALENQUE;
+                        break;
+                    case 9:
+                        _bossID = (int)Global.BossIDs.BAPHOMET;
+                        break;
+                    case 17:
+                        _bossID = (int)Global.BossIDs.TIAMAT;
+                        break;
+                    case 19:
+                        _bossID = (int)Global.BossIDs.MOTHER;
+                        break;
+                }
+            }
+
+            string mapName = "boss";
+            if (_bossID <= 9)
+                mapName += "0";
+            mapName += _bossID.ToString();
+
+            string fileName = "Content/data/" + mapName + ".dat";
+            LoadMap(fileName, Global.Languages.Japanese, true);
+        }
+
+        internal View[] GetBossViews()
+        {
+            if (_bossViews == null) {
+                // Failsafe
+                View[] views = new View[3];
+                views[0] = _viewsJPN[0, 0];
+                views[1] = _viewsJPN[1, 0];
+                views[2] = _viewsJPN[2, 0];
+                return views;
+            }
+            return _bossViews;
+        }
+
+        internal int GetBossID()
+        {
+            return _bossID;
         }
     }
 }

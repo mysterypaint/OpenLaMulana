@@ -12,6 +12,7 @@
         DAIS = 34,
         AKNH = 38,
         BACKGROUND_SIGIL = 47,
+        BIG_ANKH = 59, // This might not be the actual value: this is here purely for testing purposes
         ENEMY_SOUL = 133,
         FIELD_TRANSITION = 135
     }
