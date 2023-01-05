@@ -50,17 +50,105 @@ namespace OpenLaMulana
                 songs.Add(new MidiFile(Path.Combine(musPath, _bgmFNames[i] + ".mid")));
             }
 
-            var sfxList = Enum.GetValues(typeof(SFX));
-
-            foreach(SFX sfx in sfxList)
-            {
-                if (sfx == SFX.MAX)
-                    break;
-                string fName = "se";
-                int sfxID = (int)sfx;
-                if (sfxID < 0xA)
-                    fName += 0;
-                fName += sfxID.ToString();
+            string[] sfxList = {
+                "se00",
+                "se01",
+                "se02",
+                "se03",
+                "se04",
+                "se05",
+                "se06",
+                "se07",
+                "se08",
+                "se09",
+                "se0A",
+                "se0B",
+                "se0C",
+                "se0D",
+                "se0E",
+                "se0F",
+                "se10",
+                "se11",
+                "se12",
+                "se13",
+                "se14",
+                "se15",
+                "se16",
+                "se17",
+                "se18",
+                "se19",
+                "se1A",
+                "se1A_01",
+                "se1B",
+                "se1C",
+                "se1D",
+                "se1E",
+                "se1F",
+                "se20",
+                "se21",
+                "se22",
+                "se23",
+                "se24",
+                "se25",
+                "se26",
+                "se27",
+                "se28",
+                "se29",
+                "se2A",
+                "se2B",
+                "se2C",
+                "se2D",
+                "se2E",
+                "se2F",
+                "se30",
+                "se31",
+                "se32",
+                "se33",
+                "se34",
+                "se35",
+                "SE36",
+                "SE37",
+                "SE38",
+                "SE39",
+                "SE3A",
+                "SE3B",
+                "SE3C",
+                "SE3D",
+                "se3E",
+                "se3F",
+                "se40",
+                "se41",
+                "se42",
+                "se43",
+                "se44",
+                "se45",
+                "se46",
+                "se47",
+                "se48",
+                "se49",
+                "se4A",
+                "se4B",
+                "se4C",
+                "se4D",
+                "se4E",
+                "se4F",
+                "se50",
+                "se51",
+                "se52",
+                "se53",
+                "se54",
+                "se55",
+                "se56",
+                "se57",
+                "se58",
+                "se59",
+                "se5A",
+                "se5B",
+                "se5C"
+            };
+            
+            for (SFX sfx = SFX.PAUSE; sfx < SFX.MAX; sfx++) {
+                string fName = sfxList[(int)sfx];
                 _sfxBank[sfx] = content.Load<SoundEffect>(Path.Combine("sound", fName));
             }
 

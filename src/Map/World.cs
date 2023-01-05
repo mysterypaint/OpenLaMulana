@@ -617,6 +617,57 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             UpdateEntities(destField, thisField, thisView, destViewX, destViewY, nextAV.Position);
         }
 
+        public void FieldTransitionCardinalBoss(VIEW_DIR movingDirection, View srcView, View destView, Texture2D bossTexture = null)
+        {
+            // Camera is busy; Do not transition.
+            if (Global.Camera.GetState() != CamStates.NONE)
+                return;
+
+            // Grab the View we are transitioning to
+            Field srcField = srcView.GetParentField();
+            Global.Textures correctedTexID = Global.TextureManager.GetMappedWorldTexID(srcField.MapGraphics);
+            var srcFieldTex = Global.TextureManager.GetTexture(correctedTexID);
+            
+            // Determine the next field and its texture
+            
+            Field destField = destView.GetParentField();
+            Texture2D destFieldTex;
+            if (destField != null)
+            {
+                correctedTexID = Global.TextureManager.GetMappedWorldTexID(destField.MapGraphics);
+                destFieldTex = Global.TextureManager.GetTexture(correctedTexID);
+            }
+            else {
+                destFieldTex = bossTexture;
+            }
+
+            // Set the transitioning Active View to the next field + its texture
+            ActiveView nextAV = _activeViews[(int)AViews.DEST];
+
+            switch (movingDirection)
+            {
+                case World.VIEW_DIR.LEFT:
+                    nextAV.Position = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    break;
+                case World.VIEW_DIR.DOWN:
+                    nextAV.Position = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE) * 1);
+                    break;
+                case World.VIEW_DIR.RIGHT:
+                    nextAV.Position = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    break;
+                case World.VIEW_DIR.UP:
+                    nextAV.Position = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    break;
+            }
+
+            nextAV.SetField(destField);
+            nextAV.SetFieldTex(destFieldTex);
+            nextAV.SetView(destView);
+
+            // Slide the camera toward the new field
+            Global.Camera.UpdateMoveTarget(movingDirection);
+        }
+
         private void UpdateEntities(int destField, Field thisField, View thisView, int destViewX, int destViewY, Vector2 offsetVector)
         {
 

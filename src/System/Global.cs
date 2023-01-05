@@ -178,8 +178,17 @@ namespace OpenLaMulana
             TIAMAT = 7,
             MOTHER = 8,
             MAX
-        }
+        };
 
+        public enum EnemyStates {
+            INIT,
+            ACTIVATING,
+            IDLE,
+            ATTACKING,
+            DYING,
+            SPEEDING_UP,
+            MAX
+        }
         public static Effect ShdTransition, ShdHueShift, ShdBinary, ShdMaskingBlack;
 
         public static GraphicsDevice GraphicsDevice;

@@ -140,5 +140,16 @@ namespace OpenLaMulana
         {
             return _parentField;
         }
+
+        internal void InitChipData(int tileID, int[] animatedTileInfo = null)
+        {
+            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+            {
+                for (int x = 0; x < World.ROOM_WIDTH; x++)
+                {
+                    Chips[x, y] = new Chip((short)tileID, animatedTileInfo);
+                }
+            }
+        }
     }
 }
