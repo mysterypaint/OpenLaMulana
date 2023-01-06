@@ -259,28 +259,30 @@ namespace OpenLaMulana.System
                     _moveSpeedY = 0;
                     _moveToX = -(World.ROOM_WIDTH * World.CHIP_SIZE);
                     _moveToY = 0;
+                    _state = (int)CamStates.TRANSITION_CARDINAL;
                     break;
                 case World.VIEW_DIR.DOWN:
                     _moveSpeedX = 0;
                     _moveSpeedY = 8;
                     _moveToX = 0;
                     _moveToY = ((World.ROOM_HEIGHT * World.CHIP_SIZE) * 1) + (World.HUD_HEIGHT);
+                    _state = (int)CamStates.TRANSITION_CARDINAL;
                     break;
                 case World.VIEW_DIR.RIGHT:
                     _moveSpeedX = 8;
                     _moveSpeedY = 0;
                     _moveToX = (World.ROOM_WIDTH * World.CHIP_SIZE);
                     _moveToY = 0;
+                    _state = (int)CamStates.TRANSITION_CARDINAL;
                     break;
                 case World.VIEW_DIR.UP:
                     _moveSpeedX = 0;
                     _moveSpeedY = -8;
                     _moveToX = 0;
                     _moveToY = -(World.ROOM_HEIGHT * World.CHIP_SIZE);
+                    _state = (int)CamStates.TRANSITION_CARDINAL;
                     break;
             }
-
-            _state = (int)CamStates.TRANSITION_CARDINAL;
         }
 
         internal CamStates GetState() {

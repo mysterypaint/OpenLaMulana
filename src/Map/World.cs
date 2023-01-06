@@ -52,7 +52,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public const int HUD_HEIGHT = CHIP_SIZE * 2;
         public const int ANIME_TILES_BEGIN = 1160;
         private View _transitionView = new View(ROOM_WIDTH, ROOM_HEIGHT, null, 0, 0);
-        private ShaderDrawingState _shdState = ShaderDrawingState.NO_SHADER;
 
         private Protag _protag = null;
 
@@ -83,8 +82,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         //public int CurrField { get; set; } = 1;
         //public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
-        public int CurrField { get; set; } = 6;
-        public int CurrViewX = 2, CurrViewY = 2, FieldCount = 0;
+        public int CurrField { get; set; } = 2;
+        public int CurrViewX = 2, CurrViewY = 4, FieldCount = 0;
         private int[] _currChipLine;
         private List<Field> _fields;
         private ActiveView[] _activeViews;
@@ -915,6 +914,84 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         internal Protag GetProtag()
         {
             return _protag;
+        }
+
+        internal void FieldTransitionImmediate(View currView, View destView, bool updateEntities = true, bool updateMusic = true)
+        {
+            _drawBossRoom = false;
+
+            // Camera is busy; Do not transition.
+            Camera.CamStates camState = Global.Camera.GetState();
+            if (camState != CamStates.NONE)
+                return;
+
+            // Grab the Fields we are transitioning with
+            Field currField = currView.GetParentField();
+            Field destField = destView.GetParentField();
+            
+            // Prepare the camera to transition to the new field
+            Global.Camera.UpdateMoveTarget(World.VIEW_DIR.SELF);
+            Global.Camera.SetState((int)CamStates.NONE);
+
+            // Reset the abort drawing state
+            _abortDrawing = false;
+            _disposedRenderTargetsFlag = false;
+
+            // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
+            if (updateEntities)
+            {
+                currField.DeleteAllFieldAndRoomEntities();
+                currField.UnlockAllViewSpawning();
+                currField.ClearVisitedViews();
+            }
+
+            CurrField = destField.ID;
+            CurrViewX = destView.X;
+            CurrViewY = destView.Y;
+
+            Global.Textures correctedTexID = Global.TextureManager.GetMappedWorldTexID(destField.MapGraphics);
+            var nextFieldTex = Global.TextureManager.GetTexture(correctedTexID);
+
+            // Set the transitioning Active View to the next field + its texture
+
+            ActiveView nextAV = _activeViews[(int)AViews.DEST];
+            nextAV.Position = new Vector2(0, 0);
+
+            nextAV.SetField(destField);
+            nextAV.SetFieldTex(nextFieldTex);
+
+            nextAV.SetView(destView);
+
+            // Prepare the camera to transition to the new field
+            Global.Camera.UpdateMoveTarget(World.VIEW_DIR.SELF);
+
+            // Reset the abort drawing state
+            _abortDrawing = false;
+            _disposedRenderTargetsFlag = false;
+
+            // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
+            if (updateEntities) {
+                currField.DeleteAllFieldAndRoomEntities();
+                currField.UnlockAllViewSpawning();
+                currField.ClearVisitedViews();
+                destField.DeleteAllFieldAndRoomEntities();
+                destField.UnlockAllViewSpawning();
+                destField.ClearVisitedViews();
+            }
+
+            // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
+            CurrField = destField.ID;
+            CurrViewX = destView.X;
+            CurrViewY = destView.Y;
+
+            // Change the BGM, if applicable
+            if (updateMusic)
+                Global.AudioManager.ChangeSongs(_fields[destField.ID].MusicNumber);
+
+            UpdateCurrActiveView();
+            
+            if (updateEntities)
+                UpdateEntities(destField.ID, currField, currView, destView.X, destView.Y, Vector2.Zero);
         }
     }
 }

@@ -82,17 +82,27 @@ namespace OpenLaMulana.System
 
             if (KeyPressed(Keys.K))
             {
+                Field currField = Global.World.GetCurrField();
                 var newVal = Global.World.CurrField + 1;
                 if (newVal > Global.World.FieldCount - 1)
                     newVal = 0;
-                Global.World.CurrField = newVal;
+
+                int mX = Global.World.CurrViewX;
+                int mY = Global.World.CurrViewY;
+                Field destField = Global.World.GetField(newVal);
+                Global.World.FieldTransitionImmediate(currField.GetView(mX, mY), destField.GetView(mX, mY));
             }
             else if (KeyPressed(Keys.J))
             {
+                Field currField = Global.World.GetCurrField();
                 var newVal = Global.World.CurrField - 1;
                 if (newVal < 0)
                     newVal = Global.World.FieldCount - 1;
-                Global.World.CurrField = newVal;
+
+                int mX = Global.World.CurrViewX;
+                int mY = Global.World.CurrViewY;
+                Field destField = Global.World.GetField(newVal);
+                Global.World.FieldTransitionImmediate(currField.GetView(mX, mY), destField.GetView(mX, mY));
             }
             else if (KeyPressed(Keys.T))
             {

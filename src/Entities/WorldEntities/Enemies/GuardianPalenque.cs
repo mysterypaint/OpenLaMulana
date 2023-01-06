@@ -12,7 +12,6 @@ namespace OpenLaMulana.Entities.WorldEntities
     {
         private int spritesMax = 65;
         private Sprite[] _sprites = new Sprite[65];
-        private int _sprNum = 0;
         private View _bossRoom, _bossDefeatedRoom = null;
         private int _ts = World.CHIP_SIZE;
         private GenericGlobalWorldEntity _upperBody, _lowerBody = null;
