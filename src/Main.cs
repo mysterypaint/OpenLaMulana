@@ -112,10 +112,10 @@ namespace OpenLaMulana
 
             long val = Global.GameRNG.RollDice(9);
 
-            Global.World = new World();
+            _protag = new Protag(new Vector2(0, 0));
+            Global.World = new World(_protag);
             _jukebox = new Jukebox();
             Global.Camera = new Camera();
-            _protag = new Protag(new Vector2(0, 0));
             _protag.DrawOrder = 100;
             Global.Camera.SetProtag(_protag);
 

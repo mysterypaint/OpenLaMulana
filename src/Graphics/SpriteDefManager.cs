@@ -141,7 +141,7 @@ namespace OpenLaMulana
                 }
                 newSpriteDef.SetSize(new Vector2(spriteWidth, spriteHeight));
                 newSheet.Add(newSpriteDef);
-                newSpriteDef = null;
+                //newSpriteDef = null;
 
                 _sprDefSheets.Add(sheetID, newSheet);
                 //List<SpriteDef> spriteDefs = new List<SpriteDef>();

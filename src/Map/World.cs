@@ -54,6 +54,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         private View _transitionView = new View(ROOM_WIDTH, ROOM_HEIGHT, null, 0, 0);
         private ShaderDrawingState _shdState = ShaderDrawingState.NO_SHADER;
 
+        private Protag _protag = null;
+
         public enum SpecialChipTypes
         {
             BACKGROUND = 0,
@@ -79,8 +81,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         };
 
-        public int CurrField { get; set; } = 1;
-        public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
+        //public int CurrField { get; set; } = 1;
+        //public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
+        public int CurrField { get; set; } = 6;
+        public int CurrViewX = 2, CurrViewY = 2, FieldCount = 0;
         private int[] _currChipLine;
         private List<Field> _fields;
         private ActiveView[] _activeViews;
@@ -115,7 +119,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         };
 
-        public World()
+        public World(Protag protag)
         {
             _fields = new List<Field>();
 
@@ -161,6 +165,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             }
 
             _currChipLine = _fields[CurrField].GetChipline();
+            _protag = protag;
         }
 
         public Field GetField(int index)
@@ -433,7 +438,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
                             // Handle animated Chips here
                             var animeSpeed = thisChip.AnimeSpeed;
-                            var animeFrames = thisChip.GetAnimeFrames();
+                            var animeFrames = thisChip.GetAnimeFramesAsRawData();
                             var maxFrames = animeFrames.Length;
 
                             if (animeSpeed > 0)
@@ -735,12 +740,25 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                         nextAV = _activeViews[(int)AViews.DEST];
                         nextAV.Position = new Vector2(0, 0);
 
+                        View bossView = bossViews[destViewX];
+                        if (thisField.ID == 5) {
+                            // Viy battle; remove the destination's ladder before transitioning to this screen
+                            bossView = bossViews[1];
+
+                            for (int y = 0; y <= 4; y++)
+                            {
+                                for (int x = 7; x <= 8; x++)
+                                {
+                                    bossView.Chips[x, y].CloneTile(bossView.Chips[6, 0]);
+                                }
+                            }
+                        }
                         nextAV.SetField(null);
                         nextAV.SetFieldTex(thisFieldTex);
-                        nextAV.SetView(bossViews[destViewX]);
+                        nextAV.SetView(bossView);
 
                         // Update all the transition tiles to create the transition effect
-                        drawingTileID = (20 * 40) + (40 * warpType);
+                        drawingTileID = (10 * 40 * 2) + (40 * 2 * warpType);
                         frame0 = -ANIME_TILES_BEGIN + drawingTileID;
                         animeSpeed = 3;
                         animatedTileInfo = new int[17];
@@ -752,11 +770,12 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                             animatedTileInfo[1 + i] = frame0 + ANIME_TILES_BEGIN + i;
                         }
 
-                        for (var y = 0; y < ROOM_HEIGHT; y++)
+                        for (var y = 0; y < ROOM_HEIGHT; y += 2)
                         {
                             for (var x = 0; x < ROOM_WIDTH; x++)
                             {
                                 _transitionView.Chips[x, y] = new Chip((short)drawingTileID, animatedTileInfo);
+                                _transitionView.Chips[x, y + 1] = new Chip((short)(drawingTileID + 40), animatedTileInfo);
                             }
                         }
 
@@ -891,6 +910,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         internal Field GetCurrField()
         {
             return _fields[CurrField];
+        }
+
+        internal Protag GetProtag()
+        {
+            return _protag;
         }
     }
 }

@@ -39,16 +39,23 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             viewCoords = new Point(_parentView.X, _parentView.Y);
         }
 
-        public abstract void Update(GameTime gameTime);
-
-        public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
-
         ~IRoomWorldEntity()
         {
             foreach (IGameEntity entity in _myEntities)
             {
                 Global.EntityManager.RemoveEntity(entity);
             }
+
+            Global.World.GetCurrField().GetRoomEntities().Remove(this);
+        }
+
+        public abstract void Update(GameTime gameTime);
+
+        public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
+
+        public void SetSprite(Sprite sprite)
+        {
+            _sprIndex = sprite;
         }
 
         public IGameEntity InstanceCreate(IGameEntity entity)
@@ -60,6 +67,17 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             _myEntities.Add(rE);
 
             return rE;
+        }
+
+        public IGameEntity InstanceCreatePersistent(IGameEntity entity)
+        {
+            IGlobalWorldEntity gE = (IGlobalWorldEntity)entity;
+            gE.ManuallySpawned = true;
+
+            Global.EntityManager.AddEntity(gE);
+            Global.World.GetCurrField().GetFieldEntities().Add(gE);
+
+            return gE;
         }
 
         public IGameEntity InstanceDestroy(IGameEntity entity)

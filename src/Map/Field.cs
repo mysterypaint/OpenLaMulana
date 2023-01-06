@@ -541,6 +541,11 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             return _bossViews;
         }
 
+        internal void SetBossView(int id, View v)
+        {
+            _bossViews[id] = v;
+        }
+
         internal int GetBossID()
         {
             return _bossID;

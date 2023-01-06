@@ -46,8 +46,14 @@ namespace OpenLaMulana
             _animationTimer = AnimeSpeed;
         }
 
-        public int[] GetAnimeFrames()
+        public int[] GetAnimeFramesAsRawData()
         {
+            if (!IsAnime)
+                return null;
+            int[] rawAnimeFrames = new int[2 + _animeFrames.Length];
+            rawAnimeFrames[0] = _animeFrames[0] - World.ANIME_TILES_BEGIN;
+            rawAnimeFrames[1] = AnimeSpeed;
+            Array.Copy(_animeFrames, 0, rawAnimeFrames, 2, _animeFrames.Length);
             return _animeFrames;
         }
 
@@ -62,6 +68,21 @@ namespace OpenLaMulana
 
                 _animationTimer = AnimeSpeed;
             }
+        }
+
+        internal void SetAnimeFrames(int[] animeFrames)
+        {
+            if (animeFrames != null) {
+                _animeFrames = animeFrames;
+            }
+        }
+
+        internal void CloneTile(Chip modelChip)
+        {
+            this.TileID = modelChip.TileID;
+            this.AnimeSpeed = modelChip.AnimeSpeed;
+            this.SetAnimeFrames(modelChip.GetAnimeFramesAsRawData());
+            this.IsAnime = modelChip.IsAnime;
         }
     }
 }

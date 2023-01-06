@@ -7,7 +7,7 @@ using System;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class GuardianSakit : IRoomWorldEntity
+    internal class GuardianSakit : IGlobalWorldEntity
     {
         private int spritesMax = 7;
         Sprite[] sprites = new Sprite[7];

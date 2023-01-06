@@ -103,7 +103,7 @@ namespace OpenLaMulana
                         // Handle animated Chips here
 
                         var animeSpeed = thisChip.AnimeSpeed;
-                        var animeFrames = thisChip.GetAnimeFrames();
+                        var animeFrames = thisChip.GetAnimeFramesAsRawData();
 
                         if (animeSpeed > 0)
                         {
@@ -208,6 +208,21 @@ namespace OpenLaMulana
                     }
                     break;
             }
+        }
+
+        internal View CloneView()
+        {
+            View clonedView = new View(ROOM_WIDTH, ROOM_HEIGHT, _parentField, X, Y);
+
+            for (var y = 0; y < ROOM_HEIGHT; y++)
+            {
+                for (var x = 0; x < ROOM_WIDTH; x++)
+                {
+                    clonedView.Chips[x, y] = new Chip((short)this.Chips[x, y].TileID, this.Chips[x, y].GetAnimeFramesAsRawData());
+                }
+            }
+
+            return clonedView;
         }
     }
 }

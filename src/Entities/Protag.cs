@@ -424,10 +424,20 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         {
             _hsp = hsp;
         }
+
         public void SetVsp(int vsp)
         {
             _vsp = vsp;
         }
 
+        public void ApplyVector(Vector2 offset)
+        {
+            Position += offset;
+        }
+
+        internal bool IsGrounded()
+        {
+            return _grounded;
+        }
     }
 }
