@@ -22,7 +22,7 @@ namespace OpenLaMulana.Audio
             InitializeComments();
         }
 
-        public int DrawOrder => 0;
+        public int DrawOrder { get; set; } = 0;
 
         public void Update(GameTime gameTime)
         {

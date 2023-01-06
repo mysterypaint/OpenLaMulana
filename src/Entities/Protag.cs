@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
+using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities
 {
@@ -123,18 +124,18 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Otherwise, the order shouldn’t matter much. Then, for each axis:
             */
 
-        // Step X
+            // Step X
 
-        // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
-        //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
+            // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
+            //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-        _moveX = Global.InputController.DirMoveX;
+            _moveX = Global.InputController.DirMoveX;
             if (_moveX == 1)
                 FacingX = Facing.RIGHT;
             else if (_moveX == -1)
                 FacingX = Facing.LEFT;
 
-            View currRoom = Global.World.GetCurrentView();// (Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
+            View currRoom = Global.World.GetActiveViews()[(int)AViews.CURR].GetView();// (Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
 
             if (_moveX != 0)
             {

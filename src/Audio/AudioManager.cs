@@ -20,7 +20,7 @@ namespace OpenLaMulana
         private string[] _bgmFNames = new string[76];
         private bool _guidanceGateFirstTime = true;
 
-        public int DrawOrder => 0;
+        public int DrawOrder { get; set; } = 0;
         public Effect ActiveShader { get; set; } = null;
 
         public float AudioManBGMVolScale { get; private set; } = 0.8f;

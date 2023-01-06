@@ -11,7 +11,7 @@ namespace OpenLaMulana
         private float _timeUntilNextFrame = 1.0f;
         private bool _canStepFrame = false;
 
-        public int DrawOrder => 0;
+        public int DrawOrder { get; set; } = 0;
 
         public Effect ActiveShader => null;
 

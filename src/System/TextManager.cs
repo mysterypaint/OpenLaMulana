@@ -19,7 +19,7 @@ namespace OpenLaMulana.System
             MAX
         };
 
-        public int DrawOrder => 999;
+        public int DrawOrder { get; set; } = 0;
         public Effect ActiveShader { get; set; } = null;
 
         private const int TEXT_WIDTH = 8;

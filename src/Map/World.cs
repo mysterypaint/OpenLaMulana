@@ -82,8 +82,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         //public int CurrField { get; set; } = 1;
         //public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
-        public int CurrField { get; set; } = 2;
-        public int CurrViewX = 2, CurrViewY = 4, FieldCount = 0;
+//        public int CurrField { get; set; } = 2;
+//        public int CurrViewX = 2, CurrViewY = 4, FieldCount = 0;
+        public int CurrField { get; set; } = 5;
+        public int CurrViewX = 0, CurrViewY = 0, FieldCount = 0;
         private int[] _currChipLine;
         private List<Field> _fields;
         private ActiveView[] _activeViews;
@@ -184,6 +186,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _activeViews[(int)AViews.DEST].SetFieldTex(nextFieldTex);
             UpdateCurrActiveView();
             UpdateEntities(CurrField, thisField, thisView, CurrViewX, CurrViewY, Vector2.Zero);
+        }
+
+        public ActiveView[] GetActiveViews()
+        {
+            return _activeViews;
         }
 
         // Returns new currentLine; end when it returns -1

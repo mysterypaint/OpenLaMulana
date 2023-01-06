@@ -3,11 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Graphics
 {
     public class SpriteAnimation
     {
+        public SpriteAnimation()
+        {
+        }
 
         private List<SpriteAnimationFrame> _frames = new List<SpriteAnimationFrame>();
 
@@ -149,5 +153,29 @@ namespace OpenLaMulana.Graphics
 
         }
 
+        public static SpriteAnimation CreateSimpleAnimation(Sprite[] spriteArray, float frameLength)
+        {
+            SpriteAnimation anim = new SpriteAnimation();
+
+            int i = 0;
+            foreach(Sprite s in spriteArray)
+            {
+                Sprite sprite = new Sprite(s.Texture, s.X + i * s.OriginX, s.Y + i * s.OriginY, s.Width, s.Height);
+                anim.AddFrame(sprite, frameLength * i);
+
+                if (i == spriteArray.Length - 1)
+                    anim.AddFrame(sprite, frameLength * (i + 1));
+                i++;
+            }
+
+            return anim;
+        }
+
+        internal static SpriteAnimation CreateSimpleAnimation(Sprite sprite, float frameLength)
+        {
+            SpriteAnimation anim = new SpriteAnimation();
+            anim.AddFrame(sprite, frameLength);
+            return anim;
+        }
     }
 }
