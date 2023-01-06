@@ -55,17 +55,22 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
                 case AnkhStates.USABLE:
                     _sparklingParticles.Update(gameTime);
-
-                    if (Global.InputController.KeyJumpPressed)
+                    if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
                     {
+                        if (Global.AudioManager.IsPlaying() != 20)
+                            Global.AudioManager.ChangeSongs(20);
 
-                        _state = AnkhStates.ACTIVATED;
-                        _activationTimer = 35.0f;
+                        if (Global.InputManager.GetPressedKeyState(Global.ControllerKeys.JUMP))
+                        {
 
-                        if (Global.AudioManager.IsPlaying() >= 0)
-                            Global.AudioManager.StopMusic();
-                        Global.AudioManager.PlaySFX(SFX.ANKH_ACTIVATED);
-                        _ankhActivatedParticle = (AnkhParticle)InstanceCreate(new AnkhParticle((int)Position.X, (int)Position.Y - 16, 0, 0, 0, 0, null));
+                            _state = AnkhStates.ACTIVATED;
+                            _activationTimer = 35.0f;
+
+                            if (Global.AudioManager.IsPlaying() >= 0)
+                                Global.AudioManager.StopMusic();
+                            Global.AudioManager.PlaySFX(SFX.ANKH_ACTIVATED);
+                            _ankhActivatedParticle = (AnkhParticle)InstanceCreate(new AnkhParticle((int)Position.X, (int)Position.Y - 16, 0, 0, 0, 0, null));
+                        }
                     }
                     break;
                 case AnkhStates.ACTIVATED:
@@ -80,6 +85,8 @@ namespace OpenLaMulana.Entities.WorldEntities
                         View[] bossViews = Global.World.GetCurrField().GetBossViews();
                         //FieldTransitionCardinalBoss
                         _bossID = (Global.BossIDs)Global.World.GetCurrField().GetBossID();
+
+                        Global.Camera.SetState((int)System.Camera.CamStates.STANDBY);
                         switch (_bossID)
                         {
                             default:
@@ -141,8 +148,6 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
                 case AnkhStates.USABLE:
                     _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                    if (Global.AudioManager.IsPlaying() != 20)
-                        Global.AudioManager.ChangeSongs(20);
                     if (_sparklingParticles.IsPlaying)
                         _sparklingParticles.Draw(spriteBatch, Position + new Vector2(0, World.CHIP_SIZE));
                     break;

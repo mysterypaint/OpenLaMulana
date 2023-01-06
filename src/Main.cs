@@ -40,7 +40,6 @@ namespace OpenLaMulana
 
         private Protag _protag;
         private Jukebox _jukebox;
-        private KeyboardState _previousKeyboardState;
         private Effect activeShader = null;
 
         public Main()
@@ -113,13 +112,16 @@ namespace OpenLaMulana
             long val = Global.GameRNG.RollDice(9);
 
             _protag = new Protag(new Vector2(0, 0));
+            Global.Protag = _protag;
             Global.World = new World(_protag);
             _jukebox = new Jukebox();
+            Global.Jukebox = _jukebox;
             Global.Camera = new Camera();
             _protag.DrawOrder = 100;
             Global.Camera.SetProtag(_protag);
 
-            Global.InputController = new InputController(_protag, _jukebox);
+            Global.InputManager = new InputManager();
+            Global.InputManager.Init();
             Global.SpriteDefManager = new SpriteDefManager();
 
             Global.EntityManager.AddEntity(_protag);
@@ -149,20 +151,17 @@ namespace OpenLaMulana
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Global.InputManager.Update(gameTime);
+
+            if (InputManager.DirectKeyboardCheckPressed(Keys.Escape))
                 Exit();
 
             Global.Camera.Update(gameTime);
             Global.AudioManager.Update(gameTime);
             base.Update(gameTime);
 
-            KeyboardState keyboardState = Keyboard.GetState();
-            bool isStartKeyPressed, wasStartKeyPressed, isAltKeyDown;
-
-            isStartKeyPressed = keyboardState.IsKeyDown(Keys.Enter);
-            wasStartKeyPressed = _previousKeyboardState.IsKeyDown(Keys.Enter);
-            isAltKeyDown = (keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt));
-            if (isAltKeyDown && (isStartKeyPressed && !wasStartKeyPressed))
+            bool isAltKeyDown = (InputManager.DirectKeyboardCheckPressed(Keys.LeftAlt) || InputManager.DirectKeyboardCheckPressed(Keys.RightAlt));
+            if (isAltKeyDown && InputManager.DirectKeyboardCheckPressed(Keys.Enter))
             {
                 Global.GraphicsDeviceManager.ToggleFullScreen();
                 Global.GraphicsDeviceManager.ApplyChanges();
@@ -171,9 +170,7 @@ namespace OpenLaMulana
             switch (State)
             {
                 case Global.GameState.PLAYING:
-                    Global.InputController.ProcessControls(gameTime);
-
-                    if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
+                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.INVENTORY])
                     {
                         ToggleGamePause();
                     }
@@ -181,7 +178,7 @@ namespace OpenLaMulana
                 case Global.GameState.PAUSED:
                     JukeboxRoutine();
                     Global.AudioManager.PauseMusic();
-                    if (!isAltKeyDown && isStartKeyPressed && !wasStartKeyPressed)
+                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.INVENTORY])
                     {
                         ToggleGamePause();
                     }
@@ -196,7 +193,7 @@ namespace OpenLaMulana
                     JukeboxRoutine();
                     break;
                 case Global.GameState.INITIAL:
-                    if (isStartKeyPressed && !wasStartKeyPressed)
+                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.INVENTORY])
                     {
                         StartGame();
                     }
@@ -210,7 +207,7 @@ namespace OpenLaMulana
             if (mouseState.LeftButton == ButtonState.Pressed)
                 _protag.Position = new Vector2(mouseState.X / _displayZoomFactor, mouseState.Y / _displayZoomFactor);
 
-            if (keyboardState.IsKeyDown(Keys.F8) && !_previousKeyboardState.IsKeyDown(Keys.F8))
+            if (InputManager.DirectKeyboardCheckPressed(Keys.F8))
             {
                 //ResetSaveState();
                 _shaderMode++;
@@ -218,7 +215,7 @@ namespace OpenLaMulana
                     _shaderMode = 0;
             }
 
-            if (keyboardState.IsKeyDown(Keys.F7) && !_previousKeyboardState.IsKeyDown(Keys.F7) && !Global.GraphicsDeviceManager.IsFullScreen)
+            if (InputManager.DirectKeyboardCheckPressed(Keys.F7) && !Global.GraphicsDeviceManager.IsFullScreen)
             {
                 _displayZoomMax = CalcDisplayZoomMax();
                 _displayZoomFactor += 1;
@@ -226,8 +223,6 @@ namespace OpenLaMulana
                     _displayZoomFactor = 1;
                 ToggleDisplayMode();
             }
-
-            _previousKeyboardState = keyboardState;
 
             Global.EntityManager.Update(gameTime);
         }
@@ -320,7 +315,7 @@ namespace OpenLaMulana
                 case Global.GameState.TRANSITION:
                     //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
                     //Globals.TextManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
-                    Global.TextManager.DrawText(0, 0, "Press Enter to Begin");
+                    Global.TextManager.DrawText(0, 0, "Press Start or F2 to Begin");
                     break;
                 default:
                 case Global.GameState.MSX_INVENTORY:
@@ -391,7 +386,7 @@ namespace OpenLaMulana
 
             State = Global.GameState.PLAYING;
             _protag.Initialize();
-            Global.InputController.BlockInputTemporarily();
+            InputManager.BlockInputTemporarily();
 
             return true;
 

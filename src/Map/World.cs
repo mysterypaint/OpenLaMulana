@@ -708,7 +708,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Camera is busy; Do not transition.
             Camera.CamStates camState = Global.Camera.GetState();
-            if (camState != CamStates.NONE)
+            if (camState != CamStates.NONE && camState != CamStates.STANDBY)
                 return;
 
             ActiveShader = Global.ShdTransition;

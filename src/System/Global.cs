@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
@@ -189,12 +190,41 @@ namespace OpenLaMulana
             SPEEDING_UP,
             MAX
         }
+
+        public enum ControllerTypes
+        {
+            Keyboard,
+            Gamepad,
+            Max
+        };
+
+        public enum ControllerKeys
+        {
+            UP,
+            DOWN,
+            LEFT,
+            RIGHT,
+            JUMP,
+            WHIP,
+            SUBWEAPON,
+            ITEM,
+            INVENTORY,
+            PAUSE,
+            SUB_SHIFT_LEFT,
+            SUB_SHIFT_RIGHT,
+            MAIN_WEAPON_SHIFT_LEFT,
+            MAIN_WEAPON_SHIFT_RIGHT,
+            MENU_CONFIRM,
+            MENU_CANCEL,
+            MAX
+        };
+
         public static Effect ShdTransition, ShdHueShift, ShdBinary, ShdMaskingBlack;
 
         public static GraphicsDevice GraphicsDevice;
         public static GraphicsDeviceManager GraphicsDeviceManager;
         public static Camera Camera;
-        public static InputController InputController;
+        public static InputManager InputManager;
         public static World World;
         public static EntityManager EntityManager;
         public static AudioManager AudioManager;
@@ -204,6 +234,8 @@ namespace OpenLaMulana
         public static GameRNG GameRNG;
         public static SpriteBatch SpriteBatch;
         public static TextureManager TextureManager;
+        public static Protag Protag;
+        public static Jukebox Jukebox;
 
         public static Languages CurrLang = Languages.English;
 

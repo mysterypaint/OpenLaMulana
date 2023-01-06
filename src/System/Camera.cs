@@ -69,6 +69,7 @@ namespace OpenLaMulana.System
             TRANSITION_CARDINAL,
             TRANSITION_PIXELATE,
             TRANSITION_WIPE,
+            STANDBY, // Waiting for next action from elsewhere
             MAX
         };
 
@@ -109,6 +110,8 @@ namespace OpenLaMulana.System
             switch (_state)
             {
                 case (int)CamStates.NONE:
+                    break;
+                case (int)CamStates.STANDBY:
                     break;
                 case (int)CamStates.TRANSITION_PIXELATE:
                     // Perform this when done to update visuals
@@ -216,7 +219,7 @@ namespace OpenLaMulana.System
                         }
                     }
 
-                    Position = new Vector2(posX, posY); //Global.InputController.DirMoveY
+                    Position = new Vector2(posX, posY); //Global.InputManager.DirMoveY
                     break;
             }
         }

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using static OpenLaMulana.Entities.World;
@@ -127,7 +128,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Update(GameTime gameTime)
         {
-            if (Global.InputController.KeyWhipPressed)
+            if (InputManager.PressedKeys[(int)Global.ControllerKeys.WHIP])
             {
                 _sprNum++;
                 if (_sprNum >= spritesMax)

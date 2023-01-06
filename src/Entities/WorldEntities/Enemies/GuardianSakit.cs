@@ -92,7 +92,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             int animeSpeed = 6;
 
              * 
-                         if (Global.InputController.KeyWhipPressed) {
+                         if (Global.InputManager.KeyWhipPressed) {
                 _sprNum++;
                 if (_sprNum >= (int)SakitSprites.Max)
                     _sprNum = 0;

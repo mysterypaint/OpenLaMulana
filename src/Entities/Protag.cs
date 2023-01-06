@@ -129,7 +129,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
             //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-            _moveX = Global.InputController.DirMoveX;
+            _moveX = InputManager.DirMoveX;
             if (_moveX == 1)
                 FacingX = Facing.RIGHT;
             else if (_moveX == -1)
@@ -259,15 +259,15 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Position = new Vector2(posX, posY);
 
             // Step Y
-            if (Global.InputController.KeyJumpPressed)
+            if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
                 Global.AudioManager.PlaySFX(SFX.P_JUMP);
 
-            if (Global.InputController.KeyJumpHeld && dy <= 0 && _grounded)
+            if (InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP] && dy <= 0 && _grounded)
             {
                 State = PlayerState.JUMPING;
             }
 
-            _moveY = Global.InputController.DirMoveY;
+            _moveY = InputManager.DirMoveY;
             if (_moveY < 0)
             {
                 FacingY = Facing.UP;
