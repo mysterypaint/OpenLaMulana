@@ -46,17 +46,14 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
-            {
-                if (gameTime.TotalGameTime.Ticks % (_blinkSpeed * 6) == 0)
-                    _isBlue = !_isBlue;
+            if (gameTime.TotalGameTime.Ticks % (_blinkSpeed * 6) == 0)
+                _isBlue = !_isBlue;
 
-                if (_isBlue)
-                    _sprIndex = _sprAnimBlueSpinning.CurrentFrame.Sprite;
-                else
-                    _sprIndex = _sprAnimRedSpinning.CurrentFrame.Sprite;
-                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-            }
+            if (_isBlue)
+                _sprIndex = _sprAnimBlueSpinning.CurrentFrame.Sprite;
+            else
+                _sprIndex = _sprAnimRedSpinning.CurrentFrame.Sprite;
+            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
         public override void Update(GameTime gameTime)

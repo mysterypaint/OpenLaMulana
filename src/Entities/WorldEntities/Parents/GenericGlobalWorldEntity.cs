@@ -23,10 +23,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (!_texChanged) {
-                if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
-                {
-                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                }
+                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
             }
             else
                 _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);

@@ -133,24 +133,21 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
+            switch (_state)
             {
-                switch (_state)
-                {
-                    default:
-                    case AnkhStates.VISIBLE:
-                        _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                        break;
-                    case AnkhStates.USABLE:
-                        _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                        if (Global.AudioManager.IsPlaying() != 20)
-                            Global.AudioManager.ChangeSongs(20);
-                        if (_sparklingParticles.IsPlaying)
-                            _sparklingParticles.Draw(spriteBatch, Position + new Vector2(0, World.CHIP_SIZE));
-                        break;
-                    case AnkhStates.ACTIVATED:
-                        break;
-                }
+                default:
+                case AnkhStates.VISIBLE:
+                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+                    break;
+                case AnkhStates.USABLE:
+                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+                    if (Global.AudioManager.IsPlaying() != 20)
+                        Global.AudioManager.ChangeSongs(20);
+                    if (_sparklingParticles.IsPlaying)
+                        _sparklingParticles.Draw(spriteBatch, Position + new Vector2(0, World.CHIP_SIZE));
+                    break;
+                case AnkhStates.ACTIVATED:
+                    break;
             }
         }
     }

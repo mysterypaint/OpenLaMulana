@@ -52,11 +52,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             if (!Visible)
                 return;
 
-
-            if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
-            {
-                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-            }
+            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
         public override void Update(GameTime gameTime)
@@ -72,7 +68,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                         _beginningWaitTimer = 30;
                         _state = Global.EnemyStates.ACTIVATING;
-                        
+
                     }
                     break;
                 case Global.EnemyStates.ACTIVATING:
@@ -81,7 +77,8 @@ namespace OpenLaMulana.Entities.WorldEntities
                         _beginningWaitTimer = 0;
                         _state = Global.EnemyStates.SPEEDING_UP;
                     }
-                    else {
+                    else
+                    {
                         if (Global.AnimationTimer.OneFrameElapsed())
                             _beginningWaitTimer--;
                     }
@@ -93,7 +90,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             speedUpTimer--;
                     }
 
-                    foreach(int i in _movementFrames)
+                    foreach (int i in _movementFrames)
                     {
                         if (i == speedUpTimer)
                             ShiftScreenRight();
@@ -119,7 +116,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             Chip[] rightMostColumn = new Chip[World.ROOM_HEIGHT];
 
             // Check if we've already shifted out of the first room
-            
+
             for (int y = 0; y < World.ROOM_HEIGHT; y++)
             {
                 rightMostColumn[y] = finalView.Chips[(World.ROOM_WIDTH - 1) - (_timesShifted % 2), y];

@@ -403,6 +403,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     else
                         newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, destView);
                     break;
+                case EntityIDs.ENEMY_SKELETON:
+                    newObj = new EnemySkeleton(x, y, op1, op2, op3, op4, destView);
+                    break;
                 case EntityIDs.ENEMY_BAT:
                     newObj = new EnemyBat(x, y, op1, op2, op3, op4, destView);
                     break;
@@ -415,17 +418,38 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.MOVING_PLATFORM:
                     newObj = new MovingPlatform(x, y, op1, op2, op3, op4, destView);
                     break;
+                case EntityIDs.PUSHABLE_BLOCK:
+                    newObj = new PushableBlock(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.OBTAINABLE_SUBWEAPON:
+                    newObj = new ObtainableSubweapon(x, y, op1, op2, op3, op4, destView);
+                    break;
                 case EntityIDs.CEILING_SPIKE:
                     newObj = new CeilingSpike(x, y, op1, op2, op3, op4, destView);
                     break;
+                case EntityIDs.ENEMY_MYRMECOLEON:
+                    newObj = new EnemyMyrmecoleon(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.ENEMY_TOG_GENERATOR:
+                    newObj = new EnemyTogGenerator(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.ONE_WAY_DOOR:
+                    newObj = new OneWayDoor(x, y, op1, op2, op3, op4, destView);
+                    break;
                 case EntityIDs.FLOOR_SWITCH:
                     newObj = new FloorSwitch(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.ENEMY_SNOUT_LEAPER:
+                    newObj = new EnemySnoutLeaper(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.RUINS_TABLET:
                     newObj = new RuinsTablet(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.DAIS:
                     newObj = new Dais(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.BLOCK_FLOOR_SWITCH:
+                    newObj = new BlockFloorSwitch(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.BACKGROUND_SIGIL:
                     newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, destView);
@@ -438,11 +462,17 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.AKNH:
                     newObj = new Ankh(x, y, op1, op2, op3, op4, destView);
                     break;
+                case EntityIDs.OBTAINABLE_MAJOR_WEAPON:
+                    newObj = new ObtainableMajorWeapon(x, y, op1, op2, op3, op4, destView);
+                    break;
                 case EntityIDs.ENEMY_SOUL:
                     newObj = new EnemySoul(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.FIELD_TRANSITION:
                     newObj = new FieldTransition(x, y, op1, op2, op3, op4, destView);
+                    break;
+                case EntityIDs.ENEMY_A_BAO_A_QU:
+                    newObj = new EnemyABaoAQu(x, y, op1, op2, op3, op4, destView);
                     break;
             }
 
