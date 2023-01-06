@@ -77,9 +77,15 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public Protag(Vector2 position)
         {
+            State = PlayerState.MAIN_MENU;
+
             Position = position;
 
-            Initialize();
+            _chipWidth = World.CHIP_SIZE;
+            _chipHeight = World.CHIP_SIZE;
+            BBoxOriginX = 5;
+            BBoxOriginY = 12;
+            
 
             Texture2D spriteSheet = Global.TextureManager.GetTexture(Global.Textures.PROT1);
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
@@ -103,9 +109,23 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public void Update(GameTime gameTime)
         {
-            var chipline = Global.World.GetField(Global.World.CurrField).GetChipline();
+            switch (State)
+            {
+                case PlayerState.MAIN_MENU:
+                case PlayerState.PAUSED:
+                case PlayerState.CUTSCENE:
+                    break;
+                case PlayerState.IDLE:
+                case PlayerState.WALKING:
+                case PlayerState.JUMPING:
+                case PlayerState.FALLING:
+                case PlayerState.WHIPPING:
+                    var chipline = Global.World.GetField(Global.World.CurrField).GetChipline();
 
-            CollideAndMove(_moveSpeed, _moveSpeed, chipline);
+                    CollideAndMove(_moveSpeed, _moveSpeed, chipline);
+                    break;
+            }
+
             _prevState = State;
         }
 

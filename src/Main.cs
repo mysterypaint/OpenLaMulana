@@ -170,7 +170,7 @@ namespace OpenLaMulana
             switch (State)
             {
                 case Global.GameState.PLAYING:
-                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.INVENTORY])
+                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE])
                     {
                         ToggleGamePause();
                     }
@@ -178,7 +178,7 @@ namespace OpenLaMulana
                 case Global.GameState.PAUSED:
                     JukeboxRoutine();
                     Global.AudioManager.PauseMusic();
-                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.INVENTORY])
+                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE])
                     {
                         ToggleGamePause();
                     }
@@ -193,7 +193,7 @@ namespace OpenLaMulana
                     JukeboxRoutine();
                     break;
                 case Global.GameState.INITIAL:
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.INVENTORY])
+                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE])
                     {
                         StartGame();
                     }
@@ -315,7 +315,7 @@ namespace OpenLaMulana
                 case Global.GameState.TRANSITION:
                     //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
                     //Globals.TextManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
-                    Global.TextManager.DrawText(0, 0, "Press Start or F2 to Begin");
+                    Global.TextManager.DrawText(0, 0, "Press Select, or F1, to Begin");
                     break;
                 default:
                 case Global.GameState.MSX_INVENTORY:

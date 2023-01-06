@@ -30,11 +30,13 @@ namespace OpenLaMulana.System
         private static bool[,] _allPressedKeys = new bool[(int)ControllerTypes.Max, (int)ControllerKeys.MAX];
         private static bool[,] _allHeldKeys = new bool[(int)ControllerTypes.Max, (int)ControllerKeys.MAX];
         private static bool[,] _allReleasedKeys = new bool[(int)ControllerTypes.Max, (int)ControllerKeys.MAX];
+        public static bool[,] _joyInputs { get; private set; } = new bool[(int)ControllerTypes.Max, 4]; // 4 = Up/Down/Left/Right
         public static bool[] PressedKeys = new bool[(int)ControllerKeys.MAX];
         public static bool[] HeldKeys = new bool[(int)ControllerKeys.MAX];
         public static bool[] ReleasedKeys = new bool[(int)ControllerKeys.MAX];
 
         public static short DirMoveX, DirMoveY = 0;
+
 
         public void Init()
         {
@@ -107,10 +109,35 @@ namespace OpenLaMulana.System
 
         private bool CheckAllInputControllers(bool[,] allKeysOnController, ControllerKeys cK)
         {
-            for (ControllerTypes type = (ControllerTypes)0; type < ControllerTypes.Max; type++)
+            switch (cK)
             {
-                if (allKeysOnController[(int)type, (int)cK] == true)
-                    return true;
+                default:
+                    for (ControllerTypes type = (ControllerTypes)0; type < ControllerTypes.Max; type++)
+                    {
+                        if (allKeysOnController[(int)type, (int)cK] == true)
+                            return true;
+                    }
+                    break;
+                case ControllerKeys.UP:
+                case ControllerKeys.DOWN:
+                case ControllerKeys.LEFT:
+                case ControllerKeys.RIGHT:
+                    for (ControllerTypes type = (ControllerTypes)0; type < ControllerTypes.Max; type++)
+                    {
+                        if (allKeysOnController[(int)type, (int)cK] || _joyInputs[(int)type, (int)(cK)])
+                            return true;
+                    }
+                    break;
+                case ControllerKeys.JOY_UP:
+                case ControllerKeys.JOY_DOWN:
+                case ControllerKeys.JOY_LEFT:
+                case ControllerKeys.JOY_RIGHT:
+                    for (ControllerTypes type = (ControllerTypes)0; type < ControllerTypes.Max; type++)
+                    {
+                        if (allKeysOnController[(int)type, (int)cK] || _joyInputs[(int)type, (int)(cK - ControllerKeys.JOY_UP)])
+                            return true;
+                    }
+                    break;
             }
             return false;
         }
@@ -254,17 +281,17 @@ namespace OpenLaMulana.System
                 default:
                     _allPressedKeys[(int)ControllerTypes.Gamepad, (int)key] = t_gamePadState.IsButtonDown(checkingKey) && !t_previousGamePadState.IsButtonDown(checkingKey);
                     break;
-                case ControllerKeys.LEFT:
-                    if (true)//if (t_gamePadState.ThumbSticks.Left.X < -0.5f)
-                    {
-                        _allPressedKeys[(int)ControllerTypes.Gamepad, (int)key] = t_gamePadState.IsButtonDown(checkingKey) && !t_previousGamePadState.IsButtonDown(checkingKey);
-                    }
+                case ControllerKeys.JOY_LEFT:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_gamePadState.ThumbSticks.Left.X < -0.15f) && !(t_previousGamePadState.ThumbSticks.Left.X < -0.15f);
                     break;
-                case ControllerKeys.RIGHT:
-                    if (true) //if (t_gamePadState.ThumbSticks.Left.X > 0.5f)
-                    {
-                        _allPressedKeys[(int)ControllerTypes.Gamepad, (int)key] = t_gamePadState.IsButtonDown(checkingKey) && !t_previousGamePadState.IsButtonDown(checkingKey);
-                    }
+                case ControllerKeys.JOY_RIGHT:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_gamePadState.ThumbSticks.Left.X > 0.15f) && !(t_previousGamePadState.ThumbSticks.Left.X > 0.15f);
+                    break;
+                case ControllerKeys.JOY_DOWN:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_gamePadState.ThumbSticks.Left.Y < -0.15f) && !(t_previousGamePadState.ThumbSticks.Left.Y < -0.15f);
+                    break;
+                case ControllerKeys.JOY_UP:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_gamePadState.ThumbSticks.Left.Y > 0.15f) && !(t_previousGamePadState.ThumbSticks.Left.Y > 0.15f);
                     break;
             }
         }
@@ -283,17 +310,17 @@ namespace OpenLaMulana.System
                 default:
                     _allReleasedKeys[(int)ControllerTypes.Gamepad, (int)key] = t_previousGamePadState.IsButtonDown((Buttons)checkingKey);
                     break;
-                case ControllerKeys.LEFT:
-                    if (true)//if (t_gamePadState.ThumbSticks.Left.X < -0.5f)
-                    {
-                        _allReleasedKeys[(int)ControllerTypes.Gamepad, (int)key] = t_previousGamePadState.IsButtonDown((Buttons)checkingKey);
-                    }
+                case ControllerKeys.JOY_LEFT:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_previousGamePadState.ThumbSticks.Left.X < -0.15f);
                     break;
-                case ControllerKeys.RIGHT:
-                    if (true) //if (t_gamePadState.ThumbSticks.Left.X > 0.5f)
-                    {
-                        _allReleasedKeys[(int)ControllerTypes.Gamepad, (int)key] = t_previousGamePadState.IsButtonDown((Buttons)checkingKey);
-                    }
+                case ControllerKeys.JOY_RIGHT:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_previousGamePadState.ThumbSticks.Left.X > 0.15f);
+                    break;
+                case ControllerKeys.JOY_DOWN:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_previousGamePadState.ThumbSticks.Left.Y < -0.15f);
+                    break;
+                case ControllerKeys.JOY_UP:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_previousGamePadState.ThumbSticks.Left.Y > 0.15f);
                     break;
             }
         }
@@ -311,17 +338,17 @@ namespace OpenLaMulana.System
                 default:
                     _allHeldKeys[(int)ControllerTypes.Gamepad, (int)key] = t_gamePadState.IsButtonDown((Buttons)checkingKey);
                     break;
-                case ControllerKeys.LEFT:
-                    if (true)//if (t_gamePadState.ThumbSticks.Left.X < -0.5f)
-                    {
-                        _allHeldKeys[(int)ControllerTypes.Gamepad, (int)key] = t_gamePadState.IsButtonDown((Buttons)checkingKey);
-                    }
+                case ControllerKeys.JOY_LEFT:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_gamePadState.ThumbSticks.Left.X < -0.15f);
                     break;
-                case ControllerKeys.RIGHT:
-                    if (true) //if (t_gamePadState.ThumbSticks.Left.X > 0.5f)
-                    {
-                        _allHeldKeys[(int)ControllerTypes.Gamepad, (int)key] = t_gamePadState.IsButtonDown((Buttons)checkingKey);
-                    }
+                case ControllerKeys.JOY_RIGHT:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_gamePadState.ThumbSticks.Left.X > 0.15f);
+                    break;
+                case ControllerKeys.JOY_DOWN:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_gamePadState.ThumbSticks.Left.Y < -0.15f);
+                    break;
+                case ControllerKeys.JOY_UP:
+                    _joyInputs[(int)ControllerTypes.Gamepad, (int)(key - ControllerKeys.JOY_UP)] = (t_gamePadState.ThumbSticks.Left.Y > 0.15f);
                     break;
             }
         }

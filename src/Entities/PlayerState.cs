@@ -2,6 +2,7 @@
 {
     public enum PlayerState
     {
+        MAIN_MENU,
         IDLE,
         WALKING,
         JUMPING,
