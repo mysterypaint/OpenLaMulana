@@ -53,9 +53,12 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUBWEAPON] = (int)Keys.X;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.C;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.INVENTORY] = (int)Keys.F2;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CONFIRM] = (int)Keys.K;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CANCEL] = (int)Keys.J;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Keys.F2;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION] = (int)Keys.F3;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_EMULATOR] = (int)Keys.F4;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_CONFIG] = (int)Keys.F5;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CONFIRM] = (int)Keys.Z;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CANCEL] = (int)Keys.X;
 
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.LEFT] = (int)Buttons.DPadLeft;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.RIGHT] = (int)Buttons.DPadRight;
@@ -63,7 +66,7 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.DOWN] = (int)Buttons.DPadDown;
 
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.PAUSE] = (int)Buttons.Back;
-            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.INVENTORY] = (int)Buttons.Start;
+            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Buttons.Start;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_CONFIRM] = (int)Buttons.B;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_CANCEL] = (int)Buttons.A;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.ITEM] = (int)Buttons.Y;
@@ -74,6 +77,8 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.SUB_SHIFT_LEFT] = (int)Buttons.LeftShoulder;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MAIN_WEAPON_SHIFT_LEFT] = (int)Buttons.LeftTrigger;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MAIN_WEAPON_SHIFT_RIGHT] = (int)Buttons.RightTrigger;
+            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_MOVE_LEFT] = (int)Buttons.LeftTrigger;
+            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_MOVE_RIGHT] = (int)Buttons.RightTrigger;
         }
 
         public void Update(GameTime gameTime)

@@ -46,6 +46,7 @@ namespace OpenLaMulana
         {
             Global.GraphicsDeviceManager = new GraphicsDeviceManager(this);
             Global.GraphicsDeviceManager.GraphicsProfile = GraphicsProfile.HiDef;
+            Global.Main = this;
             Content.RootDirectory = "Content";
 
             // 30fps game
@@ -113,6 +114,8 @@ namespace OpenLaMulana
 
             _protag = new Protag(new Vector2(0, 0));
             Global.Protag = _protag;
+            Texture2D gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
+            Global.TextManager = new TextManager(gameFontTex);
             Global.World = new World(_protag);
             _jukebox = new Jukebox();
             Global.Jukebox = _jukebox;
@@ -126,14 +129,9 @@ namespace OpenLaMulana
 
             Global.EntityManager.AddEntity(_protag);
             Global.EntityManager.AddEntity(Global.World);
-            Global.EntityManager.AddEntity(Global.AudioManager);
             Global.EntityManager.AddEntity(Global.SpriteDefManager);
-            Global.EntityManager.AddEntity(Global.AnimationTimer);
-
-            Global.TextManager = Global.World.GetTextManager();
 
             Global.GameMenu = new GameMenu(Global.ScreenOverlayState.INVISIBLE, Global.TextManager);
-            Global.EntityManager.AddEntity(Global.TextManager);
             Global.EntityManager.AddEntity(Global.GameMenu);
 
             LoadSaveState();
@@ -158,6 +156,7 @@ namespace OpenLaMulana
 
             Global.Camera.Update(gameTime);
             Global.AudioManager.Update(gameTime);
+            Global.AnimationTimer.Update(gameTime);
             base.Update(gameTime);
 
             bool isAltKeyDown = (InputManager.DirectKeyboardCheckDown(Keys.LeftAlt) || InputManager.DirectKeyboardCheckDown(Keys.RightAlt));
@@ -174,6 +173,8 @@ namespace OpenLaMulana
                     {
                         ToggleGamePause();
                     }
+
+                    Global.EntityManager.Update(gameTime);
                     break;
                 case Global.GameState.PAUSED:
                     JukeboxRoutine();
@@ -200,7 +201,11 @@ namespace OpenLaMulana
                     break;
             }
 
-            DecrementCounters();
+            if (Global.AnimationTimer.OneFrameElapsed())
+            {
+                if (_pauseToggleTimer > 0)
+                    _pauseToggleTimer--;
+            }
 
             MouseState mouseState = Mouse.GetState();
 
@@ -223,8 +228,6 @@ namespace OpenLaMulana
                     _displayZoomFactor = 1;
                 ToggleDisplayMode();
             }
-
-            Global.EntityManager.Update(gameTime);
         }
 
         private int CalcDisplayZoomMax()
@@ -245,12 +248,6 @@ namespace OpenLaMulana
 
             int maxZoom = (int)Math.Floor((double)monitorWidth / idealWidth);
             return maxZoom;
-        }
-
-        private void DecrementCounters()
-        {
-            if (_pauseToggleTimer > 0)
-                _pauseToggleTimer--;
         }
 
         private void ToggleGamePause()
@@ -308,7 +305,7 @@ namespace OpenLaMulana
             samplerState: SamplerState.PointClamp,
             transformMatrix: Global.Camera.GetTransformation(GraphicsDevice),
             effect: activeShader);
-
+            List<IGameEntity> fieldEntities, roomEntities;
             switch (State)
             {
                 case Global.GameState.INITIAL:
@@ -323,6 +320,9 @@ namespace OpenLaMulana
                 case Global.GameState.MSX_EMULATOR:
                     break;
                 case Global.GameState.PAUSED:
+                    fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+                    roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
+                    Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
                     //_jukebox.Draw(_spriteBatch, gameTime);
                     break;
                 case Global.GameState.PLAYING:
@@ -339,8 +339,8 @@ namespace OpenLaMulana
                     int destRoomX = viewDest[(int)VIEW_DEST.X];
                     int destRoomY = viewDest[(int)VIEW_DEST.Y];*/
 
-                    List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
-                    List<IGameEntity> roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
+                    fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+                    roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
                     Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
                     /*
                     Globals.TextManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
@@ -356,6 +356,7 @@ namespace OpenLaMulana
 
             }
 
+            Global.TextManager.Draw(Global.SpriteBatch, gameTime);
             Global.SpriteBatch.End();
 
             base.Draw(gameTime);

@@ -212,7 +212,7 @@ namespace OpenLaMulana
             WHIP,
             SUBWEAPON,
             ITEM,
-            INVENTORY,
+            MENU_OPEN_INVENTORY,
             PAUSE,
             SUB_SHIFT_LEFT,
             SUB_SHIFT_RIGHT,
@@ -220,6 +220,11 @@ namespace OpenLaMulana
             MAIN_WEAPON_SHIFT_RIGHT,
             MENU_CONFIRM,
             MENU_CANCEL,
+            MENU_MOVE_LEFT,
+            MENU_MOVE_RIGHT,
+            MENU_OPEN_MSX_ROM_SELECTION,
+            MENU_OPEN_MSX_EMULATOR,
+            MENU_OPEN_CONFIG,
             MAX
         };
 
@@ -245,5 +250,6 @@ namespace OpenLaMulana
 
         public static SpriteDefManager SpriteDefManager { get; set; }
         public static AnimationTimer AnimationTimer { get; internal set; }
+        public static Main Main { get; internal set; }
     }
 }

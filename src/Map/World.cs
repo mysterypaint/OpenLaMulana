@@ -123,10 +123,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public World(Protag protag)
         {
             _fields = new List<Field>();
-
-            Texture2D gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
-            Global.TextManager = new TextManager(gameFontTex);
-
             _activeViews = new ActiveView[(int)AViews.MAX];
             for (var i = 0; i < _activeViews.Length; i++)
             {
@@ -385,6 +381,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         public void DrawPixelate(SpriteBatch spriteBatch, GameTime gameTime, ShaderDrawingState shaderState)
         {
+            float dt = 1.0f;
+            if (Global.Main.State == Global.GameState.PAUSED)
+                dt = 0.0f;
+
             if (_abortDrawing)
             {
                 // Make sure we draw normally for this frame
@@ -451,7 +451,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                             {
                                 if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
                                 {
-                                    thisChip.CurrFrame++;
+                                    thisChip.CurrFrame += dt;
 
                                     // Play the animation once, then stop and turn off the shader
                                     if (thisChip.CurrFrame >= maxFrames)
@@ -688,11 +688,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Finally, spawn the new entities for the destination View, but let the destination Field keep track of ALL of the entities (Field Entities, View Entities)
             nextField.SpawnEntities(nextView, nextField, thisView, thisField, offsetVector); // "thisField" was the previous Field we were on, regardless if we moved Fields or not
-        }
-
-        internal TextManager GetTextManager()
-        {
-            return Global.TextManager;
         }
 
         internal void UpdateCurrActiveView()

@@ -120,6 +120,8 @@ namespace OpenLaMulana.System
                     //Global.World.activeShader = null;
                     break;
                 case (int)CamStates.TRANSITION_CARDINAL:
+                    if (Global.Main.State == Global.GameState.PAUSED)
+                        break;
                     float posX = Position.X;
                     _protag.SetHsp(0);
                     float newPlayerX = _protag.Position.X;

@@ -5,7 +5,7 @@ using System;
 
 namespace OpenLaMulana
 {
-    public class AnimationTimer : IGameEntity
+    public class AnimationTimer
     {
         private float _animationFrameTime = 1f / Main.FPS;
         private float _timeUntilNextFrame = 1.0f;
