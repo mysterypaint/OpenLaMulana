@@ -238,7 +238,12 @@ namespace OpenLaMulana.System
 
         public static bool DirectKeyboardCheckPressed(Keys checkingKey)
         {
-            return t_keyboardState.IsKeyDown((Keys)checkingKey) && !t_previousKeyboardState.IsKeyDown((Keys)checkingKey);
+            return t_keyboardState.IsKeyDown(checkingKey) && !t_previousKeyboardState.IsKeyDown(checkingKey);
+        }
+
+        public static bool DirectKeyboardCheckDown(Keys checkingKey)
+        {
+            return t_keyboardState.IsKeyDown((Keys)checkingKey);
         }
 
         private static void KeyboardCheckPressed(ControllerKeys key)

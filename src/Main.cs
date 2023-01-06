@@ -160,7 +160,7 @@ namespace OpenLaMulana
             Global.AudioManager.Update(gameTime);
             base.Update(gameTime);
 
-            bool isAltKeyDown = (InputManager.DirectKeyboardCheckPressed(Keys.LeftAlt) || InputManager.DirectKeyboardCheckPressed(Keys.RightAlt));
+            bool isAltKeyDown = (InputManager.DirectKeyboardCheckDown(Keys.LeftAlt) || InputManager.DirectKeyboardCheckDown(Keys.RightAlt));
             if (isAltKeyDown && InputManager.DirectKeyboardCheckPressed(Keys.Enter))
             {
                 Global.GraphicsDeviceManager.ToggleFullScreen();

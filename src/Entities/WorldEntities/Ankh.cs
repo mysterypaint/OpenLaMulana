@@ -62,7 +62,6 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                         if (Global.InputManager.GetPressedKeyState(Global.ControllerKeys.JUMP))
                         {
-
                             _state = AnkhStates.ACTIVATED;
                             _activationTimer = 35.0f;
 
