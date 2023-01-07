@@ -24,7 +24,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private float _activationTimer = 0.0f;
         private AnkhParticle _ankhActivatedParticle = null;
 
-        public Ankh(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
+        public Ankh(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
             _sprIndex = new Sprite(_tex, 0, 64, 16, 16);
@@ -55,7 +55,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
                 case AnkhStates.USABLE:
                     _sparklingParticles.Update(gameTime);
-                    if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY)
+                    if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY && _parentView.GetParentField().ID == Global.World.CurrField)
                     {
                         if (Global.AudioManager.IsPlaying() != 20)
                             Global.AudioManager.ChangeSongs(20);
@@ -68,7 +68,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             if (Global.AudioManager.IsPlaying() >= 0)
                                 Global.AudioManager.StopMusic();
                             Global.AudioManager.PlaySFX(SFX.ANKH_ACTIVATED);
-                            _ankhActivatedParticle = (AnkhParticle)InstanceCreate(new AnkhParticle((int)Position.X, (int)Position.Y - 16, 0, 0, 0, 0, null));
+                            _ankhActivatedParticle = (AnkhParticle)InstanceCreate(new AnkhParticle((int)Position.X, (int)Position.Y - 16, 0, 0, 0, 0, true, null));
                         }
                     }
                     break;
@@ -97,27 +97,27 @@ namespace OpenLaMulana.Entities.WorldEntities
                             case Global.BossIDs.SAKIT:
                                 Global.AudioManager.ChangeSongs(24);
                                 Global.World.FieldTransitionPixelate(1, -1, 0, 0);
-                                _activatedGuardian = InstanceCreatePersistent(new GuardianSakit(-0xFFFF, -0xFFFF, 0, 0, 0, 0, null));
+                                _activatedGuardian = InstanceCreatePersistent(new GuardianSakit(-0xFFFF, -0xFFFF, 0, 0, 0, 0, true, null));
                                 break;
                             case Global.BossIDs.ELLMAC:
                                 Global.AudioManager.ChangeSongs(25);
                                 Global.World.FieldTransitionPixelate(1, -1, 0, 0);
-                                _activatedGuardian = InstanceCreatePersistent(new GuardianEllmac(-0xFFFF, -0xFFFF, 0, 0, 0, 0, null));
+                                _activatedGuardian = InstanceCreatePersistent(new GuardianEllmac(-0xFFFF, -0xFFFF, 0, 0, 0, 0, true, null));
                                 break;
                             case Global.BossIDs.BAHAMUT:
                                 Global.AudioManager.ChangeSongs(26);
                                 Global.World.FieldTransitionPixelate(1, -1, 0, 0);
-                                _activatedGuardian = InstanceCreatePersistent(new GuardianBahamut(-0xFFFF, -0xFFFF, 0, 0, 0, 0, null));
+                                _activatedGuardian = InstanceCreatePersistent(new GuardianBahamut(-0xFFFF, -0xFFFF, 0, 0, 0, 0, true, null));
                                 break;
                             case Global.BossIDs.VIY:
                                 Global.AudioManager.ChangeSongs(27);
                                 Global.World.FieldTransitionPixelate(1, -1, 0, 0);
-                                _activatedGuardian = InstanceCreatePersistent(new GuardianViy(-0xFFFF, -0xFFFF, 0, 0, 0, 0, null));
+                                _activatedGuardian = InstanceCreatePersistent(new GuardianViy(-0xFFFF, -0xFFFF, 0, 0, 0, 0, true, null));
                                 break;
                             case Global.BossIDs.PALENQUE:
                                 Global.AudioManager.ChangeSongs(28);
                                 Global.World.FieldTransitionPixelate(1, -1, 0, 0);
-                                _activatedGuardian = InstanceCreatePersistent(new GuardianPalenque(-0xFFFF, -0xFFFF, 0, 0, 0, 0, null));
+                                _activatedGuardian = InstanceCreatePersistent(new GuardianPalenque(-0xFFFF, -0xFFFF, 0, 0, 0, 0, true, null));
                                 break;
                             case Global.BossIDs.BAPHOMET:
                                 Global.AudioManager.ChangeSongs(29);

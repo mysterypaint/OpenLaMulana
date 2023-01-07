@@ -10,7 +10,7 @@ namespace OpenLaMulana.Entities.WorldEntities
     {
         private Sprite _sprOpen, _sprClosed;
 
-        public TreasureChest(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
+        public TreasureChest(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.MAPG00);
             _sprOpen = new Sprite(_tex, 304, 16, 16, 16);

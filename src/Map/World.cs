@@ -607,9 +607,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             if (CurrField != destField)
             {
                 // Give permission back to all the views to allow them to spawn entities
-                thisField.DeleteAllFieldAndRoomEntities();
+                thisField.QueueDeleteAllFieldAndRoomEntities();
                 thisField.UnlockAllViewSpawning();
-                thisField.ClearVisitedViews();
                 //nextField.DeleteAllFieldAndRoomEntities();
                 //nextField.UnlockAllViewSpawning();
                 //nextField.ClearVisitedViews();
@@ -618,7 +617,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             {// Otherwise, if moving to a new View within the same Field, delete all of the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
                 if (thisView.RoomNumber != nextView.RoomNumber)
                 {
-                    thisField.ClearVisitedViews();
+                    thisField.QueueClearVisitedViews();
                     thisField.UnlockAllViewSpawning();
                 }
             }
@@ -698,9 +697,24 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         internal void UpdateCurrActiveView()
         {
+            Field currField = _activeViews[(int)AViews.CURR].GetField();
+            Field destField = _activeViews[(int)AViews.DEST].GetField();
+            if (currField != null)
+            {
+                if (destField == null)
+                {
+                    currField.DeleteAllFieldAndRoomEntities();
+                } else if (currField.ID != destField.ID)
+                {
+                    currField.DeleteAllFieldAndRoomEntities();
+                }
+                currField.ClearVisitedViews();
+            }
             _activeViews[(int)AViews.CURR].SetView(_activeViews[(int)AViews.DEST].GetView());
             _activeViews[(int)AViews.CURR].SetField(_activeViews[(int)AViews.DEST].GetField());
             _activeViews[(int)AViews.CURR].SetFieldTex(_activeViews[(int)AViews.DEST].GetFieldTex());
+
+
         }
 
         internal void FieldTransitionPixelate(int warpType, int destField, int destViewX, int destViewY)
@@ -747,7 +761,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                         nextAV = _activeViews[(int)AViews.DEST];
                         nextAV.Position = new Vector2(0, 0);
 
-                        View bossView = bossViews[destViewX];
+                        View bossView = bossViews[destViewX];//.CloneView();
                         if (thisField.ID == 5) {
                             // Viy battle; remove the destination's ladder before transitioning to this screen
                             bossView = bossViews[1];
@@ -798,7 +812,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                         _disposedRenderTargetsFlag = false;
 
                         // We're moving to a new Field, so get rid of all the entities from the previous Field and allow spawning in every view
-                        thisField.ClearVisitedViews();
+                        thisField.QueueDeleteAllFieldAndRoomEntities();
                         thisField.DeleteAllFieldAndRoomEntities();
                         thisField.UnlockAllViewSpawning();
 
@@ -866,11 +880,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _abortDrawing = false;
             _disposedRenderTargetsFlag = false;
 
-            // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
-            thisField.ClearVisitedViews();
-            if (nextField.ID != thisField.ID)
-                thisField.DeleteAllFieldAndRoomEntities();
+            // Get rid of all the entities from the previous Field and allow spawning in every view
+            thisField.QueueDeleteAllFieldAndRoomEntities();
             thisField.UnlockAllViewSpawning();
+
+            // Juuuust in case there's any lingering particles we don't want loaded in memory... This deletes all the non-global entities
+            Global.EntityManager.SanityCheck();
+
             //nextField.DeleteAllFieldAndRoomEntities();
             //nextField.UnlockAllViewSpawning();
             //nextField.ClearVisitedViews();
@@ -949,9 +965,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
             if (updateEntities)
             {
-                currField.DeleteAllFieldAndRoomEntities();
+                currField.QueueDeleteAllFieldAndRoomEntities();
                 currField.UnlockAllViewSpawning();
-                currField.ClearVisitedViews();
             }
 
             CurrField = destField.ID;
@@ -980,12 +995,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
             if (updateEntities) {
-                currField.DeleteAllFieldAndRoomEntities();
+                currField.QueueDeleteAllFieldAndRoomEntities();
                 currField.UnlockAllViewSpawning();
-                currField.ClearVisitedViews();
-                destField.DeleteAllFieldAndRoomEntities();
+                destField.QueueDeleteAllFieldAndRoomEntities();
                 destField.UnlockAllViewSpawning();
-                destField.ClearVisitedViews();
+
+                // Juuuust in case there's any lingering particles we don't want loaded in memory... This deletes all the non-global entities
+                Global.EntityManager.SanityCheck();
             }
 
             // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
@@ -1001,6 +1017,23 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             
             if (updateEntities)
                 UpdateEntities(destField.ID, currField, currView, destView.X, destView.Y, Vector2.Zero);
+        }
+
+        internal void SetDrawBossRoom(bool value)
+        {
+            _drawBossRoom = value;
+        }
+
+        internal void SetCurrActiveView(View v)
+        {
+            _activeViews[(int)AViews.CURR].SetView(v);
+            //_activeViews[(int)AViews.CURR].SetField(v.GetParentField());
+            //_activeViews[(int)AViews.CURR].SetFieldTex(Global.TextureManager.GetTexture(Global.TextureManager.GetMappedWorldTexID(v.GetParentField().MapGraphics)));
+        }
+
+        internal List<Field> GetAllFields()
+        {
+            return _fields;
         }
     }
 }

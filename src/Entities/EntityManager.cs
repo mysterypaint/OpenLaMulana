@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Entities.WorldEntities.Parents;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -152,5 +153,33 @@ namespace OpenLaMulana.Entities
             return _entities.OfType<T>();
         }
 
+        public int GetCount()
+        {
+            return _entities.Count;
+        }
+
+        public void SanityCheck()
+        {
+            // Juuuust in case there's any lingering particles we don't want loaded in memory... This deletes all the non-global entities
+            foreach (IGameEntity entity in _entities)
+            {
+                bool deleteMe = true;
+                if (entity is Protag || entity is World || entity is SpriteDefManager || entity is GameMenu)
+                {
+                    deleteMe = false;
+                }
+
+                if (deleteMe)
+                    _entitiesToRemove.Add(entity);
+            }
+
+            Global.World.GetCurrField().QueueDeleteAllFieldAndRoomEntities();
+            Global.World.GetCurrField().DeleteAllFieldAndRoomEntities();
+            /*
+            List<Field> fields = Global.World.GetAllFields();
+            foreach(Field f in fields)
+                f.DeleteAllFieldAndRoomEntities();
+            */
+        }
     }
 }

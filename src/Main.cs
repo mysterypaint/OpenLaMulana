@@ -298,7 +298,6 @@ namespace OpenLaMulana
             }
 
 
-            //_shdHueShift.CurrentTechnique.Passes[0].Apply();
             Global.EntityManager.Draw(Global.SpriteBatch, gameTime, GraphicsDevice);
 
             Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
@@ -306,6 +305,8 @@ namespace OpenLaMulana
             transformMatrix: Global.Camera.GetTransformation(GraphicsDevice),
             effect: activeShader);
             List<IGameEntity> fieldEntities, roomEntities;
+            int entityCount;
+            //_shdHueShift.CurrentTechnique.Passes[0].Apply();
             switch (State)
             {
                 case Global.GameState.INITIAL:
@@ -320,9 +321,10 @@ namespace OpenLaMulana
                 case Global.GameState.MSX_EMULATOR:
                     break;
                 case Global.GameState.PAUSED:
-                    fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+                    fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();//Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView().GetParentField().GetFieldEntities();
                     roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
-                    Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
+                    entityCount = Global.EntityManager.GetCount();
+                    Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
                     //_jukebox.Draw(_spriteBatch, gameTime);
                     break;
                 case Global.GameState.PLAYING:
@@ -341,7 +343,8 @@ namespace OpenLaMulana
 
                     fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
                     roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
-                    Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}\\10FieldEntities:{1}", roomEntities.Count, fieldEntities.Count));
+                    entityCount = Global.EntityManager.GetCount();
+                    Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
                     /*
                     Globals.TextManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
                         + "\nWASD, JK: Move between rooms\nF2: Open MSX [Jukebox]");*/

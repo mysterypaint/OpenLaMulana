@@ -9,7 +9,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class BackgroundSigil : IRoomWorldEntity
     {
-        public BackgroundSigil(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
+        public BackgroundSigil(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
             // These seem to be the same value?
             // 0 - Origin, 1 - Birth, 2 - Life, 3 - Death

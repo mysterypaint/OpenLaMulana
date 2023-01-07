@@ -7,7 +7,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
     internal class OneWayDoor : IEnemyWorldEntity
     {
-        public OneWayDoor(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
+        public OneWayDoor(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
             _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
             _sprIndex = new Sprite(_tex, 208, 136, 8, 24);

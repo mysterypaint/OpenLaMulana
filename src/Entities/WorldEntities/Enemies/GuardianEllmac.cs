@@ -17,7 +17,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private View _bossRoom = null;
         private int speedUpTimer = 30;
 
-        public GuardianEllmac(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
+        public GuardianEllmac(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS01);
             for (var i = 0; i < spritesMax; i++)

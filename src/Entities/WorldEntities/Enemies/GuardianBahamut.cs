@@ -19,9 +19,10 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int[] _movementFrames = new int[] { 0, 2, 5, 7, 9, 15, 23, 50, 80, 120, 180, 220, 260 };
         private View[] _bossViews = Global.World.GetField(4).GetBossViews();
         private View srcView, finalView = null;
+        private View[] backupView = new View[3];
         private int _timesShifted = 0;
 
-        public GuardianBahamut(int x, int y, int op1, int op2, int op3, int op4, View destView) : base(x, y, op1, op2, op3, op4, destView)
+        public GuardianBahamut(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS03);
             for (var i = 0; i < spritesMax; i++)
@@ -34,6 +35,9 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             srcView = _bossViews[0];
             finalView = _bossViews[1];
+
+            //_currActiveView = Global.World.GetCurrentView();
+
             //finalView.InitChipData(0, null);
             for (int ty = World.ROOM_HEIGHT - 1 - 3; ty < World.ROOM_HEIGHT; ty++)
             {
