@@ -15,6 +15,7 @@ namespace OpenLaMulana
         private int[] _destY = { 0, 0, 0, 0 };       // Y may never go below 0
         private List<ObjectSpawnData> _viewSpawnData;
         private Field _parentField = null;
+        private List<IGameEntity> _myEntities = new List<IGameEntity>();
 
         public Chip[,] Chips { get; set; }
         public int RoomNumber { get; set; } = 0; // Unsure what this does... Maybe has to do with sharing room numbers -> how enemies persist/de-spawn?
@@ -223,6 +224,22 @@ namespace OpenLaMulana
             }
 
             return clonedView;
+        }
+
+        internal void DeleteEntities()
+        {
+            foreach(IGameEntity entity in _myEntities)
+            {
+                _parentField.GetRoomEntities().Remove(entity);
+                Global.EntityManager.RemoveEntity(entity);
+            }
+            _myEntities.Clear();
+        }
+
+        public void AddEntity(IGameEntity entity)
+        {
+            _myEntities.Add(entity);
+            _parentField.GetRoomEntities().Add(entity);
         }
     }
 }

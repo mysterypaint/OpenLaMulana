@@ -609,13 +609,19 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 // Give permission back to all the views to allow them to spawn entities
                 thisField.DeleteAllFieldAndRoomEntities();
                 thisField.UnlockAllViewSpawning();
-                thisField.ClearVisitedViews(); 
-                nextField.DeleteAllFieldAndRoomEntities();
-                nextField.UnlockAllViewSpawning();
-                nextField.ClearVisitedViews();
+                thisField.ClearVisitedViews();
+                //nextField.DeleteAllFieldAndRoomEntities();
+                //nextField.UnlockAllViewSpawning();
+                //nextField.ClearVisitedViews();
             }
-            else // Otherwise, if moving to a new View within the same Field, delete the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
-                thisField.DeleteOldRoomEntities(thisView, thisField.GetView(destViewX, destViewY));
+            else
+            {// Otherwise, if moving to a new View within the same Field, delete all of the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
+                if (thisView.RoomNumber != nextView.RoomNumber)
+                {
+                    thisField.ClearVisitedViews();
+                    thisField.UnlockAllViewSpawning();
+                }
+            }
 
             // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
             CurrField = destField;
@@ -791,10 +797,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                         _abortDrawing = false;
                         _disposedRenderTargetsFlag = false;
 
-                        // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
+                        // We're moving to a new Field, so get rid of all the entities from the previous Field and allow spawning in every view
+                        thisField.ClearVisitedViews();
                         thisField.DeleteAllFieldAndRoomEntities();
                         thisField.UnlockAllViewSpawning();
-                        thisField.ClearVisitedViews();
 
                         // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
 
@@ -861,12 +867,12 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _disposedRenderTargetsFlag = false;
 
             // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
+            thisField.ClearVisitedViews(); 
             thisField.DeleteAllFieldAndRoomEntities();
             thisField.UnlockAllViewSpawning();
-            thisField.ClearVisitedViews();
-            nextField.DeleteAllFieldAndRoomEntities();
-            nextField.UnlockAllViewSpawning();
-            nextField.ClearVisitedViews();
+            //nextField.DeleteAllFieldAndRoomEntities();
+            //nextField.UnlockAllViewSpawning();
+            //nextField.ClearVisitedViews();
 
             // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
             CurrField = destField;

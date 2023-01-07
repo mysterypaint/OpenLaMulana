@@ -287,17 +287,15 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 if (prevView.GetParentField() == destView.GetParentField())
                 {
                     return; // Don't delete any room entities, because we are not only in the same Field, but also in the same room/region of Views
+                } else
+                {
+                    prevView.DeleteEntities();
                 }
             }
             else
             {
                 // Otherwise, we should delete all room entities from the previous View's Field
-                var prevViewRoomEntities = prevView.GetParentField().GetRoomEntities();
-                foreach (IGameEntity rE in prevViewRoomEntities)
-                {
-                    _s_entityManager.RemoveEntity(rE);
-                }
-                prevView.GetParentField().GetRoomEntities().Clear();
+                prevView.DeleteEntities();
             }
         }
 
@@ -307,12 +305,22 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             {
                 _s_entityManager.RemoveEntity(fE);
             }
-            foreach (IGameEntity rE in _roomEntities)
-            {
-                _s_entityManager.RemoveEntity(rE);
-            }
-            _roomEntities.Clear();
             _fieldEntities.Clear();
+
+            if (_viewsJPN != null)
+            {
+                foreach (View view in _viewsJPN)
+                {
+                    view.DeleteEntities();
+                }
+            }
+
+            if (_viewsENG != null) {
+                foreach (View view in _viewsENG)
+                {
+                    view.DeleteEntities();
+                }
+            }
         }
 
         /*
@@ -333,7 +341,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 if (v.RoomNumber != destView.RoomNumber)
                 {
                     // We are entering a new region, so we should forget about all the previous rooms we've visited
-                    DeleteOldRoomEntities(v, destView);
+                    //DeleteOldRoomEntities(v, destView);
+                    v.DeleteEntities();
                     v.GetParentField().UnlockAllViewSpawning();
                     v.GetParentField()._visitedViews.Clear();
                     break;
@@ -354,7 +363,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 IGameEntity newViewObj = SpawnEntityFromData(viewObjData, destView, offsetVector, false);
 
                 if (newViewObj != null)
-                    _roomEntities.Add(newViewObj);
+                    destView.AddEntity(newViewObj);
             }
 
             // We are moving to a new field, so we should spawn all the destination Field's global entities right now
@@ -456,8 +465,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.BIG_ANKH:
                     if (op1 != 8072 || op2 != 16008 || op3 != 361)
-                        break;
-                    newObj = new Ankh(x, y, op1, op2, op3, op4, destView);
+                        newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, destView);
+                    else
+                        newObj = new Ankh(x, y, op1, op2, op3, op4, destView);
                     break;
                 case EntityIDs.AKNH:
                     newObj = new Ankh(x, y, op1, op2, op3, op4, destView);
@@ -502,6 +512,10 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
         internal void ClearVisitedViews()
         {
+            foreach (View v in _visitedViews)
+            {
+                v.DeleteEntities();
+            }
             _visitedViews.Clear();
         }
 
