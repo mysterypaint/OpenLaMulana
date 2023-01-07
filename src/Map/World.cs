@@ -867,8 +867,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _disposedRenderTargetsFlag = false;
 
             // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
-            thisField.ClearVisitedViews(); 
-            thisField.DeleteAllFieldAndRoomEntities();
+            thisField.ClearVisitedViews();
+            if (nextField.ID != thisField.ID)
+                thisField.DeleteAllFieldAndRoomEntities();
             thisField.UnlockAllViewSpawning();
             //nextField.DeleteAllFieldAndRoomEntities();
             //nextField.UnlockAllViewSpawning();
