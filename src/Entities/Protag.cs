@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
+using static OpenLaMulana.Entities.Protag;
 using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities
@@ -49,6 +50,14 @@ namespace OpenLaMulana.Entities
         public struct Inventory
         {
             public int[] EquippedRoms;
+            public int Coins;
+            public int Weights;
+
+            public int HP { get; set; }
+            public int HPMax { get; set; }
+            public int CurrExp { get; set; }
+            public int ExpMax { get; set; }
+            public int TrueHPMax { get; set; }
         }
 
         private Inventory _inventory;
@@ -105,6 +114,19 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             BBoxOriginX = 5;
             BBoxOriginY = 12;
             _inventory.EquippedRoms = new int[] { (int)Global.ObtainableSoftware.GAME_MASTER, (int)Global.ObtainableSoftware.RUINS_RAM_16K };
+
+            _inventory.Coins = 999;
+            _inventory.Weights = 2;
+            _inventory.HP = 32;
+            _inventory.HPMax = 32; // A life orb will increase this value by 32. True max is 352.
+            _inventory.TrueHPMax = 352;
+
+            // Damage Table:
+            // Divine Lightning = 16;
+            // Skeleton = 1;
+            // Slime thing = 2;
+            _inventory.CurrExp = 0;
+            _inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -471,6 +493,16 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         public Inventory GetInventory()
         {
             return _inventory;
+        }
+
+        internal void AddHP(int value)
+        {
+            _inventory.HP += value;
+        }
+
+        internal void AddExp(int value)
+        {
+            _inventory.CurrExp += value;
         }
     }
 }

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Intrinsics.X86;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace OpenLaMulana
@@ -41,6 +42,8 @@ namespace OpenLaMulana
         private Protag _protag;
         private Jukebox _jukebox;
         private Effect activeShader = null;
+        private Sprite[] _hudSprites = null;
+        private Texture2D _itemTex = null;
 
         public Main()
         {
@@ -69,7 +72,47 @@ namespace OpenLaMulana
 
             Global.EntityManager = new EntityManager();
             State = Global.GameState.INITIAL;
+
             //_fadeInTexturePosX = Protag.DEFAULT_SPRITE_WIDTH;
+        }
+
+        enum HudSprites
+        {
+            COINS,
+            WEIGHTS,
+            WEAPONSBRACKETLEFT,
+            WEAPONSBRACKETMIDDLE,
+            WEAPONSBRACKETRIGHT,
+            SIGILS_BLANK,
+            SIGILS_ORIGIN,
+            SIGILS_BIRTH,
+            SIGILS_LIFE,
+            SIGILS_DEATH,
+            MAX
+        };
+
+        private void InitHUDSprites()
+        {
+            _itemTex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
+
+            Sprite hudCoinsSprite = new Sprite(_itemTex, 10, 16, 8, 8);
+            Sprite hudWeightsSprite = new Sprite(_itemTex, 1 * 8, 3 * 8, 8, 8);
+            Sprite hudWeaponsBracketLeft = new Sprite(_itemTex, 2 * 8, 0, 8, 16);
+            Sprite hudWeaponsBracketMiddle = new Sprite(_itemTex, 3 * 8, 0, 8, 16);
+            Sprite hudWeaponsBracketRight = new Sprite(_itemTex, 4 * 8, 0, 8, 16);
+
+            Sprite hudSigilsBlank = Global.TextureManager.Get8x8Tile(_itemTex, 8, 3, Vector2.Zero);
+            Sprite hudSigilsOrigin = Global.TextureManager.Get8x8Tile(_itemTex, 18, 16, Vector2.Zero);
+            Sprite hudSigilsBirth = Global.TextureManager.Get8x8Tile(_itemTex, 18, 17, Vector2.Zero);
+            Sprite hudSigilsLife = Global.TextureManager.Get8x8Tile(_itemTex, 19, 16, Vector2.Zero);
+            Sprite hudSigilsDeath = Global.TextureManager.Get8x8Tile(_itemTex, 19, 17, Vector2.Zero);
+
+            Sprite[] sprites = new Sprite[] {
+                hudCoinsSprite, hudWeightsSprite,
+                hudWeaponsBracketLeft, hudWeaponsBracketMiddle, hudWeaponsBracketRight,
+                hudSigilsBlank, hudSigilsOrigin, hudSigilsBirth, hudSigilsLife, hudSigilsDeath};
+
+            _hudSprites = sprites;
         }
 
         protected override void Initialize()
@@ -134,7 +177,7 @@ namespace OpenLaMulana
             
             Global.GameMenu = new GameMenu(Global.ScreenOverlayState.INVISIBLE, Global.TextManager);
             Global.EntityManager.AddEntity(Global.GameMenu);
-
+            InitHUDSprites();
             LoadSaveState();
         }
 
@@ -206,11 +249,11 @@ namespace OpenLaMulana
                                 }
                                 break;
                         }
-                    }
 
-                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE] && State == Global.GameState.PLAYING)
-                    {
-                        ToggleGamePause();
+                        if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE] && State == Global.GameState.PLAYING)
+                        {
+                            ToggleGamePause();
+                        }
                     }
 
                     Global.EntityManager.Update(gameTime);
@@ -253,7 +296,7 @@ namespace OpenLaMulana
             if (mouseState.LeftButton == ButtonState.Pressed)
                 _protag.Position = new Vector2(mouseState.X / _displayZoomFactor, mouseState.Y / _displayZoomFactor);
 
-            if (InputManager.DirectKeyboardCheckPressed(Keys.F8))
+            if (InputManager.DirectKeyboardCheckPressed(Keys.F6))
             {
                 //ResetSaveState();
                 _shaderMode++;
@@ -415,12 +458,101 @@ namespace OpenLaMulana
         {
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)Global.Camera.Position.X, (int)Global.Camera.Position.Y, HUD_WIDTH, HUD_HEIGHT), new Color(0, 0, 0, 255));
 
+            /*
+             * 
             List<IGameEntity> fieldEntities, roomEntities;
             int entityCount;
             fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();//Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView().GetParentField().GetFieldEntities();
             roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
             entityCount = Global.EntityManager.GetCount();
             Global.TextManager.DrawText(Global.Camera.Position, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
+            
+             */
+            Vector2 _camPos = Global.Camera.Position;
+
+            _hudSprites[(int)HudSprites.COINS].Draw(spriteBatch, _camPos + new Vector2(27 * 8, 0 * 8));
+            _hudSprites[(int)HudSprites.WEIGHTS].Draw(spriteBatch, _camPos + new Vector2(27 * 8, 1 * 8));
+            _hudSprites[(int)HudSprites.WEAPONSBRACKETLEFT].Draw(spriteBatch, _camPos + new Vector2(15 * 8, 0 * 8));
+            _hudSprites[(int)HudSprites.WEAPONSBRACKETMIDDLE].Draw(spriteBatch, _camPos + new Vector2(18 * 8, 0 * 8));
+            _hudSprites[(int)HudSprites.WEAPONSBRACKETRIGHT].Draw(spriteBatch, _camPos + new Vector2(24 * 8, 0 * 8));
+
+
+            _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 0 * 8));
+            _hudSprites[(int)HudSprites.SIGILS_ORIGIN].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 0 * 8));
+
+            _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 0 * 8));
+            _hudSprites[(int)HudSprites.SIGILS_BIRTH].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 0 * 8));
+
+            _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 1 * 8));
+            _hudSprites[(int)HudSprites.SIGILS_LIFE].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 1 * 8));
+
+            _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 1 * 8));
+            _hudSprites[(int)HudSprites.SIGILS_DEATH].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 1 * 8));
+
+            Global.TextManager.DrawTextImmediate(Global.Camera.Position, "VIT\\10EXP");
+            for (int y = 0; y < 15; y++)
+            {
+                switch (y)
+                {
+                    case 0:
+                    case 6:
+                    case 8:
+                    case 14:
+                        HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + y, 88, 1), new Color(255, 255, 255, 255));
+                        break;
+                }
+            }
+
+
+            // Calculate and draw the blue HP bar
+            int trueHPMax = Global.Protag.GetInventory().TrueHPMax;
+            int maxHP = Global.Protag.GetInventory().HPMax;
+            int currHP = Global.Protag.GetInventory().HP;
+            float currHPRatio = currHP / 352.0f;
+            float healthColorRatio = currHP / (float)maxHP;
+            Color HPColor = new Color(51, 102, 255, 255); // Health color is blue by default
+            if (healthColorRatio < 0.25f)
+                HPColor = new Color(255, 51, 51, 255); // Change health color to red
+            else if (healthColorRatio < 0.5f)
+                HPColor = new Color(204, 204, 51, 255); // Change health color to yellow
+
+            int currHPPixels = (int)Math.Round(currHPRatio * 88);
+            if (currHPPixels < 1)
+                currHPPixels = 1;
+            if (currHP > 0)
+                HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + 1, currHPPixels, 5), HPColor);
+
+            // Draw the white line representing max HP
+            float maxHPRatio = maxHP / (float)trueHPMax;
+            int hpPixels = Math.Clamp((int)Math.Round(maxHPRatio * 88), 1, 88);
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + hpPixels, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
+
+            // Draw the white line representing max EXP
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + hpPixels, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
+
+
+            int currExp = Global.Protag.GetInventory().CurrExp;
+            float currEXPRatio = currExp / (float)trueHPMax; // Remake behavior
+            int expPixels = (int)Math.Round(currEXPRatio * 88);
+            if (expPixels < 1)
+                expPixels = 1;
+            if (currExp > 0)
+                HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + 9, expPixels, 5), new Color(51, 204, 51, 255));
+
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 23, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 23, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 112, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 112, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
+
+
+            Global.TextManager.DrawText(_camPos + new Vector2(21 * 8, 1 * 8), "---");
+            string fmt = "000";
+            int numCoins = Global.Protag.GetInventory().Coins;
+            int numWeights = Global.Protag.GetInventory().Weights;
+            string strWeights = numCoins.ToString(fmt);
+            string strCoins = numWeights.ToString(fmt);
+
+            Global.TextManager.DrawText(_camPos + new Vector2(28 * 8, 0 * 8), String.Format("={0}\\10={1}", strCoins, strWeights));
         }
 
         private void JukeboxRoutine()

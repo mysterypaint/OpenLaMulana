@@ -64,7 +64,9 @@ namespace OpenLaMulana.System
             {
                 foreach (string str in queuedText)
                 {
-                    DisplayString(spriteBatch, str, i);
+                    int posX = queuedXYPos[i].X;
+                    int posY = queuedXYPos[i].Y;
+                    DisplayString(spriteBatch, str, posX, posY);
                     i++;
                 }
                 queuedText.Clear();
@@ -91,10 +93,10 @@ namespace OpenLaMulana.System
             return s_charSet;
         }
 
-        private void DisplayString(SpriteBatch spriteBatch, string str, int i)
+        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y)
         {
-            int posX = queuedXYPos[i].X;
-            int posY = queuedXYPos[i].Y;
+            int posX = x;
+            int posY = y;
 
             var xOff = 0;
             var yOff = 0;
@@ -220,6 +222,15 @@ namespace OpenLaMulana.System
             queuedText.Add(str);
         }
 
+        public void DrawTextImmediate(int x, int y, string str)
+        {
+            if (str == null)
+                return;
+            byte[] bytes = Encoding.Default.GetBytes(str);
+            str = Encoding.UTF8.GetString(bytes);
+            DisplayString(Global.SpriteBatch, str, x, y);
+        }
+
         public void Update(GameTime gameTime)
         {
 
@@ -285,6 +296,10 @@ namespace OpenLaMulana.System
         internal void DrawText(Vector2 position, string str)
         {
             DrawText((int)position.X, (int)position.Y, str);
+        }
+        internal void DrawTextImmediate(Vector2 position, string str)
+        {
+            DrawTextImmediate((int)position.X, (int)position.Y, str);
         }
     }
 }

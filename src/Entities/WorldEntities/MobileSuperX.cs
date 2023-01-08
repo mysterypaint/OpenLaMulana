@@ -56,71 +56,9 @@ namespace OpenLaMulana
 
             EMU_CURSOR,
 
-            MAX
-        };
+            OPTIONS_CURSOR,
 
-        enum ObtainableTreasures
-        {
-            MSX,
-            SHELL_HORN,
-            WATERPROOF_CASE,
-            HEATPROOF_CASE,
-            DETECTOR,
-            GRAIL,
-            LAMP_OF_TIME,
-            BODY_ARMOR,
-            TALISMAN,
-            SCRIPTURE,
-            GAUNTLET,
-            RING,
-            GLOVE,
-            ENDLESS_KEY,
-            TWIN_STATUE,
-            BRONZE_MIRROR,
-            BOOTS,
-            FEATHER,
-            BRACELET,
-            DRAGON_BONE,
-            GRAPPLE_CLAW,
-            MAGATAMA_JEWEL,
-            CROSS,
-            BOOK_OF_THE_DEAD,
-            PERFUME,
-            OCARINA,
-            ANCHOR,
-            WOMAN_STATUE,
-            MINI_DOLL,
-            EYE_OF_TRUTH,
-            SERPENT_STAFF,
-            ICE_CAPE,
-            HELMET,
-            SCALESPHERE,
-            CRYSTAL_SKULL,
-            WEDGE,
-            PLANE_MODEL,
-            FLYWHEEL,
-            POCHETTE_KEY,
-            CONTAINER,
-            MSX2,
-            DIARY,
-            MULANA_TALISMAN,
-            LAMP_OF_TIME_EMPTY,
-            WOMAN_STATUE_PREGNANT,
-            HANDY_SCANNER,
-            PEPPER,
-            TREASURE,
-            CONTAINER_YELLOW,
-            CONTAINER_GREEN,
-            CONTAINER_RED,
-            FAKE_SHIELD,
-            LAMULANA_TREASURE,
-            LIFE_JEWEL,
-            MAP,
-            ORIGIN_SIGIL,
-            BIRTH_SIGIL,
-            LIFE_SIGIL,
-            DEATH_SIGIL,
-            HELL_TREASURE
+            MAX
         };
 
         int[] _inventoryOrder = new int[] {
@@ -323,16 +261,18 @@ namespace OpenLaMulana
                     mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 8 * 8));
                     break;
                 case Global.MSXStates.CONFIG_SCREEN:
+                    DrawMSXBackground(spriteBatch, gameTime);
                     Global.TextManager.DrawText(4 * 8, 2 * 8, "- Options -");
-
-
+                    
                     y = 0;
                     foreach (string str in _strOptions)
                     {
                         Global.TextManager.DrawText(8 * 8, (4 + y * 2) * 8, str);
                         y++;
                     }
-                    DrawMSXBackground(spriteBatch, gameTime);
+
+                    int cursorPosition = 0;
+                    mainWindowSprites[(int)WindowSprites.OPTIONS_CURSOR].Draw(spriteBatch, new Vector2(6 * 8, (4 + cursorPosition * 2) * 8));
                     break;
             }
         }
@@ -504,9 +444,11 @@ namespace OpenLaMulana
 
             Sprite scannerOK = Global.TextureManager.Get8x8Tile(_tex, 19, 2, Vector2.Zero);
             Sprite emuCursor = Global.TextureManager.Get8x8Tile(_tex, 19, 3, Vector2.Zero);
-
+            Sprite optionsCursor = Global.TextureManager.Get8x8Tile(_tex, 0, 1, Vector2.Zero);
+            
             mainWindowSprites = new Sprite[] { tl, tm, tm2, tr, l, l2, blu, bl, r, r2, bru, br, ab, bm, ms, sx,
-            invTL, invTR, invBL, invBR, invBLTL, invBRTR, invT, invB, invL, invR, invM, scannerOK, emuCursor};
+                invTL, invTR, invBL, invBR, invBLTL, invBRTR, invT, invB, invL, invR, invM,
+                scannerOK, emuCursor, optionsCursor};
 
             for (var i = 0; i < 60; i++)
             {
