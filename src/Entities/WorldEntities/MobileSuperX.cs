@@ -130,6 +130,7 @@ namespace OpenLaMulana
             "Configure Controls",
             "BGM Volume = 127",
             "SFX Volume = 100",
+            "Language = English",
             "Platforming Physics\\10    [Classic]  QoL",
             "\\10QoL Changes = OFF",
             "\\10Return to Title",
