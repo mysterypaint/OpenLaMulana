@@ -5,7 +5,7 @@ namespace OpenLaMulana.Entities
 {
     public interface IGameEntity
     {
-        int DrawOrder { get; set; }
+        int Depth { get; set; }
         Effect ActiveShader { get; }
 
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);

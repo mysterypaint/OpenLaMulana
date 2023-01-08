@@ -19,7 +19,7 @@ namespace OpenLaMulana.System
             MAX
         };
 
-        public int DrawOrder { get; set; } = 0;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Text;
         public Effect ActiveShader { get; set; } = null;
 
         private const int TEXT_WIDTH = 8;
@@ -36,12 +36,22 @@ namespace OpenLaMulana.System
         private List<Point> queuedXYPos;
         private List<String> queuedText;
         private List<TextModes> queuedTextMode;
+        private string _myString = "";
+        private Vector2 _drawOff = Vector2.Zero;
 
-        public TextManager(Texture2D gameFontTex)
+        public TextManager()
         {
             s_charSet = new Dictionary<int, string>();
 
-            _gameFontTex = gameFontTex;
+            switch (Global.CurrLang) {
+                default:
+                case Global.Languages.Japanese:
+                    _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_JP);
+                    break;
+                case Global.Languages.English:
+                    _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
+                    break;
+            }
             queuedXYPos = new List<Point>();
             queuedText = new List<String>();
             queuedTextMode = new List<TextModes>();
@@ -83,15 +93,15 @@ namespace OpenLaMulana.System
 
         private void DisplayString(SpriteBatch spriteBatch, string str, int i)
         {
-            int _posx = queuedXYPos[i].X;
-            int _posy = queuedXYPos[i].Y;
+            int posX = queuedXYPos[i].X;
+            int posY = queuedXYPos[i].Y;
 
-            var _xoff = 0;
-            var _yoff = 0;
+            var xOff = 0;
+            var yOff = 0;
 
             //var yoff = 0;
             int j = 0;
-            bool linebreak = false;
+            bool lineBreak = false;
             bool specialTextControl = false;
 
 
@@ -100,7 +110,7 @@ namespace OpenLaMulana.System
                 string textControl = "";
                 char c = str[strPos];
 
-                int _drawTile = -1;
+                int drawTile = -1;
                 if (!specialTextControl)
                 {
                     if (c == '¥' || c == '\\')
@@ -116,6 +126,12 @@ namespace OpenLaMulana.System
                             if (strPos >= str.Length)
                                 break;
                         }
+
+                        if (Char.IsDigit(str[strPos])) {
+                            textControl += c;
+                            strPos++;
+                        }
+
                         if (strPos < str.Length)
                             c = str[strPos];
                         else
@@ -132,28 +148,28 @@ namespace OpenLaMulana.System
                         default:
                             break;
                         case 10:
-                            linebreak = true;
+                            lineBreak = true;
                             break;
                     }
 
                     if (result > 15)
                     {
-                        _drawTile = result;
+                        drawTile = result;
                         strPos--;
                     }
                     specialTextControl = false;
                 }
 
-                if (j >= 32 || linebreak)
+                if (j >= 32 || lineBreak)
                 {
                     // Perform a linebreak, because we hit the max char limit or run into a linebreak command
-                    _xoff = 0;
-                    _yoff += TEXT_HEIGHT;
+                    xOff = 0;
+                    yOff += TEXT_HEIGHT;
                     j = 0;
-                    linebreak = false;
+                    lineBreak = false;
                 }
-                DrawChar(spriteBatch, new Point(_posx + _xoff, _posy + _yoff), c, _drawTile);
-                _xoff += TEXT_WIDTH;
+                DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile);
+                xOff += TEXT_WIDTH;
                 j++;
             }
         }
@@ -193,6 +209,8 @@ namespace OpenLaMulana.System
 
         public void DrawText(int x, int y, string str)
         {
+            if (str == null)
+                return;
             byte[] bytes = Encoding.Default.GetBytes(str);
             str = Encoding.UTF8.GetString(bytes);
 
@@ -207,6 +225,9 @@ namespace OpenLaMulana.System
 
         internal string GetText(int index, Global.Languages lang)
         {
+            if (index < 0)
+                return null;
+
             List<string> _dialogue;
 
             switch (lang)
@@ -220,7 +241,7 @@ namespace OpenLaMulana.System
                     break;
             }
 
-            return _dialogue[index];
+            return _dialogue[Math.Clamp(index, 0, _dialogue.Count - 1)];
         }
 
         internal int GetTextCount(Global.Languages lang)
@@ -239,6 +260,24 @@ namespace OpenLaMulana.System
             }
 
             return _dialogue.Count;
+        }
+
+        public void SetText(string str)
+        {
+            if (str.Trim().Equals(""))
+                return;
+            _myString = str;
+        }
+
+        internal void DrawOwnString()
+        {
+            queuedXYPos.Add(new Point(0, 0));
+            queuedText.Add(_myString);
+        }
+
+        internal void SetDrawPosition(Vector2 drawOffset)
+        {
+            _drawOff = drawOffset;
         }
     }
 }

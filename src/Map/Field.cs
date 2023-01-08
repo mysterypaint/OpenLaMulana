@@ -23,7 +23,7 @@ Fields 31,32: Used for mini games. Field 31 will be the PR3 map. Field 32 is for
 
 Some Guardians are forced to relocate after the battle ends. See Guardian commentary. (/_RESOURCE/02-04.html)*/
 
-        public int DrawOrder { get; set; } = 0;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Tileset;
         public Effect ActiveShader { get; set; } = null;
         public int WorldID { get; internal set; } = 0;
 
@@ -64,9 +64,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             _world = world;
             ID = id;
             WorldID = worldID;
-
-
             _viewsJPN = new View[World.FIELD_WIDTH, World.FIELD_HEIGHT];
+
             for (var y = 0; y < World.FIELD_HEIGHT; y++)
             {
                 for (var x = 0; x < World.FIELD_WIDTH; x++)
@@ -448,6 +447,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.OBTAINABLE_SUBWEAPON:
                     newObj = new ObtainableSubweapon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    break;
+                case EntityIDs.NPC_ROOM:
+                    newObj = new NPCRoom(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
                     break;
                 case EntityIDs.CEILING_SPIKE:
                     newObj = new CeilingSpike(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);

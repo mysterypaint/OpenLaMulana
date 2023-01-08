@@ -31,6 +31,7 @@ namespace OpenLaMulana.System
         private static bool[,] _allHeldKeys = new bool[(int)ControllerTypes.Max, (int)ControllerKeys.MAX];
         private static bool[,] _allReleasedKeys = new bool[(int)ControllerTypes.Max, (int)ControllerKeys.MAX];
         public static bool[,] _joyInputs { get; private set; } = new bool[(int)ControllerTypes.Max, 4]; // 4 = Up/Down/Left/Right
+
         public static bool[] PressedKeys = new bool[(int)ControllerKeys.MAX];
         public static bool[] HeldKeys = new bool[(int)ControllerKeys.MAX];
         public static bool[] ReleasedKeys = new bool[(int)ControllerKeys.MAX];
@@ -43,15 +44,17 @@ namespace OpenLaMulana.System
             _protag = Global.Protag;
             _jukebox = Global.Jukebox;
 
+            // The actual default controls
+            /*
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.LEFT] = (int)Keys.Left;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.RIGHT] = (int)Keys.Right;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.UP] = (int)Keys.Up;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.DOWN] = (int)Keys.Down;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.WHIP] = (int)Keys.Z;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.WHIP] = (int)Keys.Space;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.JUMP] = (int)Keys.Up;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUBWEAPON] = (int)Keys.X;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.C;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUBWEAPON] = (int)Keys.M;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.N;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Keys.F2;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION] = (int)Keys.F3;
@@ -59,6 +62,30 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_CONFIG] = (int)Keys.F5;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CONFIRM] = (int)Keys.Z;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CANCEL] = (int)Keys.X;
+            */
+
+            // Only for testing
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.LEFT] = (int)Keys.A;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.RIGHT] = (int)Keys.D;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.UP] = (int)Keys.W;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.DOWN] = (int)Keys.S;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.WHIP] = (int)Keys.J;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.JUMP] = (int)Keys.K;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUBWEAPON] = (int)Keys.L;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.I;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Keys.F2;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION] = (int)Keys.F3;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_EMULATOR] = (int)Keys.F4;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_CONFIG] = (int)Keys.F5;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CONFIRM] = (int)Keys.L;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CANCEL] = (int)Keys.K;
+
+
+
+
+
 
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.LEFT] = (int)Buttons.DPadLeft;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.RIGHT] = (int)Buttons.DPadRight;
@@ -159,8 +186,8 @@ namespace OpenLaMulana.System
 
         private void WorldTransitionTesting()
         {
-            int camMoveX = Convert.ToInt32(DirectKeyboardCheckPressed(Keys.D)) - Convert.ToInt32(DirectKeyboardCheckPressed(Keys.A));
-            int camMoveY = Convert.ToInt32(DirectKeyboardCheckPressed(Keys.S)) - Convert.ToInt32(DirectKeyboardCheckPressed(Keys.W));
+            int camMoveX = Convert.ToInt32(DirectKeyboardCheckPressed(Keys.Right)) - Convert.ToInt32(DirectKeyboardCheckPressed(Keys.Left));
+            int camMoveY = Convert.ToInt32(DirectKeyboardCheckPressed(Keys.Down)) - Convert.ToInt32(DirectKeyboardCheckPressed(Keys.Up));
 
             if (camMoveX == 1)
             {
@@ -179,7 +206,7 @@ namespace OpenLaMulana.System
                 Global.World.FieldTransitionCardinal(VIEW_DIR.UP);
             }
 
-            if (DirectKeyboardCheckPressed(Keys.K))
+            if (DirectKeyboardCheckPressed(Keys.P))
             {
                 Field currField = Global.World.GetCurrField();
                 var newVal = Global.World.CurrField + 1;
@@ -191,7 +218,7 @@ namespace OpenLaMulana.System
                 Field destField = Global.World.GetField(newVal);
                 Global.World.FieldTransitionImmediate(currField.GetView(mX, mY), destField.GetView(mX, mY));
             }
-            else if (DirectKeyboardCheckPressed(Keys.J))
+            else if (DirectKeyboardCheckPressed(Keys.O))
             {
                 Field currField = Global.World.GetCurrField();
                 var newVal = Global.World.CurrField - 1;

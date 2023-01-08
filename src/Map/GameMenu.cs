@@ -6,7 +6,7 @@ namespace OpenLaMulana.Entities
 {
     public class GameMenu : IGameEntity
     {
-        public int DrawOrder { get; set; } = 0;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Overlay;
         public Effect ActiveShader { get; set; } = null;
         private int _currentScreen;
         private TextManager _textManager;

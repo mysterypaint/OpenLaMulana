@@ -114,13 +114,13 @@ namespace OpenLaMulana
 
             _protag = new Protag(new Vector2(0, 0));
             Global.Protag = _protag;
-            Texture2D gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
-            Global.TextManager = new TextManager(gameFontTex);
+            Global.MobileSuperX = new MobileSuperX();
+            Global.TextManager = new TextManager();
             Global.World = new World(_protag);
             _jukebox = new Jukebox();
             Global.Jukebox = _jukebox;
             Global.Camera = new Camera();
-            _protag.DrawOrder = 100;
+            _protag.Depth = (int)Global.DrawOrder.Protag;
             Global.Camera.SetProtag(_protag);
 
             Global.InputManager = new InputManager();
@@ -130,7 +130,8 @@ namespace OpenLaMulana
             Global.EntityManager.AddEntity(_protag);
             Global.EntityManager.AddEntity(Global.World);
             Global.EntityManager.AddEntity(Global.SpriteDefManager);
-
+            Global.EntityManager.AddEntity(Global.MobileSuperX);
+            
             Global.GameMenu = new GameMenu(Global.ScreenOverlayState.INVISIBLE, Global.TextManager);
             Global.EntityManager.AddEntity(Global.GameMenu);
 
@@ -169,7 +170,45 @@ namespace OpenLaMulana
             switch (State)
             {
                 case Global.GameState.PLAYING:
-                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE])
+                    Global.MobileSuperX.Update(gameTime);
+
+                    if (Global.Camera.GetState() == Camera.CamStates.NONE)
+                    {
+                        switch (Global.MobileSuperX.GetState())
+                        {
+                            case Global.MSXStates.INACTIVE:
+                                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
+                                {
+                                    State = Global.GameState.MSX_OPEN;
+                                    Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
+                                    Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                                }
+
+                                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                                {
+                                    State = Global.GameState.MSX_OPEN;
+                                    Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
+                                    Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                                }
+
+                                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                                {
+                                    State = Global.GameState.MSX_OPEN;
+                                    Global.MobileSuperX.SetState(Global.MSXStates.ROM_SELECTION);
+                                    Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                                }
+
+                                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                                {
+                                    State = Global.GameState.MSX_OPEN;
+                                    Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
+                                    Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                                }
+                                break;
+                        }
+                    }
+
+                    if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE] && State == Global.GameState.PLAYING)
                     {
                         ToggleGamePause();
                     }
@@ -188,9 +227,11 @@ namespace OpenLaMulana
                     State = Global.GameState.PLAYING;
                     _protag.Initialize();
                     break;
-                case Global.GameState.MSX_INVENTORY:
+                case Global.GameState.MSX_OPEN:
+                    Global.MobileSuperX.Update(gameTime);
                     break;
-                case Global.GameState.MSX_EMULATOR:
+                case Global.GameState.MSX_LOADING_FILE:
+                    Global.MobileSuperX.Update(gameTime);
                     JukeboxRoutine();
                     break;
                 case Global.GameState.INITIAL:
@@ -316,9 +357,10 @@ namespace OpenLaMulana
                     Global.TextManager.DrawText(0, 0, "Press Select, or F1, to Begin");
                     break;
                 default:
-                case Global.GameState.MSX_INVENTORY:
+                case Global.GameState.MSX_OPEN:
+                    Global.MobileSuperX.Draw(Global.SpriteBatch, gameTime);
                     break;
-                case Global.GameState.MSX_EMULATOR:
+                case Global.GameState.MSX_LOADING_FILE:
                     break;
                 case Global.GameState.PAUSED:
                     fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();//Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView().GetParentField().GetFieldEntities();
@@ -341,10 +383,17 @@ namespace OpenLaMulana
                     int destRoomX = viewDest[(int)VIEW_DEST.X];
                     int destRoomY = viewDest[(int)VIEW_DEST.Y];*/
 
+
+                    /*
+                     * 
                     fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
                     roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
                     entityCount = Global.EntityManager.GetCount();
                     Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
+                    */
+
+                    Global.TextManager.DrawOwnString();
+
                     /*
                     Globals.TextManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
                         + "\nWASD, JK: Move between rooms\nF2: Open MSX [Jukebox]");*/
@@ -461,6 +510,11 @@ namespace OpenLaMulana
             Global.Camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
             Global.GraphicsDeviceManager.ApplyChanges();
             Window.Position = new Point((GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (Global.GraphicsDeviceManager.PreferredBackBufferWidth / 2), (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (Global.GraphicsDeviceManager.PreferredBackBufferHeight / 2));
+        }
+
+        internal void SetState(Global.GameState state)
+        {
+            State = state;
         }
     }
 }

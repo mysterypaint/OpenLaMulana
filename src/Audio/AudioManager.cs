@@ -20,7 +20,7 @@ namespace OpenLaMulana
         private string[] _bgmFNames = new string[76];
         private bool _guidanceGateFirstTime = true;
 
-        public int DrawOrder { get; set; } = 0;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
 
         public float AudioManBGMVolScale { get; private set; } = 0.8f;
@@ -243,10 +243,24 @@ namespace OpenLaMulana
         {
         }
 
+        private List<SoundEffectInstance> _activeSoundEffects = new List<SoundEffectInstance>();
         internal void PlaySFX(SFX sfxId)
         {
-            SoundEffectInstance inst = _sfxBank[sfxId].CreateInstance();
 
+            SoundEffectInstance inst = _sfxBank[sfxId].CreateInstance();
+            
+            foreach(SoundEffectInstance sfx in _activeSoundEffects)
+            {
+                if (sfx.Equals(inst))
+                {
+                    sfx.Stop();
+                    _activeSoundEffects.Remove(sfx);
+                }
+            }
+
+
+            _activeSoundEffects.Add(inst);
+            
             inst.Stop();
             inst.Play();
         }

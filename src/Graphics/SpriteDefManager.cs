@@ -170,7 +170,7 @@ namespace OpenLaMulana
             }
         }
 
-        public int DrawOrder { get; set; } = 0;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         Effect IGameEntity.ActiveShader => null;
 
 

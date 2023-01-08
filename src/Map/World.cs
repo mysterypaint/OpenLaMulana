@@ -42,7 +42,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         }
 
-        public int DrawOrder { get; set; }
+        public int Depth { get; set; } = (int)Global.DrawOrder.Tileset;
         public Effect ActiveShader { get; set; } = null;
         public const int CHIP_SIZE = 8;
         public const int FIELD_WIDTH = 4;
@@ -51,6 +51,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public const int ROOM_HEIGHT = 22; // How many 8x8 tiles a room is tall
         public const int HUD_HEIGHT = CHIP_SIZE * 2;
         public const int ANIME_TILES_BEGIN = 1160;
+        private int[] _softwareGFXIDs = new int[]{
+            0,1,2,3,4,9,9,9,5,5,5,5,5,5,
+            5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+            5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+            5,5,9,5,5,6,6,5,6,6,5,6,5,5,
+            6,5,6,6,5,5,6,6,6,5,6,6,6,6,
+            6,7,9,7,7,7,7,7,7,7,7,8,5,5};
         private View _transitionView = new View(ROOM_WIDTH, ROOM_HEIGHT, null, 0, 0);
 
         private Protag _protag = null;
@@ -187,6 +194,14 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public ActiveView[] GetActiveViews()
         {
             return _activeViews;
+        }
+
+        public int SoftwareGetGraphicID(int softwareID)
+        {
+            if (softwareID >= 0)
+                return _softwareGFXIDs[softwareID];
+            else
+                return -1;
         }
 
         // Returns new currentLine; end when it returns -1

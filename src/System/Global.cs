@@ -10,6 +10,20 @@ namespace OpenLaMulana
 {
     public static class Global
     {
+        public enum DrawOrder {
+            Abstract = 0,
+            Background = 100,
+            Tileset = 200,
+            Entities = 300,
+            Characters = 400,
+            Protag = 500,
+            Foreground = 600,
+            UI = 700,
+            Overlay = 800,
+            Text = 900,
+            Max = 10000,
+        }
+
         public enum DisplayMode
         {
             Default,
@@ -31,6 +45,7 @@ namespace OpenLaMulana
             BINARY,
             MAX
         };
+
         public enum GameState
         {
             INITIAL,
@@ -38,9 +53,9 @@ namespace OpenLaMulana
             PLAYING,
             GAME_OVER,
             PAUSED,
-            MSX_INVENTORY,
+            MSX_OPEN,
             MSX_ROMS,
-            MSX_EMULATOR,
+            MSX_LOADING_FILE,
             MSX_MANTRAS,
             MAX
         };
@@ -191,6 +206,128 @@ namespace OpenLaMulana
             MAX
         }
 
+        public enum Weapons
+        {
+            NONE,
+            WHIP,
+            CHAIN_WHIP,
+            FLAIL_WHIP,
+            KNIFE,
+            KEYBLADE_BETA,
+            AXE,
+            KATANA,
+            KEYBLADE,
+            MAX
+        };
+
+        public enum SubWeapons
+        {
+            NONE,
+            SHURIKEN,
+            THROWING_KNIFE,
+            SPEAR,
+            FLARES,
+            BOMB,
+            PISTOL,
+            WEIGHT,
+            ANKH_JEWEL,
+            BUCKLER,
+            HANDY_SCANNER,
+            SILVER_SHIELD,
+            ANGEL_SHIELD,
+            PISTOL_AMMUNITION,
+            MAX
+        };
+
+        public enum ObtainableSoftware
+        {
+            GAME_MASTER,
+            GAME_MASTER_2,
+            GLYPH_READER,
+            RUINS_RAM_8K,
+            RUINS_RAM_16K,
+            UNRELEASED_ROM,
+            PR3,
+            GR3,
+            ATHLETIC_LAND,
+            ANTARCTIC_ADVENTURE,
+            MONKEY_ACADEMY,
+            TIME_PILOT,
+            FROGGER,
+            SUPER_COBRA,
+            VIDEO_HUSTLER,
+            MAHJONG_DOJO,
+            HYPER_OLYMPIC_1,
+            HYPER_OLYMPIC_2,
+            HYPER_OLYMPIC_3,
+            CIRCUS_CHARLIE,
+            MAGICAL_TREE,
+            COMIC_BAKERY,
+            HYPER_SPORTS_1,
+            HYPER_SPORTS_2,
+            HYPER_SPORTS_3,
+            CABBAGE_PATCH_KIDS,
+            HYPER_RALLY,
+            KONAMI_TENNIS,
+            SKY_JAGUAR,
+            KONAMI_PINBALL,
+            KONAMI_GOLF,
+            KONAMI_BASEBALL,
+            YIE_AR_KUNG_FU,
+            KINGS_VALLEY,
+            MOPI_RANGER,
+            PIPPOLS,
+            ROAD_FIGHTER,
+            KONAMI_PINGPONG,
+            KONAMI_SOCCER,
+            GOONIES,
+            KONAMI_BOXING,
+            YIE_AR_KUNG_FU_2,
+            KNIGHTMARE,
+            TWINBEE,
+            SHIN_SYNTHESIZER,
+            GRADIUS,
+            PENGUIN_ADVENTURE,
+            CASTLEVANIA,
+            KING_KONG_2,
+            QBERT,
+            FIREBIRD,
+            GANBARE_GOEMON,
+            MAZE_OF_GALIOUS,
+            METAL_GEAR,
+            GRADIUS_2,
+            F1_SPIRIT,
+            USAS,
+            SHALOM,
+            BREAK_SHOT,
+            PENNANT_RACE,
+            SALAMANDER,
+            PARODIUS,
+            SEAL_OF_EL_GIZA,
+            CONTRA,
+            HEAVEN_AND_EARTH,
+            NEMESIS_3,
+            MAHJONG_WIZARD,
+            PENNANT_RACE_2,
+            METAL_GEAR_2,
+            SPACE_MANBOW,
+            QUARTH,
+            KINGS_VALLEY_DISK,
+            DIVINER_SENSATION,
+            SNATCHER,
+            F1_SPIRIT_3D,
+            GAME_COLLECTION_1,
+            GAME_COLLECTION_2,
+            GAME_COLLECTION_3,
+            GAME_COLLECTION_4,
+            GAME_COLLECTION_EX,
+            SD_SNATCHER,
+            BADLANDS,
+            GRADIUS_2_BETA,
+            A1_SPIRIT,
+            MAX
+        };
+
         public enum ControllerTypes
         {
             Keyboard,
@@ -228,6 +365,15 @@ namespace OpenLaMulana
             MAX
         };
 
+        public enum MSXStates {
+            INACTIVE,
+            INVENTORY,
+            ROM_SELECTION,
+            EMULATOR,
+            CONFIG_SCREEN,
+            MAX
+        };
+
         public static Effect ShdTransition, ShdHueShift, ShdBinary, ShdMaskingBlack;
 
         public static GraphicsDevice GraphicsDevice;
@@ -251,5 +397,6 @@ namespace OpenLaMulana
         public static SpriteDefManager SpriteDefManager { get; set; }
         public static AnimationTimer AnimationTimer { get; internal set; }
         public static Main Main { get; internal set; }
+        public static MobileSuperX MobileSuperX { get; set; }
     }
 }

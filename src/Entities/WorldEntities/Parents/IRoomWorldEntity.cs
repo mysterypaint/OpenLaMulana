@@ -9,7 +9,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
 {
     abstract class IRoomWorldEntity : IGameEntity
     {
-        public int DrawOrder { get; set; } = 0;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Entities;
         public Effect ActiveShader { get; set; } = null;
         internal Texture2D _tex;
         internal World _world;

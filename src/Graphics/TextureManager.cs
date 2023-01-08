@@ -16,11 +16,16 @@ namespace OpenLaMulana.Graphics {
         private Dictionary<int, Global.Textures> _mappedWorldTexturesENG = new Dictionary<int, Global.Textures>();
         private Dictionary<int, Global.Textures> _mappedEventTexturesJPN = new Dictionary<int, Global.Textures>();
         private Dictionary<int, Global.Textures> _mappedEventTexturesENG = new Dictionary<int, Global.Textures>();
+        private Texture2D _whitePixel;
 
         public TextureManager() {
         }
 
         public void InitTextures() {
+            _whitePixel = new Texture2D(Global.GraphicsDevice, 1, 1);
+            _whitePixel.SetData(new[] { Color.White });
+
+
             string gfxPath = "Content/graphics/";
             string[] allTextures = {
                 "boss00",
@@ -178,7 +183,10 @@ namespace OpenLaMulana.Graphics {
             }
         }
 
-
+        public void UnloadContent()
+        {
+            _whitePixel.Dispose();
+        }
         public Texture2D GetTexture(Global.Textures texID)
         {
             return _texDict[texID];
@@ -265,6 +273,26 @@ namespace OpenLaMulana.Graphics {
 
             tex.SetData(pixelData);
             return tex;
+        }
+
+        public Texture2D GetWhitePixel()
+        {
+            return _whitePixel;
+        }
+
+        public Sprite Get8x8Tile(Texture2D tex, int tileX, int tileY, Vector2 offset)
+        {
+            return new Sprite(tex, (int)offset.X + tileX * 8, (int)offset.Y + tileY * 8, 8, 8);
+        }
+
+        public Sprite Get16x16Tile(Texture2D tex, int tileX, int tileY, Vector2 offset)
+        {
+            return new Sprite(tex, (int)offset.X + tileX * 16, (int)offset.Y + tileY * 16, 16, 16);
+        }
+
+        internal Sprite Get4x4Tile(Texture2D tex, int tileX, int tileY, Vector2 offset)
+        {
+            return new Sprite(tex, (int)offset.X + tileX * 4, (int)offset.Y + tileY * 4, 4, 4);
         }
     }
 }

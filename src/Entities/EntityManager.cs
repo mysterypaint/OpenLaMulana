@@ -49,7 +49,7 @@ namespace OpenLaMulana.Entities
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, GraphicsDevice graphicsDevice)
         {
-            foreach (IGameEntity entity in _entities.OrderBy(e => e.DrawOrder))
+            foreach (IGameEntity entity in _entities.OrderBy(e => e.Depth))
             {
                 switch(entity)
                 {
@@ -164,7 +164,7 @@ namespace OpenLaMulana.Entities
             foreach (IGameEntity entity in _entities)
             {
                 bool deleteMe = true;
-                if (entity is Protag || entity is World || entity is SpriteDefManager || entity is GameMenu)
+                if (entity is Protag || entity is World || entity is SpriteDefManager || entity is GameMenu || entity is MobileSuperX)
                 {
                     deleteMe = false;
                 }

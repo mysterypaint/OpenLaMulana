@@ -28,7 +28,7 @@ namespace OpenLaMulana.Entities
         public Facing FacingY = Facing.DOWN;
         public short BBoxOriginX { get; set; }
         public short BBoxOriginY { get; set; }
-        public int DrawOrder { get; set; }
+        public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
 
         private const int HudTileHeight = 2;
@@ -46,6 +46,12 @@ namespace OpenLaMulana.Entities
         private bool _hasBoots = true;
         private bool _hasFeather = true;
 
+        public struct Inventory
+        {
+            public int[] EquippedRoms;
+        }
+
+        private Inventory _inventory;
 
         /*
          * Weapon attack powerThe attack power of each weapon is as follows. This number also applies to breaking wall events, etc.
@@ -98,6 +104,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             _chipHeight = World.CHIP_SIZE;
             BBoxOriginX = 5;
             BBoxOriginY = 12;
+            _inventory.EquippedRoms = new int[] { (int)Global.ObtainableSoftware.GAME_MASTER, (int)Global.ObtainableSoftware.RUINS_RAM_16K };
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -459,6 +466,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         internal bool IsGrounded()
         {
             return _grounded;
+        }
+
+        public Inventory GetInventory()
+        {
+            return _inventory;
         }
     }
 }

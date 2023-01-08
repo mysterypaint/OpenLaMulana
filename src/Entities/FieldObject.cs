@@ -8,7 +8,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     public class FieldObject : IGameEntity
     {
-        public int DrawOrder { get; set; } = 0;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Entities;
         public Effect ActiveShader { get; set; } = null;
         internal Texture2D _tex;
         internal World _world;

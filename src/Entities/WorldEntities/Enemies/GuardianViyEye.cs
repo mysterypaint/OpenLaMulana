@@ -41,7 +41,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             Position = position;
             _sprIndex = eyeFrames[0];
             _parent = parent;
-            DrawOrder = _parent.DrawOrder + 1;
+            Depth = _parent.Depth + 1;
         }
     }
 }
