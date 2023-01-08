@@ -51,6 +51,11 @@ namespace OpenLaMulana
             INV_L,
             INV_R,
             INV_M,
+
+            SCANNER_OK,
+
+            EMU_CURSOR,
+
             MAX
         };
 
@@ -313,6 +318,9 @@ namespace OpenLaMulana
                     break;
                 case Global.MSXStates.EMULATOR:
                     DrawMSXBackground(spriteBatch, gameTime, true);
+                    Global.TextManager.DrawText(2 * 8, 3 * 8, "MSX? BASIC version 1.x\\10Copyright 1987 by Kobamisoft\\108806 Bytes free\\10ROM BASIC version 1.0\\10Ok");
+                    Global.TextManager.DrawText(2 * 8, 20 * 8, "color  auto  goto  list  run");
+                    mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 8 * 8));
                     break;
                 case Global.MSXStates.CONFIG_SCREEN:
                     Global.TextManager.DrawText(4 * 8, 2 * 8, "- Options -");
@@ -408,10 +416,10 @@ namespace OpenLaMulana
 
         private void DrawMSXBackground(SpriteBatch spriteBatch, GameTime gameTime, bool drawBlue = false)
         {
-            if (!drawBlue)
-                HelperFunctions.DrawBlackSplashscreen(spriteBatch, true);
-            else
-                HelperFunctions.DrawSkyBlueSplashscreen(spriteBatch, true);
+            HelperFunctions.DrawBlackSplashscreen(spriteBatch, true);
+
+            if (drawBlue)
+                HelperFunctions.DrawSkyBlueSplashscreen(spriteBatch, false);
 
             mainWindowSprites[(int)WindowSprites.TL].Draw(spriteBatch, new Vector2(0, 0));
             mainWindowSprites[(int)WindowSprites.TR].Draw(spriteBatch, new Vector2(31 * 8, 0));
@@ -444,7 +452,9 @@ namespace OpenLaMulana
                 else
                     mainWindowSprites[(int)WindowSprites.TM].Draw(spriteBatch, new Vector2(x * 8, 0 * 8));
 
-                mainWindowSprites[(int)WindowSprites.AB].Draw(spriteBatch, new Vector2(x * 8, 22 * 8));
+                if (_state != Global.MSXStates.EMULATOR)
+                    mainWindowSprites[(int)WindowSprites.AB].Draw(spriteBatch, new Vector2(x * 8, 22 * 8));
+                
                 if (x == 15)
                     mainWindowSprites[(int)WindowSprites.MS].Draw(spriteBatch, new Vector2(x * 8, 23 * 8));
                 else if (x == 16)
@@ -491,8 +501,12 @@ namespace OpenLaMulana
             Sprite invR = Global.TextureManager.Get8x8Tile(_tex, 8, 2, Vector2.Zero);
             Sprite invM = Global.TextureManager.Get8x8Tile(_tex, 5, 3, Vector2.Zero);
 
+
+            Sprite scannerOK = Global.TextureManager.Get8x8Tile(_tex, 19, 2, Vector2.Zero);
+            Sprite emuCursor = Global.TextureManager.Get8x8Tile(_tex, 19, 3, Vector2.Zero);
+
             mainWindowSprites = new Sprite[] { tl, tm, tm2, tr, l, l2, blu, bl, r, r2, bru, br, ab, bm, ms, sx,
-            invTL, invTR, invBL, invBR, invBLTL, invBRTR, invT, invB, invL, invR, invM};
+            invTL, invTR, invBL, invBR, invBLTL, invBRTR, invT, invB, invL, invR, invM, scannerOK, emuCursor};
 
             for (var i = 0; i < 60; i++)
             {

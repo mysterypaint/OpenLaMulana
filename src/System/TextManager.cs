@@ -125,9 +125,11 @@ namespace OpenLaMulana.System
                             c = str[strPos];
                             if (strPos >= str.Length)
                                 break;
+                            if (textControl.Length >= 2)
+                                break;
                         }
 
-                        if (Char.IsDigit(str[strPos])) {
+                        if (Char.IsDigit(str[strPos]) && textControl.Length < 2) {
                             textControl += c;
                             strPos++;
                         }
@@ -278,6 +280,11 @@ namespace OpenLaMulana.System
         internal void SetDrawPosition(Vector2 drawOffset)
         {
             _drawOff = drawOffset;
+        }
+
+        internal void DrawText(Vector2 position, string str)
+        {
+            DrawText((int)position.X, (int)position.Y, str);
         }
     }
 }

@@ -559,6 +559,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         {
             _drawBossRoom = false;
 
+            // Game is busy; Do not transition.
+            if (Global.Main.State != Global.GameState.PLAYING)
+                return;
+
             // Camera is busy; Do not transition.
             if (Global.Camera.GetState() != CamStates.NONE)
                 return;
@@ -650,6 +654,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         public void FieldTransitionCardinalBoss(VIEW_DIR movingDirection, View srcView, View destView, Texture2D bossTexture = null)
         {
+            // Game is busy; Do not transition.
+            if (Global.Main.State != Global.GameState.PLAYING)
+                return;
+
             // Camera is busy; Do not transition.
             if (Global.Camera.GetState() != CamStates.NONE)
                 return;
@@ -735,6 +743,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         internal void FieldTransitionPixelate(int warpType, int destField, int destViewX, int destViewY)
         {
             _drawBossRoom = false;
+
+            // Game is busy; Do not transition.
+            if (Global.Main.State != Global.GameState.PLAYING)
+                return;
 
             // Camera is busy; Do not transition.
             Camera.CamStates camState = Global.Camera.GetState();
@@ -959,6 +971,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         internal void FieldTransitionImmediate(View currView, View destView, bool updateEntities = true, bool updateMusic = true)
         {
             _drawBossRoom = false;
+
+            // Game is busy; Do not transition.
+            if (Global.Main.State != Global.GameState.PLAYING)
+                return;
 
             // Camera is busy; Do not transition.
             Camera.CamStates camState = Global.Camera.GetState();

@@ -345,8 +345,6 @@ namespace OpenLaMulana
             samplerState: SamplerState.PointClamp,
             transformMatrix: Global.Camera.GetTransformation(GraphicsDevice),
             effect: activeShader);
-            List<IGameEntity> fieldEntities, roomEntities;
-            int entityCount;
             //_shdHueShift.CurrentTechnique.Passes[0].Apply();
             switch (State)
             {
@@ -363,13 +361,12 @@ namespace OpenLaMulana
                 case Global.GameState.MSX_LOADING_FILE:
                     break;
                 case Global.GameState.PAUSED:
-                    fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();//Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView().GetParentField().GetFieldEntities();
-                    roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
-                    entityCount = Global.EntityManager.GetCount();
-                    Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
+                    DrawHud(Global.SpriteBatch, gameTime);
+                    Global.TextManager.DrawText(13 * 8, 12 * 8, "PAUSE");
                     //_jukebox.Draw(_spriteBatch, gameTime);
                     break;
                 case Global.GameState.PLAYING:
+                    DrawHud(Global.SpriteBatch, gameTime);
                     //_jukebox.Draw(_spriteBatch, gameTime);
 
                     View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();
@@ -412,6 +409,18 @@ namespace OpenLaMulana
             Global.SpriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void DrawHud(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)Global.Camera.Position.X, (int)Global.Camera.Position.Y, HUD_WIDTH, HUD_HEIGHT), new Color(0, 0, 0, 255));
+
+            List<IGameEntity> fieldEntities, roomEntities;
+            int entityCount;
+            fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();//Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView().GetParentField().GetFieldEntities();
+            roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
+            entityCount = Global.EntityManager.GetCount();
+            Global.TextManager.DrawText(Global.Camera.Position, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
         }
 
         private void JukeboxRoutine()
