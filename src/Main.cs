@@ -392,7 +392,7 @@ namespace OpenLaMulana
                     Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
                     */
 
-                    Global.TextManager.DrawOwnString();
+                    //Global.TextManager.DrawOwnString();
 
                     /*
                     Globals.TextManager.DrawText(0, 0, "Player State: " + _protag.PrintState()

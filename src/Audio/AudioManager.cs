@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection.Metadata;
 
 namespace OpenLaMulana
 {
@@ -27,6 +28,8 @@ namespace OpenLaMulana
         public float AudioManSFXVolScale { get; private set; } = 1.0f;
 
         private static Dictionary<SFX, SoundEffect> _sfxBank = new Dictionary<SFX, SoundEffect>();
+
+        private List<SoundEffectInstance> _activeSoundEffects = new List<SoundEffectInstance>();
 
         public AudioManager()
         {
@@ -146,10 +149,12 @@ namespace OpenLaMulana
                 "se5B",
                 "se5C"
             };
-            
-            for (SFX sfx = SFX.PAUSE; sfx < SFX.MAX; sfx++) {
+
+            for (SFX sfx = SFX.PAUSE; sfx < SFX.MAX; sfx++)
+            {
                 string fName = sfxList[(int)sfx];
                 _sfxBank[sfx] = content.Load<SoundEffect>(Path.Combine("sound", fName));
+                _activeSoundEffects.Add(_sfxBank[sfx].CreateInstance());
             }
 
             SoundEffect.MasterVolume = 1;
@@ -158,6 +163,16 @@ namespace OpenLaMulana
         public void UnloadContent()
         {
             midiPlayer.Dispose();
+            foreach (SoundEffectInstance sfx in _activeSoundEffects)
+            {
+                sfx.Dispose();
+            }
+            _activeSoundEffects.Clear();
+
+            for (SFX sfx = SFX.PAUSE; sfx < SFX.MAX; sfx++)
+            {
+                _sfxBank[sfx].Dispose();
+            }
         }
 
         public void LoadSong(string fileName)
@@ -243,26 +258,10 @@ namespace OpenLaMulana
         {
         }
 
-        private List<SoundEffectInstance> _activeSoundEffects = new List<SoundEffectInstance>();
         internal void PlaySFX(SFX sfxId)
         {
-
-            SoundEffectInstance inst = _sfxBank[sfxId].CreateInstance();
-            
-            foreach(SoundEffectInstance sfx in _activeSoundEffects)
-            {
-                if (sfx.Equals(inst))
-                {
-                    sfx.Stop();
-                    _activeSoundEffects.Remove(sfx);
-                }
-            }
-
-
-            _activeSoundEffects.Add(inst);
-            
-            inst.Stop();
-            inst.Play();
+            _activeSoundEffects[(int)sfxId].Stop();
+            _activeSoundEffects[(int)sfxId].Play();
         }
     }
 }

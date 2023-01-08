@@ -86,6 +86,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private NPCTypes _spawnType = NPCTypes.Store;
         private int _shopCursorValue = 0;
         private string[] _dialogueStr;
+        private string _currText = "";
 
         public NPCRoom(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
@@ -211,15 +212,13 @@ namespace OpenLaMulana.Entities.WorldEntities
                         _shopData[i].FlagsToSet = new byte[2] { _shopDataValues[5], _shopDataValues[6] };
                     }
 
-                    Global.TextManager.SetText(_dialogueStr[(int)ShopDialogue.WELCOME]);
-                    Global.TextManager.SetDrawPosition(new Vector2(5 * 8, 9 * 8));
+                    _currText = _dialogueStr[(int)ShopDialogue.WELCOME];
                     break;
                 case (int)NPCTypes.Storyteller:
                     _spawnType = NPCTypes.Storyteller;
                     int storytellerDialogueID = op3;
                     _dialogueStr = new string[] { Global.TextManager.GetText(storytellerDialogueID, Global.CurrLang) };
-                    Global.TextManager.SetText(string.Format("{0}", _dialogueStr[0]));
-                    Global.TextManager.SetDrawPosition(new Vector2(5 * 8, 9 * 8));
+                    _currText = _dialogueStr[0];
                     break;
                 case (int)NPCTypes.Elder:
                     _spawnType = NPCTypes.Elder;
@@ -286,6 +285,8 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case NPCTypes.Elder:
                     break;
             }
+
+            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText);
         }
 
         public override void Update(GameTime gameTime)
@@ -310,7 +311,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
                     {
-                        Global.TextManager.SetText(_dialogueStr[(int)ShopDialogue.PRODUCT_1_HOVER + _shopCursorValue]);
+                        _currText = _dialogueStr[(int)ShopDialogue.PRODUCT_1_HOVER + _shopCursorValue];
                     }
                     break;
                 case NPCTypes.Storyteller:

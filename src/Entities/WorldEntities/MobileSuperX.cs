@@ -21,7 +21,8 @@ namespace OpenLaMulana
         private Sprite[] mainWindowSprites = null;
         private Texture2D _tex = null;
 
-        enum WindowSprites {
+        enum WindowSprites
+        {
             TL,
             TM,
             TM2,
@@ -53,7 +54,8 @@ namespace OpenLaMulana
             MAX
         };
 
-        enum ObtainableTreasures {
+        enum ObtainableTreasures
+        {
             MSX,
             SHELL_HORN,
             WATERPROOF_CASE,
@@ -182,20 +184,17 @@ namespace OpenLaMulana
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.ROM_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
@@ -207,20 +206,17 @@ namespace OpenLaMulana
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
@@ -232,20 +228,17 @@ namespace OpenLaMulana
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.ROM_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
@@ -257,20 +250,17 @@ namespace OpenLaMulana
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.ROM_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
@@ -462,7 +452,7 @@ namespace OpenLaMulana
                     mainWindowSprites[(int)WindowSprites.BM].Draw(spriteBatch, new Vector2(x * 8, 23 * 8));
             }
         }
-        
+
         public void SetState(Global.MSXStates state)
         {
             _state = state;
