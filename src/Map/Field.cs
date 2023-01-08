@@ -537,6 +537,12 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 _queuedViewsToDelete.Add(view);
             }
         }
+
+        internal void ForgetVisitedViews() // This should only be run if we're transitioning back to the same field (like when we beat Ellmac)
+        {
+            _visitedViews.Clear();
+        }
+
         internal void ClearVisitedViews()
         {
             if (!_queueClearVisitedViews)

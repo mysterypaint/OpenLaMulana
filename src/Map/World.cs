@@ -839,8 +839,12 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                         _disposedRenderTargetsFlag = false;
 
                         // We're moving to a new Field, so get rid of all the entities from the previous Field and allow spawning in every view
-                        thisField.QueueDeleteAllFieldAndRoomEntities();
-                        thisField.DeleteAllFieldAndRoomEntities();
+
+                        if (thisField.ID != destField)
+                        {
+                            thisField.QueueDeleteAllFieldAndRoomEntities();
+                            thisField.DeleteAllFieldAndRoomEntities();
+                        }
                         thisField.UnlockAllViewSpawning();
 
                         // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View
@@ -908,8 +912,14 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _disposedRenderTargetsFlag = false;
 
             // Get rid of all the entities from the previous Field and allow spawning in every view
-            thisField.QueueDeleteAllFieldAndRoomEntities();
-            thisField.UnlockAllViewSpawning();
+            if (thisField.ID != destField)
+            {
+                thisField.QueueDeleteAllFieldAndRoomEntities();
+                thisField.UnlockAllViewSpawning();
+            }
+            else {
+                thisField.ForgetVisitedViews();
+            }
 
             // Juuuust in case there's any lingering particles we don't want loaded in memory... This deletes all the non-global entities
             Global.EntityManager.SanityCheck();
