@@ -72,6 +72,8 @@ namespace OpenLaMulana.Entities.WorldEntities
             public int ProductPrice;
             public int ProductQuantity;
             public byte[] FlagsToSet;
+            public string ProductPriceString;
+            public bool IsSoldOut;
         }
 
         private Sprite _clerkGraphic = null;
@@ -134,7 +136,6 @@ namespace OpenLaMulana.Entities.WorldEntities
             _shopGraphicTop = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24, 32 + clerkAndRoomGraphic / 8 * 16, 24, 8);
             _shopGraphicBottom = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24, 40 + clerkAndRoomGraphic / 8 * 16, 24, 8);
             _shopGraphicBottomPart = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24 + 16, 40 + clerkAndRoomGraphic / 8 * 16, 24 - 16, 8);
-
             //_sprIndex = _shopGraphicTop;
 
             if (op2 >= 0)
@@ -168,14 +169,18 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
 
                     _shopData = new ShopData[3];
+                    string fmt = "000";
+
                     for (int i = 0; i < 3; i++)
                     {
                         int offset = i * (int)ShopParams.MAX;
 
                         _shopData[i].ProductType = (ProductTypes)_shopDataValues[offset + (int)ShopParams.PRODUCT_TYPE];
-                        _shopData[i].ProductPrice = _shopDataValues[offset + (int)ShopParams.PRICE_LO]; // _shopDataValues[offset + (int)ShopParams.PRICE_HI] + 
+                        _shopData[i].ProductPrice = _shopDataValues[offset + (int)ShopParams.PRICE_LO] + (_shopDataValues[offset + (int)ShopParams.PRICE_HI] - 1) * 256;
                         if (_shopData[i].ProductPrice > 999)
                             _shopData[i].ProductPrice = 999;
+                        _shopData[i].ProductPriceString = _shopData[i].ProductPrice.ToString(fmt);
+                        _shopData[i].IsSoldOut = false;
 
                         switch (_shopData[i].ProductType)
                         {
@@ -274,8 +279,14 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                     _shopCursor.Draw(spriteBatch, new Vector2((6 + _shopCursorValue * 7) * 8, 13 * 8));
                     for (var i = 0; i < 3; i++)
+                    {
                         _productSprites[i].Draw(spriteBatch, new Vector2((8 + 7 * i) * 8, 13 * 8));
 
+                        if (!_shopData[i].IsSoldOut)
+                            Global.TextManager.DrawText((7 + (i * 7)) * 8, 15 * 8, _shopData[i].ProductPriceString);
+                        else
+                            Global.TextManager.DrawText((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
+                    }
                     _playerShopSprite.Draw(spriteBatch, new Vector2(15 * 8, 21 * 8));
 
 
@@ -286,7 +297,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
             }
 
-            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText);
+            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22);
         }
 
         public override void Update(GameTime gameTime)

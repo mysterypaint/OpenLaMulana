@@ -33,11 +33,12 @@ namespace OpenLaMulana.System
         public static Dictionary<int, string> s_charSet;
 
         private Texture2D _gameFontTex;
-        private List<Point> queuedXYPos;
-        private List<String> queuedText;
+        private List<Point> _queuedXYPos;
+        private List<String> _queuedText;
         private List<TextModes> queuedTextMode;
         private string _myString = "";
         private Vector2 _drawOff = Vector2.Zero;
+        private List<int> _queuedTextLengths = new List<int>();
 
         public TextManager()
         {
@@ -52,25 +53,27 @@ namespace OpenLaMulana.System
                     _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
                     break;
             }
-            queuedXYPos = new List<Point>();
-            queuedText = new List<String>();
+            _queuedXYPos = new List<Point>();
+            _queuedText = new List<String>();
             queuedTextMode = new List<TextModes>();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             var i = 0;
-            if (queuedText.Count > 0)
+            if (_queuedText.Count > 0)
             {
-                foreach (string str in queuedText)
+                foreach (string str in _queuedText)
                 {
-                    int posX = queuedXYPos[i].X;
-                    int posY = queuedXYPos[i].Y;
-                    DisplayString(spriteBatch, str, posX, posY);
+                    int posX = _queuedXYPos[i].X;
+                    int posY = _queuedXYPos[i].Y;
+                    int charLimit = _queuedTextLengths[i];
+                    DisplayString(spriteBatch, str, posX, posY, charLimit);
                     i++;
                 }
-                queuedText.Clear();
-                queuedXYPos.Clear();
+                _queuedText.Clear();
+                _queuedXYPos.Clear();
+                _queuedTextLengths.Clear();
             }
         }
 
@@ -93,7 +96,7 @@ namespace OpenLaMulana.System
             return s_charSet;
         }
 
-        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y)
+        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit)
         {
             int posX = x;
             int posY = y;
@@ -164,7 +167,7 @@ namespace OpenLaMulana.System
                     specialTextControl = false;
                 }
 
-                if (j >= 32 || lineBreak)
+                if (j >= charLimit || lineBreak)
                 {
                     // Perform a linebreak, because we hit the max char limit or run into a linebreak command
                     xOff = 0;
@@ -211,24 +214,25 @@ namespace OpenLaMulana.System
             spriteBatch.Draw(_gameFontTex, new Vector2(point.X, point.Y), new Rectangle(_dx * TEXT_WIDTH, _dy * TEXT_HEIGHT, TEXT_WIDTH, TEXT_HEIGHT), Color.White);
         }
 
-        public void DrawText(int x, int y, string str)
+        public void DrawText(int x, int y, string str, int charLimit = 32)
         {
             if (str == null)
                 return;
             byte[] bytes = Encoding.Default.GetBytes(str);
             str = Encoding.UTF8.GetString(bytes);
 
-            queuedXYPos.Add(new Point(x, y));
-            queuedText.Add(str);
+            _queuedXYPos.Add(new Point(x, y));
+            _queuedText.Add(str);
+            _queuedTextLengths.Add(charLimit);
         }
 
-        public void DrawTextImmediate(int x, int y, string str)
+        public void DrawTextImmediate(int x, int y, string str, int charLimit = 32)
         {
             if (str == null)
                 return;
             byte[] bytes = Encoding.Default.GetBytes(str);
             str = Encoding.UTF8.GetString(bytes);
-            DisplayString(Global.SpriteBatch, str, x, y);
+            DisplayString(Global.SpriteBatch, str, x, y,  charLimit);
         }
 
         public void Update(GameTime gameTime)
@@ -284,8 +288,8 @@ namespace OpenLaMulana.System
 
         internal void DrawOwnString()
         {
-            queuedXYPos.Add(new Point(0, 0));
-            queuedText.Add(_myString);
+            _queuedXYPos.Add(new Point(0, 0));
+            _queuedText.Add(_myString);
         }
 
         internal void SetDrawPosition(Vector2 drawOffset)
@@ -293,13 +297,14 @@ namespace OpenLaMulana.System
             _drawOff = drawOffset;
         }
 
-        internal void DrawText(Vector2 position, string str)
+        internal void DrawText(Vector2 position, string str, int charLimit = 32)
         {
-            DrawText((int)position.X, (int)position.Y, str);
+            DrawText((int)position.X, (int)position.Y, str, charLimit);
         }
-        internal void DrawTextImmediate(Vector2 position, string str)
+
+        internal void DrawTextImmediate(Vector2 position, string str, int charLimit = 32)
         {
-            DrawTextImmediate((int)position.X, (int)position.Y, str);
+            DrawTextImmediate((int)position.X, (int)position.Y, str, charLimit);
         }
     }
 }
