@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using static OpenLaMulana.Entities.Protag;
 using static OpenLaMulana.Entities.World;
 
@@ -100,7 +102,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             _chipHeight = World.CHIP_SIZE;
             BBoxOriginX = 5;
             BBoxOriginY = 12;
-            
 
             Texture2D spriteSheet = Global.TextureManager.GetTexture(Global.Textures.PROT1);
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
@@ -127,6 +128,21 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             // Slime thing = 2;
             _inventory.CurrExp = 0;
             _inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
+
+            MoveToWorldSpawnPoint();
+        }
+
+        private void MoveToWorldSpawnPoint()
+        {
+            int[] spawnParams = Regex.Matches(Global.TextManager.GetText((int)Global.HardCodedText.SPAWN_POINT, Global.CurrLang), "(-?[0-9]+)").OfType<Match>().Select(m => int.Parse(m.Value)).ToArray();
+            int destFieldID = spawnParams[0];
+            View destView = Global.World.GetField(destFieldID).GetView(spawnParams[1]);
+            int spawnX = spawnParams[2];
+            int spawnY = spawnParams[3];
+
+            Global.World.FieldTransitionImmediate(Global.World.GetCurrentView(), destView);
+
+            Position = new Vector2(spawnX * CHIP_SIZE, spawnY * CHIP_SIZE);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

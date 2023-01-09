@@ -166,8 +166,8 @@ namespace OpenLaMulana
             _protag.Depth = (int)Global.DrawOrder.Protag;
             Global.Camera.SetProtag(_protag);
 
-            Global.InputManager = new InputManager();
-            Global.InputManager.Init();
+            Global.GlobalInput = new InputManager();
+            Global.GlobalInput.Init();
             Global.SpriteDefManager = new SpriteDefManager();
 
             Global.EntityManager.AddEntity(_protag);
@@ -193,7 +193,7 @@ namespace OpenLaMulana
 
         protected override void Update(GameTime gameTime)
         {
-            Global.InputManager.Update(gameTime);
+            Global.GlobalInput.Update(gameTime);
 
             if (InputManager.DirectKeyboardCheckPressed(Keys.Escape))
                 Exit();

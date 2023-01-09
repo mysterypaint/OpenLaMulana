@@ -3,12 +3,18 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
+using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
     internal class ObtainableMajorWeapon : IEnemyWorldEntity
     {
         private int _itemID;
+        /*
+        (int)Global.HardCodedText.ITEM_ACQUISITION_MESSAGE
+        (int)Global.HardCodedText.ITEM_NAMES_BEGIN
+        (int)Global.HardCodedText.ITEM_NAMES_END
+        */
 
         public ObtainableMajorWeapon(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {

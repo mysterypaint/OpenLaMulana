@@ -294,8 +294,8 @@ namespace OpenLaMulana
             if (equippedRomSprID2 >= 0)
                 _romSprites[equippedRomSprID2].Draw(spriteBatch, new Vector2(8 * 8, 7 * 8));
 
-            Global.TextManager.DrawText(11 * 8, 5 * 8, Global.TextManager.GetText(eqRom1, Global.CurrLang));
-            Global.TextManager.DrawText(11 * 8, 8 * 8, Global.TextManager.GetText(eqRom2, Global.CurrLang));
+            Global.TextManager.DrawText(11 * 8, 5 * 8, Global.TextManager.GetText((int)Global.HardCodedText.ROM_NAMES_BEGIN + eqRom1, Global.CurrLang));
+            Global.TextManager.DrawText(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.ROM_NAMES_BEGIN + eqRom2, Global.CurrLang));
 
             mainWindowSprites[(int)WindowSprites.INV_TL].Draw(spriteBatch, new Vector2(7 * 8, 3 * 8));
             mainWindowSprites[(int)WindowSprites.INV_TR].Draw(spriteBatch, new Vector2(10 * 8, 3 * 8));

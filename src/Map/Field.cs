@@ -277,6 +277,13 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             thisRoom.Draw(texture, spriteBatch, gameTime, offsetVec);
         }
 
+        internal View GetView(int viewID)
+        {
+            int vX = viewID % World.FIELD_WIDTH;
+            int vY = viewID / World.FIELD_WIDTH;
+            return _viewsJPN[vX, vY];
+        }
+
         internal View GetView(int destViewX, int destViewY)
         {
             return _viewsJPN[destViewX, destViewY];
@@ -632,5 +639,6 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         {
             return _bossID;
         }
+
     }
 }

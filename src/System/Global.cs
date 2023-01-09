@@ -438,12 +438,26 @@ namespace OpenLaMulana
             MAX
         };
 
+        public enum HardCodedText
+        {
+            ROM_NAMES_BEGIN = 0,
+            ROM_NAMES_END = 83,
+            SAVE_LOAD_DIALOGUE_BEGINS = 84,
+            SAVE_LOAD_DIALOGUE_ENDS = 93,
+            ITEM_ACQUISITION_MESSAGE = 94,
+            SPAWN_POINT = 99,
+            JUKEBOX_NAMES_BEGIN = 100,
+            JUKEBOX_NAMES_END = 155,
+            ITEM_NAMES_BEGIN = 500,
+            ITEM_NAMES_END = 559,
+        };
+
         public static Effect ShdTransition, ShdHueShift, ShdBinary, ShdMaskingBlack;
 
         public static GraphicsDevice GraphicsDevice;
         public static GraphicsDeviceManager GraphicsDeviceManager;
         public static Camera Camera;
-        public static InputManager InputManager;
+        public static InputManager GlobalInput;
         public static World World;
         public static EntityManager EntityManager;
         public static AudioManager AudioManager;

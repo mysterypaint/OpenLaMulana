@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
@@ -16,7 +17,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         {
             Store,
             Storyteller,
-            Elder
+            Xelpud
         };
 
         enum ShopDialogue
@@ -225,8 +226,12 @@ namespace OpenLaMulana.Entities.WorldEntities
                     _dialogueStr = new string[] { Global.TextManager.GetText(storytellerDialogueID, Global.CurrLang) };
                     _currText = _dialogueStr[0];
                     break;
-                case (int)NPCTypes.Elder:
-                    _spawnType = NPCTypes.Elder;
+                case (int)NPCTypes.Xelpud:
+                    _spawnType = NPCTypes.Xelpud;
+                    //Message Index 84-93: Save/load relation
+                    /*
+                    (int)HardCodedText.SAVE_LOAD_DIALOGUE_BEGINS
+                    (int)HardCodedText.SAVE_LOAD_DIALOGUE_ENDS*/
                     break;
             }
         }
@@ -293,7 +298,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
                 case NPCTypes.Storyteller:
                     break;
-                case NPCTypes.Elder:
+                case NPCTypes.Xelpud:
                     break;
             }
 
@@ -327,7 +332,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
                 case NPCTypes.Storyteller:
                     break;
-                case NPCTypes.Elder:
+                case NPCTypes.Xelpud:
                     break;
             }
         }
