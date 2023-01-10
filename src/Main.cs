@@ -129,7 +129,7 @@ namespace OpenLaMulana
             Global.GraphicsDeviceManager.ApplyChanges();
 
             _displayZoomFactor = 3;
-            _displayZoomMax = CalcDisplayZoomMax();
+            CalcDisplayZoomMax();
             if (_displayZoomFactor > 4)
                 _displayZoomFactor = 1;
             ToggleDisplayMode();
@@ -309,7 +309,7 @@ namespace OpenLaMulana
 
             if (InputManager.DirectKeyboardCheckPressed(Keys.F7) && !Global.GraphicsDeviceManager.IsFullScreen)
             {
-                _displayZoomMax = CalcDisplayZoomMax();
+                CalcDisplayZoomMax();
                 _displayZoomFactor += 1;
                 if (_displayZoomFactor > _displayZoomMax)
                     _displayZoomFactor = 1;
@@ -317,7 +317,7 @@ namespace OpenLaMulana
             }
         }
 
-        private int CalcDisplayZoomMax()
+        private void CalcDisplayZoomMax()
         {
             int idealWidth = 0;
             int idealHeight = WINDOW_HEIGHT;
@@ -334,7 +334,7 @@ namespace OpenLaMulana
                 idealWidth++;
 
             int maxZoom = (int)Math.Floor((double)monitorWidth / idealWidth);
-            return maxZoom;
+            _displayZoomMax = maxZoom;
         }
 
         private void ToggleGamePause()
@@ -652,12 +652,17 @@ namespace OpenLaMulana
             return _displayZoomFactor;
         }
 
+        public void SetDisplayZoomFactor(int value)
+        {
+            _displayZoomFactor = value;
+        }
+
         public int GetDisplayZoomMax()
         {
             return _displayZoomMax;
         }
 
-        private void ToggleDisplayMode()
+        public void ToggleDisplayMode()
         {
             Global.GraphicsDeviceManager.PreferredBackBufferHeight = WINDOW_HEIGHT * _displayZoomFactor;
             Global.GraphicsDeviceManager.PreferredBackBufferWidth = WINDOW_WIDTH * _displayZoomFactor;

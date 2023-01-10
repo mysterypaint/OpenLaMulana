@@ -43,6 +43,12 @@ namespace OpenLaMulana.System
             DisplayZoomFactor = dispZoomFactor;
             _viewWidth = width;
             _viewHeight = height;
+
+            Transform = Matrix.CreateTranslation(new Vector3(-Position.X - (BaseWindowSize.X / 2), -Position.Y - (BaseWindowSize.Y / 2), 0))
+                * Matrix.Identity
+                * Matrix.CreateRotationZ(Rotation)
+                * Matrix.CreateScale(DisplayZoomFactor, DisplayZoomFactor, 1)
+                * Matrix.CreateTranslation(new Vector3(_viewWidth * 0.5f, _viewHeight * 0.5f, 0));
         }
 
 

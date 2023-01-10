@@ -90,6 +90,11 @@ namespace OpenLaMulana
 
         internal void Update(GameTime gameTime)
         {
+            // Abort if we're configuring anything in the Config menu
+            if (_f5Menu.IsInputting()) {
+                _f5Menu.Update(gameTime);
+                return;
+            }
             if (_state != Global.MSXStates.INACTIVE)
             {
                 if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_MOVE_RIGHT])

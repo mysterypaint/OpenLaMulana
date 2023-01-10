@@ -35,7 +35,8 @@ namespace OpenLaMulana.System
         private Texture2D _gameFontTex;
         private List<Point> _queuedXYPos;
         private List<String> _queuedText;
-        private List<TextModes> queuedTextMode;
+        private List<Color> _queuedTextColor;
+        private List<TextModes> _queuedTextMode;
         private string _myString = "";
         private Vector2 _drawOff = Vector2.Zero;
         private List<int> _queuedTextLengths = new List<int>();
@@ -55,7 +56,8 @@ namespace OpenLaMulana.System
             }
             _queuedXYPos = new List<Point>();
             _queuedText = new List<String>();
-            queuedTextMode = new List<TextModes>();
+            _queuedTextColor = new List<Color>();
+            _queuedTextMode = new List<TextModes>();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -68,10 +70,12 @@ namespace OpenLaMulana.System
                     int posX = _queuedXYPos[i].X;
                     int posY = _queuedXYPos[i].Y;
                     int charLimit = _queuedTextLengths[i];
-                    DisplayString(spriteBatch, str, posX, posY, charLimit);
+                    Color color = _queuedTextColor[i];
+                    DisplayString(spriteBatch, str, posX, posY, charLimit, color);
                     i++;
                 }
                 _queuedText.Clear();
+                _queuedTextColor.Clear();
                 _queuedXYPos.Clear();
                 _queuedTextLengths.Clear();
             }
@@ -96,7 +100,7 @@ namespace OpenLaMulana.System
             return s_charSet;
         }
 
-        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit)
+        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit, Color col = default)
         {
             int posX = x;
             int posY = y;
@@ -175,15 +179,16 @@ namespace OpenLaMulana.System
                     j = 0;
                     lineBreak = false;
                 }
-                DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile);
+                DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col);
                 xOff += TEXT_WIDTH;
                 j++;
             }
         }
 
-        private void DrawChar(SpriteBatch spriteBatch, Point point, char c, int drawTile)
+        private void DrawChar(SpriteBatch spriteBatch, Point point, char c, int drawTile, Color col = default)
         {
-
+            if (col == default)
+                col = Color.White;
             var _otx = 16; // Origin Tile X
             var _oty = 0;
             int thisChar = c;
@@ -211,10 +216,10 @@ namespace OpenLaMulana.System
             if (Lamulanese)
                 _dx -= 16;
             // Space ' ' is = to 32
-            spriteBatch.Draw(_gameFontTex, new Vector2(point.X, point.Y), new Rectangle(_dx * TEXT_WIDTH, _dy * TEXT_HEIGHT, TEXT_WIDTH, TEXT_HEIGHT), Color.White);
+            spriteBatch.Draw(_gameFontTex, new Vector2(point.X, point.Y), new Rectangle(_dx * TEXT_WIDTH, _dy * TEXT_HEIGHT, TEXT_WIDTH, TEXT_HEIGHT), col);
         }
 
-        public void DrawText(int x, int y, string str, int charLimit = 32)
+        public void DrawText(int x, int y, string str, int charLimit = 32, Color col = default)
         {
             if (str == null)
                 return;
@@ -223,6 +228,7 @@ namespace OpenLaMulana.System
 
             _queuedXYPos.Add(new Point(x, y));
             _queuedText.Add(str);
+            _queuedTextColor.Add(col);
             _queuedTextLengths.Add(charLimit);
         }
 
@@ -297,9 +303,9 @@ namespace OpenLaMulana.System
             _drawOff = drawOffset;
         }
 
-        internal void DrawText(Vector2 position, string str, int charLimit = 32)
+        internal void DrawText(Vector2 position, string str, int charLimit = 32, Color col = default)
         {
-            DrawText((int)position.X, (int)position.Y, str, charLimit);
+            DrawText((int)position.X, (int)position.Y, str, charLimit, col);
         }
 
         internal void DrawTextImmediate(Vector2 position, string str, int charLimit = 32)

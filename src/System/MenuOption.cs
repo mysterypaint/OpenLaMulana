@@ -10,7 +10,7 @@ namespace OpenLaMulana.System
             public MenuTypes ElementType;
             public Func<int[], int> Function;
             public OptionsMenuPages Page;
-            public float SliderDefaultValue;
+            public float Value;
             public int[] Args;
             public string[] Strings;
 
@@ -20,7 +20,7 @@ namespace OpenLaMulana.System
                 ElementType = elementType;
                 Function = function;
                 Page = page;
-                SliderDefaultValue = sliderDefaultValue;
+                Value = sliderDefaultValue;
                 Args = sliderRange;
                 Strings = strings;
             }

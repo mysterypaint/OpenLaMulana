@@ -409,6 +409,10 @@ namespace OpenLaMulana
             JOY_DOWN,
             JOY_LEFT,
             JOY_RIGHT,
+            CONFIG_MENU_UP,
+            CONFIG_MENU_DOWN,
+            CONFIG_MENU_LEFT,
+            CONFIG_MENU_RIGHT,
             JUMP,
             WHIP,
             SUB_WEAPON,
@@ -452,6 +456,13 @@ namespace OpenLaMulana
             ITEM_NAMES_END = 559,
         };
 
+        public enum PlatformingPhysics
+        {
+            CLASSIC,
+            REVAMPED,
+            MAX
+        };
+
         public static Effect ShdTransition, ShdHueShift, ShdBinary, ShdMaskingBlack;
 
         public static GraphicsDevice GraphicsDevice;
@@ -476,5 +487,7 @@ namespace OpenLaMulana
         public static AnimationTimer AnimationTimer { get; internal set; }
         public static Main Main { get; internal set; }
         public static MobileSuperX MobileSuperX { get; set; }
+        public static PlatformingPhysics ProtagPhysics { get; internal set; }
+        public static bool QoLChanges { get; internal set; } = false;
     }
 }

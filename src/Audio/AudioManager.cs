@@ -254,20 +254,42 @@ namespace OpenLaMulana
         public void SetMasterVolume(float newVal)
         {
             _userMasterVolScale = newVal;
-            midiPlayer.SetMasterVolume(_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale);
-            SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale;
+            float preSet = (float)Math.Round((_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale) * 100) / 100;
+            midiPlayer.SetMasterVolume(preSet);
+            //SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale;
+
+            // Hacky solution, because SoundEffect.Master volume is shared with the BGM synthesizer...
+            int i = 0;
+            for (SFX sfx = SFX.PAUSE; sfx < SFX.MAX; sfx++)
+            {
+                _activeSoundEffects[i].Volume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale;
+                i++;
+            }
+
+
         }
 
         public void SetBGMVolume(float newVal)
         {
             _userBGMVolScale = newVal;
-            midiPlayer.SetMasterVolume(_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale);
+            float preSet = (float)Math.Round((_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale) * 100) / 100;
+            midiPlayer.SetMasterVolume(preSet);
         }
 
         public void SetSFXVolume(float newVal)
         {
             _userSFXVolScale = newVal;
-            SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale; // SoundEffect.MasterVolume and SoundEffectInstance.Volume both range from 0.0f to 1.0f
+
+            // Hacky solution, because SoundEffect.Master volume is shared with the BGM synthesizer...
+            int i = 0;
+            for (SFX sfx = SFX.PAUSE; sfx < SFX.MAX; sfx++)
+            {
+                _activeSoundEffects[i].Volume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale;
+                i++;
+            }
+
+
+            //SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale; // SoundEffect.MasterVolume and SoundEffectInstance.Volume both range from 0.0f to 1.0f
         }
 
         internal float GetMasterBGMVolume()

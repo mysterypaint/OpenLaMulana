@@ -104,7 +104,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             mapName += MapIndex.ToString();
 
             string fileName = "Content/data/" + mapName + ".dat";
-            LoadMap(fileName, Global.Languages.Japanese);
+            LoadMap(fileName, Global.Languages.Japanese, false, MapIndex);
 
             // Load the English maps (There's only one, but just in case we need to add any more in the future...)
             switch(ID) {
@@ -113,12 +113,12 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case 21:
                     mapName += "_EN";
                     fileName = "Content/data/" + mapName + ".dat";
-                    LoadMap(fileName, Global.Languages.English);
+                    LoadMap(fileName, Global.Languages.English, false, MapIndex);
                     break;
             }
         }
 
-        private void LoadMap(string fileName, Global.Languages lang, bool isBossMap = false)
+        private void LoadMap(string fileName, Global.Languages lang, bool isBossMap = false, int mapIndex = 0)
         {
             if (File.Exists(fileName))
             {
@@ -212,6 +212,21 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         public View[,] GetMapData()
         {
             switch (Global.CurrLang)
+            {
+                default:
+                case Global.Languages.Japanese:
+                    return _viewsJPN;
+                case Global.Languages.English:
+                    if (_viewsENG != null)
+                        return _viewsENG;
+                    else
+                        return _viewsJPN;
+            }
+        }
+
+        public View[,] GetMapData(Global.Languages lang)
+        {
+            switch (lang)
             {
                 default:
                 case Global.Languages.Japanese:
@@ -614,7 +629,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             mapName += _bossID.ToString();
 
             string fileName = "Content/data/" + mapName + ".dat";
-            LoadMap(fileName, Global.Languages.Japanese, true);
+            LoadMap(fileName, Global.Languages.Japanese, true, _bossID);
         }
 
         internal View[] GetBossViews()
