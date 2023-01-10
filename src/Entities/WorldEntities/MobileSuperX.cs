@@ -20,6 +20,7 @@ namespace OpenLaMulana
 
         private Sprite[] mainWindowSprites = null;
         private Texture2D _tex = null;
+        private Menu _f5Menu = null;
 
         enum WindowSprites
         {
@@ -56,8 +57,6 @@ namespace OpenLaMulana
 
             EMU_CURSOR,
 
-            OPTIONS_CURSOR,
-
             MAX
         };
 
@@ -86,6 +85,7 @@ namespace OpenLaMulana
         public MobileSuperX()
         {
             InitAllMenuSprites();
+            _f5Menu = new Menu();
         }
 
         internal void Update(GameTime gameTime)
@@ -111,7 +111,7 @@ namespace OpenLaMulana
                     }
                 }
 
-                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL])
+                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] && _state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.CONFIG_SCREEN)
                 {
                     Global.Main.SetState(Global.GameState.PLAYING);
                     Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
@@ -209,13 +209,14 @@ namespace OpenLaMulana
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
+
+                    _f5Menu.Update(gameTime);
                     break;
             }
         }
 
         internal void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-
             switch (_state)
             {
                 case Global.MSXStates.INVENTORY:
@@ -262,6 +263,10 @@ namespace OpenLaMulana
                     break;
                 case Global.MSXStates.CONFIG_SCREEN:
                     DrawMSXBackground(spriteBatch, gameTime);
+
+                    _f5Menu.Draw(spriteBatch, gameTime);
+
+                    /*
                     Global.TextManager.DrawText(4 * 8, 2 * 8, "- Options -");
                     
                     y = 0;
@@ -273,6 +278,7 @@ namespace OpenLaMulana
 
                     int cursorPosition = 0;
                     mainWindowSprites[(int)WindowSprites.OPTIONS_CURSOR].Draw(spriteBatch, new Vector2(6 * 8, (4 + cursorPosition * 2) * 8));
+                     */
                     break;
             }
         }
@@ -444,11 +450,10 @@ namespace OpenLaMulana
 
             Sprite scannerOK = Global.TextureManager.Get8x8Tile(_tex, 19, 2, Vector2.Zero);
             Sprite emuCursor = Global.TextureManager.Get8x8Tile(_tex, 19, 3, Vector2.Zero);
-            Sprite optionsCursor = Global.TextureManager.Get8x8Tile(_tex, 0, 1, Vector2.Zero);
             
             mainWindowSprites = new Sprite[] { tl, tm, tm2, tr, l, l2, blu, bl, r, r2, bru, br, ab, bm, ms, sx,
                 invTL, invTR, invBL, invBR, invBLTL, invBRTR, invT, invB, invL, invR, invM,
-                scannerOK, emuCursor, optionsCursor};
+                scannerOK, emuCursor};
 
             for (var i = 0; i < 60; i++)
             {

@@ -24,8 +24,12 @@ namespace OpenLaMulana
         public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
 
-        public float AudioManBGMVolScale { get; private set; } = 0.8f;
-        public float AudioManSFXVolScale { get; private set; } = 1.0f;
+        private float _userMasterVolScale { get; set; } = 1.0f;
+        private float _userBGMVolScale { get; set; } = 1.0f;
+        private float _userSFXVolScale { get; set; } = 1.0f;
+
+        private float _internalBGMVolScale = 0.6f;
+        private float _internalSFXVolScale = 1.0f;
 
         private static Dictionary<SFX, SoundEffect> _sfxBank = new Dictionary<SFX, SoundEffect>();
 
@@ -41,7 +45,8 @@ namespace OpenLaMulana
 
             SynthesizerSettings settings = new SynthesizerSettings(sampleRate);
             midiPlayer = new MidiPlayer(musPath + "SanbikiScc.sf2", settings);
-            midiPlayer.SetMasterVolume(AudioManBGMVolScale * 1.0f);
+            midiPlayer.SetMasterVolume(_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale);
+            SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale;
 
             for (var i = 0; i <= 75; i++)
             {
@@ -157,7 +162,6 @@ namespace OpenLaMulana
                 _activeSoundEffects.Add(_sfxBank[sfx].CreateInstance());
             }
 
-            SoundEffect.MasterVolume = 1;
         }
 
         public void UnloadContent()
@@ -234,19 +238,41 @@ namespace OpenLaMulana
             }
         }
 
-        internal void SetMasterBGMVolume(float newVal)
+        public float GetUserMasterVolume()
         {
-            midiPlayer.SetMasterVolume(AudioManBGMVolScale * newVal);
+            return _userMasterVolScale;
+        }
+        public float GetUserBGMVolume()
+        {
+            return _userBGMVolScale;
+        }
+        public float GetUserSFXVolume()
+        {
+            return _userSFXVolScale;
+        }
+
+        public void SetMasterVolume(float newVal)
+        {
+            _userMasterVolScale = newVal;
+            midiPlayer.SetMasterVolume(_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale);
+            SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale;
+        }
+
+        public void SetBGMVolume(float newVal)
+        {
+            _userBGMVolScale = newVal;
+            midiPlayer.SetMasterVolume(_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale);
+        }
+
+        public void SetSFXVolume(float newVal)
+        {
+            _userSFXVolScale = newVal;
+            SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale; // SoundEffect.MasterVolume and SoundEffectInstance.Volume both range from 0.0f to 1.0f
         }
 
         internal float GetMasterBGMVolume()
         {
             return midiPlayer.GetMasterVolume();
-        }
-
-        internal void SetMasterSFXVolume(float newVal)
-        {
-            SoundEffect.MasterVolume = AudioManSFXVolScale * newVal; // SoundEffect.MasterVolume and SoundEffectInstance.Volume both range from 0.0f to 1.0f
         }
 
         internal float GetMasterSFXVolume()

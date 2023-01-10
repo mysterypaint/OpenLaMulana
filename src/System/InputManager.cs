@@ -14,6 +14,17 @@ namespace OpenLaMulana.System
 {
     public class InputManager
     {
+        public enum ControllerNames
+        {
+            GENERIC,
+            XBOX_360,
+            XBOX_ONE,
+            PS4,
+            PS5,
+            NINTENDO_SWITCH,
+            MAX
+        };
+
         private static Protag _protag;
         private static Jukebox _jukebox;
 
@@ -36,8 +47,10 @@ namespace OpenLaMulana.System
         public static bool[] HeldKeys = new bool[(int)ControllerKeys.MAX];
         public static bool[] ReleasedKeys = new bool[(int)ControllerKeys.MAX];
 
-        public static short DirMoveX, DirMoveY = 0;
-
+        public static short DirHeldX, DirHeldY, DirPressedX, DirPressedY = 0;
+        private static bool _joysticksEnabled = true;
+        private static ControllerNames? _identifiedController = null;
+        private static ControllerNames? _previouslyIdentifiedController = null;
 
         public void Init()
         {
@@ -72,7 +85,7 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.WHIP] = (int)Keys.J;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.JUMP] = (int)Keys.K;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUBWEAPON] = (int)Keys.L;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUB_WEAPON] = (int)Keys.L;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.I;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Keys.F2;
@@ -91,15 +104,25 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.RIGHT] = (int)Buttons.DPadRight;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.UP] = (int)Buttons.DPadUp;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.DOWN] = (int)Buttons.DPadDown;
-
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.PAUSE] = (int)Buttons.Back;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Buttons.Start;
-            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_CONFIRM] = (int)Buttons.B;
-            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_CANCEL] = (int)Buttons.A;
+
+
+            GetGamePadState();
+            if (_identifiedController == ControllerNames.NINTENDO_SWITCH)
+            {
+                ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_CONFIRM] = (int)Buttons.B;
+                ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_CANCEL] = (int)Buttons.A;
+                ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.SUB_WEAPON] = (int)Buttons.A;
+                ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.JUMP] = (int)Buttons.B;
+            } else {
+                ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_CONFIRM] = (int)Buttons.A;
+                ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_CANCEL] = (int)Buttons.B;
+                ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.SUB_WEAPON] = (int)Buttons.B;
+                ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.JUMP] = (int)Buttons.A;
+            }
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.ITEM] = (int)Buttons.Y;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.WHIP] = (int)Buttons.X;
-            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.SUBWEAPON] = (int)Buttons.B;
-            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.JUMP] = (int)Buttons.A;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.SUB_SHIFT_RIGHT] = (int)Buttons.RightShoulder;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.SUB_SHIFT_LEFT] = (int)Buttons.LeftShoulder;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MAIN_WEAPON_SHIFT_LEFT] = (int)Buttons.LeftTrigger;
@@ -111,14 +134,43 @@ namespace OpenLaMulana.System
         public void Update(GameTime gameTime)
         {
             GetKeyboardState();
+
+            if (_identifiedController != null) {
+                _previouslyIdentifiedController = _identifiedController;
+            }
             GetGamePadState();
             UpdateAllButtonChecks();
 
-            DirMoveX = (short)(Convert.ToInt16(HeldKeys[(int)ControllerKeys.RIGHT]) - Convert.ToInt16(HeldKeys[(int)ControllerKeys.LEFT]));
-            DirMoveY = (short)(Convert.ToInt16(HeldKeys[(int)ControllerKeys.DOWN]) - Convert.ToInt16(HeldKeys[(int)ControllerKeys.UP]));
+            if (_identifiedController == ControllerNames.NINTENDO_SWITCH)
+            {
+                if (_identifiedController != _previouslyIdentifiedController)
+                    SwapABButtons();
+            }
+            else if (_previouslyIdentifiedController == ControllerNames.NINTENDO_SWITCH)
+            {
+                SwapABButtons();
+                _previouslyIdentifiedController = _identifiedController;
+            }
+
+            DirHeldX = (short)(Convert.ToInt16(HeldKeys[(int)ControllerKeys.RIGHT]) - Convert.ToInt16(HeldKeys[(int)ControllerKeys.LEFT]));
+            DirHeldY = (short)(Convert.ToInt16(HeldKeys[(int)ControllerKeys.DOWN]) - Convert.ToInt16(HeldKeys[(int)ControllerKeys.UP]));
+
+            DirPressedX = (short)(Convert.ToInt16(PressedKeys[(int)ControllerKeys.RIGHT]) - Convert.ToInt16(PressedKeys[(int)ControllerKeys.LEFT]));
+            DirPressedY = (short)(Convert.ToInt16(PressedKeys[(int)ControllerKeys.DOWN]) - Convert.ToInt16(PressedKeys[(int)ControllerKeys.UP]));
 
             WorldTransitionTesting();
             //JukeboxControls();
+        }
+
+        private void SwapABButtons()
+        {
+            for (ControllerKeys k = (ControllerKeys)0; k < ControllerKeys.MAX; k++)
+            {
+                if (ConfigKeys[(int)ControllerTypes.Gamepad, (int)k] == (int)Buttons.A)
+                    ConfigKeys[(int)ControllerTypes.Gamepad, (int)k] = (int)Buttons.B;
+                else if (ConfigKeys[(int)ControllerTypes.Gamepad, (int)k] == (int)Buttons.B)
+                    ConfigKeys[(int)ControllerTypes.Gamepad, (int)k] = (int)Buttons.A;
+            }
         }
 
         private void UpdateAllButtonChecks()
@@ -176,7 +228,7 @@ namespace OpenLaMulana.System
 
         private void JukeboxControls()
         {
-            _jukebox.Control(DirMoveX, PressedKeys[(int)ControllerKeys.MENU_CANCEL], PressedKeys[(int)ControllerKeys.MENU_CONFIRM]);
+            _jukebox.Control(DirHeldX, PressedKeys[(int)ControllerKeys.MENU_CANCEL], PressedKeys[(int)ControllerKeys.MENU_CONFIRM]);
         }
 
         public static void BlockInputTemporarily()
@@ -262,9 +314,29 @@ namespace OpenLaMulana.System
             // If there a controller attached, handle it
             if (capabilities.IsConnected)
             {
+                switch(capabilities.DisplayName)
+                {
+                    default:
+                        _identifiedController = ControllerNames.GENERIC;
+                        break;
+                    case "Nintendo Switch Pro Controller":
+                        _identifiedController = ControllerNames.NINTENDO_SWITCH;
+                        break;
+                    case "PS4 Controller":
+                        _identifiedController = ControllerNames.PS4;
+                        break;
+                    case "PS5 Controller":
+                        _identifiedController = ControllerNames.PS5;
+                        break;
+                }
+
                 if (capabilities.GamePadType == GamePadType.GamePad) //  && capabilities.HasLeftXThumbStick
                     t_gamePadState = GamePad.GetState(PlayerIndex.One); // Get the current state of Controller1
+            } else
+            {
+                _identifiedController = null;
             }
+
             return t_gamePadState;
         }
 
@@ -370,6 +442,7 @@ namespace OpenLaMulana.System
                 return;
             }
             Buttons checkingKey = (Buttons)ConfigKeys[(int)ControllerTypes.Gamepad, (int)key];
+
             switch (key)
             {
                 default:
@@ -397,6 +470,21 @@ namespace OpenLaMulana.System
                 return false;
             }
             return PressedKeys[(int)key];
+        }
+
+        internal static bool GetJoysticksEnabled()
+        {
+            return _joysticksEnabled;
+        }
+
+        internal static void SetJoysticksEnabled(bool value)
+        {
+            _joysticksEnabled = value;
+        }
+
+        public static ControllerNames? GetIdentifiedController()
+        {
+            return _identifiedController;
         }
     }
 }

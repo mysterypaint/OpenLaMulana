@@ -311,14 +311,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 default:
                 case NPCTypes.Store:
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.LEFT])
-                    {
-                        _shopCursorValue--;
-                    }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.RIGHT])
-                    {
-                        _shopCursorValue++;
-                    }
+                    _shopCursorValue += InputManager.DirPressedX;
 
                     if (_shopCursorValue > 2)
                         _shopCursorValue = 0;

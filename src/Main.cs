@@ -136,6 +136,7 @@ namespace OpenLaMulana
 
             Global.Camera.UpdateWindowSize(WINDOW_WIDTH * _displayZoomFactor, WINDOW_HEIGHT * _displayZoomFactor, _displayZoomFactor);
         }
+
         protected override void LoadContent()
         {
             Global.AudioManager = new AudioManager();
@@ -157,7 +158,6 @@ namespace OpenLaMulana
 
             _protag = new Protag(new Vector2(0, 0));
             Global.Protag = _protag;
-            Global.MobileSuperX = new MobileSuperX();
             Global.TextManager = new TextManager();
             Global.World = new World(_protag);
             _jukebox = new Jukebox();
@@ -168,6 +168,9 @@ namespace OpenLaMulana
 
             Global.GlobalInput = new InputManager();
             Global.GlobalInput.Init();
+
+            Global.MobileSuperX = new MobileSuperX();
+
             Global.SpriteDefManager = new SpriteDefManager();
 
             Global.EntityManager.AddEntity(_protag);
@@ -642,6 +645,16 @@ namespace OpenLaMulana
 
             SaveGame();
 
+        }
+
+        public int GetDisplayZoomFactor()
+        {
+            return _displayZoomFactor;
+        }
+
+        public int GetDisplayZoomMax()
+        {
+            return _displayZoomMax;
         }
 
         private void ToggleDisplayMode()

@@ -129,7 +129,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             _inventory.CurrExp = 0;
             _inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
 
-            MoveToWorldSpawnPoint();
+            //MoveToWorldSpawnPoint();
         }
 
         private void MoveToWorldSpawnPoint()
@@ -194,7 +194,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
             //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-            _moveX = InputManager.DirMoveX;
+            _moveX = InputManager.DirHeldX;
             if (_moveX == 1)
                 FacingX = Facing.RIGHT;
             else if (_moveX == -1)
@@ -332,7 +332,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 State = PlayerState.JUMPING;
             }
 
-            _moveY = InputManager.DirMoveY;
+            _moveY = InputManager.DirHeldY;
             if (_moveY < 0)
             {
                 FacingY = Facing.UP;

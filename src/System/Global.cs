@@ -411,7 +411,7 @@ namespace OpenLaMulana
             JOY_RIGHT,
             JUMP,
             WHIP,
-            SUBWEAPON,
+            SUB_WEAPON,
             ITEM,
             MENU_OPEN_INVENTORY,
             PAUSE,
