@@ -312,10 +312,5 @@ namespace OpenLaMulana.System
         {
             DrawTextImmediate((int)position.X, (int)position.Y, str, charLimit);
         }
-
-        internal void GetText(object spawnPoint)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

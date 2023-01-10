@@ -294,5 +294,11 @@ namespace OpenLaMulana.Graphics {
         {
             return new Sprite(tex, (int)offset.X + tileX * 4, (int)offset.Y + tileY * 4, 4, 4);
         }
+
+        // Specifically used for ripping ruins tablet graphics
+        internal Sprite Get64x64Tile(Texture2D tex, int index)
+        {
+            return new Sprite(tex, index * 64, 176, 64, 64);
+        }
     }
 }
