@@ -22,6 +22,10 @@ namespace OpenLaMulana.System
         public int Depth { get; set; } = (int)Global.DrawOrder.Text;
         public Effect ActiveShader { get; set; } = null;
 
+
+        public Dictionary<char, int> codeMapDictENG = new Dictionary<char, int>();
+        public Dictionary<char, int> codeMapDictJPN = new Dictionary<char, int>();
+
         private const int TEXT_WIDTH = 8;
         private const int TEXT_HEIGHT = 8;
         private const int TEXT_TABLE_WIDTH = 16;
@@ -45,19 +49,64 @@ namespace OpenLaMulana.System
         {
             s_charSet = new Dictionary<int, string>();
 
-            switch (Global.CurrLang) {
-                default:
-                case Global.Languages.Japanese:
-                    _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_JP);
-                    break;
-                case Global.Languages.English:
-                    _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
-                    break;
-            }
+            InitCodeMapDict();
             _queuedXYPos = new List<Point>();
             _queuedText = new List<String>();
             _queuedTextColor = new List<Color>();
             _queuedTextMode = new List<TextModes>();
+        }
+
+        private void InitCodeMapDict()
+        {
+            string CODE_MAP_ENG =
+"０１２３４５６７８９\nＢＣＤＥＦ" +
+"ＳｄＯ新⑩倍母天道書者闇死地古文" +
+" !\"#$%&'()*+,-./" +
+"0123456789:;<=>?" +
+"@ABCDEFGHIJKLMNO" +
+"PQRSTUVWXYZ[\\]^_" +
+"`abcdefghijklmno" +
+"pqrstuvwxyz{|}~代" +
+"形勇気年杯体をぁぃぅぇぉゃゅょっ" +
+"真あいうえおかきくけこさしすせそ" +
+"実｡｢｣､･ｦｧｨｩｪｫｬｭｮｯ" +
+"ｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ" +
+"ﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏ" +
+"ﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝﾞﾟ" +
+"たちつてとなにぬねのはひふへほま" +
+"みむめもやゆよらりるれろわん我▼";
+
+            string CODE_MAP_JPN =
+"０１２３４５６７８９\nＢＣＤＥＦ" +
+"ＳｄＯ新⑩倍母天道書者間死地古文" +
+" !\"#$%&'()月夜光-。／" +
+"0123456789:;<=>?" +
+"人ABCDEFGHIJKLMNO" +
+"PQRSTUVWXYZ[\\]^_" +
+"巨abcdefghijklmno" +
+"pqrstuvwxyz{|}時代" +
+"形勇気年杯体をぁぃぅぇぉゃゅょっ" +
+"真あいうえおかきくけこさしすせそ" +
+"実｡｢｣､･ｦｧｨｩｪｫｬｭｮｯ" +
+"ｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ" +
+"ﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏ" +
+"ﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝﾞﾟ" +
+"たちつてとなにぬねのはひふへほま" +
+"みむめもやゆよらりるれろわん我▼";
+
+            int i = 0;
+            foreach (char c in CODE_MAP_ENG)
+            {
+                codeMapDictENG[c] = i;
+                i++;
+            }
+
+            i = 0;
+            foreach (char c in CODE_MAP_JPN)
+            {
+                codeMapDictJPN[c] = i;
+                i++;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -127,37 +176,45 @@ namespace OpenLaMulana.System
                         strPos++;
                         c = str[strPos];
 
-                        while (Char.IsDigit(str[strPos]) && (strPos + 1) < str.Length)
+                        while (Char.IsDigit(str[strPos]))
                         {
                             textControl += c;
-                            strPos++;
-                            c = str[strPos];
-                            if (strPos >= str.Length)
+                            if (strPos >= str.Length - 1)
+                            {
+                                c = ' ';
                                 break;
-                            if (textControl.Length >= 2)
+                            }
+
+                            if (str[strPos + 1] != '\\' && Char.IsDigit(str[strPos + 1])) {
+                                strPos++;
+                                c = str[strPos];
+                            } else
+                            {
+                                c = ' ';
                                 break;
+                            }
                         }
 
-                        if (Char.IsDigit(str[strPos]) && textControl.Length < 2) {
-                            textControl += c;
-                            strPos++;
-                        }
-
-                        if (strPos < str.Length)
-                            c = str[strPos];
-                        else
-                            c = ' ';
+                        specialTextControl = true;
+                    } else if (c == '‾')
+                    {
+                        textControl = "126";
+                        c = ' ';
                         specialTextControl = true;
                     }
                 }
 
+                int textControlValue = 11;
                 if (specialTextControl)
                 {
                     Int32.TryParse(textControl, out int result);
+
+                    textControlValue = result;
                     switch (result)
                     {
                         default:
                             break;
+                        /// TODO: All the other control codes go here. \1 in particular needs to account for all the flags following it
                         case 10:
                             lineBreak = true;
                             break;
@@ -166,37 +223,83 @@ namespace OpenLaMulana.System
                     if (result > 15)
                     {
                         drawTile = result;
-                        strPos--;
                     }
                     specialTextControl = false;
                 }
 
-                if (j >= charLimit || lineBreak)
+                if ((j >= charLimit || lineBreak) && j > 0)
                 {
                     // Perform a linebreak, because we hit the max char limit or run into a linebreak command
                     xOff = 0;
                     yOff += TEXT_HEIGHT;
                     j = 0;
+
                     lineBreak = false;
+                    if (charLimit == 22) {
+                        yOff += TEXT_HEIGHT; // Double-space for NPC dialogue
+
+                        Vector2 shiftedVecAfterWriting = DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col);
+                        if (textControlValue > 10)
+                            xOff += TEXT_WIDTH + (int)shiftedVecAfterWriting.X;
+                        j -= (int)shiftedVecAfterWriting.Y; // The Y vector represents the dakuten/handakuten counters for Japanese characters
+                        j++;
+                    }
+                } else {
+                    Vector2 shiftedVecAfterWriting = DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col);
+                    if (textControlValue > 10)
+                        xOff += TEXT_WIDTH + (int)shiftedVecAfterWriting.X;
+                    j -= (int)shiftedVecAfterWriting.Y; // The Y vector represents the dakuten/handakuten counters for Japanese characters
+                    j++;
                 }
-                DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col);
-                xOff += TEXT_WIDTH;
-                j++;
             }
         }
 
-        private void DrawChar(SpriteBatch spriteBatch, Point point, char c, int drawTile, Color col = default)
+        private Vector2 DrawChar(SpriteBatch spriteBatch, Point point, char c, int drawTile, Color col = default)
         {
             if (col == default)
                 col = Color.White;
-            var _otx = 16; // Origin Tile X
+            var _texOffX = 16; // Origin Tile X
+            var _texOffY = 0;
+            var _otx = 0;
             var _oty = 0;
             int thisChar = c;
+            int textMaskY = 0;
+            int dakutenHandakutenUsed = 0;
 
             if (drawTile <= -1)
             {
-                _oty = 1;
-                thisChar = (int)c - 32;
+                _texOffY = 1;
+
+
+                switch (Global.CurrLang)
+                {
+                    default:
+                    case Global.Languages.Japanese:
+                        if (c == '"')
+                            c = 'ﾞ';
+                        thisChar = codeMapDictJPN[c] - 32;
+
+                        switch (thisChar)
+                        {
+                            case 190: // ﾞ
+                                _otx = -7;
+                                _oty = -1;
+                                textMaskY = 7;
+                                dakutenHandakutenUsed = 1;
+                                break;
+                            case 191: // ﾟ
+                                _otx = -7;
+                                _oty = -3;
+                                textMaskY = 5;
+                                dakutenHandakutenUsed = 1;
+                                break;
+                        }
+                        break;
+                    case Global.Languages.English:
+                        thisChar = codeMapDictENG[c] - 32;
+                        break;
+                }
+                // c - 32;//(int)c - 32;
 
             }
             else if (c >= 3040) // First unicode value for Japanese letters
@@ -205,18 +308,58 @@ namespace OpenLaMulana.System
             }
             else
             {
-                _oty = -1;
+                switch (Global.CurrLang)
+                {
+                    default:
+                    case Global.Languages.Japanese:
+                        _texOffY = -1;
+                        break;
+                    case Global.Languages.English:
+                        _texOffY = -1;
+                        break;
+                }
+
                 thisChar = drawTile;
+
+                switch (thisChar)
+                {
+                    case 222: // ﾞ
+                        _otx = -7;
+                        _oty = -1;
+                        textMaskY = 7;
+                        dakutenHandakutenUsed = 1;
+                        break;
+                    case 223: // ﾟ
+                        _otx = -7;
+                        _oty = -3;
+                        textMaskY = 5;
+                        dakutenHandakutenUsed = 1;
+                        break;
+                }
             }
 
-            var _dx = _otx + (thisChar % TEXT_TABLE_WIDTH);
-            var _dy = _oty + (thisChar / TEXT_TABLE_WIDTH);
+            var _dx = _texOffX + (thisChar % TEXT_TABLE_WIDTH);
+            var _dy = _texOffY + (thisChar / TEXT_TABLE_WIDTH);
 
             bool Lamulanese = false;
             if (Lamulanese)
                 _dx -= 16;
             // Space ' ' is = to 32
-            spriteBatch.Draw(_gameFontTex, new Vector2(point.X, point.Y), new Rectangle(_dx * TEXT_WIDTH, _dy * TEXT_HEIGHT, TEXT_WIDTH, TEXT_HEIGHT), col);
+
+            switch (Global.CurrLang)
+            {
+                default:
+                case Global.Languages.Japanese:
+                    _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_JP);
+                    break;
+                case Global.Languages.English:
+                    _gameFontTex = Global.TextureManager.GetTexture(Global.Textures.FONT_EN);
+                    break;
+            }
+
+            spriteBatch.Draw(_gameFontTex, new Vector2(_otx + point.X, _oty +point.Y), new Rectangle(_dx * TEXT_WIDTH, textMaskY + _dy * TEXT_HEIGHT, TEXT_WIDTH, TEXT_HEIGHT - textMaskY), col);
+
+            return new Vector2(_otx, dakutenHandakutenUsed);
         }
 
         public void DrawText(int x, int y, string str, int charLimit = 32, Color col = default)
