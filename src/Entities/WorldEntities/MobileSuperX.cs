@@ -262,7 +262,8 @@ namespace OpenLaMulana
                     break;
                 case Global.MSXStates.EMULATOR:
                     DrawMSXBackground(spriteBatch, gameTime, true);
-                    Global.TextManager.DrawText(2 * 8, 3 * 8, "MSX? BASIC version 1.x\\10Copyright 1987 by Kobamisoft\\108806 Bytes free\\10ROM BASIC version 1.0\\10Ok");
+                    Global.TextManager.DrawText(2 * 8, 3 * 8, "MSX? BASIC version 1.x\\10Copyright 1987 by Kobamisoft");
+                    Global.TextManager.DrawText(2 * 8, 5 * 8, "8806 Bytes free\\10ROM BASIC version 1.0\\10Ok");
                     Global.TextManager.DrawText(2 * 8, 20 * 8, "color  auto  goto  list  run");
                     mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 8 * 8));
                     break;
