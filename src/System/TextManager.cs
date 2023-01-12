@@ -79,7 +79,7 @@ namespace OpenLaMulana.System
             string CODE_MAP_JPN =
 "０１２３４５６７８９\nＢＣＤＥＦ" +
 "ＳｄＯ新⑩倍母天道書者間死地古文" +
-" !\"#$%&'()月夜光-。／" +
+" !\"#$%&'()*+,-./" +
 "0123456789:;<=>?" +
 "人ABCDEFGHIJKLMNO" +
 "PQRSTUVWXYZ[\\]^_" +
