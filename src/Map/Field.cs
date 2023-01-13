@@ -79,6 +79,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 default:
                     break;
                 case 21:
+                case 25:
                     _viewsENG = new View[World.FIELD_WIDTH, World.FIELD_HEIGHT];
 
                     for (var y = 0; y < World.FIELD_HEIGHT; y++)
@@ -106,11 +107,12 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             string fileName = "Content/data/" + mapName + ".dat";
             LoadMap(fileName, Global.Languages.Japanese, false, MapIndex);
 
-            // Load the English maps (There's only one, but just in case we need to add any more in the future...)
+            // Load the English maps (There's only two, but just in case we need to add any more in the future...)
             switch(ID) {
                 default:
                     break;
                 case 21:
+                case 25:
                     mapName += "_EN";
                     fileName = "Content/data/" + mapName + ".dat";
                     LoadMap(fileName, Global.Languages.English, false, MapIndex);
@@ -296,12 +298,41 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         {
             int vX = viewID % World.FIELD_WIDTH;
             int vY = viewID / World.FIELD_WIDTH;
-            return _viewsJPN[vX, vY];
+
+            switch (ID)
+            {
+                default:
+                    return _viewsJPN[vX, vY];
+                case 21:
+                case 25:
+                    switch (Global.CurrLang)
+                    {
+                        default:
+                        case Global.Languages.Japanese:
+                            return _viewsJPN[vX, vY];
+                        case Global.Languages.English:
+                            return _viewsENG[vX, vY];
+                    }
+            }
         }
 
         internal View GetView(int destViewX, int destViewY)
         {
-            return _viewsJPN[destViewX, destViewY];
+            switch (ID)
+            {
+                default:
+                    return _viewsJPN[destViewX, destViewY];
+                case 21:
+                case 25:
+                    switch (Global.CurrLang)
+                    {
+                        default:
+                        case Global.Languages.Japanese:
+                            return _viewsJPN[destViewX, destViewY];
+                        case Global.Languages.English:
+                            return _viewsENG[destViewX, destViewY];
+                    }
+            }
         }
 
         internal void QueueDeleteAllFieldAndRoomEntities()

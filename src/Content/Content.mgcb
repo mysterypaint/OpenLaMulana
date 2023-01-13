@@ -118,6 +118,9 @@
 #begin data/map24.dat
 /copy:data/map24.dat
 
+#begin data/map25_EN.dat
+/copy:data/map25_EN.dat
+
 #begin data/map25.dat
 /copy:data/map25.dat
 
