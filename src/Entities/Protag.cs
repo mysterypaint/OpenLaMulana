@@ -12,7 +12,7 @@ using static OpenLaMulana.Entities.World;
 namespace OpenLaMulana.Entities
 {
 
-    public class Protag : IGameEntity, ICollidable
+    public class Protag : ICollidable, IGameEntity
     {
         public enum Facing
         {
@@ -34,7 +34,6 @@ namespace OpenLaMulana.Entities
         public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
 
-        private const int HudTileHeight = 2;
         private int _jumpSpeed = 5;
         private short _moveX = 0;
         private short _moveY = 0;
@@ -74,7 +73,7 @@ Video Hustler + Break Shot: Knife and key sword attack power +2
 Castlevania Dracula + Tile Magician: Whip attack power +2
         */
 
-        public Rectangle CollisionBox
+        public Rectangle BBox
         {
             get
             {
@@ -147,12 +146,87 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _idleSprite.Draw(spriteBatch, Position);
+            _idleSprite.Draw(spriteBatch, Position + new Vector2(0, World.HUD_HEIGHT));
 
-            RectangleSprite.DrawRectangle(spriteBatch, CollisionBox, Color.Red, 1);
+            Rectangle dRect = BBox;
+            dRect.Y += World.HUD_HEIGHT;
+            RectangleSprite.DrawRectangle(spriteBatch, dRect, Color.Red, 1);
         }
 
         public void Update(GameTime gameTime)
+        {
+            switch(Global.ProtagPhysics)
+            {
+                case Global.PlatformingPhysics.CLASSIC:
+                    ClassicStateMachine();
+                    break;
+                case Global.PlatformingPhysics.REVAMPED:
+                    RevampedStateMachine();
+                    break;
+            }
+        }
+
+        private void RevampedStateMachine()
+        {
+            switch (State)
+            {
+                case PlayerState.MAIN_MENU:
+                case PlayerState.PAUSED:
+                case PlayerState.CUTSCENE:
+                    break;
+                case PlayerState.IDLE:
+                case PlayerState.WALKING:
+                case PlayerState.JUMPING:
+                case PlayerState.FALLING:
+                case PlayerState.WHIPPING:
+                    RevampedCollideAndMove();
+                    break;
+            }
+
+            _prevState = State;
+        }
+
+        private void RevampedCollideAndMove()
+        {
+            _moveX = InputManager.DirHeldX;
+            _moveY = InputManager.DirHeldY;
+
+            if (_moveX == 1)
+                FacingX = Facing.RIGHT;
+            else if (_moveX == -1)
+                FacingX = Facing.LEFT;
+
+            View currRoom = Global.World.GetActiveViews()[(int)AViews.CURR].GetView();// (Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
+            Field currField = Global.World.GetCurrField();
+
+            _hsp = _moveX * _moveSpeed;
+            _vsp = _moveY * _moveSpeed;
+
+            // Horizontal movement
+            if (TilePlaceMeeting(currRoom, BBox, Position, Position.X + _hsp, Position.Y, ChipTypes.SOLID))
+            {
+                while (!TilePlaceMeeting(currRoom, BBox, Position, Position.X + Math.Sign(_hsp), Position.Y, ChipTypes.SOLID))
+                {
+                    Position += new Vector2(Math.Sign(_hsp), 0);
+                }
+                _hsp = 0;
+            }
+            Position += new Vector2(_hsp, 0);
+
+            // Vertical movement
+            if (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp, ChipTypes.SOLID))
+            {
+                while (!TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + Math.Sign(_vsp), ChipTypes.SOLID))
+                {
+                    Position += new Vector2(0, Math.Sign(_vsp));
+                }
+                _vsp = 0;
+            }
+            Position += new Vector2(0, _vsp);
+        }
+
+
+        private void ClassicStateMachine()
         {
             switch (State)
             {
@@ -167,23 +241,23 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 case PlayerState.WHIPPING:
                     var chipline = Global.World.GetField(Global.World.CurrField).GetChipline();
 
-                    CollideAndMove(_moveSpeed, _moveSpeed, chipline);
+                    ClassicCollideAndMove(_moveSpeed, _moveSpeed, chipline);
                     break;
             }
 
             _prevState = State;
         }
 
-        private void CollideAndMove(float dx, float dy, int[] chipline)
+        private void ClassicCollideAndMove(float dx, float dy, int[] chipline)
         {
             var posX = Position.X;
             var posY = Position.Y;
 
             int bboxTileXMin, bboxTileXMax, bboxTileYMin, bboxTileYMax;
-            var bboxLeft = CollisionBox.Left;
-            var bboxRight = CollisionBox.Right;
-            var bboxTop = CollisionBox.Top;
-            var bboxBottom = CollisionBox.Bottom;
+            var bboxLeft = BBox.Left;
+            var bboxRight = BBox.Right;
+            var bboxTop = BBox.Top;
+            var bboxBottom = BBox.Bottom;
             /*
             Decompose movement into X and Y axes, step one at a time. If you’re planning on implementing slopes afterwards, step X first, then Y.
             Otherwise, the order shouldn’t matter much. Then, for each axis:
@@ -212,8 +286,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
                     dx = _moveSpeed;
 
-                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight) - HudTileHeight;
-                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight) - HudTileHeight;
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight);
+                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight);
 
                     bboxTileXMin = (int)Math.Floor(bboxRight / _chipWidth);
                     bboxTileXMax = (int)Math.Floor((bboxRight + dx) / _chipWidth) + 1;
@@ -269,8 +343,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
                     dx = -_moveSpeed;
 
-                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight) - HudTileHeight;
-                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight) - HudTileHeight;
+                    bboxTileYMin = (int)Math.Floor(bboxTop / _chipHeight);
+                    bboxTileYMax = (int)Math.Floor(bboxBottom / _chipHeight);
 
                     bboxTileXMin = (int)Math.Floor(bboxLeft / _chipWidth);
                     bboxTileXMax = (int)Math.Floor((bboxLeft + dx) / _chipWidth) - 1;
@@ -347,8 +421,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             {
                 if (FacingY == Facing.DOWN)
                 {
-                    bboxTileYMin = (int)Math.Floor(bboxBottom / _chipHeight) - HudTileHeight;
-                    bboxTileYMax = (int)Math.Floor((bboxBottom + dy) / _chipHeight) - HudTileHeight;
+                    bboxTileYMin = (int)Math.Floor(bboxBottom / _chipHeight);
+                    bboxTileYMax = (int)Math.Floor((bboxBottom + dy) / _chipHeight);
 
                     bboxTileXMin = (int)Math.Floor(bboxLeft / _chipWidth);
                     bboxTileXMax = (int)Math.Floor(bboxRight / _chipWidth);
@@ -379,7 +453,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         }
                     }
 
-                    int ty = (closestTile + HudTileHeight) * World.CHIP_SIZE;
+                    int ty = closestTile * World.CHIP_SIZE;
 
                     if (bboxBottom + dy >= ty)
                     {
@@ -404,12 +478,12 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         for (var y = bboxTileYMax; y < bboxTileYMin; y++)
                         {
-                            if (x >= 0 && y >= HudTileHeight && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT + HudTileHeight)
+                            if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
                             {
-                                if (currRoom.Chips[x, y - HudTileHeight].TileID >= chipline[0] && currRoom.Chips[x, y - HudTileHeight].TileID < chipline[1])
+                                if (currRoom.Chips[x, y].TileID >= chipline[0] && currRoom.Chips[x, y].TileID < chipline[1])
                                 {
-                                    if (y - HudTileHeight > closestTile)
-                                        closestTile = y - HudTileHeight;
+                                    if (y > closestTile)
+                                        closestTile = y;
                                 }
                             }
                             else
@@ -424,7 +498,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         }
                     }
 
-                    int ty = ((closestTile + HudTileHeight) * World.CHIP_SIZE) + World.CHIP_SIZE - 1;
+                    int ty = (closestTile * World.CHIP_SIZE) + World.CHIP_SIZE - 1;
                     if (bboxTop + dy <= ty)
                     {
                         posY = ty + BBoxOriginY + 1;

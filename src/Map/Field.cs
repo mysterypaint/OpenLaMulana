@@ -686,5 +686,15 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             return _bossID;
         }
 
+        internal int GetHitValue(int relativeTileID)
+        {
+            try
+            {
+                return _hitList[relativeTileID];
+            } catch(KeyNotFoundException)
+            {
+                return 0;
+            }
+        }
     }
 }

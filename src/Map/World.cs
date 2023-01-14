@@ -62,8 +62,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         private Protag _protag = null;
 
-        public enum SpecialChipTypes
+        public enum ChipTypes
         {
+            SOLID = -1,
             BACKGROUND = 0,
             LEFT_SIDE_OF_STAIRS = 1,
             ASCENDING_SLOPE = 2,
@@ -94,6 +95,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public int CurrField { get; set; } = 5;
         public int CurrViewX = 0, CurrViewY = 0, FieldCount = 0;
         private int[] _currChipLine;
+        public const int SPECIAL_TILES_BEGIN = 1120;
         private List<Field> _fields;
         private ActiveView[] _activeViews;
         private RenderTarget2D _bkgRenderTarget, _transitionRenderTarget, _destRenderTarget, _outputRenderTarget;
