@@ -10,10 +10,10 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
 - [MIDICSV](https://www.fourmilab.ch/webtools/midicsv/) (**Only for asset generation)
 
 ## Asset Preparation
-### The game assets are not provided on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/LKxQxbrB#MSfyuwK8seYiLz7SIG-6roB23YAcFtMKFxd-Byr4c94)
+### The game assets are not provided on this repo. For the time being, I will host the assets here: [MEGA](https://mega.nz/file/rSo0iYZK#LNJVt-ZGpJa4YHtHkBbA-r0u4cLH6V4l4006GbtExTE)
 - The archive's ``Icon.bmp`` and ``Icon.ico`` files, as well as the ``/Content/`` directory, should all be copied to the ``OpenLamulana/src/`` directory.
 
-### Otherwise, you must do the following to compile this project from source:
+### Otherwise, the following must be done to obtain all of the assets to compile this project:
 
 - Download the [original game](https://archive.org/details/La-Mulana)
 - Move the ``/data/``, ``/graphics/``, and ``/sound/`` folders to ``OpenLaMulana/Content/``
@@ -30,6 +30,7 @@ A C#, cross-platform port of La-Mulana Classic. Written using MonoGame in Visual
     - Please create the ``music`` directory if it does not already exist.
 
 - The .dls in the ``/music/`` folder must be converted to .sf2 format. This can be done with [Vienna](http://www.synthfont.com/Downloads.html)
+  - The Snare4 (SSCCDrum01 (Sanbiki)) instrument within ``/Content/music/SanbikiScc.sf2`` should have a Volume Envelope Release value of 6.0. This can be done using the [Polyphone Soundfont Editor](https://www.polyphone-soundfonts.com/)
 - Finally, you will also want to provide an ``Icon.ico`` and a 256x256 ``Icon.bmp``, which should go in the same directory as the .sln, in the ``/src/`` directory.
   - You could rip and convert the game&apos;s .ico to .bmp, resize it to a 256x256 transparent .bmp as ``Icon.bmp``, then place both the resized .bmp and .ico in the same folder as the .sln.
   - MonoGame is a bit finnicky about these files: You may have the best luck grabbing an Icon.bmp from an existing MonoGame project online, then deleting+pasting its contents within an image editing program, like [GIMP](https://www.gimp.org/) or [Aseprite](https://www.aseprite.org/).
