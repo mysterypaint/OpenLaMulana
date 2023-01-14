@@ -151,8 +151,10 @@ namespace MeltySynth
                 reverbInput = new float[blockSize];
                 reverbOutputLeft = new float[blockSize];
                 reverbOutputRight = new float[blockSize];
-                reverb.RoomSize = 0.70f;
-                reverb.Wet = 0.50f;
+                reverb.RoomSize = 0.4f;
+                reverb.Wet = 0.80f;
+                reverb.Damp = 0.3f;
+                
 
                 /*
                  * 
@@ -332,9 +334,23 @@ namespace MeltySynth
                 return;
             }
 
+
             var channelInfo = channels[channel];
 
             var presetId = (channelInfo.BankNumber << 16) | channelInfo.PatchNumber;
+
+            if (presetId == 4)
+            {
+                switch (key)
+                {
+                    case 113:
+                        key = 108;
+                        break;
+                    case 101:
+                        key = 96;
+                        break;
+                }
+            }
 
             Preset preset;
             if (!presetLookup.TryGetValue(presetId, out preset))

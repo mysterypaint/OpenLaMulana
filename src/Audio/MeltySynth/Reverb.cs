@@ -16,7 +16,7 @@ namespace MeltySynth
         private const float initialDamp = 0.5F;
         private const float initialWet = 1F / scaleWet;
         private const float initialWidth = 1F;
-        private const int stereoSpread = 23;
+        private const int stereoSpread = 30;//23;
 
         private const int cfTuningL1 = 1116;
         private const int cfTuningR1 = 1116 + stereoSpread;

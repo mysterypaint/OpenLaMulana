@@ -18,6 +18,8 @@ namespace MeltySynth
             name = reader.ReadFixedLengthString(20);
             patchNumber = reader.ReadUInt16();
             bankNumber = reader.ReadUInt16();
+            if (bankNumber == 129) // Hackish fix for PSG01
+                bankNumber = 0;
             zoneStartIndex = reader.ReadUInt16();
             library = reader.ReadInt32();
             genre = reader.ReadInt32();

@@ -1,4 +1,7 @@
-﻿namespace MeltySynth
+﻿using System;
+using System.Collections.Generic;
+
+namespace MeltySynth
 {
     internal sealed class Channel
     {
@@ -21,13 +24,17 @@
         private short pitchBendRange;
         private short coarseTune;
         private short fineTune;
+        private short polyphonyLimit;
 
         private float pitchBend;
+        private List<Voice> _myActiveVoices = new List<Voice>();
 
         internal Channel(Synthesizer synthesizer, bool isPercussionChannel)
         {
             this.synthesizer = synthesizer;
             this.isPercussionChannel = isPercussionChannel;
+            
+            polyphonyLimit = 16;
 
             Reset();
         }
@@ -50,6 +57,7 @@
             pitchBendRange = 2 << 7;
             coarseTune = 0;
             fineTune = 8192;
+            polyphonyLimit = 10;
 
             pitchBend = 0F;
         }
@@ -78,6 +86,27 @@
         public void SetPatch(int value)
         {
             patchNumber = value;
+
+            if (bankNumber == 0)
+            {
+                switch (value)
+                {
+                    default:
+                        polyphonyLimit = 16;
+                        break;
+                    case 0:
+                        polyphonyLimit = 1;
+                        break;
+                    case 38:
+                        polyphonyLimit = 1; // 2, until I can figure out what's going on with Ellmac's battle music on channel 6 (MIDI Ch 7): Some Note Ons at measure 29 are being eaten somehow...
+                        break;
+                }
+            } else
+            {
+                polyphonyLimit = 16;
+            }
+
+            ClearAllActiveVoices();
         }
 
         public void SetModulationCoarse(int value)
@@ -200,5 +229,30 @@
         public float Tune => coarseTune + (1F / 8192F) * (fineTune - 8192);
 
         public float PitchBend => PitchBendRange * pitchBend;
+
+        public int GetPolyphonyLimit()
+        {
+            return polyphonyLimit;
+        }
+
+        internal void AddVoice(Voice v)
+        {
+            _myActiveVoices.Add(v);
+        }
+
+        internal void RemoveVoice(Voice v)
+        {
+            _myActiveVoices.Remove(v);
+        }
+
+        internal int GetActiveVoiceCount()
+        {
+            return _myActiveVoices.Count;
+        }
+
+        internal void ClearAllActiveVoices()
+        {
+            _myActiveVoices.Clear();
+        }
     }
 }
