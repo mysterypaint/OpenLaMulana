@@ -31,6 +31,40 @@ namespace OpenLaMulana.Entities
             return returningTile;
         }
 
+        public static ChipTypes TilePlaceMeeting(View currRoom, Rectangle bbox, Vector2 position, float checkingX, float checkingY, ChipTypes checkingType = ChipTypes.BACKGROUND)
+        {
+            int ts = World.CHIP_SIZE;
+            int _x1 = (int)Math.Floor(Math.Round(bbox.Left + (checkingX - position.X)) / ts);
+            int _y1 = (int)Math.Floor(Math.Ceiling(bbox.Top + (checkingY - position.Y)) / ts);
+            int _x2 = (int)Math.Floor(Math.Round(bbox.Right + (checkingX - position.X)) / ts);
+            int _y2 = (int)Math.Floor(Math.Ceiling(bbox.Bottom + (checkingY - position.Y)) / ts);
+
+            for (int _x = _x1; _x <= _x2; _x++)
+            {
+                for (int _y = _y1; _y <= _y2; _y++)
+                {
+                    if (_x >= World.ROOM_WIDTH || _y >= World.ROOM_HEIGHT || _x < 0 || _y < 0)
+                        continue;
+
+                    int tID = currRoom.Chips[_x, _y].TileID;
+                    World.ChipTypes returningTile = DetermineCollidingTile(tID);
+
+                    if (checkingType != ChipTypes.BACKGROUND)
+                    {
+                        if (returningTile == checkingType)
+                            return returningTile;
+                    } else {
+                        if (returningTile != ChipTypes.BACKGROUND)
+                        {
+                            return returningTile;
+                        }
+                    }
+                }
+            }
+
+            return ChipTypes.BACKGROUND;
+        }
+
         private static ChipTypes DetermineCollidingTile(int tID)
         {
             World.ChipTypes returningTile = World.ChipTypes.BACKGROUND;
@@ -60,34 +94,6 @@ namespace OpenLaMulana.Entities
             }
 
             return returningTile;
-        }
-
-        public static bool TilePlaceMeeting(View currRoom, Rectangle bbox, Vector2 position, float checkingX, float checkingY, ChipTypes checkingTile)
-        {
-            int ts = World.CHIP_SIZE;
-            int _x1 = (int)Math.Floor(Math.Round(bbox.Left + (checkingX - position.X)) / ts);
-            int _y1 = (int)Math.Floor(Math.Ceiling(bbox.Top + (checkingY - position.Y)) / ts);
-            int _x2 = (int)Math.Floor(Math.Round(bbox.Right + (checkingX - position.X)) / ts);
-            int _y2 = (int)Math.Floor(Math.Ceiling(bbox.Bottom + (checkingY - position.Y)) / ts);
-
-            for (int _x = _x1; _x <= _x2; _x++)
-            {
-                for (int _y = _y1; _y <= _y2; _y++)
-                {
-                    if (_x >= World.ROOM_WIDTH || _y >= World.ROOM_HEIGHT || _x < 0 || _y < 0)
-                        continue;
-
-                    int tID = currRoom.Chips[_x, _y].TileID;
-                    World.ChipTypes returningTile = DetermineCollidingTile(tID);
-
-                    if (returningTile == checkingTile)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
         }
     }
 }

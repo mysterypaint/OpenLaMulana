@@ -421,5 +421,10 @@ namespace OpenLaMulana.System
 
             return "[None]";
         }
+
+        public static float Lerp(float start_value, float end_value, float pct)
+        {
+            return (start_value + (end_value - start_value) * pct);
+        }
     }
 }

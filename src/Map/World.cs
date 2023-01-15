@@ -66,7 +66,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         {
             SOLID = -1,
             BACKGROUND = 0,
-            LEFT_SIDE_OF_STAIRS = 1,
+            LADDER = 1,
             ASCENDING_SLOPE = 2,
             ASCENDING_SLOPE_LEFT = 3,
             ASCENDING_STAIRS_RIGHT = 4,
@@ -85,7 +85,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             CLINGABLE_WALL = 128,
             ICE = 129,
             UNCLINGABLE_WALL = 255,
-            MAX
+            MAX = 21
         };
 
         //public int CurrField { get; set; } = 1;

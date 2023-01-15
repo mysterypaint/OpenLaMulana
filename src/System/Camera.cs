@@ -106,11 +106,6 @@ namespace OpenLaMulana.System
             return Transform;
         }
 
-        static float Lerp(float start_value, float end_value, float pct)
-        {
-            return (start_value + (end_value - start_value) * pct);
-        }
-
         public void Update(GameTime gameTime)
         {
             switch (_state)
@@ -141,7 +136,7 @@ namespace OpenLaMulana.System
                         {
                             posX += _moveSpeedX;
 
-                            newPlayerX = Lerp(SCREEN_LEFT_EDGE, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)
+                            newPlayerX = HelperFunctions.Lerp(SCREEN_LEFT_EDGE, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)
                             );// Lerp(newPX, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX));
                             _protag.Position = new Vector2((float)Math.Round(newPlayerX), _protag.Position.Y);
                         }
@@ -154,6 +149,7 @@ namespace OpenLaMulana.System
                             _moveToX = 0;
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
+                            _protag.State = _protag.GetPrevState();
                         }
                     }
                     else if (_moveToX > 0)
@@ -162,7 +158,7 @@ namespace OpenLaMulana.System
                         if (Position.X + _moveSpeedX < _moveToX)
                         {
                             posX += _moveSpeedX;
-                            _protag.Position = new Vector2(Lerp(ROOM_PX_WIDTH + SCREEN_RIGHT_EDGE, ROOM_PX_WIDTH + targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)), _protag.Position.Y);
+                            _protag.Position = new Vector2(HelperFunctions.Lerp(ROOM_PX_WIDTH + SCREEN_RIGHT_EDGE, ROOM_PX_WIDTH + targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)), _protag.Position.Y);
                         }
                         else
                         {
@@ -173,6 +169,7 @@ namespace OpenLaMulana.System
                             _moveToX = 0;
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
+                            _protag.State = _protag.GetPrevState();
                         }
                     }
 
@@ -185,12 +182,12 @@ namespace OpenLaMulana.System
 
                     if (_moveToY < 0)
                     {
-                        float targetY = SCREEN_BOTTOM_EDGE;
+                        float targetY = SCREEN_BOTTOM_EDGE - World.CHIP_SIZE;
                         if (Position.Y + _moveSpeedY > _moveToY)
                         {
                             posY += _moveSpeedY;
 
-                            newPlayerY = Lerp(World.HUD_HEIGHT + Protag.SPRITE_HEIGHT, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY)
+                            newPlayerY = HelperFunctions.Lerp(World.HUD_HEIGHT + Protag.SPRITE_HEIGHT, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY)
                             );// Lerp(newPX, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY));
                             _protag.Position = new Vector2(_protag.Position.X, (float)Math.Round(newPlayerY));
                         }
@@ -203,16 +200,17 @@ namespace OpenLaMulana.System
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
+                            _protag.State = _protag.GetPrevState();
                         }
                     }
                     else if (_moveToY > 0)
                     {
-                        float targetY = Protag.SPRITE_HEIGHT + World.HUD_HEIGHT;
+                        float targetY = Protag.SPRITE_HEIGHT;
                         if (Position.Y + _moveSpeedY < _moveToY - World.HUD_HEIGHT)
                         {
                             posY += _moveSpeedY;
                             _protag.Position = new Vector2(_protag.Position.X,
-                                Lerp(ROOM_PX_HEIGHT, ROOM_PX_HEIGHT + targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY))
+                                HelperFunctions.Lerp(ROOM_PX_HEIGHT, ROOM_PX_HEIGHT + targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY))
                                 );
                         }
                         else
@@ -224,6 +222,7 @@ namespace OpenLaMulana.System
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
+                            _protag.State = _protag.GetPrevState();
                         }
                     }
 

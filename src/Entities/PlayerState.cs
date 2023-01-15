@@ -10,6 +10,8 @@
         WHIPPING,
         CUTSCENE,
         PAUSED,
-        MAX
+        CLIMBING,
+        SCREEN_TRANSITION,
+        MAX,
     }
 }

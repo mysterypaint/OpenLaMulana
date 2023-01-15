@@ -487,7 +487,7 @@ namespace OpenLaMulana
         public static AnimationTimer AnimationTimer { get; internal set; }
         public static Main Main { get; internal set; }
         public static MobileSuperX MobileSuperX { get; set; }
-        public static PlatformingPhysics ProtagPhysics { get; internal set; }
+        public static PlatformingPhysics ProtagPhysics { get; internal set; } = PlatformingPhysics.REVAMPED;
         public static bool QoLChanges { get; internal set; } = false;
     }
 }

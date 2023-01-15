@@ -4,7 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
+using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using static OpenLaMulana.Entities.Protag;
 using static OpenLaMulana.Entities.World;
@@ -24,7 +26,7 @@ namespace OpenLaMulana.Entities
 
         private Sprite _idleSprite;
 
-        public PlayerState State { get; private set; }
+        public PlayerState State { get; set; } = PlayerState.IDLE;
         private PlayerState _prevState = PlayerState.IDLE;
         public Vector2 Position { get; set; }
         public Facing FacingX = Facing.RIGHT;
@@ -34,17 +36,25 @@ namespace OpenLaMulana.Entities
         public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
 
-        private int _jumpSpeed = 5;
         private short _moveX = 0;
         private short _moveY = 0;
-        private float _grav = 0.34f;
+        private short _jumpCount = 0;
+        private short _jumpsMax = 2;
+        private float _jumpSpeed = 5.0f;
+        private float _gravInc = 0.4f;
         private float _hsp = 0;
         private float _vsp = 0;
+        private float _acc = 0.3f;
+        private float _drag = 0.1f;
         private float _chipWidth, _chipHeight;
         private float _moveSpeed = 1f;
-        private double _gravMax = 0.8;
+        private float _gravMax = 9.81f;
 
-        private bool _grounded = false;
+        private bool _isGrounded = false;
+        private bool _inLiquid = false;
+        private bool _fellOffLedge = false;
+        private bool _onIce = false;
+        private bool _wasOnIce = false;
         private bool _hasBoots = true;
         private bool _hasFeather = true;
 
@@ -62,6 +72,7 @@ namespace OpenLaMulana.Entities
         }
 
         private Inventory _inventory;
+
 
         /*
          * Weapon attack powerThe attack power of each weapon is as follows. This number also applies to breaking wall events, etc.
@@ -155,6 +166,9 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public void Update(GameTime gameTime)
         {
+            if (!Global.AnimationTimer.OneFrameElapsed())
+                return;
+
             switch(Global.ProtagPhysics)
             {
                 case Global.PlatformingPhysics.CLASSIC:
@@ -166,13 +180,19 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             }
         }
 
+        #region RevampedMovementCode
         private void RevampedStateMachine()
         {
+            View currRoom = Global.World.GetActiveViews()[(int)AViews.DEST].GetView();// (Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
+
             switch (State)
             {
                 case PlayerState.MAIN_MENU:
                 case PlayerState.PAUSED:
                 case PlayerState.CUTSCENE:
+                case PlayerState.SCREEN_TRANSITION:
+                    _hsp = 0;
+                    _vsp = 0;
                     break;
                 case PlayerState.IDLE:
                 case PlayerState.WALKING:
@@ -181,51 +201,430 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 case PlayerState.WHIPPING:
                     RevampedCollideAndMove();
                     break;
+                case PlayerState.CLIMBING:
+                    _moveY = InputManager.DirHeldY;
+                    _vsp = _moveSpeed * _moveY;
+
+                    ChipTypes collidingTile = TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp);
+
+                    if (TileGetCellAtPixel(currRoom, BBox.Left, BBox.Top) == ChipTypes.BACKGROUND)
+                    {
+                        Position = new Vector2(Position.X, ((float)Math.Floor(Position.Y / World.CHIP_SIZE) * World.CHIP_SIZE) - BBox.Height + 3);
+                        //Position += new Vector2(0, Math.Sign(_vsp) * World.CHIP_SIZE);
+                        _hsp = 0;
+                        _vsp = 0;
+                        State = PlayerState.IDLE;
+                    } else if (
+                        TileGetCellAtPixel(currRoom, BBox.Left, BBox.Bottom) == ChipTypes.BACKGROUND ||
+                        TileGetCellAtPixel(currRoom, Position.X, BBox.Bottom) == ChipTypes.SOLID ||
+                        TileGetCellAtPixel(currRoom, Position.X, BBox.Bottom) == ChipTypes.ICE ||
+                        TileGetCellAtPixel(currRoom, Position.X, BBox.Bottom) == ChipTypes.UNCLINGABLE_WALL ||
+                        TileGetCellAtPixel(currRoom, Position.X, BBox.Bottom) == ChipTypes.CLINGABLE_WALL
+                        )
+                    {
+                        Position = new Vector2(Position.X, (float)Math.Floor(Position.Y / World.CHIP_SIZE) * World.CHIP_SIZE);
+                        //Position += new Vector2(0, Math.Sign(_vsp) * World.CHIP_SIZE);
+                        _hsp = 0;
+                        _vsp = 0;
+
+                        if (Math.Floor((Position.Y + _vsp) / World.CHIP_SIZE) < ROOM_HEIGHT)
+                            State = PlayerState.IDLE;
+                        else
+                        {
+                            Global.World.FieldTransitionCardinal(VIEW_DIR.DOWN);
+                            _hsp = 0;
+                            _vsp = 0;
+                            State = PlayerState.SCREEN_TRANSITION;
+                        }
+
+                    }
+
+                    if (TilePlaceMeeting(currRoom, BBox, Position, Position.X, BBox.Top + _vsp, ChipTypes.SOLID) != ChipTypes.SOLID && TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp, ChipTypes.SOLID) != ChipTypes.SOLID)
+                    {
+                        if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
+                        {
+                            State = PlayerState.JUMPING;
+                            _jumpCount--;
+                            _vsp = -_jumpSpeed;
+                            FacingY = Facing.UP;
+                            _hsp = _moveX * _moveSpeed;
+                        }
+
+                        if ((_vsp < 0) && !InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP])
+                        {
+                            Math.Max(_vsp, -_jumpSpeed / 2);
+                        }
+                    }
+
+                    Position += new Vector2(0, _vsp);
+                    break;
             }
 
-            _prevState = State;
+            if (Global.Camera.GetState() == Camera.CamStates.NONE)
+            {
+                // Handle screen transitions when the player touches the border of the screen
+                if (BBox.Right + _hsp > ROOM_WIDTH * World.CHIP_SIZE)
+                {
+                    Global.World.FieldTransitionCardinal(VIEW_DIR.RIGHT);
+                    _hsp = 0;
+                    _vsp = 0;
+                    State = PlayerState.SCREEN_TRANSITION;
+                }
+                else if (BBox.Left + _hsp < 0)
+                {
+                    Global.World.FieldTransitionCardinal(VIEW_DIR.LEFT);
+                    _hsp = 0;
+                    _vsp = 0;
+                    State = PlayerState.SCREEN_TRANSITION;
+                }
+                else if (BBox.Bottom + _vsp +1> (ROOM_HEIGHT * World.CHIP_SIZE) + HUD_HEIGHT)
+                {
+                    Global.World.FieldTransitionCardinal(VIEW_DIR.DOWN);
+                    _hsp = 0;
+                    _vsp = 0;
+                    State = PlayerState.SCREEN_TRANSITION;
+                }
+                else if (BBox.Top <= 0 &&
+                    (_isGrounded || State == PlayerState.CLIMBING || State == PlayerState.JUMPING) &&
+                    State != PlayerState.FALLING)
+                {
+                    if (State == PlayerState.JUMPING)
+                    {
+                        var currTile = TileGetCellAtPixel(currRoom, BBox.Left + 1, 0);
+                        if (currTile != ChipTypes.LAVA &&
+                        (currTile != ChipTypes.WATER) &&
+                        (currTile != ChipTypes.WATER_STREAM_DOWN) &&
+                        (currTile != ChipTypes.WATER_STREAM_LEFT) &&
+                        (currTile != ChipTypes.WATER_STREAM_RIGHT) &&
+                        (currTile != ChipTypes.WATER_STREAM_UP))
+                            return;
+                    }
+                    Global.World.FieldTransitionCardinal(VIEW_DIR.UP);
+                    _hsp = 0;
+                    _vsp = 0;
+                    State = PlayerState.SCREEN_TRANSITION;
+                }
+            }
+
+            if (State != PlayerState.SCREEN_TRANSITION)
+                _prevState = State;
         }
 
         private void RevampedCollideAndMove()
         {
+            _moveSpeed = 1.5f;
             _moveX = InputManager.DirHeldX;
-            _moveY = InputManager.DirHeldY;
-
-            if (_moveX == 1)
-                FacingX = Facing.RIGHT;
-            else if (_moveX == -1)
-                FacingX = Facing.LEFT;
+            //_moveY = InputManager.DirHeldY;
 
             View currRoom = Global.World.GetActiveViews()[(int)AViews.CURR].GetView();// (Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
-            Field currField = Global.World.GetCurrField();
 
-            _hsp = _moveX * _moveSpeed;
-            _vsp = _moveY * _moveSpeed;
+            //_vsp = _moveY * _moveSpeed;
+
+
+            // Gravity handling
+
+            if (_vsp < _gravMax)
+                _vsp += _gravInc;
+            else
+                _vsp = _gravMax;
+
+            if (_vsp != 0) {
+                if (Math.Sign(_vsp) > 0)
+                    FacingY = Facing.DOWN;
+                else
+                    FacingY = Facing.UP;
+            }
+
+            if (_isGrounded)
+            {
+                _jumpCount = _jumpsMax;
+                _fellOffLedge = false;
+
+                if (_onIce)
+                {
+                    if (_moveX != 0)
+                    {
+                        if (_moveX > 0)
+                            FacingX = Facing.RIGHT;
+                        else
+                            FacingX = Facing.LEFT;
+
+                        _hsp += _acc * _moveX;
+                    }
+                    _hsp = HelperFunctions.Lerp(_hsp, 0, _drag);
+                }
+                else
+                {
+                    _hsp = _moveX * _moveSpeed;
+                }
+            }
+            else
+            {
+                if (!_inLiquid)
+                {
+                    /*
+                    if (_jumpCount == _jumpsMax)
+                        _jumpCount--;
+                    */
+
+                    if (_wasOnIce)
+                    {
+                        //_wasOnIce = false;
+                    }
+                    else
+                    {
+                        if (_vsp >= 0)
+                        {
+                            if (_jumpCount < _jumpsMax && !_fellOffLedge)
+                                _hsp = _moveX * _moveSpeed; // Allow horizontal movement if we're falling
+                            else {
+                                // We walked off an edge: Instead, we should fall straight down until we touch ground
+                                _hsp = 0;
+                                _jumpCount = 0;
+                                _fellOffLedge = true;
+                            }
+                        }
+                    }
+                } else
+                {
+                    if (_vsp < 0)
+                        _hsp = _moveX * _moveSpeed;
+                }
+            }
+
+            if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP] && _jumpCount > 0)
+            {
+                State = PlayerState.JUMPING;
+                _jumpCount--;
+                _vsp = -_jumpSpeed;
+                FacingY = Facing.UP;
+
+                if (_onIce) {
+                    _onIce = false;
+                    _wasOnIce = true;
+                }
+            }
+
+            if ((_vsp < 0) && !InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP])
+            {
+                Math.Max(_vsp, -_jumpSpeed / 2);
+            }
+
+
+
 
             // Horizontal movement
-            if (TilePlaceMeeting(currRoom, BBox, Position, Position.X + _hsp, Position.Y, ChipTypes.SOLID))
+            ChipTypes collidingTile = TilePlaceMeeting(currRoom, BBox, Position, Position.X + _hsp, Position.Y);
+
+
+            switch (collidingTile)
             {
-                while (!TilePlaceMeeting(currRoom, BBox, Position, Position.X + Math.Sign(_hsp), Position.Y, ChipTypes.SOLID))
-                {
-                    Position += new Vector2(Math.Sign(_hsp), 0);
-                }
-                _hsp = 0;
+                default:
+                    break;
+                case ChipTypes.LADDER:
+                    if (BBox.Left % World.CHIP_SIZE > 4)
+                    {
+                        if (TilePlaceMeeting(currRoom, BBox, Position, BBox.Left, Position.Y, ChipTypes.LADDER) == ChipTypes.LADDER)
+                        {
+
+                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.UP])
+                            {
+                                _jumpCount = _jumpsMax;
+                                State = PlayerState.CLIMBING;
+                                Position = new Vector2((float)Math.Floor(Position.X / World.CHIP_SIZE) * World.CHIP_SIZE, Position.Y);
+                                if (TileGetCellAtPixel(currRoom, BBox.Left + 1, BBox.Top) != ChipTypes.LADDER)
+                                    Position += new Vector2(World.CHIP_SIZE, 0);
+                                _vsp = 0;
+                                _hsp = 0;
+                            }
+                        }
+                    }
+                    break;
+                case ChipTypes.WATER:
+                case ChipTypes.WATER_STREAM_UP:
+                case ChipTypes.WATER_STREAM_RIGHT:
+                case ChipTypes.WATER_STREAM_DOWN:
+                case ChipTypes.WATER_STREAM_LEFT:
+                case ChipTypes.LAVA:
+                case ChipTypes.WATERFALL:
+                    break;
+                case ChipTypes.ASCENDING_SLOPE:
+                case ChipTypes.ASCENDING_SLOPE_LEFT:
+                case ChipTypes.ASCENDING_STAIRS_RIGHT:
+                case ChipTypes.ASCENDING_STAIRS_LEFT:
+                case ChipTypes.ASCENDING_RIGHT_BEHIND_STAIRS:
+                case ChipTypes.ASCENDING_BACK_LEFT:
+                case ChipTypes.ICE_SLOPE_RIGHT:
+                case ChipTypes.ICE_SLOPE_LEFT:
+                case ChipTypes.CLINGABLE_WALL:
+                case ChipTypes.ICE:
+                case ChipTypes.UNCLINGABLE_WALL:
+                case ChipTypes.SOLID:
+                    while (TilePlaceMeeting(currRoom, BBox, Position, Position.X + Math.Sign(_hsp), Position.Y) != collidingTile)
+                    {
+                        Position += new Vector2(Math.Sign(_hsp), 0);
+                    }
+                    _hsp = 0;
+                    break;
             }
+
             Position += new Vector2(_hsp, 0);
 
             // Vertical movement
-            if (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp, ChipTypes.SOLID))
+            collidingTile = TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp);
+            bool noMoveY = false;
+
+            switch (collidingTile)
             {
-                while (!TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + Math.Sign(_vsp), ChipTypes.SOLID))
-                {
-                    Position += new Vector2(0, Math.Sign(_vsp));
-                }
-                _vsp = 0;
+                default:
+                    break;
+                case ChipTypes.WATER:
+                case ChipTypes.WATER_STREAM_UP:
+                case ChipTypes.WATER_STREAM_RIGHT:
+                case ChipTypes.WATER_STREAM_DOWN:
+                case ChipTypes.WATER_STREAM_LEFT:
+                case ChipTypes.LAVA:
+                    _onIce = false;
+                    _isGrounded = false;
+                    _jumpCount = 1;
+
+                    // Reset vertical speed if we just entered the water/lava
+                    if (!_inLiquid)
+                        _vsp = 0;
+
+                    if (_vsp > 0)
+                        _vsp *= 0.7f;
+
+                    _inLiquid = true;
+
+                    // Account for solid floors
+                    /// TODO: Refactor
+                    RevampedAccountForSolidFloors(currRoom); // This is EXTREMELY laggy... 
+                    
+                    break;
+                case ChipTypes.BACKGROUND:
+                    _inLiquid = false;
+                    _onIce = false;
+                    _isGrounded = false;
+                    break;
+                case ChipTypes.ICE_SLOPE_RIGHT:
+                case ChipTypes.ICE_SLOPE_LEFT:
+                case ChipTypes.ICE:
+                    _onIce = true;
+                    while (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + Math.Sign(_vsp)) != collidingTile)
+                    {
+                        if (Position.Y <= CHIP_SIZE)
+                            break;
+                        Position += new Vector2(0, Math.Sign(_vsp));
+                    }
+                    _vsp = 0;
+
+                    if (FacingY == Facing.DOWN)
+                        _isGrounded = true;
+                    break;
+                case ChipTypes.LADDER:
+                    _onIce = false;
+                    _inLiquid = false;
+
+                    // Account for solid floors
+                    RevampedAccountForSolidFloors(currRoom);
+                    break;
+                case ChipTypes.ASCENDING_SLOPE:
+                case ChipTypes.ASCENDING_SLOPE_LEFT:
+                case ChipTypes.ASCENDING_STAIRS_RIGHT:
+                case ChipTypes.ASCENDING_STAIRS_LEFT:
+                case ChipTypes.ASCENDING_RIGHT_BEHIND_STAIRS:
+                case ChipTypes.ASCENDING_BACK_LEFT:
+                case ChipTypes.WATERFALL:
+                case ChipTypes.CLINGABLE_WALL:
+                case ChipTypes.UNCLINGABLE_WALL:
+                case ChipTypes.SOLID:
+                    _onIce = false;
+                    while (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + Math.Sign(_vsp)) != collidingTile)
+                    {
+                        Position += new Vector2(0, Math.Sign(_vsp));
+                    }
+                    _vsp = 0;
+                    if (FacingY == Facing.DOWN)
+                        _isGrounded = true;
+
+                    if (BBox.Left % World.CHIP_SIZE <= 4)
+                    {
+                        if (TilePlaceMeeting(currRoom, BBox, Position, BBox.Left, BBox.Bottom + World.CHIP_SIZE * 2, ChipTypes.LADDER) == ChipTypes.LADDER)
+                        {
+                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.DOWN] && _jumpCount == _jumpsMax)
+                            {
+                                _jumpCount = _jumpsMax;
+                                State = PlayerState.CLIMBING;
+                                Position = new Vector2((float)Math.Floor((double)BBox.Left / World.CHIP_SIZE) * World.CHIP_SIZE, Position.Y + World.CHIP_SIZE * 2);
+
+                                if (BBox.Left % CHIP_SIZE <= 4)
+                                {
+                                    if (TileGetCellAtPixel(currRoom, BBox.Left, Position.Y + 1 + CHIP_SIZE) != ChipTypes.LADDER)
+                                        Position += new Vector2(World.CHIP_SIZE, 0);
+                                }
+                                _vsp = 0;
+                                _hsp = 0;
+                            }
+                        }
+                    }
+                    break;
             }
-            Position += new Vector2(0, _vsp);
+
+            // Account for jumping beyond the HUD
+            if (Position.Y + _vsp <= CHIP_SIZE)
+            {
+
+                if (_vsp < 0)
+                {
+                    Position = new Vector2(Position.X, CHIP_SIZE);
+                    noMoveY = true;
+                }
+            }
+
+            if (!noMoveY)
+                Position += new Vector2(0, _vsp);
         }
 
+        private void RevampedAccountForSolidFloors(View currRoom)
+        {
+            if (FacingY == Facing.DOWN)
+            {
+                if (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp, ChipTypes.SOLID) == ChipTypes.SOLID)
+                {
+                    //Position += new Vector2(0, -1);
+                    while (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + Math.Sign(_vsp), ChipTypes.SOLID) != ChipTypes.SOLID)
+                    {
+                        Position += new Vector2(0, Math.Sign(_vsp));
+                    }
+                    _vsp = 0;
+                    _isGrounded = true;
+                }
+                if (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp, ChipTypes.UNCLINGABLE_WALL) == ChipTypes.UNCLINGABLE_WALL)
+                {
+                    //Position += new Vector2(0, -1);
+                    while (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + Math.Sign(_vsp), ChipTypes.UNCLINGABLE_WALL) != ChipTypes.UNCLINGABLE_WALL)
+                    {
+                        Position += new Vector2(0, Math.Sign(_vsp));
+                    }
+                    _vsp = 0;
+                    _isGrounded = true;
+                }
+                if (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp, ChipTypes.CLINGABLE_WALL) == ChipTypes.CLINGABLE_WALL)
+                {
+                    //Position += new Vector2(0, -1);
+                    while (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + Math.Sign(_vsp), ChipTypes.CLINGABLE_WALL) != ChipTypes.CLINGABLE_WALL)
+                    {
+                        Position += new Vector2(0, Math.Sign(_vsp));
+                    }
+                    _vsp = 0;
+                    _isGrounded = true;
+                }
+            }
+        }
+        #endregion
 
+        #region ClassicMovementCode
         private void ClassicStateMachine()
         {
             switch (State)
@@ -263,18 +662,54 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Otherwise, the order shouldn’t matter much. Then, for each axis:
             */
 
-            // Step X
+                    // Step X
 
-            // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
-            //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
+                    // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
+                    //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-            _moveX = InputManager.DirHeldX;
+                    _moveX = InputManager.DirHeldX;
             if (_moveX == 1)
                 FacingX = Facing.RIGHT;
             else if (_moveX == -1)
                 FacingX = Facing.LEFT;
 
             View currRoom = Global.World.GetActiveViews()[(int)AViews.CURR].GetView();// (Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs
+
+            /*
+            ChipTypes collidingTile = TilePlaceMeeting(currRoom, BBox, Position, Position.X + _hsp, Position.Y);
+
+            switch (collidingTile)
+            {
+                default:
+                    break;
+                case ChipTypes.LEFT_SIDE_OF_STAIRS:
+                case ChipTypes.ASCENDING_SLOPE:
+                case ChipTypes.ASCENDING_SLOPE_LEFT:
+                case ChipTypes.ASCENDING_STAIRS_RIGHT:
+                case ChipTypes.ASCENDING_STAIRS_LEFT:
+                case ChipTypes.ASCENDING_RIGHT_BEHIND_STAIRS:
+                case ChipTypes.ASCENDING_BACK_LEFT:
+                case ChipTypes.ICE_SLOPE_RIGHT:
+                case ChipTypes.ICE_SLOPE_LEFT:
+                case ChipTypes.WATER:
+                case ChipTypes.WATER_STREAM_UP:
+                case ChipTypes.WATER_STREAM_RIGHT:
+                case ChipTypes.WATER_STREAM_DOWN:
+                case ChipTypes.WATER_STREAM_LEFT:
+                case ChipTypes.LAVA:
+                case ChipTypes.WATERFALL:
+                case ChipTypes.CLINGABLE_WALL:
+                case ChipTypes.ICE:
+                case ChipTypes.UNCLINGABLE_WALL:
+                case ChipTypes.SOLID:
+                    while (TilePlaceMeeting(currRoom, BBox, Position, Position.X + Math.Sign(_hsp), Position.Y) != collidingTile)
+                    {
+                        Position += new Vector2(Math.Sign(_hsp), 0);
+                    }
+                    _hsp = 0;
+                    break;
+            }*/
+
 
             if (_moveX != 0)
             {
@@ -401,7 +836,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
                 Global.AudioManager.PlaySFX(SFX.P_JUMP);
 
-            if (InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP] && dy <= 0 && _grounded)
+            if (InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP] && dy <= 0 && _isGrounded)
             {
                 State = PlayerState.JUMPING;
             }
@@ -535,6 +970,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 return false;
             */
         }
+        #endregion
 
         internal string PrintState()
         {
@@ -548,14 +984,18 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     return "Falling";
                 case PlayerState.JUMPING:
                     return "Jumping";
-                case PlayerState.MAX:
-                    return "Max";
+                case PlayerState.CLIMBING:
+                    return "Climbing";
+                case PlayerState.SCREEN_TRANSITION:
+                    return "Screen Transition";
                 case PlayerState.PAUSED:
                     return "Paused";
                 case PlayerState.WALKING:
                     return "Walking";
                 case PlayerState.WHIPPING:
                     return "Whipping";
+                case PlayerState.MAX:
+                    return "Max";
             }
             return "Undefined";
         }
@@ -577,7 +1017,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         internal bool IsGrounded()
         {
-            return _grounded;
+            return _isGrounded;
         }
 
         public Inventory GetInventory()
@@ -593,6 +1033,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         internal void AddExp(int value)
         {
             _inventory.CurrExp += value;
+        }
+
+        internal PlayerState GetPrevState()
+        {
+            return _prevState;
         }
     }
 }

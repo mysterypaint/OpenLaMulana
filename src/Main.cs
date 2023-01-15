@@ -294,7 +294,7 @@ namespace OpenLaMulana
 
             MouseState mouseState = Mouse.GetState();
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            if (mouseState.RightButton == ButtonState.Pressed)
                 _protag.Position = new Vector2(mouseState.X / _displayZoomFactor, mouseState.Y / _displayZoomFactor);
 
             if (InputManager.DirectKeyboardCheckPressed(Keys.F6))
