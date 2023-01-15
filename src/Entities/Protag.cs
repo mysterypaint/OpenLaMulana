@@ -14,7 +14,7 @@ using static OpenLaMulana.Entities.World;
 namespace OpenLaMulana.Entities
 {
 
-    public class Protag : ICollidable, IGameEntity
+    public class Protag : IGameEntity
     {
         public enum Facing
         {
@@ -31,8 +31,8 @@ namespace OpenLaMulana.Entities
         public Vector2 Position { get; set; }
         public Facing FacingX = Facing.RIGHT;
         public Facing FacingY = Facing.DOWN;
-        public short BBoxOriginX { get; set; }
-        public short BBoxOriginY { get; set; }
+        public short BBoxOriginX { get; set; } = 5;
+        public short BBoxOriginY { get; set; } = 12;
         public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
 
@@ -58,7 +58,7 @@ namespace OpenLaMulana.Entities
         private bool _hasBoots = true;
         private bool _hasFeather = true;
 
-        public struct Inventory
+        public struct InventoryStruct
         {
             public int[] EquippedRoms;
             public int Coins;
@@ -71,7 +71,7 @@ namespace OpenLaMulana.Entities
             public int TrueHPMax { get; set; }
         }
 
-        private Inventory _inventory;
+        public InventoryStruct Inventory;
 
 
         /*
@@ -110,8 +110,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             _chipWidth = World.CHIP_SIZE;
             _chipHeight = World.CHIP_SIZE;
-            BBoxOriginX = 5;
-            BBoxOriginY = 12;
 
             Texture2D spriteSheet = Global.TextureManager.GetTexture(Global.Textures.PROT1);
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
@@ -124,22 +122,22 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             _chipHeight = World.CHIP_SIZE;
             BBoxOriginX = 5;
             BBoxOriginY = 12;
-            _inventory.EquippedRoms = new int[] { (int)Global.ObtainableSoftware.GAME_MASTER, (int)Global.ObtainableSoftware.RUINS_RAM_16K };
+            Inventory.EquippedRoms = new int[] { (int)Global.ObtainableSoftware.GAME_MASTER, (int)Global.ObtainableSoftware.RUINS_RAM_16K };
 
-            _inventory.Coins = 999;
-            _inventory.Weights = 2;
-            _inventory.HP = 32;
-            _inventory.HPMax = 32; // A life orb will increase this value by 32. True max is 352.
-            _inventory.TrueHPMax = 352;
+            Inventory.Coins = 999;
+            Inventory.Weights = 999;
+            Inventory.HP = 32;
+            Inventory.HPMax = 32; // A life orb will increase this value by 32. True max is 352.
+            Inventory.TrueHPMax = 352;
 
             // Damage Table:
             // Divine Lightning = 16;
             // Skeleton = 1;
             // Slime thing = 2;
-            _inventory.CurrExp = 0;
-            _inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
+            Inventory.CurrExp = 0;
+            Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
 
-            //MoveToWorldSpawnPoint();
+            MoveToWorldSpawnPoint();
         }
 
         private void MoveToWorldSpawnPoint()
@@ -166,6 +164,9 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public void Update(GameTime gameTime)
         {
+            if (Global.Camera.GetState() != Camera.CamStates.NONE)
+                return;
+            
             if (!Global.AnimationTimer.OneFrameElapsed())
                 return;
 
@@ -244,6 +245,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
                         {
                             State = PlayerState.JUMPING;
+                            Global.AudioManager.PlaySFX(SFX.P_JUMP);
                             _jumpCount--;
                             _vsp = -_jumpSpeed;
                             FacingY = Facing.UP;
@@ -395,6 +397,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP] && _jumpCount > 0)
             {
                 State = PlayerState.JUMPING;
+                Global.AudioManager.PlaySFX(SFX.P_JUMP);
                 _jumpCount--;
                 _vsp = -_jumpSpeed;
                 FacingY = Facing.UP;
@@ -495,7 +498,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     if (_vsp > 0)
                         _vsp *= 0.7f;
 
-                    _inLiquid = true;
+                    if (!_inLiquid)
+                    {
+                        _inLiquid = true;
+                        Global.AudioManager.PlaySFX(SFX.WATER_SUBMERGE);
+                    }
 
                     // Account for solid floors
                     /// TODO: Refactor
@@ -519,8 +526,15 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     }
                     _vsp = 0;
 
-                    if (FacingY == Facing.DOWN)
-                        _isGrounded = true;
+                    if (!_isGrounded)
+                    {
+                        if (FacingY == Facing.DOWN) {
+                            _isGrounded = true;
+                            Global.AudioManager.PlaySFX(SFX.P_GROUNDED);
+                        }
+                    }
+
+
                     break;
                 case ChipTypes.LADDER:
                     _onIce = false;
@@ -545,8 +559,15 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         Position += new Vector2(0, Math.Sign(_vsp));
                     }
                     _vsp = 0;
-                    if (FacingY == Facing.DOWN)
-                        _isGrounded = true;
+
+                    if (!_isGrounded)
+                    {
+                        if (FacingY == Facing.DOWN)
+                        {
+                            _isGrounded = true;
+                            Global.AudioManager.PlaySFX(SFX.P_GROUNDED);
+                        }
+                    }
 
                     if (BBox.Left % World.CHIP_SIZE <= 4)
                     {
@@ -598,7 +619,12 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         Position += new Vector2(0, Math.Sign(_vsp));
                     }
                     _vsp = 0;
-                    _isGrounded = true;
+
+                    if (!_isGrounded)
+                    {
+                        _isGrounded = true;
+                        Global.AudioManager.PlaySFX(SFX.P_GROUNDED);
+                    }
                 }
                 if (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp, ChipTypes.UNCLINGABLE_WALL) == ChipTypes.UNCLINGABLE_WALL)
                 {
@@ -608,7 +634,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         Position += new Vector2(0, Math.Sign(_vsp));
                     }
                     _vsp = 0;
-                    _isGrounded = true;
+                    if (!_isGrounded)
+                    {
+                        _isGrounded = true;
+                        Global.AudioManager.PlaySFX(SFX.P_GROUNDED);
+                    }
                 }
                 if (TilePlaceMeeting(currRoom, BBox, Position, Position.X, Position.Y + _vsp, ChipTypes.CLINGABLE_WALL) == ChipTypes.CLINGABLE_WALL)
                 {
@@ -618,7 +648,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         Position += new Vector2(0, Math.Sign(_vsp));
                     }
                     _vsp = 0;
-                    _isGrounded = true;
+                    if (!_isGrounded)
+                    {
+                        _isGrounded = true;
+                        Global.AudioManager.PlaySFX(SFX.P_GROUNDED);
+                    }
                 }
             }
         }
@@ -972,7 +1006,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         }
         #endregion
 
-        internal string PrintState()
+        public string PrintState()
         {
             switch (State)
             {
@@ -994,6 +1028,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     return "Walking";
                 case PlayerState.WHIPPING:
                     return "Whipping";
+                case PlayerState.NPC_DIALOGUE:
+                    return "NPC Dialogue";
                 case PlayerState.MAX:
                     return "Max";
             }
@@ -1018,21 +1054,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         internal bool IsGrounded()
         {
             return _isGrounded;
-        }
-
-        public Inventory GetInventory()
-        {
-            return _inventory;
-        }
-
-        internal void AddHP(int value)
-        {
-            _inventory.HP += value;
-        }
-
-        internal void AddExp(int value)
-        {
-            _inventory.CurrExp += value;
         }
 
         internal PlayerState GetPrevState()

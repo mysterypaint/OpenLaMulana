@@ -506,9 +506,9 @@ namespace OpenLaMulana
 
 
             // Calculate and draw the blue HP bar
-            int trueHPMax = Global.Protag.GetInventory().TrueHPMax;
-            int maxHP = Global.Protag.GetInventory().HPMax;
-            int currHP = Global.Protag.GetInventory().HP;
+            int trueHPMax = Global.Protag.Inventory.TrueHPMax;
+            int maxHP = Global.Protag.Inventory.HPMax;
+            int currHP = Global.Protag.Inventory.HP;
             float currHPRatio = currHP / 352.0f;
             float healthColorRatio = currHP / (float)maxHP;
             Color HPColor = new Color(51, 102, 255, 255); // Health color is blue by default
@@ -532,7 +532,7 @@ namespace OpenLaMulana
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + hpPixels, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
 
 
-            int currExp = Global.Protag.GetInventory().CurrExp;
+            int currExp = Global.Protag.Inventory.CurrExp;
             float currEXPRatio = currExp / (float)trueHPMax; // Remake behavior
             int expPixels = (int)Math.Round(currEXPRatio * 88);
             if (expPixels < 1)
@@ -548,10 +548,10 @@ namespace OpenLaMulana
 
             Global.TextManager.DrawText(_camPos + new Vector2(21 * 8, 1 * 8), "---");
             string fmt = "000";
-            int numCoins = Global.Protag.GetInventory().Coins;
-            int numWeights = Global.Protag.GetInventory().Weights;
-            string strWeights = numCoins.ToString(fmt);
-            string strCoins = numWeights.ToString(fmt);
+            int numCoins = Global.Protag.Inventory.Coins;
+            int numWeights = Global.Protag.Inventory.Weights;
+            string strCoins = numCoins.ToString(fmt);
+            string strWeights = numWeights.ToString(fmt);
 
             Global.TextManager.DrawText(_camPos + new Vector2(28 * 8, 0 * 8), String.Format("={0}\\10={1}", strCoins, strWeights));
         }

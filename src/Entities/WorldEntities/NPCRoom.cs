@@ -11,13 +11,20 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class NPCRoom : IEnemyWorldEntity
+    internal class NPCRoom : IEnemyWorldEntity // Enemy, so that it has a hitbox
     {
         enum NPCTypes
         {
             Store,
             Storyteller,
             Xelpud
+        };
+
+        public enum NPCStates
+        {
+            INACTIVE,
+            ACTIVE,
+            MAX
         };
 
         enum ShopDialogue
@@ -77,10 +84,10 @@ namespace OpenLaMulana.Entities.WorldEntities
             public bool IsSoldOut;
         }
 
-        private Sprite _clerkGraphic = null;
-        private Sprite _shopGraphicTop = null;
-        private Sprite _shopGraphicBottom = null;
-        private Sprite _shopGraphicBottomPart = null;
+        private Sprite _NPCGraphic = null;
+        private Sprite _houseGraphicTop = null;
+        private Sprite _houseGraphicBottom = null;
+        private Sprite _houseGraphicBottomPart = null;
         private Sprite _shopCursor = null;
         private Sprite[] _dialogueBoxSprites = null;
         private Sprite[] _productSprites = null;
@@ -90,6 +97,9 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int _shopCursorValue = 0;
         private string[] _dialogueStr;
         private string _currText = "";
+        private Protag _protag = Global.Protag;
+        private int _myBGM = -1;
+        public NPCStates State { get; set; } = NPCStates.INACTIVE;
 
         public NPCRoom(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
@@ -133,15 +143,14 @@ namespace OpenLaMulana.Entities.WorldEntities
                 clerkAndRoomGraphic = op1;
             }
 
-            _clerkGraphic = new Sprite(_tex, 256 + clerkAndRoomGraphic % 4 * 16, 32 + clerkAndRoomGraphic / 4 * 16, 16, 16);
-            _shopGraphicTop = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24, 32 + clerkAndRoomGraphic / 8 * 16, 24, 8);
-            _shopGraphicBottom = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24, 40 + clerkAndRoomGraphic / 8 * 16, 24, 8);
-            _shopGraphicBottomPart = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24 + 16, 40 + clerkAndRoomGraphic / 8 * 16, 24 - 16, 8);
+            _NPCGraphic = new Sprite(_tex, 256 + clerkAndRoomGraphic % 4 * 16, 32 + clerkAndRoomGraphic / 4 * 16, 16, 16);
+            _houseGraphicTop = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24, 32 + clerkAndRoomGraphic / 8 * 16, 24, 8);
+            _houseGraphicBottom = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24, 40 + clerkAndRoomGraphic / 8 * 16, 24, 8);
+            _houseGraphicBottomPart = new Sprite(_tex, 64 + clerkAndRoomGraphic % 8 * 24 + 16, 40 + clerkAndRoomGraphic / 8 * 16, 24 - 16, 8);
             //_sprIndex = _shopGraphicTop;
 
             if (op2 >= 0)
-                Global.AudioManager.ChangeSongs(op2);
-
+                _myBGM = op2;
 
             switch (shopType)
             {
@@ -244,65 +253,91 @@ namespace OpenLaMulana.Entities.WorldEntities
             switch (_spawnType)
             {
                 case NPCTypes.Store:
-                    HelperFunctions.DrawBlackSplashscreen(spriteBatch, false);
-                    _clerkGraphic.Draw(spriteBatch, new Vector2(15 * 8, Main.HUD_HEIGHT + 2 * 8));
-                    for (var x = 0; x < 11; x++)
+                    switch (State)
                     {
-                        _shopGraphicTop.Draw(spriteBatch, new Vector2(x * 24, 16));
+                        case NPCStates.INACTIVE:
+                            break;
+                        case NPCStates.ACTIVE:
+                            DrawNPCRoom(spriteBatch, gameTime);
+                            _shopCursor.Draw(spriteBatch, new Vector2((6 + _shopCursorValue * 7) * 8, 13 * 8));
+                            for (var i = 0; i < 3; i++)
+                            {
+                                _productSprites[i].Draw(spriteBatch, new Vector2((8 + 7 * i) * 8, 13 * 8));
 
-                        if (x != 5)
-                            _shopGraphicBottom.Draw(spriteBatch, new Vector2(x * 24, 184));
-                        else
-                            _shopGraphicBottomPart.Draw(spriteBatch, new Vector2(x * 24 + 16, 184));
+                                if (!_shopData[i].IsSoldOut)
+                                    Global.TextManager.DrawText((7 + (i * 7)) * 8, 15 * 8, _shopData[i].ProductPriceString);
+                                else
+                                    Global.TextManager.DrawText((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
+                            }
+                            _playerShopSprite.Draw(spriteBatch, new Vector2(15 * 8, 21 * 8));
+                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22);
+                            break;
                     }
-
-                    _dialogueBoxSprites[(int)DialogueBoxSprites.TL].Draw(spriteBatch, new Vector2(4 * 8, 7 * 8));
-                    _dialogueBoxSprites[(int)DialogueBoxSprites.TR].Draw(spriteBatch, new Vector2(27 * 8, 7 * 8));
-                    _dialogueBoxSprites[(int)DialogueBoxSprites.BL].Draw(spriteBatch, new Vector2(4 * 8, 17 * 8));
-                    _dialogueBoxSprites[(int)DialogueBoxSprites.BR].Draw(spriteBatch, new Vector2(27 * 8, 17 * 8));
-
-                    for (var y = 8; y <= 16; y++)
-                    {
-                        _dialogueBoxSprites[(int)DialogueBoxSprites.L].Draw(spriteBatch, new Vector2(4 * 8, y * 8));
-                        _dialogueBoxSprites[(int)DialogueBoxSprites.R].Draw(spriteBatch, new Vector2(27 * 8, y * 8));
-                    }
-
-                    for (var x = 5; x <= 26; x++)
-                    {
-                        if (x != 15 && x != 16)
-                            _dialogueBoxSprites[(int)DialogueBoxSprites.T].Draw(spriteBatch, new Vector2(x * 8, 7 * 8));
-
-                        _dialogueBoxSprites[(int)DialogueBoxSprites.B].Draw(spriteBatch, new Vector2(x * 8, 17 * 8));
-                    }
-                    _dialogueBoxSprites[(int)DialogueBoxSprites.TM].Draw(spriteBatch, new Vector2(15 * 8, 6 * 8));
-
-                    //_shopGraphicBottom.Draw(spriteBatch, new Vector2(64, 104));
-                    //            _shopGraphicTop = new Sprite(_tex, 64 + (clerkAndRoomGraphic % 8) * 24, 32 + (clerkAndRoomGraphic / 8) * 16, 24, 8);
-                    //            _shopGraphicBottom = new Sprite(_tex, 64 + (clerkAndRoomGraphic % 8) * 24, 40 + (clerkAndRoomGraphic / 8) * 16, 24, 8);
-
-
-
-                    _shopCursor.Draw(spriteBatch, new Vector2((6 + _shopCursorValue * 7) * 8, 13 * 8));
-                    for (var i = 0; i < 3; i++)
-                    {
-                        _productSprites[i].Draw(spriteBatch, new Vector2((8 + 7 * i) * 8, 13 * 8));
-
-                        if (!_shopData[i].IsSoldOut)
-                            Global.TextManager.DrawText((7 + (i * 7)) * 8, 15 * 8, _shopData[i].ProductPriceString);
-                        else
-                            Global.TextManager.DrawText((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
-                    }
-                    _playerShopSprite.Draw(spriteBatch, new Vector2(15 * 8, 21 * 8));
-
-
                     break;
                 case NPCTypes.Storyteller:
+                    switch (State)
+                    {
+                        case NPCStates.INACTIVE:
+                            break;
+                        case NPCStates.ACTIVE:
+                            DrawNPCRoom(spriteBatch, gameTime);
+                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22);
+                            break;
+                    }
                     break;
                 case NPCTypes.Xelpud:
+                    switch (State)
+                    {
+                        case NPCStates.INACTIVE:
+                            break;
+                        case NPCStates.ACTIVE:
+                            DrawNPCRoom(spriteBatch, gameTime);
+                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22);
+                            break;
+                    }
                     break;
             }
 
-            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22);
+        }
+
+        private void DrawNPCRoom(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            HelperFunctions.DrawBlackSplashscreen(spriteBatch, false);
+            _NPCGraphic.Draw(spriteBatch, new Vector2(15 * 8, Main.HUD_HEIGHT + 2 * 8));
+            for (var x = 0; x < 11; x++)
+            {
+                _houseGraphicTop.Draw(spriteBatch, new Vector2(x * 24, 16));
+
+                if (x != 5)
+                    _houseGraphicBottom.Draw(spriteBatch, new Vector2(x * 24, 184));
+                else
+                    _houseGraphicBottomPart.Draw(spriteBatch, new Vector2(x * 24 + 16, 184));
+            }
+
+            _dialogueBoxSprites[(int)DialogueBoxSprites.TL].Draw(spriteBatch, new Vector2(4 * 8, 7 * 8));
+            _dialogueBoxSprites[(int)DialogueBoxSprites.TR].Draw(spriteBatch, new Vector2(27 * 8, 7 * 8));
+            _dialogueBoxSprites[(int)DialogueBoxSprites.BL].Draw(spriteBatch, new Vector2(4 * 8, 17 * 8));
+            _dialogueBoxSprites[(int)DialogueBoxSprites.BR].Draw(spriteBatch, new Vector2(27 * 8, 17 * 8));
+
+            for (var y = 8; y <= 16; y++)
+            {
+                _dialogueBoxSprites[(int)DialogueBoxSprites.L].Draw(spriteBatch, new Vector2(4 * 8, y * 8));
+                _dialogueBoxSprites[(int)DialogueBoxSprites.R].Draw(spriteBatch, new Vector2(27 * 8, y * 8));
+            }
+
+            for (var x = 5; x <= 26; x++)
+            {
+                if (x != 15 && x != 16)
+                    _dialogueBoxSprites[(int)DialogueBoxSprites.T].Draw(spriteBatch, new Vector2(x * 8, 7 * 8));
+
+                _dialogueBoxSprites[(int)DialogueBoxSprites.B].Draw(spriteBatch, new Vector2(x * 8, 17 * 8));
+            }
+            _dialogueBoxSprites[(int)DialogueBoxSprites.TM].Draw(spriteBatch, new Vector2(15 * 8, 6 * 8));
+
+
+            //_shopGraphicBottom.Draw(spriteBatch, new Vector2(64, 104));
+            //            _shopGraphicTop = new Sprite(_tex, 64 + (clerkAndRoomGraphic % 8) * 24, 32 + (clerkAndRoomGraphic / 8) * 16, 24, 8);
+            //            _shopGraphicBottom = new Sprite(_tex, 64 + (clerkAndRoomGraphic % 8) * 24, 40 + (clerkAndRoomGraphic / 8) * 16, 24, 8);
         }
 
         public override void Update(GameTime gameTime)
@@ -311,21 +346,91 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 default:
                 case NPCTypes.Store:
-                    _shopCursorValue += InputManager.DirPressedX;
-
-                    if (_shopCursorValue > 2)
-                        _shopCursorValue = 0;
-                    if (_shopCursorValue < 0)
-                        _shopCursorValue = 2;
-
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                    switch (State)
                     {
-                        _currText = _dialogueStr[(int)ShopDialogue.PRODUCT_1_HOVER + _shopCursorValue];
+                        case NPCStates.INACTIVE:
+                            if (IntersectsWithPlayer())
+                            {
+                                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
+                                {
+                                    if (_myBGM >= 0)
+                                        Global.AudioManager.ChangeSongs(_myBGM);
+                                    State = NPCStates.ACTIVE;
+                                    _protag.State = PlayerState.NPC_DIALOGUE;
+                                }
+                            }
+                            break;
+                        case NPCStates.ACTIVE:
+                            _shopCursorValue += InputManager.DirPressedX;
+
+                            if (_shopCursorValue > 2)
+                                _shopCursorValue = 0;
+                            if (_shopCursorValue < 0)
+                                _shopCursorValue = 2;
+
+                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                            {
+                                _currText = _dialogueStr[(int)ShopDialogue.PRODUCT_1_HOVER + _shopCursorValue];
+                            }
+
+                            if (InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL])
+                            {
+                                Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
+                                State = NPCStates.INACTIVE;
+                                _protag.State = PlayerState.IDLE;
+                            }
+                            break;
                     }
                     break;
                 case NPCTypes.Storyteller:
+                    switch (State)
+                    {
+                        case NPCStates.INACTIVE:
+                            if (IntersectsWithPlayer())
+                            {
+                                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
+                                {
+                                    if (_myBGM >= 0)
+                                        Global.AudioManager.ChangeSongs(_myBGM);
+                                    State = NPCStates.ACTIVE;
+                                    _protag.State = PlayerState.NPC_DIALOGUE;
+                                }
+                            }
+                            break;
+                        case NPCStates.ACTIVE:
+                            if (InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL])
+                            {
+                                Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
+                                State = NPCStates.INACTIVE;
+                                _protag.State = PlayerState.IDLE;
+                            }
+                            break;
+                    }
                     break;
                 case NPCTypes.Xelpud:
+                    switch (State)
+                    {
+                        case NPCStates.INACTIVE:
+                            if (IntersectsWithPlayer())
+                            {
+                                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
+                                {
+                                    if (_myBGM >= 0)
+                                        Global.AudioManager.ChangeSongs(_myBGM);
+                                    State = NPCStates.ACTIVE;
+                                    _protag.State = PlayerState.NPC_DIALOGUE;
+                                }
+                            }
+                            break;
+                        case NPCStates.ACTIVE:
+                            if (InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL])
+                            {
+                                Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
+                                State = NPCStates.INACTIVE;
+                                _protag.State = PlayerState.IDLE;
+                            }
+                            break;
+                    }
                     break;
             }
         }

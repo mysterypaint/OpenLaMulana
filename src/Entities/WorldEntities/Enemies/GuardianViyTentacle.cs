@@ -9,7 +9,6 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class GuardianViyTentacle : IGlobalWorldEntity
     {
-        private bool _texChanged = false;
         private SpriteAnimation _sprAnim = null;
 
         public GuardianViyTentacle(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
@@ -36,7 +35,6 @@ namespace OpenLaMulana.Entities.WorldEntities
             _sprIndex = sprIndex;
             _imgScaleX = 1;
             _imgScaleY = 1;
-            _texChanged = true;
         }
 
         internal void Init(SpriteAnimation sprAnim, Vector2 position)

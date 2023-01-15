@@ -296,8 +296,8 @@ namespace OpenLaMulana
             Global.TextManager.DrawText(2 * 8, 8 * 8, "SLOT2");
 
             // Grab and draw the player's equipped roms
-            int eqRom1 = Global.Protag.GetInventory().EquippedRoms[0];
-            int eqRom2 = Global.Protag.GetInventory().EquippedRoms[1];
+            int eqRom1 = Global.Protag.Inventory.EquippedRoms[0];
+            int eqRom2 = Global.Protag.Inventory.EquippedRoms[1];
             int equippedRomSprID1 = Global.World.SoftwareGetGraphicID(eqRom1);
             int equippedRomSprID2 = Global.World.SoftwareGetGraphicID(eqRom2);
 

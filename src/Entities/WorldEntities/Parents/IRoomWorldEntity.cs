@@ -17,6 +17,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public Vector2 Position;
         public Vector2 RelativeViewTilePos { get; }
         public bool Visible { get; set; } = true;
+        public short BBoxOriginX { get; set; } = 0;
+        public short BBoxOriginY { get; set; } = 0;
 
         internal View _parentView = null;
         internal Point viewCoords = new Point(-1, -1);
