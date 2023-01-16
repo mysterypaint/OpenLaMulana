@@ -439,9 +439,9 @@ namespace OpenLaMulana
             ROM_SELECTION,
             EMULATOR,
             CONFIG_SCREEN,
+            SCANNING,
             MAX
-        };
-
+        }
         public enum HardCodedText
         {
             ROM_NAMES_BEGIN = 0,

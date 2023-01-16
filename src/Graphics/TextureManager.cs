@@ -125,12 +125,21 @@ namespace OpenLaMulana.Graphics {
                 "title",
                 "system\\entityTemplate"
             };
+
+            Color colGrey = new Color(68, 68, 68);
+            Color colBlack = new Color(0, 0, 0);
+
             for (Global.Textures texID = Global.Textures.BOSS00; texID < Global.Textures.MAX; texID++) {
                 string fName = allTextures[(int)texID] + ".png";
 
                 if (texID == Global.Textures.DEBUG_ENTITY_TEMPLATE)
                     fName = "system/entityTemplate.png";
-                Texture2D newTex = LoadTexture(Path.Combine(gfxPath, fName));
+
+                Texture2D newTex;
+                if (texID == Global.Textures.FONT_EN || texID == Global.Textures.FONT_JP)
+                    newTex = LoadTexture(Path.Combine(gfxPath, fName), colBlack);
+                else
+                    newTex = LoadTexture(Path.Combine(gfxPath, fName), colGrey);
                 _texDict.Add(texID, newTex);
             }
 
@@ -192,18 +201,17 @@ namespace OpenLaMulana.Graphics {
             return _texDict[texID];
         }
 
-        private Texture2D LoadTexture(string filePath)
+        private Texture2D LoadTexture(string filePath, Color transparentColor = default)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open);
             Texture2D tex = Texture2D.FromStream(Global.GraphicsDevice, fileStream);
             fileStream.Dispose();
             Color[] buffer = new Color[tex.Width * tex.Height];
             tex.GetData(buffer);
-            Color colGray = new Color(68, 68, 68);
             for (int i = 0; i < buffer.Length; i++)
             {
                 // Replace all transparent gray pixels in every loaded texture with White, Alpha 0
-                if (buffer[i].Equals(colGray))
+                if (buffer[i].Equals(transparentColor))
                     buffer[i] = Color.FromNonPremultiplied(255, 255, 255, 0);
             }
             tex.SetData(buffer);

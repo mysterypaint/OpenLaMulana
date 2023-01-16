@@ -406,15 +406,15 @@ namespace OpenLaMulana
                     break;
                 case Global.GameState.PAUSED:
                     DrawHud(Global.SpriteBatch, gameTime);
+                    HelperFunctions.DrawRectangle(Global.SpriteBatch, new Rectangle(13 * 8, 12 * 8, 5 * 8, 8), Color.Black);
                     Global.TextManager.DrawText(13 * 8, 12 * 8, "PAUSE");
                     //_jukebox.Draw(_spriteBatch, gameTime);
                     break;
                 case Global.GameState.PLAYING:
-                    DrawHud(Global.SpriteBatch, gameTime);
                     //_jukebox.Draw(_spriteBatch, gameTime);
 
-                    View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();
-                    View thisView = thisFieldMapData[Global.World.CurrViewX, Global.World.CurrViewY];
+                    //View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();
+                    //View thisView = thisFieldMapData[Global.World.CurrViewX, Global.World.CurrViewY];
 
                     /*
                     int[] viewDest = thisView.GetDestinationView(movingDirection);
@@ -424,14 +424,14 @@ namespace OpenLaMulana
                     int destRoomX = viewDest[(int)VIEW_DEST.X];
                     int destRoomY = viewDest[(int)VIEW_DEST.Y];*/
 
-
+                    DrawHud(Global.SpriteBatch, gameTime);
                     /*
                      * 
-                    fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
-                    roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
-                    entityCount = Global.EntityManager.GetCount();
+                    List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+                    List<IGameEntity> roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
+                    int entityCount = Global.EntityManager.GetCount();
                     Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
-                    */
+*/
 
                     //Global.TextManager.DrawOwnString();
 
@@ -545,6 +545,19 @@ namespace OpenLaMulana
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 112, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 112, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
 
+            // Draw the Weapon Icon
+            int equippedMainWeapon = (int)Global.Protag.Inventory.EquippedMainWeapon - 1;
+            spriteBatch.Draw(_itemTex,
+                new Rectangle((int)_camPos.X + (16 * World.CHIP_SIZE), (int)_camPos.Y, 16, 16),
+                new Rectangle(256 + (equippedMainWeapon % 4) * World.CHIP_SIZE * 2, 0 + (equippedMainWeapon / 4) * World.CHIP_SIZE * 2, 16, 16),
+                Color.White);
+
+            // Draw the Subweapon Icon
+            int equippedSubWeapon = (int)Global.Protag.Inventory.EquippedSubWeapon - 1;
+             spriteBatch.Draw(_itemTex,
+                new Rectangle((int)_camPos.X + (19 * World.CHIP_SIZE), (int)_camPos.Y, 16, 16),
+                new Rectangle(256 + (equippedSubWeapon % 4) * World.CHIP_SIZE * 2, 96 + (equippedSubWeapon / 4) * World.CHIP_SIZE * 2, 16, 16),
+                Color.White);
 
             Global.TextManager.DrawText(_camPos + new Vector2(21 * 8, 1 * 8), "---");
             string fmt = "000";

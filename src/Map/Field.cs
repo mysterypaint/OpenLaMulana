@@ -362,16 +362,21 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             }*/
         }
 
-        internal void DeleteAllFieldAndRoomEntities()
+        internal void DeleteAllFieldAndRoomEntities(IGlobalWorldEntity guardian = null)
         {
             if (!_queueDeleteAllFieldAndRoomEntities)
                 return;
 
             foreach (IGameEntity fE in _fieldEntities)
             {
-                _s_entityManager.RemoveEntity(fE);
+                if (fE != guardian)
+                {
+                    _s_entityManager.RemoveEntity(fE);
+                }
             }
             _fieldEntities.Clear();
+            if (guardian != null)
+                _fieldEntities.Add(guardian);
 
             foreach (View view in _queuedViewsToDelete)
             {
@@ -447,17 +452,17 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             destField.GetVisitedViews().Add(destView); // Keep track of all the views we've visited since entering this region/room
         }
 
-        private void AddFieldEntity(IGameEntity newEntity)
+        public void AddFieldEntity(IGameEntity newEntity)
         {
             _fieldEntities.Add(newEntity);
         }
 
-        private List<View> GetVisitedViews()
+        public List<View> GetVisitedViews()
         {
             return _visitedViews;
         }
 
-        private IGameEntity SpawnEntityFromData(ObjectSpawnData newObjData, View destView, Vector2 offsetVector, bool spawnIsGlobal)
+        public IGameEntity SpawnEntityFromData(ObjectSpawnData newObjData, View destView, Vector2 offsetVector, bool spawnIsGlobal)
         {
             IGameEntity newObj = null;
 
@@ -695,6 +700,11 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             {
                 return 0;
             }
+        }
+
+        internal IEnumerable<ObjectSpawnData> GetFieldSpawnData()
+        {
+            return _fieldSpawnData;
         }
     }
 }

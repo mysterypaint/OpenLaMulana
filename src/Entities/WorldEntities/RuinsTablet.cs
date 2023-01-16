@@ -3,19 +3,34 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class RuinsTablet : IRoomWorldEntity
+    internal class RuinsTablet : InteractableWorldEntity
     {
+        Protag _protag = Global.Protag;
+        Sprite _tabletLeftImage = null;
+        Sprite _tabletRightImage = null;
+        string _textData = String.Empty;
+        private string _currText = String.Empty;
+
+        enum TabletStates
+        {
+            INACTIVE,
+            READING,
+            WAITING,
+            MAX
+        };
+
+        TabletStates State = TabletStates.INACTIVE;
+
         public RuinsTablet(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
             UInt32[] pixels = new UInt32[16 * 16];
             pixels[0] = 0x00FF00FF;
-            string textData = Global.TextManager.GetText(op1, Global.CurrLang);
-            Sprite _tabletLeftImage, _tabletRightImage = null;
-
+            _textData = Global.TextManager.GetText(op1, Global.CurrLang);
 
             if (op2 >= 0 || op3 >= 0)
             {
@@ -33,6 +48,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             //so it is used for ancient documents that you want to disappear on the spot, such as a sinking stone monument. To do.
 
             // ^^^ Heavily related to F13[1,1]... will look into this another time
+            // Hard mode tablet also uses this at F2[3,0]
             /// TODO: Investigate
 
             _tex = new Texture2D(Global.GraphicsDevice, 16, 16, false, SurfaceFormat.Color);
@@ -45,11 +61,52 @@ namespace OpenLaMulana.Entities.WorldEntities
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+            switch (State)
+            {
+                case TabletStates.INACTIVE:
+                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+                    break;
+                case TabletStates.READING:
+
+                    break;
+                case TabletStates.WAITING:
+                    break;
+            }
         }
 
         public override void Update(GameTime gameTime)
         {
+            switch (State)
+            {
+                case TabletStates.INACTIVE:
+                    var cBox = _protag.BBox;
+                    if (BBox.Intersects(cBox))
+                    {
+                        if (InputManager.PressedKeys[(int)Global.ControllerKeys.SUB_WEAPON] && _protag.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER)
+                        {
+                            State = TabletStates.READING;
+                            Global.MobileSuperX.SetState(Global.MSXStates.SCANNING);
+                            Global.Main.SetState(Global.GameState.MSX_OPEN);
+                            _currText = _textData;
+                            Global.MobileSuperX.SetScannerText(_currText);
+                            Global.AudioManager.PlaySFX(SFX.HANDY_SCANNER_DONE);
+                        }
+                    }
+                    break;
+                case TabletStates.READING:
+                    if (Global.AnimationTimer.OneFrameElapsed())
+                    {
+                        State = TabletStates.WAITING;
+                        Global.AudioManager.PlaySFX(SFX.HANDY_SCANNER_DONE);
+                    }
+                    break;
+                case TabletStates.WAITING:
+                    // This won't be run because the Entity Manager isn't running: It will execute as soon as the player exits the MobileSuperX
+                    State = TabletStates.INACTIVE;
+                    Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
+                    Global.Main.SetState(Global.GameState.PLAYING);
+                    break;
+            }
         }
     }
 }

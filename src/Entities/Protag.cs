@@ -60,6 +60,8 @@ namespace OpenLaMulana.Entities
 
         public struct InventoryStruct
         {
+            public Global.Weapons EquippedMainWeapon { get; set; }
+            public Global.SubWeapons EquippedSubWeapon { get; set; }
             public int[] EquippedRoms;
             public int Coins;
             public int Weights;
@@ -122,8 +124,9 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             _chipHeight = World.CHIP_SIZE;
             BBoxOriginX = 5;
             BBoxOriginY = 12;
-            Inventory.EquippedRoms = new int[] { (int)Global.ObtainableSoftware.GAME_MASTER, (int)Global.ObtainableSoftware.RUINS_RAM_16K };
-
+            Inventory.EquippedRoms = new int[] { (int)Global.ObtainableSoftware.RUINS_RAM_8K, (int)Global.ObtainableSoftware.GLYPH_READER };
+            Inventory.EquippedMainWeapon = Global.Weapons.FLAIL_WHIP;
+            Inventory.EquippedSubWeapon = Global.SubWeapons.HANDY_SCANNER;
             Inventory.Coins = 999;
             Inventory.Weights = 999;
             Inventory.HP = 32;

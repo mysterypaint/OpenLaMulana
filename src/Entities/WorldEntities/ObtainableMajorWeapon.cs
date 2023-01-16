@@ -7,7 +7,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class ObtainableMajorWeapon : IEnemyWorldEntity
+    internal class ObtainableMajorWeapon : InteractableWorldEntity
     {
         private int _itemID;
         /*

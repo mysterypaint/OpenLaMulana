@@ -82,6 +82,8 @@ namespace OpenLaMulana
         private List<Sprite> _weaponSprites = new List<Sprite>();
         private List<Sprite> _subWeaponSprites = new List<Sprite>();
         private Sprite[] _romSprites = new Sprite[12];
+        private string _scannerText = String.Empty;
+
         public MobileSuperX()
         {
             InitAllMenuSprites();
@@ -126,6 +128,12 @@ namespace OpenLaMulana
             switch (_state)
             {
                 case Global.MSXStates.INACTIVE:
+                    break;
+                case Global.MSXStates.SCANNING: // For Handy Scanner
+                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                    {
+                        Global.AudioManager.PlaySFX(SFX.HANDY_SCANNER_DONE);
+                    }
                     break;
                 case Global.MSXStates.INVENTORY:
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
@@ -255,6 +263,13 @@ namespace OpenLaMulana
                         _subWeaponSprites[(int)subW - 1].Draw(spriteBatch, new Vector2(14 * 8 + (j % 5) * 24, 17 * 8 + (j / 5) * 16));
                         j++;
                     }
+                    break;
+                case Global.MSXStates.SCANNING:
+                    DrawMSXBackground(spriteBatch, gameTime, true);
+                    Global.TextManager.DrawText(2 * 8, 4 * 8, _scannerText, 28, Color.White, 0, 8, true);
+
+                    mainWindowSprites[(int)WindowSprites.SCANNER_OK].Draw(spriteBatch, new Vector2(2 * 8, 19 * 8));
+                    mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 20 * 8));
                     break;
                 case Global.MSXStates.ROM_SELECTION:
                     DrawMSXBackground(spriteBatch, gameTime);
@@ -404,7 +419,7 @@ namespace OpenLaMulana
                 else
                     mainWindowSprites[(int)WindowSprites.TM].Draw(spriteBatch, new Vector2(x * 8, 0 * 8));
 
-                if (_state != Global.MSXStates.EMULATOR)
+                if (_state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.SCANNING)
                     mainWindowSprites[(int)WindowSprites.AB].Draw(spriteBatch, new Vector2(x * 8, 22 * 8));
                 
                 if (x == 15)
@@ -454,7 +469,7 @@ namespace OpenLaMulana
             Sprite invM = Global.TextureManager.Get8x8Tile(_tex, 5, 3, Vector2.Zero);
 
 
-            Sprite scannerOK = Global.TextureManager.Get8x8Tile(_tex, 19, 2, Vector2.Zero);
+            Sprite scannerOK = new Sprite(_tex, 19 * 8, 2 * 8, 16, 8);
             Sprite emuCursor = Global.TextureManager.Get8x8Tile(_tex, 19, 3, Vector2.Zero);
             
             mainWindowSprites = new Sprite[] { tl, tm, tm2, tr, l, l2, blu, bl, r, r2, bru, br, ab, bm, ms, sx,
@@ -495,6 +510,11 @@ namespace OpenLaMulana
         internal Global.MSXStates GetState()
         {
             return _state;
+        }
+
+        internal void SetScannerText(string str)
+        {
+            _scannerText = str;
         }
     }
 }

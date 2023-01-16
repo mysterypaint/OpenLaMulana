@@ -11,7 +11,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class NPCRoom : IEnemyWorldEntity // Enemy, so that it has a hitbox
+    internal class NPCRoom : InteractableWorldEntity // Enemy, so that it has a hitbox
     {
         enum NPCTypes
         {
@@ -258,7 +258,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         case NPCStates.INACTIVE:
                             break;
                         case NPCStates.ACTIVE:
-                            DrawNPCRoom(spriteBatch, gameTime);
+                            DrawNPCRoom(spriteBatch, gameTime, 17);
                             _shopCursor.Draw(spriteBatch, new Vector2((6 + _shopCursorValue * 7) * 8, 13 * 8));
                             for (var i = 0; i < 3; i++)
                             {
@@ -270,7 +270,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                                     Global.TextManager.DrawText((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
                             }
                             _playerShopSprite.Draw(spriteBatch, new Vector2(15 * 8, 21 * 8));
-                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22);
+                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 21, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
@@ -281,7 +281,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             break;
                         case NPCStates.ACTIVE:
                             DrawNPCRoom(spriteBatch, gameTime);
-                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22);
+                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
@@ -292,7 +292,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             break;
                         case NPCStates.ACTIVE:
                             DrawNPCRoom(spriteBatch, gameTime);
-                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22);
+                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
@@ -300,7 +300,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         }
 
-        private void DrawNPCRoom(SpriteBatch spriteBatch, GameTime gameTime)
+        private void DrawNPCRoom(SpriteBatch spriteBatch, GameTime gameTime, int dBoxHeight = 18)
         {
             HelperFunctions.DrawBlackSplashscreen(spriteBatch, false);
             _NPCGraphic.Draw(spriteBatch, new Vector2(15 * 8, Main.HUD_HEIGHT + 2 * 8));
@@ -316,10 +316,10 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _dialogueBoxSprites[(int)DialogueBoxSprites.TL].Draw(spriteBatch, new Vector2(4 * 8, 7 * 8));
             _dialogueBoxSprites[(int)DialogueBoxSprites.TR].Draw(spriteBatch, new Vector2(27 * 8, 7 * 8));
-            _dialogueBoxSprites[(int)DialogueBoxSprites.BL].Draw(spriteBatch, new Vector2(4 * 8, 17 * 8));
-            _dialogueBoxSprites[(int)DialogueBoxSprites.BR].Draw(spriteBatch, new Vector2(27 * 8, 17 * 8));
+            _dialogueBoxSprites[(int)DialogueBoxSprites.BL].Draw(spriteBatch, new Vector2(4 * 8, dBoxHeight * 8));
+            _dialogueBoxSprites[(int)DialogueBoxSprites.BR].Draw(spriteBatch, new Vector2(27 * 8, dBoxHeight * 8));
 
-            for (var y = 8; y <= 16; y++)
+            for (var y = 8; y <= dBoxHeight - 1; y++)
             {
                 _dialogueBoxSprites[(int)DialogueBoxSprites.L].Draw(spriteBatch, new Vector2(4 * 8, y * 8));
                 _dialogueBoxSprites[(int)DialogueBoxSprites.R].Draw(spriteBatch, new Vector2(27 * 8, y * 8));
@@ -330,7 +330,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                 if (x != 15 && x != 16)
                     _dialogueBoxSprites[(int)DialogueBoxSprites.T].Draw(spriteBatch, new Vector2(x * 8, 7 * 8));
 
-                _dialogueBoxSprites[(int)DialogueBoxSprites.B].Draw(spriteBatch, new Vector2(x * 8, 17 * 8));
+                _dialogueBoxSprites[(int)DialogueBoxSprites.B].Draw(spriteBatch, new Vector2(x * 8, dBoxHeight * 8));
             }
             _dialogueBoxSprites[(int)DialogueBoxSprites.TM].Draw(spriteBatch, new Vector2(15 * 8, 6 * 8));
 

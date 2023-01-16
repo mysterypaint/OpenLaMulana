@@ -7,7 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenLaMulana.Entities.WorldEntities.Parents
 {
-    abstract class IGlobalWorldEntity : IGameEntity
+    public abstract class IGlobalWorldEntity : IGameEntity
     {
         public int Depth { get; set; } = (int)Global.DrawOrder.Entities;
         public Effect ActiveShader { get; set; } = null;

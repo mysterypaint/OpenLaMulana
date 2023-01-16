@@ -6,7 +6,7 @@ using System;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class ObtainableSubweapon : IEnemyWorldEntity
+    internal class ObtainableSubweapon : InteractableWorldEntity
     {
         private int _itemID;
 

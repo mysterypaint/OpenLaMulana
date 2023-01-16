@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana
 {
-    internal class ObjectSpawnData
+    public class ObjectSpawnData
     {
         public int EventNumber;
         public int X;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
@@ -757,7 +758,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             UpdateEntities(destField, thisField, thisView, destViewX, destViewY, nextAV.Position);
         }
 
-        public void FieldTransitionCardinalBoss(VIEW_DIR movingDirection, View srcView, View destView, Texture2D bossTexture = null)
+        public void FieldTransitionCardinalBoss(VIEW_DIR movingDirection, View srcView, View destView, Texture2D bossTexture = null, IGlobalWorldEntity guardian = null)
         {
             // Game is busy; Do not transition.
             if (Global.Main.State != Global.GameState.PLAYING)
@@ -783,6 +784,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             }
             else {
                 destFieldTex = bossTexture;
+
+                srcField.QueueDeleteAllFieldAndRoomEntities();
+                srcField.DeleteAllFieldAndRoomEntities(guardian);
+                //srcField.ForgetVisitedViews();
             }
 
             // Set the transitioning Active View to the next field + its texture
@@ -1016,18 +1021,35 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _abortDrawing = false;
             _disposedRenderTargetsFlag = false;
 
+
+            // Juuuust in case there's any lingering particles we don't want loaded in memory... This deletes all the non-global entities
+            Global.EntityManager.SanityCheck();
+
+
             // Get rid of all the entities from the previous Field and allow spawning in every view
             if (thisField.ID != destField)
             {
                 thisField.QueueDeleteAllFieldAndRoomEntities();
                 thisField.UnlockAllViewSpawning();
+                nextField.QueueDeleteAllFieldAndRoomEntities();
+                nextField.DeleteAllFieldAndRoomEntities();
+                nextField.ForgetVisitedViews();
             }
             else {
-                thisField.ForgetVisitedViews();
+                //thisField.ForgetVisitedViews();
+
+                // We likely deleted all the global entities, so we should spawn all the destination Field's global entities right now
+                foreach (ObjectSpawnData fieldObj in nextField.GetFieldSpawnData())
+                {
+                    IGameEntity newObj = nextField.SpawnEntityFromData(fieldObj, nextView, Vector2.Zero, true);
+
+                    if (newObj != null)
+                    {
+                        nextField.AddFieldEntity(newObj);
+                    }
+                }
             }
 
-            // Juuuust in case there's any lingering particles we don't want loaded in memory... This deletes all the non-global entities
-            Global.EntityManager.SanityCheck();
 
             //nextField.DeleteAllFieldAndRoomEntities();
             //nextField.UnlockAllViewSpawning();
@@ -1113,6 +1135,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             {
                 currField.QueueDeleteAllFieldAndRoomEntities();
                 currField.UnlockAllViewSpawning();
+
+                if (currField.ID != destField.ID)
+                {
+                    destField.QueueDeleteAllFieldAndRoomEntities();
+                    destField.DeleteAllFieldAndRoomEntities();
+                    destField.ForgetVisitedViews();
+                }
             }
 
             CurrField = destField.ID;

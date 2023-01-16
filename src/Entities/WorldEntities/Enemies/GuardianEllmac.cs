@@ -74,7 +74,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                             _bossRoom = destView;
 
-                            Global.World.FieldTransitionCardinalBoss(World.VIEW_DIR.DOWN, srcView, destView, Global.TextureManager.GetTexture(Global.Textures.BOSS02));
+                            Global.World.FieldTransitionCardinalBoss(World.VIEW_DIR.DOWN, srcView, destView, Global.TextureManager.GetTexture(Global.Textures.BOSS02), this);
 
                             _state = Global.EnemyStates.ACTIVATING;
                         }

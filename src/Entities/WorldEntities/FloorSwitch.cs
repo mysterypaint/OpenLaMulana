@@ -7,8 +7,11 @@ using System;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class FloorSwitch : IRoomWorldEntity
+    internal class FloorSwitch : InteractableWorldEntity
     {
+        private Protag _protag = Global.Protag;
+        private bool _switchActivated = false;
+
         public FloorSwitch(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
             _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
@@ -16,11 +19,23 @@ namespace OpenLaMulana.Entities.WorldEntities
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+            if (!_switchActivated)
+                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (BBox.Intersects(_protag.BBox))
+            {
+                if (_protag.IsGrounded())
+                {
+                    if (!_switchActivated)
+                    {
+                        Global.AudioManager.PlaySFX(SFX.WARP_TRIGGERED);
+                        _switchActivated = true;
+                    }
+                }
+            }
         }
     }
 }

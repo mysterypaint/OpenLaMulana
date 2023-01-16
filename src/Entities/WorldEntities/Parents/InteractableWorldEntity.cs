@@ -4,12 +4,12 @@ using System;
 
 namespace OpenLaMulana.Entities.WorldEntities.Parents
 {
-    abstract class IEnemyWorldEntity : IRoomWorldEntity
+    abstract class InteractableWorldEntity : IRoomWorldEntity
     {
         internal int _hp = 2;
         Protag _protag = Global.Protag;
 
-        protected IEnemyWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        protected InteractableWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
         }
 

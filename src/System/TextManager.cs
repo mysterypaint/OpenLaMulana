@@ -44,6 +44,8 @@ namespace OpenLaMulana.System
         private string _myString = "";
         private Vector2 _drawOff = Vector2.Zero;
         private List<int> _queuedTextLengths = new List<int>();
+        private List<Vector2> _queuedTextPadding = new List<Vector2>();
+        private List<bool> _queuedTextPotentiallyLamulanese = new List<bool>();
 
         public TextManager()
         {
@@ -81,9 +83,9 @@ namespace OpenLaMulana.System
 "ＳｄＯ新⑩倍母天道書者間死地古文" +
 " !\"#$%&'()*+,-./" +
 "0123456789:;<=>?" +
-"人ABCDEFGHIJKLMNO" +
+"@ABCDEFGHIJKLMNO" +
 "PQRSTUVWXYZ[\\]^_" +
-"巨abcdefghijklmno" +
+"`abcdefghijklmno" +
 "pqrstuvwxyz{|}時代" +
 "形勇気年杯体をぁぃぅぇぉゃゅょっ" +
 "真あいうえおかきくけこさしすせそ" +
@@ -120,13 +122,17 @@ namespace OpenLaMulana.System
                     int posY = _queuedXYPos[i].Y;
                     int charLimit = _queuedTextLengths[i];
                     Color color = _queuedTextColor[i];
-                    DisplayString(spriteBatch, str, posX, posY, charLimit, color);
+                    Vector2 padding = _queuedTextPadding[i];
+                    bool potentiallyLamulanese = _queuedTextPotentiallyLamulanese[i];
+                    DisplayString(spriteBatch, str, posX, posY, charLimit, color, padding, potentiallyLamulanese);
                     i++;
                 }
                 _queuedText.Clear();
                 _queuedTextColor.Clear();
                 _queuedXYPos.Clear();
                 _queuedTextLengths.Clear();
+                _queuedTextPadding.Clear();
+                _queuedTextPotentiallyLamulanese.Clear();
             }
         }
 
@@ -149,16 +155,19 @@ namespace OpenLaMulana.System
             return s_charSet;
         }
 
-        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit, Color col = default)
+        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit, Color col = default, Vector2 padding = default, bool potentiallyLamulanese = false)
         {
-            int posX = x;
+            if (padding == default)
+                padding = Vector2.Zero;
+
+            int posX = x + (int)padding.X;
             int posY = y;
 
             var xOff = 0;
             var yOff = 0;
 
             //var yoff = 0;
-            int j = 0;
+            int j = 1;
             bool lineBreak = false;
             bool specialTextControl = false;
 
@@ -185,7 +194,7 @@ namespace OpenLaMulana.System
                                 break;
                             }
 
-                            if (str[strPos + 1] != '\\' && Char.IsDigit(str[strPos + 1])) {
+                            if (str[strPos + 1] != '\\' && Char.IsDigit(str[strPos + 1]) && (textControl.Length < 2 || (charLimit != 28 && charLimit != 22 && charLimit != 21))) {
                                 strPos++;
                                 c = str[strPos];
                             } else
@@ -230,22 +239,32 @@ namespace OpenLaMulana.System
                 if ((j >= charLimit || lineBreak) && j > 0)
                 {
                     // Perform a linebreak, because we hit the max char limit or run into a linebreak command
+                   
+                    lineBreak = false;
+
+                    Vector2 shiftedVecAfterWriting = Vector2.Zero;
+                    if (c != ' ')
+                    {
+                        shiftedVecAfterWriting = DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col, potentiallyLamulanese);
+
+
+                        if (textControlValue > 10 || c != ' ')
+                            xOff += TEXT_WIDTH + (int)shiftedVecAfterWriting.X;
+                    }
                     xOff = 0;
-                    yOff += TEXT_HEIGHT;
+                    yOff += TEXT_HEIGHT + (int)padding.Y;
                     j = 0;
 
-                    lineBreak = false;
-                    if (charLimit == 22) {
-                        yOff += TEXT_HEIGHT; // Double-space for NPC dialogue
-
-                        Vector2 shiftedVecAfterWriting = DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col);
-                        if (textControlValue > 10)
-                            xOff += TEXT_WIDTH + (int)shiftedVecAfterWriting.X;
-                        j -= (int)shiftedVecAfterWriting.Y; // The Y vector represents the dakuten/handakuten counters for Japanese characters
+                    j -= (int)shiftedVecAfterWriting.Y; // The Y vector represents the dakuten/handakuten counters for Japanese characters
+                    if (!lineBreak)
                         j++;
-                    }
-                } else {
-                    Vector2 shiftedVecAfterWriting = DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col);
+
+
+                }
+                else {
+                    Vector2 shiftedVecAfterWriting = Vector2.Zero;
+                    if ((c != ' ') || j > 0)
+                        shiftedVecAfterWriting = DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col, potentiallyLamulanese);
                     if (textControlValue > 10)
                         xOff += TEXT_WIDTH + (int)shiftedVecAfterWriting.X;
                     j -= (int)shiftedVecAfterWriting.Y; // The Y vector represents the dakuten/handakuten counters for Japanese characters
@@ -254,7 +273,7 @@ namespace OpenLaMulana.System
             }
         }
 
-        private Vector2 DrawChar(SpriteBatch spriteBatch, Point point, char c, int drawTile, Color col = default)
+        private Vector2 DrawChar(SpriteBatch spriteBatch, Point point, char c, int drawTile, Color col = default, bool potentiallyLamulanese = false)
         {
             if (col == default)
                 col = Color.White;
@@ -341,9 +360,18 @@ namespace OpenLaMulana.System
             var _dx = _texOffX + (thisChar % TEXT_TABLE_WIDTH);
             var _dy = _texOffY + (thisChar / TEXT_TABLE_WIDTH);
 
-            bool Lamulanese = false;
-            if (Lamulanese)
-                _dx -= 16;
+            if (potentiallyLamulanese) {
+                if (Global.Protag != null)
+                {
+                    if (Global.Protag.Inventory.EquippedRoms != null)
+                    {
+                        int[] equippedRoms = Global.Protag.Inventory.EquippedRoms;
+                        int glyphReader = (int)Global.ObtainableSoftware.GLYPH_READER;
+                        if ((equippedRoms[0] != glyphReader) && (equippedRoms[1] != glyphReader))
+                            _dx -= 16;
+                    }
+                }
+            }
             // Space ' ' is = to 32
 
             switch (Global.CurrLang)
@@ -362,7 +390,7 @@ namespace OpenLaMulana.System
             return new Vector2(_otx, dakutenHandakutenUsed);
         }
 
-        public void DrawText(int x, int y, string str, int charLimit = 32, Color col = default)
+        public void DrawText(int x, int y, string str, int charLimit = 32, Color col = default, int paddingX = 0, int paddingY = 0, bool potentiallyLamulanese = false)
         {
             if (str == null)
                 return;
@@ -373,6 +401,8 @@ namespace OpenLaMulana.System
             _queuedText.Add(str);
             _queuedTextColor.Add(col);
             _queuedTextLengths.Add(charLimit);
+            _queuedTextPadding.Add(new Vector2(paddingX, paddingY));
+            _queuedTextPotentiallyLamulanese.Add(potentiallyLamulanese);
         }
 
         public void DrawTextImmediate(int x, int y, string str, int charLimit = 32)
