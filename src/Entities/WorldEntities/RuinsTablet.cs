@@ -15,6 +15,8 @@ namespace OpenLaMulana.Entities.WorldEntities
         Sprite _tabletRightImage = null;
         string _textData = String.Empty;
         private string _currText = String.Empty;
+        public override int HitboxWidth { get; set; } = 16;
+        public override int HitboxHeight { get; set; } = 16;
 
         enum TabletStates
         {
@@ -82,7 +84,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     var cBox = _protag.BBox;
                     if (BBox.Intersects(cBox))
                     {
-                        if (InputManager.PressedKeys[(int)Global.ControllerKeys.SUB_WEAPON] && _protag.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER)
+                        if (InputManager.PressedKeys[(int)Global.ControllerKeys.SUB_WEAPON] && _protag.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER && _protag.IsGrounded())
                         {
                             State = TabletStates.READING;
                             Global.MobileSuperX.SetState(Global.MSXStates.SCANNING);

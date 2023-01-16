@@ -551,6 +551,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.OBTAINABLE_MAJOR_WEAPON:
                     newObj = new ObtainableMajorWeapon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
                     break;
+                case EntityIDs.CONTACT_WARP:
+                    newObj = new ContactWarp(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    break;
                 case EntityIDs.ENEMY_SOUL:
                     newObj = new EnemySoul(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
                     break;

@@ -17,7 +17,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
             int texOffX = (_itemID % 4) * 16;
             int texOffY = (int)Math.Floor((double)_itemID / 4) * 16;
             _sprIndex = new Sprite(_tex, 256 + texOffX, 96 + texOffY, 16, 16);
-            _hp = 1;
+            HP = 1;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {

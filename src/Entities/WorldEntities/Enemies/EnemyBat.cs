@@ -11,7 +11,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.ENEMY1);
             _sprIndex = new Sprite(_tex, 80, 0, 16, 16);
-            _hp = 1;
+            HP = 1;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {

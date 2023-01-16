@@ -15,6 +15,8 @@ namespace OpenLaMulana.Entities.WorldEntities
         private bool _daisPlaced = false;
         private Sprite _weightSprite = null;
         private Protag _protag = Global.Protag;
+        public override int HitboxWidth { get; set; } = 16;
+        public override int HitboxHeight { get; set; } = 8;
 
         public Dais(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
         {
@@ -26,6 +28,8 @@ namespace OpenLaMulana.Entities.WorldEntities
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             //_sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+            //Rectangle offBox = new Rectangle(BBox.X, BBox.Y + World.HUD_HEIGHT, BBox.Width, BBox.Height);
+            //HelperFunctions.DrawRectangle(spriteBatch, offBox, Color.Green);
 
             if (_daisPlaced)
                 _weightSprite.Draw(spriteBatch, new Vector2(Position.X + 4, Position.Y + 8));
@@ -33,7 +37,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Update(GameTime gameTime)
         {
-            if (IntersectsWithPlayer())
+            if (CollidesWithPlayer())
             {
                 if (InputManager.PressedKeys[(int)ControllerKeys.DOWN] && !_daisPlaced && _protag.Inventory.Weights > 0)
                 {

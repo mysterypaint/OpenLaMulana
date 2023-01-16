@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using static OpenLaMulana.Entities.Protag;
@@ -101,11 +104,15 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             }
         }
 
+        public int ContactWarpCooldownTimer { get; set; } = 0;
+
         public const int SPRITE_WIDTH = 16;
         public const int SPRITE_HEIGHT = 16;
 
         public Protag(Vector2 position)
         {
+            InitWeaponDamageTables();
+
             State = PlayerState.MAIN_MENU;
 
             Position = position;
@@ -115,6 +122,27 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             Texture2D spriteSheet = Global.TextureManager.GetTexture(Global.Textures.PROT1);
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
+        }
+
+        private void InitWeaponDamageTables()
+        {
+            Global.WeaponsDamageTable[Global.Weapons.WHIP] = 2;
+            Global.WeaponsDamageTable[Global.Weapons.KNIFE] = 3;
+            Global.WeaponsDamageTable[Global.Weapons.CHAIN_WHIP] = 4;
+            Global.WeaponsDamageTable[Global.Weapons.AXE] = 5;
+            Global.WeaponsDamageTable[Global.Weapons.KATANA] = 5;
+            Global.WeaponsDamageTable[Global.Weapons.KEYBLADE] = 1;
+            Global.WeaponsDamageTable[Global.Weapons.KEYBLADE_BETA] = 1;
+            Global.WeaponsDamageTable[Global.Weapons.FLAIL_WHIP] = 6;
+            Global.SubWeaponsDamageTable[Global.SubWeapons.SHURIKEN] = 2;
+            Global.SubWeaponsDamageTable[Global.SubWeapons.THROWING_KNIFE] = 3;
+            Global.SubWeaponsDamageTable[Global.SubWeapons.FLARES] = 4;
+            Global.SubWeaponsDamageTable[Global.SubWeapons.SPEAR] = 3;
+            Global.SubWeaponsDamageTable[Global.SubWeapons.BOMB] = 2*4;
+            Global.SubWeaponsDamageTable[Global.SubWeapons.PISTOL] = 20;
+
+            Global.RomDamageMultipliers[Global.RomCombos.VID_HUST_BREAKSHOT] = 2;      // Knife and Keyblade Attack Power +2
+            Global.RomDamageMultipliers[Global.RomCombos.CASTLV_MAHJONGWIZ] = 2;       // Whip Attack Power +2
         }
 
         public void Initialize()
@@ -153,16 +181,17 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             Global.World.FieldTransitionImmediate(Global.World.GetCurrentView(), destView);
 
-            Position = new Vector2(spawnX * CHIP_SIZE, spawnY * CHIP_SIZE);
+            SetPositionToTile(spawnX, spawnY);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             _idleSprite.Draw(spriteBatch, Position + new Vector2(0, World.HUD_HEIGHT));
-
+            /*
+             * 
             Rectangle dRect = BBox;
             dRect.Y += World.HUD_HEIGHT;
-            RectangleSprite.DrawRectangle(spriteBatch, dRect, Color.Red, 1);
+            RectangleSprite.DrawRectangle(spriteBatch, dRect, Color.Red, 1);*/
         }
 
         public void Update(GameTime gameTime)
@@ -181,6 +210,12 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 case Global.PlatformingPhysics.REVAMPED:
                     RevampedStateMachine();
                     break;
+            }
+
+            if (Global.AnimationTimer.OneFrameElapsed())
+            {
+                if (ContactWarpCooldownTimer > 0)
+                    ContactWarpCooldownTimer--;
             }
         }
 
@@ -372,7 +407,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         _jumpCount--;
                     */
 
-                    if (_wasOnIce)
+            if (_wasOnIce)
                     {
                         //_wasOnIce = false;
                     }
@@ -1062,6 +1097,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         internal PlayerState GetPrevState()
         {
             return _prevState;
+        }
+
+        internal void SetPositionToTile(int rTX, int rTY)
+        {
+            Position = new Vector2(rTX * CHIP_SIZE + BBox.Width - 1, rTY * CHIP_SIZE + BBox.Height + 5);
         }
     }
 }

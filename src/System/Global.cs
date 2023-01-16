@@ -4,6 +4,7 @@ using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
+using System.Collections.Generic;
 using static OpenLaMulana.Main;
 
 namespace OpenLaMulana
@@ -392,6 +393,34 @@ namespace OpenLaMulana
             MAX
         };
 
+        public enum RomCombos
+        {
+            RUINS8K_16K,        // Detailed map display in MSX Emulator
+            UNREL_GR3,          // Mukimuki SD: Memorial Minigame in MSX Emulator
+            PR3_GR3,            // PR3 Minigame in MSX Emulator
+            ATHL_CABB,          // Player iframes dramatically increased
+            ANTA_COMIC,         // Warp to backside fields
+            VID_HUST_BREAKSHOT, // Knife and Keyblade Attack +2
+            HYPERRAL_ROADF,     // Communicate with hidden Laptops
+            YIEARKUNG_1AND2,    // Turns weights into Oolong Tea
+            KNIGHT_MAZE,        // Small VIT rewarded immediately before death. Occurs only once.
+            TWINB_GR2,          // Turns coins into bells
+            SHINS_SNATC,        // Unlocks Music Mode Plus
+            SHINS_SDSNATC,      // Unlocks Music Mode Full
+            PENG_GR2,           // Coins become fish
+            CASTLV_MAHJONGWIZ,  // Whip Attack +2
+            KKONG2_FBIRD,       // Faster cooldown time for fairy spawn point and the Lamp of Time
+            QB_DIVINER,         // Guaranteed key fairy
+            MAZE_ELGIZ,         // Coins reward +1 than normal
+            METALG_1AND2,       // Exclamation over protag whenever puzzle is solved
+            GR2_SALAM,          // Slightly-altered credits
+            SHALO_DIVIN,        // Guaranteed blue fairy (healing)
+            CONTR_F1_SPIR,      // VIT rapidly decreases
+            F1_SPIR_CONT,       // OHKO
+            BADL_A1SPR,         // Displays Jukebox password [Or allows for in-game jukebox]
+            MAX
+        };
+
         public enum ControllerTypes
         {
             Keyboard,
@@ -480,6 +509,7 @@ namespace OpenLaMulana
         public static TextureManager TextureManager;
         public static Protag Protag;
         public static Jukebox Jukebox;
+        public static GameFlags GameFlags;
 
         public static Languages CurrLang = Languages.English;
 
@@ -489,5 +519,10 @@ namespace OpenLaMulana
         public static MobileSuperX MobileSuperX { get; set; }
         public static PlatformingPhysics ProtagPhysics { get; internal set; } = PlatformingPhysics.REVAMPED;
         public static bool QoLChanges { get; internal set; } = false;
+
+
+        public static Dictionary<Weapons, int> WeaponsDamageTable = new Dictionary<Weapons, int>();
+        public static Dictionary<SubWeapons, int> SubWeaponsDamageTable = new Dictionary<SubWeapons, int>();
+        public static Dictionary<RomCombos, int> RomDamageMultipliers = new Dictionary<RomCombos, int>();
     }
 }

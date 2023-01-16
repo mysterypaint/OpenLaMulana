@@ -60,7 +60,9 @@ namespace OpenLaMulana
             //this.Window.AllowUserResizing = true;
 
             Global.GameRNG = new GameRNG();
+            Global.GameFlags = new GameFlags();
             Global.SaveData = new SaveData();
+
             //Globals.SaveData.ReadEncryptedSave("lamulana.sa0");
             //Globals.SaveData.WriteDecryptedSave("lamulana_dec.sa0");
             //gameRNG.Advance();

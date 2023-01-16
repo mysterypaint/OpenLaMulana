@@ -233,6 +233,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     _spawnType = NPCTypes.Storyteller;
                     int storytellerDialogueID = op3;
                     _dialogueStr = new string[] { Global.TextManager.GetText(storytellerDialogueID, Global.CurrLang) };
+
                     _currText = _dialogueStr[0];
                     break;
                 case (int)NPCTypes.Xelpud:
@@ -270,7 +271,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                                     Global.TextManager.DrawText((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
                             }
                             _playerShopSprite.Draw(spriteBatch, new Vector2(15 * 8, 21 * 8));
-                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 21, Color.White, 0, World.CHIP_SIZE, false);
+                            Global.TextManager.DrawText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
@@ -349,7 +350,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     switch (State)
                     {
                         case NPCStates.INACTIVE:
-                            if (IntersectsWithPlayer())
+                            if (CollidesWithPlayer())
                             {
                                 if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
                                 {
@@ -386,7 +387,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     switch (State)
                     {
                         case NPCStates.INACTIVE:
-                            if (IntersectsWithPlayer())
+                            if (CollidesWithPlayer())
                             {
                                 if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
                                 {
@@ -411,7 +412,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     switch (State)
                     {
                         case NPCStates.INACTIVE:
-                            if (IntersectsWithPlayer())
+                            if (CollidesWithPlayer())
                             {
                                 if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
                                 {
