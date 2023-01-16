@@ -4,12 +4,13 @@ using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class FieldTransition : IRoomWorldEntity
     {
-        public FieldTransition(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public FieldTransition(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             int direction = op1;
             int maskX = op2;    // Specifies the graphics that are overwritten in front of Lemeza when he passes through the gate

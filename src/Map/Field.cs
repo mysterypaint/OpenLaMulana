@@ -481,87 +481,92 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 default:
                     // TODO: Don't forget to check startFlags here before spawning anything!
                     if (spawnIsGlobal)
-                        newObj = new GenericGlobalWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                        newObj = new GenericGlobalWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     else
-                        newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                        newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_SKELETON:
-                    newObj = new EnemySkeleton(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new EnemySkeleton(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_BAT:
-                    newObj = new EnemyBat(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new EnemyBat(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.TREASURE_CHEST:
-                    newObj = new TreasureChest(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new TreasureChest(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.BREAKABLE_POT:
-                    newObj = new BreakablePot(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new BreakablePot(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.MOVING_PLATFORM:
-                    newObj = new MovingPlatform(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new MovingPlatform(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.PUSHABLE_BLOCK:
-                    newObj = new PushableBlock(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new PushableBlock(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.OBTAINABLE_SUBWEAPON:
-                    newObj = new ObtainableSubweapon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new ObtainableSubweapon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.NPC_ROOM:
-                    newObj = new NPCRoom(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new NPCRoom(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.CEILING_SPIKE:
-                    newObj = new CeilingSpike(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new CeilingSpike(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_MYRMECOLEON:
-                    newObj = new EnemyMyrmecoleon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new EnemyMyrmecoleon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_TOG_GENERATOR:
-                    newObj = new EnemyTogGenerator(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new EnemyTogGenerator(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ONE_WAY_DOOR:
-                    newObj = new OneWayDoor(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new OneWayDoor(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.FLOOR_SWITCH:
-                    newObj = new FloorSwitch(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new FloorSwitch(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_SNOUT_LEAPER:
-                    newObj = new EnemySnoutLeaper(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new EnemySnoutLeaper(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.RUINS_TABLET:
-                    newObj = new RuinsTablet(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new RuinsTablet(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.DAIS:
-                    newObj = new Dais(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new Dais(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.BLOCK_FLOOR_SWITCH:
-                    newObj = new BlockFloorSwitch(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new BlockFloorSwitch(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.BACKGROUND_SIGIL:
-                    newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+
+                    /*
                 case EntityIDs.BIG_ANKH:
                     if (op1 != 8072 || op2 != 16008 || op3 != 361)
-                        newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                        newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     else
-                        newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
-                    break;
+                        newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;*/
                 case EntityIDs.AKNH:
-                    newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.GRAPHIC_DISPLAY:
+                    newObj = new GraphicDisplay(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.OBTAINABLE_MAJOR_WEAPON:
-                    newObj = new ObtainableMajorWeapon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new ObtainableMajorWeapon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.CONTACT_WARP:
-                    newObj = new ContactWarp(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new ContactWarp(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_SOUL:
-                    newObj = new EnemySoul(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new EnemySoul(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.FIELD_TRANSITION:
-                    newObj = new FieldTransition(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new FieldTransition(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_A_BAO_A_QU:
-                    newObj = new EnemyABaoAQu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView);
+                    newObj = new EnemyABaoAQu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
             }
 

@@ -4,6 +4,7 @@ using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
@@ -13,11 +14,11 @@ namespace OpenLaMulana.Entities.WorldEntities
         Sprite[] sprites = new Sprite[7];
         private int _sprNum = 0;
         private double timeBeforeDrop = 0.0f;
-        private Global.EnemyStates _state = Global.EnemyStates.INIT;
+        private Global.WEStates _state = Global.WEStates.INIT;
         private View _bossRoom = null;
         private int speedUpTimer = 30;
 
-        public GuardianEllmac(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public GuardianEllmac(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS01);
             for (var i = 0; i < spritesMax; i++)
@@ -29,7 +30,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             Visible = false;
 
             timeBeforeDrop = 0.8f;
-            _state = Global.EnemyStates.INIT;
+            _state = Global.WEStates.INIT;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -46,7 +47,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 default:
                     break;
-                case Global.EnemyStates.INIT:
+                case Global.WEStates.INIT:
                     if (Global.Camera.GetState() == System.Camera.CamStates.NONE)
                     {
                         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -76,17 +77,17 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                             Global.World.FieldTransitionCardinalBoss(World.VIEW_DIR.DOWN, srcView, destView, Global.TextureManager.GetTexture(Global.Textures.BOSS02), this);
 
-                            _state = Global.EnemyStates.ACTIVATING;
+                            _state = Global.WEStates.ACTIVATING;
                         }
                     }
                     break;
-                case Global.EnemyStates.ACTIVATING:
+                case Global.WEStates.ACTIVATING:
                     if (Global.Camera.GetState() == System.Camera.CamStates.NONE)
                     {
-                        _state = Global.EnemyStates.SPEEDING_UP;
+                        _state = Global.WEStates.SPEEDING_UP;
                     }
                     break;
-                case Global.EnemyStates.SPEEDING_UP:
+                case Global.WEStates.SPEEDING_UP:
                     if (Global.AnimationTimer.OneFrameElapsed())
                     {
                         if (speedUpTimer > 0)

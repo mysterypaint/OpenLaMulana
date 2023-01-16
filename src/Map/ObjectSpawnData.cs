@@ -29,9 +29,9 @@ namespace OpenLaMulana
             StartFlags = new List<ObjectStartFlag>();
         }
 
-        internal void AddStartFlag(int value, bool initiallyDisabled)
+        internal void AddStartFlag(int value, bool conditionMetIfFlagIsOn)
         {
-            ObjectStartFlag newStartFlag = new ObjectStartFlag(value, initiallyDisabled);
+            ObjectStartFlag newStartFlag = new ObjectStartFlag(value, conditionMetIfFlagIsOn);
             StartFlags.Add(newStartFlag);
         }
 

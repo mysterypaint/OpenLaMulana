@@ -5,6 +5,7 @@ using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
+using System.Collections.Generic;
 using static OpenLaMulana.Entities.WorldEntities.NPCRoom;
 using static OpenLaMulana.Global;
 
@@ -18,7 +19,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         public override int HitboxWidth { get; set; } = 16;
         public override int HitboxHeight { get; set; } = 8;
 
-        public Dais(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public Dais(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             //_tex = Global.TextureManager.MakeTexture(16, 8, new Vector4(0, 255, 0, 255));
             //_sprIndex = new Sprite(_tex, 0, 8, 16, 8);

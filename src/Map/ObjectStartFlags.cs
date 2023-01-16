@@ -2,15 +2,23 @@
 {
     public class ObjectStartFlag
     {
-        private int value = 0;
-        private bool initiallyDisabled;
+        private int _flagIndex = -1;
+        private bool _conditionMetIfFlagIsOn;
 
-        public ObjectStartFlag(int _value, bool _initiallyDisabled)
+        public ObjectStartFlag(int flagIndex, bool conditionMetIfFlagIsOn)
         {
-            value = _value;
-            initiallyDisabled = _initiallyDisabled;
+            _flagIndex = flagIndex;
+            _conditionMetIfFlagIsOn = conditionMetIfFlagIsOn;
         }
 
-        private bool initiallyEnabled { get; set; } = false;
+        public int GetIndex()
+        {
+            return _flagIndex;
+        }
+
+        public bool GetFlagCondition()
+        {
+            return _conditionMetIfFlagIsOn;
+        }
     }
 }

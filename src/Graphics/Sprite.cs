@@ -7,6 +7,9 @@ namespace OpenLaMulana.Graphics
 {
     public class Sprite
     {
+        private Texture2D tex;
+        private Vector2 texCoords;
+        private Vector2 spriteWidthHeight;
 
         public Texture2D Texture { get; set; } = null;
 
@@ -51,6 +54,17 @@ namespace OpenLaMulana.Graphics
             Height = height;
             OriginX = originX;
             OriginY = originY;
+        }
+
+        public Sprite(Texture2D texture, Vector2 coords, Vector2 size)
+        {
+            Texture = texture;
+            X = (int)coords.X;
+            Y = (int)coords.Y;
+            Width = (int)size.X;
+            Height = (int)size.Y;
+            OriginX = 0;
+            OriginY = 0;
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)

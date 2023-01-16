@@ -21,11 +21,11 @@
         BLOCK_FLOOR_SWITCH = 36,
         AKNH = 38,
         BACKGROUND_SIGIL = 47,
-        BIG_ANKH = 59, // This might not be the actual value: this is here purely for testing purposes
+        GRAPHIC_DISPLAY = 59,
         OBTAINABLE_MAJOR_WEAPON = 77,
         CONTACT_WARP = 87,
         ENEMY_SOUL = 133,
         FIELD_TRANSITION = 135,
-        ENEMY_A_BAO_A_QU = 182
+        ENEMY_A_BAO_A_QU = 182,
     }
 }

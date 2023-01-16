@@ -25,7 +25,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         internal Point viewCoords = new Point(-1, -1);
         internal float _imgScaleX = 1f, _imgScaleY = 1f;
 
-        public IGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView)
+        public IGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
             _sprIndex = new Sprite(_tex, 16, 0, 16, 16);

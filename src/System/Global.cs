@@ -15,7 +15,9 @@ namespace OpenLaMulana
             Abstract = 0,
             Background = 100,
             Tileset = 200,
+            AboveTilesetGraphicDisplay = 201,
             Entities = 300,
+            AboveEntitiesGraphicDisplay = 301,
             Characters = 400,
             Protag = 500,
             Foreground = 600,
@@ -197,7 +199,8 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum EnemyStates {
+        public enum WEStates {
+            UNSPAWNED,
             INIT,
             ACTIVATING,
             IDLE,

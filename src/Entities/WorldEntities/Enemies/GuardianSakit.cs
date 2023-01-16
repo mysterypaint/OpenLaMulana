@@ -4,6 +4,7 @@ using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
@@ -13,7 +14,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int _sprNum = 0;
         private int _ts = World.CHIP_SIZE;
         private int _initTimer = 0;
-        private Global.EnemyStates _state = Global.EnemyStates.INIT;
+        private Global.WEStates _state = Global.WEStates.INIT;
         private View[] _bossViews = null;
 
         enum SakitSprites
@@ -28,7 +29,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             Max
         };
 
-        public GuardianSakit(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public GuardianSakit(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS01);
             for (int i = 0; i < (int)SakitSprites.Max; i++)
@@ -56,11 +57,11 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 default:
                     break;
-                case Global.EnemyStates.INIT:
+                case Global.WEStates.INIT:
                     if (Global.AnimationTimer.OneFrameElapsed()) {
                         if (_initTimer <= 0) {
                             _initTimer = 10;
-                            _state = Global.EnemyStates.ACTIVATING;
+                            _state = Global.WEStates.ACTIVATING;
                             Visible = true;
                             Global.World.FieldTransitionImmediate(_bossViews[0], _bossViews[1], false, false);
                         } else
@@ -69,13 +70,13 @@ namespace OpenLaMulana.Entities.WorldEntities
                         }
                     }
                     break;
-                case Global.EnemyStates.ACTIVATING:
+                case Global.WEStates.ACTIVATING:
                     if (Global.AnimationTimer.OneFrameElapsed())
                     {
                         if (_initTimer <= 0)
                         {
                             _initTimer = 10;
-                            _state = Global.EnemyStates.IDLE;
+                            _state = Global.WEStates.IDLE;
                         }
                         else
                         {
@@ -83,7 +84,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         }
                     }
                     break;
-                case Global.EnemyStates.IDLE:
+                case Global.WEStates.IDLE:
 
                     break;
             }

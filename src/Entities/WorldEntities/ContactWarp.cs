@@ -4,6 +4,7 @@ using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
@@ -15,7 +16,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int _relViewY = -1;
         private bool _playerMayWarp = true;
 
-        public ContactWarp(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public ContactWarp(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _fieldID = op1;
             _viewNumber = op2;    // Specifies the graphics that are overwritten in front of Lemeza when he passes through the gate

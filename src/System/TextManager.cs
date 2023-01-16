@@ -19,6 +19,19 @@ namespace OpenLaMulana.System
             MAX
         };
 
+        /* CONTROL CODES
+            \\1: Wait for key input. Use the weapon key to advance to the next page. It cannot be used in the corpse memo.
+            \\2: Flag on. Specify the flag number in the following 2 bytes.
+            \\3: Flag off. Specify the flag number in the following 2 bytes.
+            \\4: Item acquisition. Get the item in the next 1 byte. Item number from 1.
+            \\5: ROM acquisition. 1 byte after this will get the ROM. ROM number starts from 1.
+            \\6: Sound playback. Sounds the SE with the number specified by the following 1 byte. SE number from 1.
+            \\7: Prevents you from leaving the conversation.
+            \\8: Cancel the \\7 state.
+            \\10: Line feed. Do not use line breaks in the talk editor.
+        */
+
+
         public int Depth { get; set; } = (int)Global.DrawOrder.Text;
         public Effect ActiveShader { get; set; } = null;
 

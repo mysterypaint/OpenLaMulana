@@ -61,7 +61,14 @@ namespace OpenLaMulana
 
             Global.GameRNG = new GameRNG();
             Global.GameFlags = new GameFlags();
-            Global.SaveData = new SaveData();
+
+
+            //SaveData encryptedSave = HelperFunctions.LoadSaveFromFile("lamulana.sa0");
+            //SaveData decryptedSave = HelperFunctions.DecryptSaveFile(encryptedSave);
+            //HelperFunctions.WriteSaveToFile(decryptedSave, "lamulana_dec.sa0", false);
+            //Global.SaveData = new SaveData();
+
+
 
             //Globals.SaveData.ReadEncryptedSave("lamulana.sa0");
             //Globals.SaveData.WriteDecryptedSave("lamulana_dec.sa0");

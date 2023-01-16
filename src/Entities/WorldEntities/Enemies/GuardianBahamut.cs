@@ -4,6 +4,7 @@ using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
@@ -12,7 +13,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int spritesMax = 18;
         Sprite[] sprites = new Sprite[18];
         private int _sprNum = 0;
-        private Global.EnemyStates _state = Global.EnemyStates.INIT;
+        private Global.WEStates _state = Global.WEStates.INIT;
         private View _bossRoom = null;
         private int _beginningWaitTimer = 0;
         private int speedUpTimer = 300;
@@ -22,7 +23,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private View[] backupView = new View[3];
         private int _timesShifted = 0;
 
-        public GuardianBahamut(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public GuardianBahamut(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS03);
             for (var i = 0; i < spritesMax; i++)
@@ -48,7 +49,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                 }
             }
 
-            _state = Global.EnemyStates.INIT;
+            _state = Global.WEStates.INIT;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -65,21 +66,21 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 default:
                     break;
-                case Global.EnemyStates.INIT:
+                case Global.WEStates.INIT:
                     if (Global.Camera.GetState() == System.Camera.CamStates.NONE)
                     {
                         _bossRoom = srcView;
 
                         _beginningWaitTimer = 30;
-                        _state = Global.EnemyStates.ACTIVATING;
+                        _state = Global.WEStates.ACTIVATING;
 
                     }
                     break;
-                case Global.EnemyStates.ACTIVATING:
+                case Global.WEStates.ACTIVATING:
                     if (_beginningWaitTimer <= 0)
                     {
                         _beginningWaitTimer = 0;
-                        _state = Global.EnemyStates.SPEEDING_UP;
+                        _state = Global.WEStates.SPEEDING_UP;
                     }
                     else
                     {
@@ -87,7 +88,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             _beginningWaitTimer--;
                     }
                     break;
-                case Global.EnemyStates.SPEEDING_UP:
+                case Global.WEStates.SPEEDING_UP:
                     if (Global.AnimationTimer.OneFrameElapsed())
                     {
                         if (speedUpTimer > 0)

@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Entities;
+using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace OpenLaMulana.Entities.WorldEntities.Parents
+namespace OpenLaMulana
 {
     abstract class IRoomWorldEntity : IGameEntity
     {
@@ -24,13 +25,16 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         internal Point viewCoords = new Point(-1, -1);
         internal float _imgScaleX = 1f, _imgScaleY = 1f;
         public bool ManuallySpawned = false;
+        public List<ObjectStartFlag> _startFlags = null;
         List<IGameEntity> _myEntities = new List<IGameEntity>();
+        public Global.WEStates State { get; set; } = Global.WEStates.UNSPAWNED;
 
-        public IRoomWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView = null)
+        public IRoomWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
             _sprIndex = new Sprite(_tex, 0, 0, 16, 16);
             _world = Global.World;
+            _startFlags = startFlags;
 
             RelativeViewTilePos = new Vector2(x, y);
             Position = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);

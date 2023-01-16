@@ -2,8 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -426,5 +428,209 @@ namespace OpenLaMulana.System
         {
             return (start_value + (end_value - start_value) * pct);
         }
+
+        public static Vector2 GetOPCoords(int opValue)
+        {
+            int[] digits = GetDigits(opValue).ToArray();
+            int numDigits = digits.Count();
+            int yVal;
+            if (numDigits < 2)
+                yVal = digits[numDigits - 1] * 1;
+            else if (numDigits < 3)
+                yVal = digits[numDigits - 1] * 1 + digits[numDigits - 2] * 10;
+            else
+                yVal = digits[numDigits - 1] * 1 + digits[numDigits - 2] * 10 + digits[numDigits - 3] * 100;
+
+
+            int xVal;
+            if (numDigits < 5)
+                xVal = digits[0] * 1;
+            else if (numDigits < 6)
+                xVal = digits[0] * 10 + digits[1] * 1;
+            else
+                xVal = digits[0] * 100 + digits[1] * 10 + digits[2] * 1;
+
+            return new Vector2(xVal, yVal);
+        }
+
+        internal static bool EntityMaySpawn(List<ObjectStartFlag> startFlags)
+        {
+            foreach (ObjectStartFlag flag in startFlags)
+            {
+                int flagIndex = flag.GetIndex();
+                if (flagIndex == -1 || flagIndex >= (int)GameFlags.Flags.MAX)
+                    continue;
+
+                bool currFlagValue = Global.GameFlags.InGameFlags[flagIndex];
+
+                bool conditionMetIfFlagIsOn = flag.GetFlagCondition();
+                if (conditionMetIfFlagIsOn)
+                {
+                    currFlagValue = !currFlagValue;
+                }
+
+                if (currFlagValue)
+                    return false;
+
+            }
+
+            return true;
+        }
+
+
+        #region SaveDataFunctions
+        public static SaveData LoadSaveFromFile(string fileName)
+        {
+            // All EncryptionBlocks are Encrypted, then decrypted in place, with the exception of the RomBlock.
+
+            EncryptionBlock[] allBlocks = new EncryptionBlock[(int)EncryptionBlocks.MAX];
+            int[] blockSizes = { 870, 60, 40, 24, 5, 24, 10, 20, 1, 2, 2, 4, 4, 336, 4, 20 };
+            byte globalChecksum;
+
+            using (BinaryReader reader = new BinaryReader(new FileStream(fileName, FileMode.Open)))
+            {
+                int bufferOffset = 0;
+                for (EncryptionBlocks eB = (EncryptionBlocks)0; eB < EncryptionBlocks.MAX; eB++)
+                {
+                    byte key = reader.ReadByte();
+                    bufferOffset++;
+
+                    byte[] data = new byte[blockSizes[(int)eB]];
+                    reader.Read(data, 0, blockSizes[(int)eB]);
+                    bufferOffset += blockSizes[(int)eB];
+                    reader.BaseStream.Seek(bufferOffset, SeekOrigin.Begin);
+
+                    byte checksum = reader.ReadByte();
+                    bufferOffset++;
+
+
+                    allBlocks[(int)eB] = new EncryptionBlock(key, data, checksum);
+                }
+
+                globalChecksum = reader.ReadByte();
+            }
+            SaveData encryptedSave = new SaveData(false, allBlocks, globalChecksum);
+
+            return encryptedSave;
+        }
+
+        public static SaveData DecryptSaveFile(SaveData encryptedSave)
+        {
+            EncryptionBlock[] allDecryptedBlocks = new EncryptionBlock[(int)EncryptionBlocks.MAX];
+
+            for (EncryptionBlocks eB = (EncryptionBlocks)0; eB < EncryptionBlocks.MAX; eB++)
+            {
+                // All EncryptionBlocks are Encrypted, then decrypted in place
+                allDecryptedBlocks[(int)eB] = DecryptBlock(encryptedSave.SaveBlocks[(int)eB]);
+            }
+
+            byte globalChecksum = GetFinalChecksum(allDecryptedBlocks);
+
+            SaveData decryptedSave = new SaveData(true, allDecryptedBlocks, globalChecksum);
+
+            return decryptedSave;
+        }
+
+
+        /// TODO: Implement EncryptSaveFile (Further research may be required...)
+        public static SaveData EncryptSaveFile(SaveData decryptedSave)
+        {
+
+            /*
+            EncryptionBlock flags = new EncryptionBlock[870];
+            EncryptionBlock treasures = new EncryptionBlock[60];
+            EncryptionBlock treasuresMenu = new EncryptionBlock[40];
+            EncryptionBlock blockD = new EncryptionBlock[24];
+            EncryptionBlock blockE = new EncryptionBlock[5];
+            EncryptionBlock blockF = new EncryptionBlock[24];
+            EncryptionBlock subWeapons = new EncryptionBlock[10];
+            EncryptionBlock ammo = new EncryptionBlock[20];
+            EncryptionBlock maxHP32 = new EncryptionBlock[1];
+            EncryptionBlock coins = new EncryptionBlock[2];
+            EncryptionBlock weights = new EncryptionBlock[2];
+            EncryptionBlock gameTime = new EncryptionBlock[4];
+            EncryptionBlock blockM = new EncryptionBlock[4];
+            EncryptionBlock roms = new EncryptionBlock[336];        // One 32-bit integer per rom, which is either a 0 or 1
+            EncryptionBlock blockO = new EncryptionBlock[4];
+            EncryptionBlock blockP = new EncryptionBlock[20];*/
+
+            EncryptionBlock dummy = new EncryptionBlock();
+
+            byte checkSum = 0;/* GlobalChecksum = GetFinalChecksum(flags) + GetFinalChecksum(treasures) + GetFinalChecksum(treasuresMenu) + GetFinalChecksum(blockD)
+                + GetFinalChecksum(blockE) + GetFinalChecksum(blockF) + GetFinalChecksum(subWeapons) + GetFinalChecksum(ammo) + GetFinalChecksum(maxHP32)
+                + GetFinalChecksum(coins) + GetFinalChecksum(weights) + GetFinalChecksum(gameTime) + GetFinalChecksum(blockM) + GetFinalChecksum(roms)
+                + GetFinalChecksum(blockO) + GetFinalChecksum(blockP);*/
+
+            EncryptionBlock[] allEncryptedBlocks = new EncryptionBlock[] { dummy };/*{ flags, treasures, treasuresMenu, blockD,
+            blockE, blockF, subWeapons, ammo, maxHP32, coins, weights, gameTime, blockM, roms, blockO, blockP };*/
+
+            SaveData encryptedSave = new SaveData(false, allEncryptedBlocks, checkSum);
+
+            return encryptedSave;
+        }
+
+        private static EncryptionBlock DecryptBlock(EncryptionBlock block)
+        {
+            byte state = block.Key;
+            byte checksum = 0;
+
+            for (int i = 0; i < block.Data.Length; i++)
+            {
+                state = (byte)(109 * state + 1021); // Implicit (& 255) performed on this too
+                block.Data[i] ^= state;
+                checksum += (byte)(i + block.Data[i]);
+            }
+
+            if (checksum != block.Checksum)
+                throw new Exception("Bad checksum error while decrypting this save block!");
+
+            return new EncryptionBlock(state, block.Data, checksum);
+        }
+
+        public static byte GetFinalChecksum(EncryptionBlock[] encBlkArray)
+        {
+            byte finalValue = 0;
+
+            for (int i = 0; i < encBlkArray.Length; i++)
+            {
+                finalValue += (byte)(encBlkArray[i].Checksum + encBlkArray[i].Key);
+            }
+
+            return finalValue;
+        }
+
+        internal static void WriteSaveToFile(SaveData decryptedSave, string fileName, bool encryptThisSave = true)
+        {
+            if (encryptThisSave)
+            {
+                if (decryptedSave.IsDecrypted)
+                {
+                    SaveData encryptedSave = EncryptSaveFile(decryptedSave);
+                    decryptedSave = encryptedSave;
+                }
+            }
+
+            byte globalChecksum = decryptedSave.GlobalChecksum;
+            EncryptionBlock[] saveBlocks = decryptedSave.SaveBlocks;
+
+            try
+            {
+                using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                {
+                    foreach(EncryptionBlock b in saveBlocks)
+                    {
+                        fs.WriteByte(b.Key);
+                        fs.Write(b.Data, 0, b.Data.Length);
+                        fs.WriteByte(b.Checksum);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Exception caught in process: {0}", ex);
+            }
+        }
+        #endregion
+
     }
 }

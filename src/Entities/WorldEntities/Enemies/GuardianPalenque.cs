@@ -85,7 +85,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             MAX
         };
 
-        public GuardianPalenque(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public GuardianPalenque(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS05);
             for (var i = 0; i < spritesMax; i++)
@@ -97,10 +97,10 @@ namespace OpenLaMulana.Entities.WorldEntities
             _bossRoom = Global.World.GetField(Global.World.CurrField).GetBossViews()[0];
             _bossDefeatedRoom = Global.World.GetField(Global.World.CurrField).GetBossViews()[1];
 
-            _upperBody = (GenericGlobalWorldEntity)InstanceCreatePersistent(new GenericGlobalWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null));
+            _upperBody = (GenericGlobalWorldEntity)InstanceCreatePersistent(new GenericGlobalWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
             _upperBody.SetSprite(_sprites[(int)PalenqueSprites.PreBattleUpperBody]);
             _upperBody.Position = new Vector2(Position.X, Position.Y - (6 * _ts));
-            _lowerBody = (GenericGlobalWorldEntity)InstanceCreatePersistent(new GenericGlobalWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null));
+            _lowerBody = (GenericGlobalWorldEntity)InstanceCreatePersistent(new GenericGlobalWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
             _lowerBody.SetSprite(_sprites[(int)PalenqueSprites.PreBattleLowerBody]);
             _lowerBody.Position = new Vector2(Position.X, Position.Y + (6 * _ts));
         }

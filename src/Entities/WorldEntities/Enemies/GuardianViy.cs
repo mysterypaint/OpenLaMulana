@@ -63,7 +63,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private GuardianViyEye _eye = null;
 
 
-        public GuardianViy(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public GuardianViy(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS04);
             for (var i = 0; i < spritesMax; i++)
@@ -88,7 +88,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             int[] yPos = new int[] { 17, 16, 16, 17 };
             for (int i = 0; i < 4; i++)
             {
-                _tentacles[i] = (GuardianViyTentacle)InstanceCreatePersistent(new GuardianViyTentacle(x, y, -1, -1, -1, -1, true, null));
+                _tentacles[i] = (GuardianViyTentacle)InstanceCreatePersistent(new GuardianViyTentacle(x, y, -1, -1, -1, -1, true, null, null));
 
                 Sprite[] tentSprites = new Sprite[] { _sprites[(int)ViySprites.Tentacle1_1 + (i * 3)],
                 _sprites[(int)ViySprites.Tentacle1_2 + (i * 3)],
@@ -106,7 +106,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             _sprites[(int)ViySprites.ClosingEye],
             _sprites[(int)ViySprites.OpenEye],
             _sprites[(int)ViySprites.ExtendedEye]};
-            _eye = (GuardianViyEye)InstanceCreatePersistent(new GuardianViyEye(x, y, -1, -1, -1, -1, true, null));
+            _eye = (GuardianViyEye)InstanceCreatePersistent(new GuardianViyEye(x, y, -1, -1, -1, -1, true, null, null));
             _eye.Init(eyeSprites, new Vector2(11 * _ts, 18 * _ts), this);
 
             Position = new Vector2(_ts, 16 * _ts);

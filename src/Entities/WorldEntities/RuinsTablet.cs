@@ -5,6 +5,7 @@ using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
+using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
@@ -28,7 +29,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         TabletStates State = TabletStates.INACTIVE;
 
-        public RuinsTablet(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView)
+        public RuinsTablet(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             UInt32[] pixels = new UInt32[16 * 16];
             pixels[0] = 0x00FF00FF;
