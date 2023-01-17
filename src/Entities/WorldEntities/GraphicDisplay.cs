@@ -28,6 +28,10 @@ namespace OpenLaMulana.Entities.WorldEntities
                     _tex = Global.TextureManager.GetTexture(Global.World.GetCurrMapTexture());
                     Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
                     break;
+                case 1:
+                    _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
+                    Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
+                    break;
                 case 2:
                     _tex = Global.TextureManager.GetTexture(Global.World.GetCurrMapTexture());
                     Depth = (int)Global.DrawOrder.AboveEntitiesGraphicDisplay;

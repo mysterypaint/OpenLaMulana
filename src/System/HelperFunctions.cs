@@ -436,12 +436,20 @@ namespace OpenLaMulana.System
             int numDigits = digits.Count();
             int yVal;
             if (numDigits < 2)
+            {
                 yVal = digits[numDigits - 1] * 1;
+                return new Vector2(0, yVal);
+            }
             else if (numDigits < 3)
+            {
                 yVal = digits[numDigits - 1] * 1 + digits[numDigits - 2] * 10;
+                return new Vector2(0, yVal);
+            }
             else
                 yVal = digits[numDigits - 1] * 1 + digits[numDigits - 2] * 10 + digits[numDigits - 3] * 100;
 
+            if (numDigits < 4)
+                return new Vector2(0, yVal);
 
             int xVal;
             if (numDigits < 5)

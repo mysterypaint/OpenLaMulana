@@ -24,6 +24,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             //_tex = Global.TextureManager.MakeTexture(16, 8, new Vector4(0, 255, 0, 255));
             //_sprIndex = new Sprite(_tex, 0, 8, 16, 8);
             _tex = Global.TextureManager.GetTexture(Textures.ITEM);
+
             _weightSprite = Global.TextureManager.Get8x8Tile(_tex, 20, 3, Vector2.Zero);
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

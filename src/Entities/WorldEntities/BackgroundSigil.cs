@@ -17,8 +17,9 @@ namespace OpenLaMulana.Entities.WorldEntities
             int sigilType = op1;
             int graphicType = op2;
 
-            _tex = Global.TextureManager.GetTexture(Global.World.GetCurrMapTexture());
-            _sprIndex = new Sprite(_tex, 112 + ((World.CHIP_SIZE * 2) * sigilType), 0, 16, 16);
+            _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
+            _sprIndex = new Sprite(_tex, 80 + ((World.CHIP_SIZE * 2) * sigilType), 64, 16, 16);
+            Depth = (int)Global.DrawOrder.Tileset;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
