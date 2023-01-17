@@ -40,11 +40,11 @@ namespace OpenLaMulana.Entities.WorldEntities
         {
             if (CollidesWithPlayer())
             {
-                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN] && !_daisPlaced && _protag.Inventory.Weights > 0)
+                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN] && !_daisPlaced && Global.Inventory.WeightCount > 0)
                 {
                     _daisPlaced = true;
                     Global.AudioManager.PlaySFX(SFX.SE11);
-                    _protag.Inventory.Weights--;
+                    Global.Inventory.WeightCount--;
                 }
             }
         }

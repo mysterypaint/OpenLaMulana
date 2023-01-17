@@ -210,10 +210,10 @@ namespace OpenLaMulana
             MAX
         }
 
-        public enum Weapons
+        public enum MainWeapons
         {
-            NONE,
-            WHIP,
+            NONE = 255,
+            WHIP = 0,
             CHAIN_WHIP,
             FLAIL_WHIP,
             KNIFE,
@@ -226,8 +226,8 @@ namespace OpenLaMulana
 
         public enum SubWeapons
         {
-            NONE,
-            SHURIKEN,
+            NONE = 255,
+            SHURIKEN = 0,
             THROWING_KNIFE,
             SPEAR,
             FLARES,
@@ -243,7 +243,7 @@ namespace OpenLaMulana
             MAX
         };
 
-        enum ObtainableTreasures
+        public enum ObtainableTreasures
         {
             MSX,
             SHELL_HORN,
@@ -304,8 +304,9 @@ namespace OpenLaMulana
             BIRTH_SIGIL,
             LIFE_SIGIL,
             DEATH_SIGIL,
-            HELL_TREASURE
-        };
+            HELL_TREASURE,
+            MAX
+        }
 
         public enum ObtainableSoftware
         {
@@ -393,8 +394,9 @@ namespace OpenLaMulana
             BADLANDS,
             GRADIUS_2_BETA,
             A1_SPIRIT,
-            MAX
-        };
+            MAX,
+            NONE = -1,
+        }
 
         public enum RomCombos
         {
@@ -495,6 +497,40 @@ namespace OpenLaMulana
             MAX
         };
 
+        public struct InventoryStruct
+        {
+            public Global.MainWeapons EquippedMainWeapon { get; set; }
+            public Global.SubWeapons EquippedSubWeapon { get; set; }
+            public Global.ObtainableSoftware[] EquippedRoms { get; set; }
+            public bool[] ObtainedTreasures { get; set; }
+            public bool[] ObtainedSoftware { get; set; }
+            public Global.MainWeapons[] ObtainedMainWeapons { get; set; }
+            public Global.SubWeapons[] ObtainedSubWeapons { get; set; }
+            public short[] TreasureIconIDs { get; set; }
+
+            public int CoinCount { get; set; }
+            public int WeightCount { get; set; }
+
+            public int ShurikenCount { get; set; }
+            public int ThrowingKnivesCount { get; set; }
+            public int SpearsCount { get; set; }
+            public int FlaresCount { get; set; }
+            public int BombsCount { get; set; }
+            public int BulletCount { get; set; }
+            public int AmmunitionRefills { get; set; }
+            public int AnkhJewelCount { get; set; }
+            public int ShieldValue { get; set; }
+            public int HandyScannerValue { get; set; }
+
+            public int HP { get; set; }
+            public int HPMax { get; set; }
+            public int CurrExp { get; set; }
+            public int ExpMax { get; set; }
+            public int TrueHPMax { get; set; }
+        }
+
+        public static InventoryStruct Inventory;
+
         public static Effect ShdTransition, ShdHueShift, ShdBinary, ShdMaskingBlack;
 
         public static GraphicsDevice GraphicsDevice;
@@ -506,7 +542,6 @@ namespace OpenLaMulana
         public static AudioManager AudioManager;
         public static TextManager TextManager;
         public static GameMenu GameMenu;
-        public static SaveData SaveData;
         public static GameRNG GameRNG;
         public static SpriteBatch SpriteBatch;
         public static TextureManager TextureManager;
@@ -524,7 +559,7 @@ namespace OpenLaMulana
         public static bool QoLChanges { get; internal set; } = false;
 
 
-        public static Dictionary<Weapons, int> WeaponsDamageTable = new Dictionary<Weapons, int>();
+        public static Dictionary<MainWeapons, int> WeaponsDamageTable = new Dictionary<MainWeapons, int>();
         public static Dictionary<SubWeapons, int> SubWeaponsDamageTable = new Dictionary<SubWeapons, int>();
         public static Dictionary<RomCombos, int> RomDamageMultipliers = new Dictionary<RomCombos, int>();
     }

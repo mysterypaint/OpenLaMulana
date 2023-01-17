@@ -85,7 +85,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     var cBox = _protag.BBox;
                     if (BBox.Intersects(cBox))
                     {
-                        if (InputManager.PressedKeys[(int)Global.ControllerKeys.SUB_WEAPON] && _protag.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER && _protag.IsGrounded())
+                        if (InputManager.PressedKeys[(int)Global.ControllerKeys.SUB_WEAPON] && Global.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER && _protag.IsGrounded())
                         {
                             State = TabletStates.READING;
                             Global.MobileSuperX.SetState(Global.MSXStates.SCANNING);

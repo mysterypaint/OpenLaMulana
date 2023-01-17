@@ -63,9 +63,9 @@ namespace OpenLaMulana
             Global.GameFlags = new GameFlags();
 
 
-            //SaveData encryptedSave = HelperFunctions.LoadSaveFromFile("lamulana.sa0");
-            //SaveData decryptedSave = HelperFunctions.DecryptSaveFile(encryptedSave);
+            //SaveData reencryptedSave = HelperFunctions.EncryptSaveFile(decryptedSave);
             //HelperFunctions.WriteSaveToFile(decryptedSave, "lamulana_dec.sa0", false);
+            //HelperFunctions.WriteSaveToFile(reencryptedSave, "lamulana_reenc.sa0", true);
             //Global.SaveData = new SaveData();
 
 
@@ -515,9 +515,9 @@ namespace OpenLaMulana
 
 
             // Calculate and draw the blue HP bar
-            int trueHPMax = Global.Protag.Inventory.TrueHPMax;
-            int maxHP = Global.Protag.Inventory.HPMax;
-            int currHP = Global.Protag.Inventory.HP;
+            int trueHPMax = Global.Inventory.TrueHPMax;
+            int maxHP = Global.Inventory.HPMax;
+            int currHP = Global.Inventory.HP;
             float currHPRatio = currHP / 352.0f;
             float healthColorRatio = currHP / (float)maxHP;
             Color HPColor = new Color(51, 102, 255, 255); // Health color is blue by default
@@ -541,7 +541,7 @@ namespace OpenLaMulana
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + hpPixels, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
 
 
-            int currExp = Global.Protag.Inventory.CurrExp;
+            int currExp = Global.Inventory.CurrExp;
             float currEXPRatio = currExp / (float)trueHPMax; // Remake behavior
             int expPixels = (int)Math.Round(currEXPRatio * 88);
             if (expPixels < 1)
@@ -555,23 +555,25 @@ namespace OpenLaMulana
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 112, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
 
             // Draw the Weapon Icon
-            int equippedMainWeapon = (int)Global.Protag.Inventory.EquippedMainWeapon - 1;
-            spriteBatch.Draw(_itemTex,
-                new Rectangle((int)_camPos.X + (16 * World.CHIP_SIZE), (int)_camPos.Y, 16, 16),
-                new Rectangle(256 + (equippedMainWeapon % 4) * World.CHIP_SIZE * 2, 0 + (equippedMainWeapon / 4) * World.CHIP_SIZE * 2, 16, 16),
-                Color.White);
+            int equippedMainWeapon = (int)Global.Inventory.EquippedMainWeapon;
+            if (equippedMainWeapon >= 0 && equippedMainWeapon < 255)
+                spriteBatch.Draw(_itemTex,
+                    new Rectangle((int)_camPos.X + (16 * World.CHIP_SIZE), (int)_camPos.Y, 16, 16),
+                    new Rectangle(256 + (equippedMainWeapon % 4) * World.CHIP_SIZE * 2, 0 + (equippedMainWeapon / 4) * World.CHIP_SIZE * 2, 16, 16),
+                    Color.White);
 
             // Draw the Subweapon Icon
-            int equippedSubWeapon = (int)Global.Protag.Inventory.EquippedSubWeapon - 1;
-             spriteBatch.Draw(_itemTex,
-                new Rectangle((int)_camPos.X + (19 * World.CHIP_SIZE), (int)_camPos.Y, 16, 16),
-                new Rectangle(256 + (equippedSubWeapon % 4) * World.CHIP_SIZE * 2, 96 + (equippedSubWeapon / 4) * World.CHIP_SIZE * 2, 16, 16),
-                Color.White);
+            int equippedSubWeapon = (int)Global.Inventory.EquippedSubWeapon;
+            if (equippedSubWeapon >= 0 && equippedSubWeapon < 255)
+                spriteBatch.Draw(_itemTex,
+                    new Rectangle((int)_camPos.X + (19 * World.CHIP_SIZE), (int)_camPos.Y, 16, 16),
+                    new Rectangle(256 + (equippedSubWeapon % 4) * World.CHIP_SIZE * 2, 96 + (equippedSubWeapon / 4) * World.CHIP_SIZE * 2, 16, 16),
+                    Color.White);
 
             Global.TextManager.DrawText(_camPos + new Vector2(21 * 8, 1 * 8), "---");
             string fmt = "000";
-            int numCoins = Global.Protag.Inventory.Coins;
-            int numWeights = Global.Protag.Inventory.Weights;
+            int numCoins = Global.Inventory.CoinCount;
+            int numWeights = Global.Inventory.WeightCount;
             string strCoins = numCoins.ToString(fmt);
             string strWeights = numWeights.ToString(fmt);
 
@@ -634,6 +636,9 @@ namespace OpenLaMulana
 
         public void LoadSaveState()
         {
+
+            /*
+             * 
             try
             {
                 using (FileStream fileStream = new FileStream(SAVE_FILE_NAME, FileMode.OpenOrCreate))
@@ -655,7 +660,7 @@ namespace OpenLaMulana
             catch (Exception ex)
             {
                 Debug.WriteLine("An error occurred while loading the game: " + ex.Message);
-            }
+            }*/
         }
 
         private void ResetSaveState()

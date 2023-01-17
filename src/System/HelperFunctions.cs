@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using OpenLaMulana.Entities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -483,14 +484,14 @@ namespace OpenLaMulana.System
         {
             // All EncryptionBlocks are Encrypted, then decrypted in place, with the exception of the RomBlock.
 
-            EncryptionBlock[] allBlocks = new EncryptionBlock[(int)EncryptionBlocks.MAX];
+            EncryptionBlock[] allBlocks = new EncryptionBlock[(int)SaveRegions.MAX];
             int[] blockSizes = { 870, 60, 40, 24, 5, 24, 10, 20, 1, 2, 2, 4, 4, 336, 4, 20 };
             byte globalChecksum;
 
             using (BinaryReader reader = new BinaryReader(new FileStream(fileName, FileMode.Open)))
             {
                 int bufferOffset = 0;
-                for (EncryptionBlocks eB = (EncryptionBlocks)0; eB < EncryptionBlocks.MAX; eB++)
+                for (SaveRegions eB = (SaveRegions)0; eB < SaveRegions.MAX; eB++)
                 {
                     byte key = reader.ReadByte();
                     bufferOffset++;
@@ -516,9 +517,9 @@ namespace OpenLaMulana.System
 
         public static SaveData DecryptSaveFile(SaveData encryptedSave)
         {
-            EncryptionBlock[] allDecryptedBlocks = new EncryptionBlock[(int)EncryptionBlocks.MAX];
+            EncryptionBlock[] allDecryptedBlocks = new EncryptionBlock[(int)SaveRegions.MAX];
 
-            for (EncryptionBlocks eB = (EncryptionBlocks)0; eB < EncryptionBlocks.MAX; eB++)
+            for (SaveRegions eB = (SaveRegions)0; eB < SaveRegions.MAX; eB++)
             {
                 // All EncryptionBlocks are Encrypted, then decrypted in place
                 allDecryptedBlocks[(int)eB] = DecryptBlock(encryptedSave.SaveBlocks[(int)eB]);
@@ -533,40 +534,46 @@ namespace OpenLaMulana.System
 
 
         /// TODO: Implement EncryptSaveFile (Further research may be required...)
+        // worsety: "0x4801A0 creates the save file, with multiple calls to 0x47FF50 for the obfuscation"
+        // Research in a disasm
+
         public static SaveData EncryptSaveFile(SaveData decryptedSave)
         {
 
+            EncryptionBlock[] allEncryptedBlocks = new EncryptionBlock[(int)SaveRegions.MAX];
             /*
-            EncryptionBlock flags = new EncryptionBlock[870];
-            EncryptionBlock treasures = new EncryptionBlock[60];
-            EncryptionBlock treasuresMenu = new EncryptionBlock[40];
-            EncryptionBlock blockD = new EncryptionBlock[24];
-            EncryptionBlock blockE = new EncryptionBlock[5];
-            EncryptionBlock blockF = new EncryptionBlock[24];
-            EncryptionBlock subWeapons = new EncryptionBlock[10];
-            EncryptionBlock ammo = new EncryptionBlock[20];
-            EncryptionBlock maxHP32 = new EncryptionBlock[1];
-            EncryptionBlock coins = new EncryptionBlock[2];
-            EncryptionBlock weights = new EncryptionBlock[2];
-            EncryptionBlock gameTime = new EncryptionBlock[4];
-            EncryptionBlock blockM = new EncryptionBlock[4];
-            EncryptionBlock roms = new EncryptionBlock[336];        // One 32-bit integer per rom, which is either a 0 or 1
-            EncryptionBlock blockO = new EncryptionBlock[4];
-            EncryptionBlock blockP = new EncryptionBlock[20];*/
+             * 
+            for (EncryptionBlocks eB = (EncryptionBlocks)0; eB < EncryptionBlocks.MAX; eB++)
+            {
+                // All EncryptionBlocks are Encrypted, then decrypted in place
+                allEncryptedBlocks[(int)eB] = EncryptBlock(decryptedSave.SaveBlocks[(int)eB]);
+            }
+*/
 
-            EncryptionBlock dummy = new EncryptionBlock();
+            byte globalChecksum = GetFinalChecksum(allEncryptedBlocks);
 
-            byte checkSum = 0;/* GlobalChecksum = GetFinalChecksum(flags) + GetFinalChecksum(treasures) + GetFinalChecksum(treasuresMenu) + GetFinalChecksum(blockD)
-                + GetFinalChecksum(blockE) + GetFinalChecksum(blockF) + GetFinalChecksum(subWeapons) + GetFinalChecksum(ammo) + GetFinalChecksum(maxHP32)
-                + GetFinalChecksum(coins) + GetFinalChecksum(weights) + GetFinalChecksum(gameTime) + GetFinalChecksum(blockM) + GetFinalChecksum(roms)
-                + GetFinalChecksum(blockO) + GetFinalChecksum(blockP);*/
-
-            EncryptionBlock[] allEncryptedBlocks = new EncryptionBlock[] { dummy };/*{ flags, treasures, treasuresMenu, blockD,
-            blockE, blockF, subWeapons, ammo, maxHP32, coins, weights, gameTime, blockM, roms, blockO, blockP };*/
-
-            SaveData encryptedSave = new SaveData(false, allEncryptedBlocks, checkSum);
+            SaveData encryptedSave = new SaveData(true, allEncryptedBlocks, globalChecksum);
 
             return encryptedSave;
+        }
+
+        private static EncryptionBlock EncryptBlock(EncryptionBlock block)
+        {
+            byte state = block.Key;
+            byte checksum = 0;
+
+            for (int i = 0; i < block.Data.Length; i++)
+            {
+                state = (byte)(109 * state + 1021); // Implicit (& 255) performed on this too
+                block.Data[i] ^= state;
+                checksum += (byte)(i + block.Data[i]);
+            }
+            
+            /*
+            if (checksum != block.Checksum)
+                throw new Exception("Bad checksum error while encrypting this save block!");*/
+
+            return new EncryptionBlock(state, block.Data, checksum);
         }
 
         private static EncryptionBlock DecryptBlock(EncryptionBlock block)
@@ -599,6 +606,16 @@ namespace OpenLaMulana.System
             return finalValue;
         }
 
+        public static bool GetBit(byte b, int bitNumber)
+        {
+            return (b & (1 << bitNumber - 1)) != 0;
+        }
+
+        public static int GetWordAsInt(byte[] bytes)
+        {
+            return bytes[0] | bytes[1] << 8;
+        }
+
         internal static void WriteSaveToFile(SaveData decryptedSave, string fileName, bool encryptThisSave = true)
         {
             if (encryptThisSave)
@@ -629,6 +646,148 @@ namespace OpenLaMulana.System
             {
                 throw new Exception("Exception caught in process: {0}", ex);
             }
+        }
+
+        internal static void ParseSaveData(SaveData decryptedSave)
+        {
+            byte _globalChecksum = decryptedSave.GlobalChecksum;
+            EncryptionBlock[] saveBlocks = decryptedSave.SaveBlocks;
+
+            byte[] flags = saveBlocks[(int)SaveRegions.Flags].Data;
+            byte[] treasures = saveBlocks[(int)SaveRegions.Treasures].Data;
+            byte[] treasuresMenu = saveBlocks[(int)SaveRegions.TreasuresMenu].Data;
+            byte[] blockD = saveBlocks[(int)SaveRegions.BlockD].Data;
+            byte[] mainWeapons = saveBlocks[(int)SaveRegions.MainWeapons].Data;
+            byte[] blockF = saveBlocks[(int)SaveRegions.BlockF].Data;
+            byte[] subWeapons = saveBlocks[(int)SaveRegions.SubWeapons].Data;
+            byte[] ammo = saveBlocks[(int)SaveRegions.Ammo].Data;
+            byte[] maxHP32 = saveBlocks[(int)SaveRegions.MaxHP32].Data;
+            byte[] coins = saveBlocks[(int)SaveRegions.Coins].Data;
+            byte[] weights = saveBlocks[(int)SaveRegions.Weights].Data;
+            byte[] gameTime = saveBlocks[(int)SaveRegions.GameTime].Data;
+            byte[] blockM = saveBlocks[(int)SaveRegions.BlockM].Data;
+            byte[] roms = saveBlocks[(int)SaveRegions.Roms].Data;
+            byte[] blockO = saveBlocks[(int)SaveRegions.BlockO].Data;
+            byte[] blockP = saveBlocks[(int)SaveRegions.BlockP].Data;
+
+            Global.Inventory.HPMax = maxHP32[0] * 32;
+            Global.Inventory.HP = maxHP32[0] * 32;
+            Global.Inventory.CoinCount = GetWordAsInt(coins);
+            Global.Inventory.WeightCount = GetWordAsInt(weights);
+            Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.NONE, Global.ObtainableSoftware.NONE };
+            Global.Inventory.EquippedMainWeapon = Global.MainWeapons.FLAIL_WHIP;
+            Global.Inventory.EquippedSubWeapon = Global.SubWeapons.NONE;
+            Global.Inventory.ObtainedTreasures = new bool[(int)Global.ObtainableTreasures.MAX];
+            Global.Inventory.ObtainedSoftware = new bool[(int)Global.ObtainableSoftware.MAX];
+
+            // Turn on any relevant SFLAGs
+            int flagOffset = (int)GameFlags.Flags.TALKED_TO_XELPUD_FOR_THE_FIRST_TIME;
+            foreach (byte b in flags)
+            {
+                for (var i = 0; i < 8; i++)
+                {
+                    Global.GameFlags.InGameFlags[flagOffset + i] = GetBit(b, i + 1);        // Could potentially be GetBit(b, 8 - i)...
+                }
+
+                flagOffset += 8;
+            }
+
+            // Give the player any items that they should have
+            int j = 0;
+            foreach (byte b in treasures)
+            {
+                Global.Inventory.ObtainedTreasures[j] = Convert.ToBoolean(b);
+                j++;
+            }
+
+            j = 0;
+            foreach (byte b in treasuresMenu)
+            {
+                Global.Inventory.TreasureIconIDs[j] = b;
+                j++;
+            }
+
+            j = 0;
+            foreach (byte b in mainWeapons)
+            {
+                if (b < 0x255)
+                {
+                    Global.Inventory.ObtainedMainWeapons[j] = (Global.MainWeapons)b;
+                }
+                else
+                    Global.Inventory.ObtainedMainWeapons[j] = Global.MainWeapons.NONE;
+                j++;
+            }
+
+            j = 0;
+            foreach (byte b in subWeapons)
+            {
+                if (b < 0x255)
+                {
+                    Global.Inventory.ObtainedSubWeapons[j] = (Global.SubWeapons)b;
+                }
+                else
+                    Global.Inventory.ObtainedSubWeapons[j] = Global.SubWeapons.NONE;
+                j++;
+            }
+
+
+            for (int i = 0; i < ammo.Length; i += 2)
+            {
+                byte[] bytes = new byte[] { ammo[i], ammo[i + 1] };
+                switch (i / 2)
+                {
+                    default:
+                        break;
+                    case 0:
+                        Global.Inventory.ShurikenCount = GetWordAsInt(bytes);
+                        break;
+                    case 1:
+                        Global.Inventory.ThrowingKnivesCount = GetWordAsInt(bytes);
+                        break;
+                    case 2:
+                        Global.Inventory.SpearsCount = GetWordAsInt(bytes);
+                        break;
+                    case 3:
+                        Global.Inventory.FlaresCount = GetWordAsInt(bytes);
+                        break;
+                    case 4:
+                        Global.Inventory.BombsCount = GetWordAsInt(bytes);
+                        break;
+                    case 5:
+                        Global.Inventory.BulletCount = GetWordAsInt(bytes);
+                        break;
+                    case 6:
+                        Global.Inventory.AmmunitionRefills = GetWordAsInt(bytes);
+                        break;
+                    case 7:
+                        Global.Inventory.AnkhJewelCount = GetWordAsInt(bytes);
+                        break;
+                    case 8:
+                        Global.Inventory.ShieldValue = GetWordAsInt(bytes);
+                        break;
+                    case 9:
+                        Global.Inventory.HandyScannerValue = GetWordAsInt(bytes);
+                        break;
+                }
+            }
+
+
+            int len = (int)Global.ObtainableSoftware.MAX;
+            for (int i = 0; i < len; i++)
+            {
+                Global.Inventory.ObtainedSoftware[i] = Convert.ToBoolean(roms[i * 4]);
+            }
+
+            //(Int32)(BitConverter.ToInt16(array, 0))
+
+            if (Global.QoLChanges)
+            {
+                Global.Inventory.ExpMax = Global.Inventory.HPMax;
+            }
+            else
+                Global.Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
+
         }
         #endregion
 

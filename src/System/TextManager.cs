@@ -376,11 +376,10 @@ namespace OpenLaMulana.System
             if (potentiallyLamulanese) {
                 if (Global.Protag != null)
                 {
-                    if (Global.Protag.Inventory.EquippedRoms != null)
+                    if (Global.Inventory.EquippedRoms != null)
                     {
-                        int[] equippedRoms = Global.Protag.Inventory.EquippedRoms;
-                        int glyphReader = (int)Global.ObtainableSoftware.GLYPH_READER;
-                        if ((equippedRoms[0] != glyphReader) && (equippedRoms[1] != glyphReader))
+                        Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedRoms;
+                        if ((equippedRoms[0] != Global.ObtainableSoftware.GLYPH_READER) && (equippedRoms[1] != Global.ObtainableSoftware.GLYPH_READER))
                             _dx -= 16;
                     }
                 }

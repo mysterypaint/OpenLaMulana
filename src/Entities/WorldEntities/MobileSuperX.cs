@@ -238,10 +238,20 @@ namespace OpenLaMulana
 
                     int x = 0;
                     int y = 0;
-                    for (var i = 0; i < _inventoryOrder.Length; i++)
+
+                    /*
+                     * 
+                    int flagOffset = (int)GameFlags.Flags.MSX1_TAKEN;
+                    if (Global.GameFlags.InGameFlags[flagOffset + i])*/
+                    
+
+                    for (var i = 0; i < Global.Inventory.TreasureIconIDs.Length; i++)
                     {
                         //Global.TextManager.DrawText(3 * 8, 17 * 8, "SUB-WEAPON");
-                        _treasureSprites[_inventoryOrder[i]].Draw(spriteBatch, new Vector2(48 + x * 16, 32 + y * 16));
+                        short iconID = Global.Inventory.TreasureIconIDs[i];
+                        if (iconID < 255)
+                            _treasureSprites[iconID].Draw(spriteBatch, new Vector2(48 + x * 16, 32 + y * 16));
+                        //_treasureSprites[_inventoryOrder[i]].Draw(spriteBatch, new Vector2(48 + x * 16, 32 + y * 16));
                         x++;
                         if (x > 9)
                         {
@@ -251,16 +261,18 @@ namespace OpenLaMulana
                     }
 
                     int j = 0;
-                    for (Global.Weapons weapons = Global.Weapons.WHIP; weapons <= Global.Weapons.KEYBLADE; weapons++)
+                    foreach(Global.MainWeapons weapons in Global.Inventory.ObtainedMainWeapons)
                     {
-                        _weaponSprites[(int)weapons - 1].Draw(spriteBatch, new Vector2(14 * 8 + (j % 5) * 24, 14 * 8 + (j / 5) * 16));
+                        if (weapons != Global.MainWeapons.NONE)
+                            _weaponSprites[(int)weapons].Draw(spriteBatch, new Vector2(14 * 8 + (j % 5) * 24, 14 * 8 + (j / 5) * 16));
                         j++;
                     }
 
                     j = 0;
-                    for (Global.SubWeapons subW = Global.SubWeapons.SHURIKEN; subW <= Global.SubWeapons.HANDY_SCANNER; subW++)
+                    foreach (Global.SubWeapons subWeapons in Global.Inventory.ObtainedSubWeapons)
                     {
-                        _subWeaponSprites[(int)subW - 1].Draw(spriteBatch, new Vector2(14 * 8 + (j % 5) * 24, 17 * 8 + (j / 5) * 16));
+                        if (subWeapons != Global.SubWeapons.NONE)
+                            _subWeaponSprites[(int)subWeapons].Draw(spriteBatch, new Vector2(14 * 8 + (j % 5) * 24, 17 * 8 + (j / 5) * 16));
                         j++;
                     }
                     break;
@@ -311,8 +323,8 @@ namespace OpenLaMulana
             Global.TextManager.DrawText(2 * 8, 8 * 8, "SLOT2");
 
             // Grab and draw the player's equipped roms
-            int eqRom1 = Global.Protag.Inventory.EquippedRoms[0];
-            int eqRom2 = Global.Protag.Inventory.EquippedRoms[1];
+            int eqRom1 = (int)Global.Inventory.EquippedRoms[0];
+            int eqRom2 = (int)Global.Inventory.EquippedRoms[1];
             int equippedRomSprID1 = Global.World.SoftwareGetGraphicID(eqRom1);
             int equippedRomSprID2 = Global.World.SoftwareGetGraphicID(eqRom2);
 
@@ -344,10 +356,13 @@ namespace OpenLaMulana
                 mainWindowSprites[(int)WindowSprites.INV_R].Draw(spriteBatch, new Vector2(10 * 8, y * 8));
             }
 
-            for (var romID = 0; romID < (int)Global.ObtainableSoftware.MAX; romID++)
+            int len = (int)Global.ObtainableSoftware.MAX;
+            for (var romID = 0; romID < len; romID++)
             {
-                int softwareSpriteID = Global.World.SoftwareGetGraphicID(romID);
-                _romSprites[softwareSpriteID].Draw(spriteBatch, new Vector2(2 * 8 + (romID % 14) * 16, 10 * 8 + (romID / 14) * 16));
+                if (Global.Inventory.ObtainedSoftware[romID]) {
+                    int softwareSpriteID = Global.World.SoftwareGetGraphicID(romID);
+                    _romSprites[softwareSpriteID].Draw(spriteBatch, new Vector2(2 * 8 + (romID % 14) * 16, 10 * 8 + (romID / 14) * 16));
+                }
             }
         }
 

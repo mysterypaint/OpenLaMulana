@@ -61,22 +61,6 @@ namespace OpenLaMulana.Entities
         private bool _hasBoots = true;
         private bool _hasFeather = true;
 
-        public struct InventoryStruct
-        {
-            public Global.Weapons EquippedMainWeapon { get; set; }
-            public Global.SubWeapons EquippedSubWeapon { get; set; }
-            public int[] EquippedRoms;
-            public int Coins;
-            public int Weights;
-
-            public int HP { get; set; }
-            public int HPMax { get; set; }
-            public int CurrExp { get; set; }
-            public int ExpMax { get; set; }
-            public int TrueHPMax { get; set; }
-        }
-
-        public InventoryStruct Inventory;
 
 
         /*
@@ -126,14 +110,14 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         private void InitWeaponDamageTables()
         {
-            Global.WeaponsDamageTable[Global.Weapons.WHIP] = 2;
-            Global.WeaponsDamageTable[Global.Weapons.KNIFE] = 3;
-            Global.WeaponsDamageTable[Global.Weapons.CHAIN_WHIP] = 4;
-            Global.WeaponsDamageTable[Global.Weapons.AXE] = 5;
-            Global.WeaponsDamageTable[Global.Weapons.KATANA] = 5;
-            Global.WeaponsDamageTable[Global.Weapons.KEYBLADE] = 1;
-            Global.WeaponsDamageTable[Global.Weapons.KEYBLADE_BETA] = 1;
-            Global.WeaponsDamageTable[Global.Weapons.FLAIL_WHIP] = 6;
+            Global.WeaponsDamageTable[Global.MainWeapons.WHIP] = 2;
+            Global.WeaponsDamageTable[Global.MainWeapons.KNIFE] = 3;
+            Global.WeaponsDamageTable[Global.MainWeapons.CHAIN_WHIP] = 4;
+            Global.WeaponsDamageTable[Global.MainWeapons.AXE] = 5;
+            Global.WeaponsDamageTable[Global.MainWeapons.KATANA] = 5;
+            Global.WeaponsDamageTable[Global.MainWeapons.KEYBLADE] = 1;
+            Global.WeaponsDamageTable[Global.MainWeapons.KEYBLADE_BETA] = 1;
+            Global.WeaponsDamageTable[Global.MainWeapons.FLAIL_WHIP] = 6;
             Global.SubWeaponsDamageTable[Global.SubWeapons.SHURIKEN] = 2;
             Global.SubWeaponsDamageTable[Global.SubWeapons.THROWING_KNIFE] = 3;
             Global.SubWeaponsDamageTable[Global.SubWeapons.FLARES] = 4;
@@ -152,21 +136,51 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             _chipHeight = World.CHIP_SIZE;
             BBoxOriginX = 5;
             BBoxOriginY = 12;
-            Inventory.EquippedRoms = new int[] { (int)Global.ObtainableSoftware.RUINS_RAM_8K, (int)Global.ObtainableSoftware.GLYPH_READER };
-            Inventory.EquippedMainWeapon = Global.Weapons.FLAIL_WHIP;
-            Inventory.EquippedSubWeapon = Global.SubWeapons.HANDY_SCANNER;
-            Inventory.Coins = 999;
-            Inventory.Weights = 999;
-            Inventory.HP = 32;
-            Inventory.HPMax = 32; // A life orb will increase this value by 32. True max is 352.
-            Inventory.TrueHPMax = 352;
+
+            Global.Inventory.ObtainedTreasures = new bool[(int)Global.ObtainableTreasures.MAX];
+            Array.Fill((bool[])Global.Inventory.ObtainedTreasures, (bool)false);
+            Global.Inventory.TreasureIconIDs = new short[40];
+            Array.Fill((short[])Global.Inventory.TreasureIconIDs, (short)255);
+
+            Global.Inventory.ObtainedSoftware = new bool[(int)Global.ObtainableSoftware.MAX];
+            Global.Inventory.ObtainedSubWeapons = new Global.SubWeapons[10];
+            Array.Fill((Global.SubWeapons[])Global.Inventory.ObtainedSubWeapons, (Global.SubWeapons)Global.SubWeapons.NONE);
+            Global.Inventory.ObtainedMainWeapons = new Global.MainWeapons[5];
+            Array.Fill((Global.MainWeapons[])Global.Inventory.ObtainedMainWeapons, (Global.MainWeapons)Global.MainWeapons.NONE);
+
+            Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
+            Global.Inventory.EquippedMainWeapon = Global.MainWeapons.FLAIL_WHIP;
+            Global.Inventory.EquippedSubWeapon = Global.SubWeapons.ANGEL_SHIELD;
+            Global.Inventory.CoinCount = 0;
+            Global.Inventory.WeightCount = 0;
+            Global.Inventory.HP = 32;
+            Global.Inventory.HPMax = 32; // A life orb will increase this value by 32. True max is 352.
+            Global.Inventory.TrueHPMax = 352;
+            Global.Inventory.CurrExp = 0;
+
+            Global.Inventory.BulletCount = 0;
+            Global.Inventory.AmmunitionRefills = 0;
+            Global.Inventory.AnkhJewelCount = 0;
+            Global.Inventory.ShieldValue = 0;
+            Global.Inventory.HandyScannerValue = 0;
 
             // Damage Table:
             // Divine Lightning = 16;
             // Skeleton = 1;
             // Slime thing = 2;
-            Inventory.CurrExp = 0;
-            Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
+
+            if (Global.QoLChanges)
+            {
+                Global.Inventory.ExpMax = Global.Inventory.HPMax;
+            }
+            else
+                Global.Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
+
+
+            //SaveData encryptedSave = HelperFunctions.LoadSaveFromFile("lamulana.sa0");
+            //SaveData decryptedSave = HelperFunctions.DecryptSaveFile(encryptedSave);
+            //HelperFunctions.ParseSaveData(decryptedSave);
+
 
             MoveToWorldSpawnPoint();
         }

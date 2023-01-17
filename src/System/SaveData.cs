@@ -30,13 +30,13 @@ namespace OpenLaMulana.System
         }
     }
 
-    public enum EncryptionBlocks
+    public enum SaveRegions
     {
-        Flags,          // data[870]
+        Flags,          // data[870]        // There are 6960 Save Flags (SFLAGs) in the game. Every bit within every byte represents one of those flags
         Treasures,      // data[60]
         TreasuresMenu,  // data[40]
         BlockD,         // data[24]
-        BlockE,         // data[5]
+        MainWeapons,    // data[5]
         BlockF,         // data[24]
         SubWeapons,     // data[10]
         Ammo,           // data[20]
@@ -53,7 +53,7 @@ namespace OpenLaMulana.System
 
     public class SaveData
     {
-        public EncryptionBlock[] SaveBlocks = new EncryptionBlock[(int)EncryptionBlocks.MAX];
+        public EncryptionBlock[] SaveBlocks = new EncryptionBlock[(int)SaveRegions.MAX];
         public byte GlobalChecksum; //sum_of_checksums_and_keys_for_some_reason_i_think;
         public bool IsDecrypted;
 
