@@ -685,8 +685,15 @@ namespace OpenLaMulana.System
             Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.NONE, Global.ObtainableSoftware.NONE };
             Global.Inventory.EquippedMainWeapon = Global.MainWeapons.FLAIL_WHIP;
             Global.Inventory.EquippedSubWeapon = Global.SubWeapons.NONE;
-            Global.Inventory.ObtainedTreasures = new bool[(int)Global.ObtainableTreasures.MAX];
-            Global.Inventory.ObtainedSoftware = new bool[(int)Global.ObtainableSoftware.MAX];
+            foreach (var treasure in Global.Inventory.ObtainedTreasures.Keys.ToList())
+            {
+                Global.Inventory.ObtainedTreasures[treasure] = false;
+            }
+
+            foreach (var software in Global.Inventory.ObtainedSoftware.Keys.ToList())
+            {
+                Global.Inventory.ObtainedSoftware[software] = false;
+            }
 
             // Turn on any relevant SFLAGs
             int flagOffset = (int)GameFlags.Flags.TALKED_TO_XELPUD_FOR_THE_FIRST_TIME;
@@ -704,7 +711,7 @@ namespace OpenLaMulana.System
             int j = 0;
             foreach (byte b in treasures)
             {
-                Global.Inventory.ObtainedTreasures[j] = Convert.ToBoolean(b);
+                Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)j] = Convert.ToBoolean(b);
                 j++;
             }
 
@@ -780,11 +787,9 @@ namespace OpenLaMulana.System
                 }
             }
 
-
-            int len = (int)Global.ObtainableSoftware.MAX;
-            for (int i = 0; i < len; i++)
+            for (Global.ObtainableSoftware software = 0; software < Global.ObtainableSoftware.MAX; software++)
             {
-                Global.Inventory.ObtainedSoftware[i] = Convert.ToBoolean(roms[i * 4]);
+                Global.Inventory.ObtainedSoftware[software] = Convert.ToBoolean(roms[(int)software * 4]);
             }
 
             //(Int32)(BitConverter.ToInt16(array, 0))

@@ -32,8 +32,10 @@ namespace OpenLaMulana
             }
         }
 
-        internal bool OneFrameElapsed()
+        internal bool OneFrameElapsed(bool disregardPauseState = false)
         {
+            if (Global.Main.State == Global.GameState.PAUSED && !disregardPauseState)
+                return false;
             return _canStepFrame;
         }
     }

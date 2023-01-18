@@ -66,9 +66,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public enum ChipTypes
         {
             SOLID = -1,
-            BACKGROUND = 0,
+            VOID = 0,
             LADDER = 1,
-            ASCENDING_SLOPE = 2,
+            ASCENDING_SLOPE_RIGHT = 2,
             ASCENDING_SLOPE_LEFT = 3,
             ASCENDING_STAIRS_RIGHT = 4,
             ASCENDING_STAIRS_LEFT = 5,
@@ -103,6 +103,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         private bool _abortDrawing = false;
         private bool _disposedRenderTargetsFlag = false;
         private bool _drawBossRoom = false;
+        private static int[] _slopeHeights = new int[CHIP_SIZE * 2];
 
         public enum VIEW_DEST
         {
@@ -171,8 +172,28 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 f.InitializeBossRoom();
             }
 
+            InitSlopeData();
+
             _currChipLine = _fields[CurrField].GetChipline();
             _protag = protag;
+        }
+
+        /// <summary>
+        /// Initialize the slope data for slopes to work. We only need to define two slope tiles: /|  and |\
+        /// </summary>
+        private void InitSlopeData()
+        {
+            // Define the /| slope from {7,0}
+            for (int i = 0; i < CHIP_SIZE; i++)
+            {
+                _slopeHeights[i] = CHIP_SIZE - 1 - i;
+            }
+
+            // Define the |\ slope from {0,7}
+            for (int i = 0; i < CHIP_SIZE; i++)
+            {
+                _slopeHeights[(1 * CHIP_SIZE) + i] = i;
+            }
         }
 
         public Field GetField(int index)
@@ -208,7 +229,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         }
 
 
-        public static World.ChipTypes TileGetCellAtPixel(View currRoom, float pX, float pY)
+        public static World.ChipTypes TileGetCellAtPixel(View currRoom, double pX, double pY)
         {
             int rTX = (int)Math.Floor(pX / World.CHIP_SIZE);
             int rTY = (int)Math.Floor(pY / World.CHIP_SIZE);
@@ -217,7 +238,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             if (rTX >= World.ROOM_WIDTH || rTX < 0) { returnAnEmptyTile = true; }
             if (rTY >= World.ROOM_HEIGHT || rTY < 0) { returnAnEmptyTile = true; }
 
-            World.ChipTypes returningTile = World.ChipTypes.BACKGROUND;
+            World.ChipTypes returningTile = World.ChipTypes.VOID;
 
             if (!returnAnEmptyTile)
             {
@@ -228,7 +249,77 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             return returningTile;
         }
 
-        public static ChipTypes TilePlaceMeeting(View currRoom, Rectangle bbox, Vector2 position, float checkingX, float checkingY, ChipTypes checkingType = ChipTypes.BACKGROUND)
+        /// <summary>
+        /// Returns how deep we are into the floor
+        /// </summary>
+        /// <param name="currRoom"></param>
+        /// <param name="pX"></param>
+        /// <param name="pY"></param>
+        /// <returns></returns>
+        public static int InFloor(View currRoom, double pX, double pY)
+        {
+            World.ChipTypes chip = TileGetCellAtPixel(currRoom, pX, pY);
+            int yDiff = (int)(pY - Math.Floor(pY / CHIP_SIZE) * CHIP_SIZE);//(int)(pY % CHIP_SIZE);
+            int xDiff = (int)(pX - Math.Floor(pX / CHIP_SIZE) * CHIP_SIZE);//(int)(pY % CHIP_SIZE);
+
+            if (TileIsSolid(chip) > 0 || TileIsASlope(chip))
+            {
+                if (TileIsSolid(chip) > 0)
+                    return (int)yDiff; // Return how deep we are into the floor
+
+                int theFloor = 0;
+                switch (chip)
+                {
+                    case ChipTypes.ASCENDING_SLOPE_LEFT:
+                    case ChipTypes.ASCENDING_STAIRS_LEFT:
+                    case ChipTypes.ICE_SLOPE_LEFT:
+                        theFloor = _slopeHeights[(int)xDiff + (1 * CHIP_SIZE)];
+                        break;
+                    case ChipTypes.ASCENDING_SLOPE_RIGHT:
+                    case ChipTypes.ASCENDING_STAIRS_RIGHT:
+                    case ChipTypes.ICE_SLOPE_RIGHT:
+                    case ChipTypes.ASCENDING_RIGHT_BEHIND_STAIRS:
+                        theFloor = _slopeHeights[(int)xDiff];
+                        break;
+                }
+
+                return (int)(yDiff - theFloor);
+            }
+
+            return (int)-(CHIP_SIZE - yDiff);
+        }
+
+        public static int TileIsSolid(ChipTypes checkingTile)
+        {
+            switch (checkingTile)
+            {
+                case ChipTypes.SOLID:
+                case ChipTypes.UNCLINGABLE_WALL:
+                case ChipTypes.CLINGABLE_WALL:
+                    return 1;
+                case ChipTypes.ICE:
+                    return 2;
+            }
+            return 0;
+        }
+
+        public static bool TileIsASlope(ChipTypes tileBC)
+        {
+            switch (tileBC)
+            {
+                case ChipTypes.ASCENDING_SLOPE_RIGHT:
+                case ChipTypes.ASCENDING_SLOPE_LEFT:
+                case ChipTypes.ICE_SLOPE_RIGHT:
+                case ChipTypes.ICE_SLOPE_LEFT:
+                case ChipTypes.ASCENDING_RIGHT_BEHIND_STAIRS:
+                case ChipTypes.ASCENDING_STAIRS_LEFT:
+                case ChipTypes.ASCENDING_STAIRS_RIGHT:
+                    return true;
+            }
+            return false;
+        }
+
+        public static ChipTypes TilePlaceMeeting(View currRoom, Rectangle bbox, Vector2 position, double checkingX, double checkingY, ChipTypes checkingType = ChipTypes.VOID)
         {
             int ts = World.CHIP_SIZE;
             int _x1 = (int)Math.Floor(Math.Round(bbox.Left + (checkingX - position.X)) / ts);
@@ -246,14 +337,14 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                     int tID = currRoom.Chips[_x, _y].TileID;
                     World.ChipTypes returningTile = DetermineCollidingTile(tID);
 
-                    if (checkingType != ChipTypes.BACKGROUND)
+                    if (checkingType != ChipTypes.VOID)
                     {
                         if (returningTile == checkingType)
                             return returningTile;
                     }
                     else
                     {
-                        if (returningTile != ChipTypes.BACKGROUND)
+                        if (returningTile != ChipTypes.VOID)
                         {
                             return returningTile;
                         }
@@ -261,12 +352,12 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 }
             }
 
-            return ChipTypes.BACKGROUND;
+            return ChipTypes.VOID;
         }
 
         private static ChipTypes DetermineCollidingTile(int tID)
         {
-            World.ChipTypes returningTile = World.ChipTypes.BACKGROUND;
+            World.ChipTypes returningTile = World.ChipTypes.VOID;
             Field currField = Global.World.GetCurrField();
             int[] chipLines = currField.GetChipline();
             int chipLine1 = chipLines[0];
@@ -514,6 +605,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
                 if (_disposedRenderTargetsFlag)
                     return;
+
+                // The pixelate transition is done; Reset everything we used to create the transition effect, and re-initialize whatever needs to be reinitialized here
                 Global.GraphicsDevice.SetRenderTarget(null);
                 Global.Camera.SetState((int)CamStates.NONE);
                 ActiveShader = null;
@@ -673,6 +766,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             if (Global.Camera.GetState() != CamStates.NONE)
                 return;
 
+            // Reset the temporary flags in memory
+            Global.GameFlags.ResetAllRFlags();
+
             // Grab the View we are transitioning to
             Field thisField = _fields[CurrField];
             Global.Textures correctedTexID = Global.TextureManager.GetMappedWorldTexID(thisField.MapGraphics);
@@ -690,7 +786,21 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Do not transition if the destination field goes out of the map bounds (4x5)
             if (destField < 0 || destViewX < 0 || destViewY < 0 || destViewX > FIELD_WIDTH - 1 || destViewY > FIELD_HEIGHT - 1)
+            {
+                switch (movingDirection)
+                {
+                    case VIEW_DIR.LEFT:
+                    case VIEW_DIR.RIGHT:
+                        Global.Protag.SetHsp(0);
+                        break;
+                    case VIEW_DIR.UP:
+                    case VIEW_DIR.DOWN:
+                        Global.Protag.SetVsp(0);
+                        break;
+                }
+                //Global.Protag.State = PlayerState.SCREEN_TRANSITION;
                 return;
+            }
 
             // Determine the next field and its texture
             Field nextField = _fields[destField];
@@ -767,6 +877,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // Camera is busy; Do not transition.
             if (Global.Camera.GetState() != CamStates.NONE)
                 return;
+
+            // Reset the temporary flags in memory
+            Global.GameFlags.ResetAllRFlags();
 
             // Grab the View we are transitioning to
             Field srcField = srcView.GetParentField();
@@ -862,6 +975,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Camera.CamStates camState = Global.Camera.GetState();
             if (camState != CamStates.NONE && camState != CamStates.STANDBY)
                 return;
+
+            // Reset the temporary flags in memory
+            Global.GameFlags.ResetAllRFlags();
 
             ActiveShader = Global.ShdTransition;
 
@@ -1117,6 +1233,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Camera.CamStates camState = Global.Camera.GetState();
             if (camState != CamStates.NONE)
                 return;
+
+            // Reset the temporary flags in memory
+            Global.GameFlags.ResetAllRFlags();
 
             // Grab the Fields we are transitioning with
             Field currField = currView.GetParentField();

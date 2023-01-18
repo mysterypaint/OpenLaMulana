@@ -187,8 +187,8 @@ namespace OpenLaMulana.System
             SFLAG_0146 = 146,
             SFLAG_0147 = 147,
             SFLAG_0148 = 148,
-            SFLAG_0149 = 149,
-            SFLAG_0150 = 150,
+            HARD_MODE_FIRST_WARNING_TRIGGERED = 149,
+            HARD_MODE_ENABLED = 150,
             SFLAG_0151 = 151,
             SFLAG_0152 = 152,
             SFLAG_0153 = 153,
@@ -949,7 +949,7 @@ namespace OpenLaMulana.System
             SFLAG_0896 = 896,
             SFLAG_0897 = 897,
             SFLAG_0898 = 898,
-            SFLAG_0899 = 899,
+            TOWER_OF_THE_GODDESS_SINKING_TABLET_ACTIVATED = 899,
             SFLAG_0900 = 900,
             SFLAG_0901 = 901,
             SFLAG_0902 = 902,
@@ -8168,5 +8168,13 @@ namespace OpenLaMulana.System
             await File.WriteAllTextAsync("WriteText.txt", str);
         }
         */
+
+        public void ResetAllRFlags()
+        {
+            for (Flags flag = Flags.RFLAG_00; flag < Flags.TALKED_TO_XELPUD_FOR_THE_FIRST_TIME; flag++)
+            {
+                InGameFlags[(int)flag] = false;
+            }
+        }
     }
 }

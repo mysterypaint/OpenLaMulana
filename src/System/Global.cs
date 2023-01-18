@@ -206,7 +206,9 @@ namespace OpenLaMulana
             IDLE,
             ATTACKING,
             DYING,
+            RETREATING,
             SPEEDING_UP,
+            RESETTING,
             MAX
         }
 
@@ -502,8 +504,8 @@ namespace OpenLaMulana
             public Global.MainWeapons EquippedMainWeapon { get; set; }
             public Global.SubWeapons EquippedSubWeapon { get; set; }
             public Global.ObtainableSoftware[] EquippedRoms { get; set; }
-            public bool[] ObtainedTreasures { get; set; }
-            public bool[] ObtainedSoftware { get; set; }
+            public Dictionary<Global.ObtainableTreasures, bool> ObtainedTreasures { get; set; }
+            public Dictionary<Global.ObtainableSoftware, bool> ObtainedSoftware { get; set; }
             public Global.MainWeapons[] ObtainedMainWeapons { get; set; }
             public Global.SubWeapons[] ObtainedSubWeapons { get; set; }
             public short[] TreasureIconIDs { get; set; }

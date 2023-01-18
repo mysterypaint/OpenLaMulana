@@ -108,9 +108,9 @@ namespace OpenLaMulana
 
                         if (animeSpeed > 0)
                         {
-                            if (Global.AnimationTimer.OneFrameElapsed())
+                            if (Global.AnimationTimer.OneFrameElapsed(true))
                             {
-                                // One in-game frame has elapsed; let the chip know here
+                                // One in-game frame has elapsed; let the chip know here (disregard the game paused state, just like the original game)
                                 thisChip.StepFrame();
                             }
                         }

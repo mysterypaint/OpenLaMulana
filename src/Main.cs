@@ -295,7 +295,7 @@ namespace OpenLaMulana
                     break;
             }
 
-            if (Global.AnimationTimer.OneFrameElapsed())
+            if (Global.AnimationTimer.OneFrameElapsed(true))
             {
                 if (_pauseToggleTimer > 0)
                     _pauseToggleTimer--;

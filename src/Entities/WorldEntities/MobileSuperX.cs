@@ -83,6 +83,8 @@ namespace OpenLaMulana
         private List<Sprite> _subWeaponSprites = new List<Sprite>();
         private Sprite[] _romSprites = new Sprite[12];
         private string _scannerText = String.Empty;
+        private Sprite _tabletLeftImage;
+        private Sprite _tabletRightImage;
 
         public MobileSuperX()
         {
@@ -280,6 +282,14 @@ namespace OpenLaMulana
                     DrawMSXBackground(spriteBatch, gameTime, true);
                     Global.TextManager.DrawText(2 * 8, 4 * 8, _scannerText, 28, Color.White, 0, 8, true);
 
+                    int leftTabletOffset = 12;
+                    if (_tabletRightImage != null) {
+                        _tabletRightImage.Draw(spriteBatch, new Vector2(16 * 8, 11 * 8));
+                        leftTabletOffset = 8;
+                    }
+                    if (_tabletLeftImage != null)
+                        _tabletLeftImage.Draw(spriteBatch, new Vector2(leftTabletOffset * 8, 11 * 8));
+
                     mainWindowSprites[(int)WindowSprites.SCANNER_OK].Draw(spriteBatch, new Vector2(2 * 8, 19 * 8));
                     mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 20 * 8));
                     break;
@@ -356,12 +366,11 @@ namespace OpenLaMulana
                 mainWindowSprites[(int)WindowSprites.INV_R].Draw(spriteBatch, new Vector2(10 * 8, y * 8));
             }
 
-            int len = (int)Global.ObtainableSoftware.MAX;
-            for (var romID = 0; romID < len; romID++)
+            for (Global.ObtainableSoftware romID = (Global.ObtainableSoftware)0; romID < Global.ObtainableSoftware.MAX; romID++)
             {
                 if (Global.Inventory.ObtainedSoftware[romID]) {
-                    int softwareSpriteID = Global.World.SoftwareGetGraphicID(romID);
-                    _romSprites[softwareSpriteID].Draw(spriteBatch, new Vector2(2 * 8 + (romID % 14) * 16, 10 * 8 + (romID / 14) * 16));
+                    int softwareSpriteID = Global.World.SoftwareGetGraphicID((int)romID);
+                    _romSprites[softwareSpriteID].Draw(spriteBatch, new Vector2(2 * 8 + ((int)romID % 14) * 16, 10 * 8 + ((int)romID / 14) * 16));
                 }
             }
         }
@@ -527,9 +536,11 @@ namespace OpenLaMulana
             return _state;
         }
 
-        internal void SetScannerText(string str)
+        internal void SetScannerText(string str, Sprite tabletLeftImage, Sprite tabletRightImage)
         {
             _scannerText = str;
+            _tabletLeftImage = tabletLeftImage;
+            _tabletRightImage = tabletRightImage;
         }
     }
 }

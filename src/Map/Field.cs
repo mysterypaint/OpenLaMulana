@@ -565,6 +565,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.FIELD_TRANSITION:
                     newObj = new FieldTransition(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+                case EntityIDs.SINKING_RUINS_TABLET:
+                    newObj = new SinkingRuinsTablet(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
                 case EntityIDs.ENEMY_A_BAO_A_QU:
                     newObj = new EnemyABaoAQu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
@@ -701,13 +704,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
         internal int GetHitValue(int relativeTileID)
         {
-            try
-            {
+            if (_hitList.ContainsKey(relativeTileID))
                 return _hitList[relativeTileID];
-            } catch(KeyNotFoundException)
-            {
-                return 0;
-            }
+            return 0;
         }
 
         internal IEnumerable<ObjectSpawnData> GetFieldSpawnData()

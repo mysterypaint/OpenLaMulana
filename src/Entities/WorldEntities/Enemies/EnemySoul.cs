@@ -10,7 +10,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
     {
         SpriteAnimation _sprAnimBlueSpinning, _sprAnimRedSpinning, _sprAnimBlueMoveDiagonal, _sprAnimBlueMoveCardinal, _sprAnimRedMoveDiagonal, _sprAnimRedMoveCardinal;
         private bool _isBlue = true;
-        private float _blinkSpeed = 4f;
+        private float _blinkTimerReset = 6f;
+        private float _blinkTimer;
+
 
         enum SoulFrames
         {
@@ -33,6 +35,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
             if (Global.World.CurrField == 20)
                 sprOffX = 64;
 
+            _blinkTimer = _blinkTimerReset;
             _sprAnimBlueSpinning = SpriteAnimation.CreateSimpleAnimation(_tex, new Point(sprOffX, 144), 16, 16, new Point(16, 0), 4, 0.1f);
             _sprAnimRedSpinning = SpriteAnimation.CreateSimpleAnimation(_tex, new Point(sprOffX, 160), 16, 16, new Point(16, 0), 4, 0.1f);
             _sprAnimBlueMoveDiagonal = SpriteAnimation.CreateSimpleAnimation(_tex, new Point(sprOffX, 176), 16, 16, new Point(16, 0), 4, 0.1f);
@@ -47,8 +50,13 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (gameTime.TotalGameTime.Ticks % (_blinkSpeed * 6) == 0)
-                _isBlue = !_isBlue;
+            if (Global.AnimationTimer.OneFrameElapsed())
+            {
+                if (_blinkTimer <= 0)
+                    _isBlue = !_isBlue;
+                else
+                    _blinkTimer--;
+            }
 
             if (_isBlue)
                 _sprIndex = _sprAnimBlueSpinning.CurrentFrame.Sprite;
