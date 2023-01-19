@@ -16,6 +16,8 @@ namespace OpenLaMulana.Entities.WorldEntities
         ItemTypes _itemType = ItemTypes.UNKNOWN;
         private int _itemID = -1;
         private int _flagToTriggerWhenItemTaken = -1;
+        private bool _itemIsVoid = false;
+
         public override int HitboxWidth { get; set; } = 16;
         public override int HitboxHeight { get; set; } = 16;
 
@@ -36,7 +38,8 @@ namespace OpenLaMulana.Entities.WorldEntities
                     _itemType = ItemTypes.TREASURE;
                     _itemID = op2;
                     _sprItem = new Sprite(itemTex, 0 + _itemID % 20 * 16, 192 + _itemID / 20 * 16, 16, 16);
-                } else if (op2 >= 100 && op2 <= 183)
+                }
+                else if (op2 >= 100 && op2 <= 183)
                 {
                     // Chest contains a ROM
                     _itemType = ItemTypes.SOFTWARE;
@@ -48,14 +51,18 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _flagToTriggerWhenItemTaken = op3;      // If this flag is on, the chest is already empty: Do not open it
 
-            if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToTriggerWhenItemTaken])
+            bool itemAlreadyTaken = false;
+            if (_flagToTriggerWhenItemTaken >= 0)
+                itemAlreadyTaken = Global.GameFlags.InGameFlags[_flagToTriggerWhenItemTaken];
+
+            if (HelperFunctions.EntityMaySpawn(StartFlags) && !itemAlreadyTaken)
             {
                 _sprIndex = _sprClosed;
                 State = WEStates.IDLE;
             }
             else {
                 // The chest should be invisible, if there are actual start flags to consider. Otherwise, the chest should be already opened and visible
-                if (StartFlags.Count <= 0 || Global.GameFlags.InGameFlags[_flagToTriggerWhenItemTaken])
+                if (StartFlags.Count <= 0 || itemAlreadyTaken)
                 {
                     _sprIndex = _sprOpen;
                     State = WEStates.DYING;
@@ -68,20 +75,27 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (_sprIndex != null)
-                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-            /*
+
             switch (State)
             {
-                case WEStates.DYING:        // The chest is already opened
+                case WEStates.UNSPAWNED:    // Do not draw anything
+                    break;
+                case WEStates.DYING:        // The chest is already opened: Draw the open chest
                     _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
                     break;
                 case WEStates.IDLE:
-                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                    break;
                 case WEStates.ACTIVATING:
+                    if (_sprIndex != null)
+                    {
+                        if (!Global.GameFlags.InGameFlags[_openConditionFlag])  // Draw the closed chest
+                            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+                        else if (_itemID >= 0 && _itemID <= 183)    // Do not attempt to draw a nonexistent sprite
+                        {
+                            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+                        }
+                    }
                     break;
-            }*/
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -98,7 +112,11 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case WEStates.DYING:        // The chest is already opened
                     break;
                 case WEStates.IDLE:
-                    if (Global.GameFlags.InGameFlags[_openConditionFlag] || InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
+                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
+                    {
+                        Global.GameFlags.InGameFlags[_openConditionFlag] = true;
+                    }
+                    if (Global.GameFlags.InGameFlags[_openConditionFlag])
                     {
                         State = WEStates.ACTIVATING;
                         _sprIndex = _sprItem;
@@ -117,10 +135,10 @@ namespace OpenLaMulana.Entities.WorldEntities
                             default:
                                 break;
                             case ItemTypes.TREASURE:
-                                HelperFunctions.UpdateInventory(_itemType, _itemID, true);
+                                HelperFunctions.UpdateInventory(_itemType, _itemID, true, SFX.P_ITEM_TAKEN, _sprItem);
                                 break;
                             case ItemTypes.SOFTWARE:
-                                HelperFunctions.UpdateInventory(_itemType, _itemID, true);
+                                HelperFunctions.UpdateInventory(_itemType, _itemID, true, SFX.P_ITEM_TAKEN, _sprItem);
                                 break;
                         }
 

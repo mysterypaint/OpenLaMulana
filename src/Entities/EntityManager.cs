@@ -58,6 +58,7 @@ namespace OpenLaMulana.Entities
                             samplerState: SamplerState.PointClamp,
                             transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
                             effect: entity.ActiveShader);
+
                         entity.Draw(spriteBatch, gameTime);
                         Global.SpriteBatch.End();
                         break;

@@ -582,8 +582,11 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.SHOP_DETECTOR_SOUND_GENERATOR:
                     newObj = new ShopDetectorSoundGenerator(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
-                case EntityIDs.OBTAINABLE_MAJOR_WEAPON:
-                    newObj = new ObtainableMajorWeaponEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                case EntityIDs.OBTAINABLE_SIGIL_ENTITY:
+                    newObj = new ObtainableSigilEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.OBTAINABLE_MAIN_WEAPON:
+                    newObj = new ObtainableMainWeaponEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.DESTINATION_VIEW_CHANGER:
                     newObj = new DestinationViewChanger(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);

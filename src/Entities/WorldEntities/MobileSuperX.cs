@@ -143,7 +143,7 @@ namespace OpenLaMulana
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
-                        Global.MobileSuperX.SetState(Global.MSXStates.ROM_SELECTION);
+                        Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
@@ -152,7 +152,7 @@ namespace OpenLaMulana
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     break;
-                case Global.MSXStates.ROM_SELECTION:
+                case Global.MSXStates.SOFTWARE_SELECTION:
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
@@ -187,7 +187,7 @@ namespace OpenLaMulana
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
-                        Global.MobileSuperX.SetState(Global.MSXStates.ROM_SELECTION);
+                        Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
@@ -209,7 +209,7 @@ namespace OpenLaMulana
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
-                        Global.MobileSuperX.SetState(Global.MSXStates.ROM_SELECTION);
+                        Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
@@ -286,7 +286,7 @@ namespace OpenLaMulana
                     mainWindowSprites[(int)WindowSprites.SCANNER_OK].Draw(spriteBatch, new Vector2(2 * 8, 19 * 8));
                     mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 20 * 8));
                     break;
-                case Global.MSXStates.ROM_SELECTION:
+                case Global.MSXStates.SOFTWARE_SELECTION:
                     DrawMSXBackground(spriteBatch, gameTime);
                     DrawRomSelectionScreen(spriteBatch, gameTime);
                     break;
@@ -321,7 +321,12 @@ namespace OpenLaMulana
 
         private void DrawRomSelectionScreen(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Global.TextManager.DrawText(1 * 8, 2 * 8, "MSX2WINDOW");
+            string msxStr = "MSX WINDOW";
+
+            if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX2] == true)
+                msxStr = "MSX2WINDOW";
+
+            Global.TextManager.DrawText(1 * 8, 2 * 8, msxStr);
             Global.TextManager.DrawText(2 * 8, 5 * 8, "SLOT1");
             Global.TextManager.DrawText(2 * 8, 8 * 8, "SLOT2");
 
@@ -336,8 +341,8 @@ namespace OpenLaMulana
             if (equippedRomSprID2 >= 0)
                 _romSprites[equippedRomSprID2].Draw(spriteBatch, new Vector2(8 * 8, 7 * 8));
 
-            Global.TextManager.DrawText(11 * 8, 5 * 8, Global.TextManager.GetText((int)Global.HardCodedText.ROM_NAMES_BEGIN + eqRom1, Global.CurrLang));
-            Global.TextManager.DrawText(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.ROM_NAMES_BEGIN + eqRom2, Global.CurrLang));
+            Global.TextManager.DrawText(11 * 8, 5 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom1, Global.CurrLang));
+            Global.TextManager.DrawText(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom2, Global.CurrLang));
 
             mainWindowSprites[(int)WindowSprites.INV_TL].Draw(spriteBatch, new Vector2(7 * 8, 3 * 8));
             mainWindowSprites[(int)WindowSprites.INV_TR].Draw(spriteBatch, new Vector2(10 * 8, 3 * 8));

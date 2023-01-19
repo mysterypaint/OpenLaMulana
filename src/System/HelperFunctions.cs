@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Entities;
+using OpenLaMulana.Graphics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static OpenLaMulana.Global;
 using static OpenLaMulana.System.InputManager;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -868,16 +868,19 @@ namespace OpenLaMulana.System
             new Point(-1,-1)    // Skimpy Swimsuit
         };
 
-        internal static void UpdateInventory(Global.ItemTypes itemType, int itemID, bool grantToPlayer = true, SFX sfx = SFX.P_ITEM_TAKEN)
+        internal static void UpdateInventory(Global.ItemTypes itemType, int itemID, bool grantToPlayer = true, SFX sfx = SFX.P_ITEM_TAKEN, Sprite collectibleIcon = null)
         {
-            switch(itemType)
+            string itemName = "Unknown";
+
+            switch (itemType)
             {
                 default:
-                case ItemTypes.UNKNOWN:
+                case Global.ItemTypes.UNKNOWN:
                     break;
-                case ItemTypes.TREASURE:
-                    Global.Inventory.ObtainedTreasures[(ObtainableTreasures)itemID] = grantToPlayer;
-                    ObtainableTreasures thisTreasure = (ObtainableTreasures)itemID;
+                case Global.ItemTypes.TREASURE:
+                    itemName = Global.TextManager.GetText((int)Global.HardCodedText.TREASURE_NAMES_BEGIN + itemID, Global.CurrLang);
+                    Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)itemID] = grantToPlayer;
+                    Global.ObtainableTreasures thisTreasure = (Global.ObtainableTreasures)itemID;
 
                     Point inventoryCoords = _inventoryOrderTreasures[itemID];
 
@@ -886,98 +889,108 @@ namespace OpenLaMulana.System
                         Global.Inventory.TreasureIcons[coordsAsIndex] = thisTreasure;
                     }
 
-                    switch ((ObtainableTreasures)itemID)
+                    switch ((Global.ObtainableTreasures)itemID)
                     {
                         default:
                             Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
                             break;
-                        case ObtainableTreasures.MAP:
+                        case Global.ObtainableTreasures.MAP:
                             Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
                             break;
-                        case ObtainableTreasures.LIFE_JEWEL:
+                        case Global.ObtainableTreasures.LIFE_JEWEL:
                             Global.AudioManager.PlaySFX(SFX.P_MAJOR_ITEM_TAKEN);
                             Global.Inventory.HPMax += 32;
                             Global.Inventory.HP = Global.Inventory.HPMax;
                             break;
-                        case ObtainableTreasures.FEATHER:
+                        case Global.ObtainableTreasures.FEATHER:
                             Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
                             Global.Protag.SetJumpsMax(2);
                             break;
                     }
                     break;
-                case ItemTypes.SUBWEAPON:
-                    short subWeaponSlot = (short)itemID;
-                    switch ((SubWeapons)itemID)
+                case Global.ItemTypes.SUBWEAPON:
+                    itemName = Global.TextManager.GetText((int)Global.HardCodedText.SUB_WEAPON_NAMES_BEGIN + itemID, Global.CurrLang);
+                    short subWeaponsSlot = (short)itemID;
+                    switch ((Global.SubWeapons)itemID)
                     {
                         default:
-                            Global.Inventory.ObtainedSubWeapons[subWeaponSlot] = (SubWeapons)itemID;
+                            Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = (Global.SubWeapons)itemID;
                             break;
-                        case SubWeapons.BUCKLER:
-                        case SubWeapons.SILVER_SHIELD:
-                        case SubWeapons.ANGEL_SHIELD:
-                            subWeaponSlot = 8;
-                            if (Global.Inventory.ObtainedSubWeapons[subWeaponSlot] < (SubWeapons)itemID || Global.Inventory.ObtainedSubWeapons[subWeaponSlot] == SubWeapons.NONE)
+                        case Global.SubWeapons.BUCKLER:
+                        case Global.SubWeapons.SILVER_SHIELD:
+                        case Global.SubWeapons.ANGEL_SHIELD:
+                            subWeaponsSlot = 8;
+                            if (Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] < (Global.SubWeapons)itemID || Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] == Global.SubWeapons.NONE)
                             {
-                                Global.Inventory.ObtainedSubWeapons[subWeaponSlot] = (SubWeapons)itemID;
-                                if (Global.Inventory.EquippedSubWeapon == SubWeapons.BUCKLER || Global.Inventory.EquippedSubWeapon == SubWeapons.SILVER_SHIELD || Global.Inventory.EquippedSubWeapon == SubWeapons.ANGEL_SHIELD)
+                                Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = (Global.SubWeapons)itemID;
+                                if (Global.Inventory.EquippedSubWeapon == Global.SubWeapons.BUCKLER || Global.Inventory.EquippedSubWeapon == Global.SubWeapons.SILVER_SHIELD || Global.Inventory.EquippedSubWeapon == Global.SubWeapons.ANGEL_SHIELD)
                                 {
-                                    Global.Inventory.EquippedSubWeapon = (SubWeapons)itemID;
+                                    Global.Inventory.EquippedSubWeapon = (Global.SubWeapons)itemID;
                                 }
                             }
                             break;
                     }
                     Global.AudioManager.PlaySFX(sfx);
                     break;
-                case ItemTypes.MAIN_WEAPON:
-                    short mainWeaponSlot = 0;
-                    switch ((MainWeapons)itemID)
+                case Global.ItemTypes.MAIN_WEAPON:
+                    itemName = Global.TextManager.GetText((int)Global.HardCodedText.MAIN_WEAPON_NAMES_BEGIN + itemID, Global.CurrLang);
+                    short mainWeaponsSlot = 0;
+                    switch ((Global.MainWeapons)itemID)
                     {
                         default:
-                            Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                            Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
                             break;
-                        case MainWeapons.WHIP:
-                        case MainWeapons.FLAIL_WHIP:
-                        case MainWeapons.CHAIN_WHIP:
-                            mainWeaponSlot = 0;
-                            if (Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] < (MainWeapons)itemID || Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] == MainWeapons.NONE)
+                        case Global.MainWeapons.WHIP:
+                        case Global.MainWeapons.FLAIL_WHIP:
+                        case Global.MainWeapons.CHAIN_WHIP:
+                            mainWeaponsSlot = 0;
+                            if (Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] < (Global.MainWeapons)itemID || Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] == Global.MainWeapons.NONE)
                             {
-                                Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                                Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
 
-                                if (Global.Inventory.EquippedMainWeapon == MainWeapons.WHIP || Global.Inventory.EquippedMainWeapon == MainWeapons.CHAIN_WHIP || Global.Inventory.EquippedMainWeapon == MainWeapons.FLAIL_WHIP)
-                                    Global.Inventory.EquippedMainWeapon = (MainWeapons)itemID;
+                                if (Global.Inventory.EquippedMainWeapon == Global.MainWeapons.WHIP || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.CHAIN_WHIP || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.FLAIL_WHIP)
+                                    Global.Inventory.EquippedMainWeapon = (Global.MainWeapons)itemID;
                             }
                             break;
-                        case MainWeapons.KNIFE:
-                            mainWeaponSlot = 1;
-                            Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                        case Global.MainWeapons.KNIFE:
+                            mainWeaponsSlot = 1;
+                            Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
                             break;
-                        case MainWeapons.KEYBLADE:
-                        case MainWeapons.KEYBLADE_BETA:
-                            mainWeaponSlot = 2;
-                            if (Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] < (MainWeapons)itemID || Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] == MainWeapons.NONE)
+                        case Global.MainWeapons.KEYBLADE:
+                        case Global.MainWeapons.KEYBLADE_BETA:
+                            mainWeaponsSlot = 2;
+                            if (Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] < (Global.MainWeapons)itemID || Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] == Global.MainWeapons.NONE)
                             {
-                                Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                                Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
 
-                                if (Global.Inventory.EquippedMainWeapon == MainWeapons.KEYBLADE || Global.Inventory.EquippedMainWeapon == MainWeapons.KEYBLADE_BETA)
-                                    Global.Inventory.EquippedMainWeapon = (MainWeapons)itemID;
+                                if (Global.Inventory.EquippedMainWeapon == Global.MainWeapons.KEYBLADE || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.KEYBLADE_BETA)
+                                    Global.Inventory.EquippedMainWeapon = (Global.MainWeapons)itemID;
                             }
                             break;
-                        case MainWeapons.AXE:
-                            mainWeaponSlot = 3;
-                            Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                        case Global.MainWeapons.AXE:
+                            mainWeaponsSlot = 3;
+                            Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
                             break;
-                        case MainWeapons.KATANA:
-                            mainWeaponSlot = 4;
-                            Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                        case Global.MainWeapons.KATANA:
+                            mainWeaponsSlot = 4;
+                            Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
                             break;
                     }
                     Global.AudioManager.PlaySFX(sfx);
                     break;
-                case ItemTypes.SOFTWARE:
-                    Global.Inventory.ObtainedSoftware[(ObtainableSoftware)itemID] = grantToPlayer;
+                case Global.ItemTypes.SOFTWARE:
+                    itemName = Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + itemID, Global.CurrLang);
+                    Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)itemID] = grantToPlayer;
+                    Global.AudioManager.PlaySFX(sfx);
+                    break;
+                case Global.ItemTypes.SIGILS:
+                    itemName = Global.TextManager.GetText((int)Global.HardCodedText.SIGIL_NAMES_BEGIN + itemID, Global.CurrLang);
+                    Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)(itemID + (int)Global.ObtainableTreasures.ORIGIN_SIGIL)] = grantToPlayer;
                     Global.AudioManager.PlaySFX(sfx);
                     break;
             }
+
+            World.PlayerGotItem(collectibleIcon, itemName);
         }
 
         internal static int[] SeparateDigits(int inputDigit, int[] args)

@@ -18,6 +18,21 @@ namespace OpenLaMulana.Entities.WorldEntities
         public override int HitboxWidth { get; set; } = 16;
         public override int HitboxHeight { get; set; } = 16;
 
+        public override Rectangle BBox
+        {
+            get
+            {
+                Rectangle box = new Rectangle(
+                    (int)Math.Round(Position.X - BBoxOriginX),
+                    (int)Math.Round(Position.Y - BBoxOriginY),
+                    HitboxWidth,
+                    HitboxHeight
+                );
+                //box.Inflate(-COLLISION_BOX_INSET, -COLLISION_BOX_INSET);
+                return box;
+            }
+        }
+
         public ObtainableSubweaponEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
@@ -27,7 +42,8 @@ namespace OpenLaMulana.Entities.WorldEntities
             int texOffY = (int)Math.Floor((double)_itemID / 4) * 16;
             _subweaponSprite = new Sprite(_tex, 256 + texOffX, 96 + texOffY, 16, 16);
             HP = 1;
-
+            HitboxWidth = 16;
+            HitboxHeight = 16;
             if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {
                 if (_itemID >= 0)
@@ -46,8 +62,9 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (State == Global.WEStates.IDLE)
+            if (State == Global.WEStates.IDLE) {
                 _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -67,11 +84,11 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case Global.WEStates.IDLE:
-                    if (BBox.Intersects(_protag.BBox))
+                    if (CollidesWithPlayer())
                     {
                         if (_protag.IsGrounded())
                         {
-                            HelperFunctions.UpdateInventory(Global.ItemTypes.SUBWEAPON, _itemID, true);
+                            HelperFunctions.UpdateInventory(Global.ItemTypes.SUBWEAPON, _itemID, true, SFX.P_ITEM_TAKEN, _subweaponSprite);
                             if (_flagToSet >= 0)
                             {
                                 Global.GameFlags.InGameFlags[_flagToSet] = true;

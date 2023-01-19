@@ -17,7 +17,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         {
         }
 
-        public Rectangle BBox
+        public virtual Rectangle BBox
         {
             get
             {
@@ -32,8 +32,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             }
         }
 
-        public bool CollidesWithPlayer()
-        {
+        public bool CollidesWithPlayer() {
             return BBox.Intersects(_protag.BBox);
         }
     }

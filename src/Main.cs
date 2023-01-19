@@ -112,8 +112,8 @@ namespace OpenLaMulana
 
             Sprite hudSigilsBlank = Global.TextureManager.Get8x8Tile(_itemTex, 8, 3, Vector2.Zero);
             Sprite hudSigilsOrigin = Global.TextureManager.Get8x8Tile(_itemTex, 18, 16, Vector2.Zero);
-            Sprite hudSigilsBirth = Global.TextureManager.Get8x8Tile(_itemTex, 18, 17, Vector2.Zero);
-            Sprite hudSigilsLife = Global.TextureManager.Get8x8Tile(_itemTex, 19, 16, Vector2.Zero);
+            Sprite hudSigilsBirth = Global.TextureManager.Get8x8Tile(_itemTex, 19, 16, Vector2.Zero);
+            Sprite hudSigilsLife = Global.TextureManager.Get8x8Tile(_itemTex, 18, 17, Vector2.Zero);
             Sprite hudSigilsDeath = Global.TextureManager.Get8x8Tile(_itemTex, 19, 17, Vector2.Zero);
 
             Sprite[] sprites = new Sprite[] {
@@ -247,7 +247,7 @@ namespace OpenLaMulana
                                 if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                                 {
                                     State = Global.GameState.MSX_OPEN;
-                                    Global.MobileSuperX.SetState(Global.MSXStates.ROM_SELECTION);
+                                    Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                                     Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                                 }
 
@@ -267,6 +267,9 @@ namespace OpenLaMulana
                     }
 
                     Global.EntityManager.Update(gameTime);
+                    break;
+                case Global.GameState.ITEM_ACQUIRED:
+                    Global.NineSliceBox.Update(gameTime);
                     break;
                 case Global.GameState.PAUSED:
                     JukeboxRoutine();
@@ -413,6 +416,9 @@ namespace OpenLaMulana
                     break;
                 case Global.GameState.MSX_LOADING_FILE:
                     break;
+                case Global.GameState.ITEM_ACQUIRED:
+                    DrawHud(Global.SpriteBatch, gameTime);
+                    break;
                 case Global.GameState.PAUSED:
                     DrawHud(Global.SpriteBatch, gameTime);
                     HelperFunctions.DrawRectangle(Global.SpriteBatch, new Rectangle(13 * 8, 12 * 8, 5 * 8, 8), Color.Black);
@@ -487,17 +493,25 @@ namespace OpenLaMulana
             _hudSprites[(int)HudSprites.WEAPONSBRACKETRIGHT].Draw(spriteBatch, _camPos + new Vector2(24 * 8, 0 * 8));
 
 
-            _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 0 * 8));
-            _hudSprites[(int)HudSprites.SIGILS_ORIGIN].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 0 * 8));
+            if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.ORIGIN_SIGIL])
+                _hudSprites[(int)HudSprites.SIGILS_ORIGIN].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 0 * 8));
+            else
+                _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 0 * 8));
 
-            _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 0 * 8));
-            _hudSprites[(int)HudSprites.SIGILS_BIRTH].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 0 * 8));
+            if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.BIRTH_SIGIL])
+                _hudSprites[(int)HudSprites.SIGILS_BIRTH].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 1 * 8));
+            else
+                _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 1 * 8));
 
-            _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 1 * 8));
-            _hudSprites[(int)HudSprites.SIGILS_LIFE].Draw(spriteBatch, _camPos + new Vector2(25 * 8, 1 * 8));
+            if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.LIFE_SIGIL])
+                _hudSprites[(int)HudSprites.SIGILS_LIFE].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 0 * 8));
+            else
+                _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 0 * 8));
 
-            _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 1 * 8));
-            _hudSprites[(int)HudSprites.SIGILS_DEATH].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 1 * 8));
+            if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.DEATH_SIGIL])
+                _hudSprites[(int)HudSprites.SIGILS_DEATH].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 1 * 8));
+            else
+                _hudSprites[(int)HudSprites.SIGILS_BLANK].Draw(spriteBatch, _camPos + new Vector2(26 * 8, 1 * 8));
 
             Global.TextManager.DrawTextImmediate(Global.Camera.Position, "VIT\\10EXP");
             for (int y = 0; y < 15; y++)

@@ -362,7 +362,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             // Jump
             if ((_isGrounded || InFloor(currRoom, BBox.Left, BBox.Bottom + 1) >= 0) ||
                 (_isGrounded || InFloor(currRoom, BBox.Right, BBox.Bottom + 1) >= 0) ||
-                (_isGrounded || InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1) >= 0)
+                (_isGrounded || InFloor(currRoom, Position.X, BBox.Bottom + 1) >= 0)
                 )
             {
                 _jumpCount = _jumpsMax;
@@ -476,7 +476,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             int pxT = TileIsSolid(TileGetCellAtPixel(currRoom, bboxSide + _hsp_final, BBox.Top));
             int pxB = TileIsSolid(TileGetCellAtPixel(currRoom, bboxSide + _hsp_final, BBox.Bottom));
             int pxSC = TileIsSolid(TileGetCellAtPixel(currRoom, bboxSide + _hsp_final, BBox.Center.Y));
-            ChipTypes tileBC = TileGetCellAtPixel(currRoom, BBox.Center.X, BBox.Bottom);
+            ChipTypes tileBC = TileGetCellAtPixel(currRoom, Position.X, BBox.Bottom);
             if (TileIsASlope(tileBC)) {           // Did we find a slope tile at the bottom-center of the player's hitbox?
                 pxB = 0;                    // If we did, pretend that we didn't find any solid tiles on the bottom-left/bottom-right and top-left/top-right edges of our hitbox, even if we did
             }

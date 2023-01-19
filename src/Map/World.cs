@@ -72,8 +72,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             ASCENDING_SLOPE_LEFT = 3,
             ASCENDING_STAIRS_RIGHT = 4,
             ASCENDING_STAIRS_LEFT = 5,
-            ASCENDING_RIGHT_BEHIND_STAIRS = 6,
-            ASCENDING_BACK_LEFT = 7,
+            CEILING_SLOPE_LEFT = 6,
+            CEILING_SLOPE_RIGHT = 7,
             ICE_SLOPE_RIGHT = 12,
             ICE_SLOPE_LEFT = 13,
             WATER = 64,
@@ -278,8 +278,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                     case ChipTypes.ASCENDING_SLOPE_RIGHT:
                     case ChipTypes.ASCENDING_STAIRS_RIGHT:
                     case ChipTypes.ICE_SLOPE_RIGHT:
-                    case ChipTypes.ASCENDING_RIGHT_BEHIND_STAIRS:
                         theFloor = _slopeHeights[(int)xDiff];
+                        break;
+                    case ChipTypes.CEILING_SLOPE_LEFT:
+                    case ChipTypes.CEILING_SLOPE_RIGHT:
                         break;
                 }
 
@@ -311,10 +313,12 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 case ChipTypes.ASCENDING_SLOPE_LEFT:
                 case ChipTypes.ICE_SLOPE_RIGHT:
                 case ChipTypes.ICE_SLOPE_LEFT:
-                case ChipTypes.ASCENDING_RIGHT_BEHIND_STAIRS:
                 case ChipTypes.ASCENDING_STAIRS_LEFT:
                 case ChipTypes.ASCENDING_STAIRS_RIGHT:
                     return true;
+                case ChipTypes.CEILING_SLOPE_LEFT:
+                case ChipTypes.CEILING_SLOPE_RIGHT:
+                    break;
             }
             return false;
         }
@@ -1357,6 +1361,16 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         internal List<Field> GetAllFields()
         {
             return _fields;
+        }
+
+        internal static void PlayerGotItem(Sprite treasureIcon, string treasureName)
+        {
+            if (Global.NineSliceBox != null)
+                Global.EntityManager.RemoveEntity(Global.NineSliceBox);
+
+            Global.NineSliceBox = new NineSliceBox(new Vector2(15 * CHIP_SIZE, 15 * CHIP_SIZE), treasureIcon, treasureName);
+            Global.EntityManager.AddEntity(Global.NineSliceBox);
+            Global.Main.SetState(Global.GameState.ITEM_ACQUIRED);
         }
     }
 }

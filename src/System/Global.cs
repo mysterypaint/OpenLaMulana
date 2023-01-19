@@ -56,12 +56,13 @@ namespace OpenLaMulana
             PLAYING,
             GAME_OVER,
             PAUSED,
+            ITEM_ACQUIRED,
             MSX_OPEN,
             MSX_ROMS,
             MSX_LOADING_FILE,
             MSX_MANTRAS,
-            MAX
-        };
+            MAX,
+        }
         public enum ScreenOverlayState
         {
             INVISIBLE,
@@ -218,9 +219,9 @@ namespace OpenLaMulana
             MAIN_WEAPON = 0,
             SUBWEAPON = 1,
             TREASURE = 2,
-            SOFTWARE = 3
-        };
-
+            SOFTWARE = 3,
+            SIGILS = 4
+        }
         public enum MainWeapons
         {
             NONE = 255,
@@ -482,7 +483,7 @@ namespace OpenLaMulana
         public enum MSXStates {
             INACTIVE,
             INVENTORY,
-            ROM_SELECTION,
+            SOFTWARE_SELECTION,
             EMULATOR,
             CONFIG_SCREEN,
             SCANNING,
@@ -490,18 +491,23 @@ namespace OpenLaMulana
         }
         public enum HardCodedText
         {
-            ROM_NAMES_BEGIN = 0,
-            ROM_NAMES_END = 83,
+            SOFTWARE_NAMES_BEGIN = 0,
+            SOFTWARE_NAMES_END = 83,
             SAVE_LOAD_DIALOGUE_BEGINS = 84,
             SAVE_LOAD_DIALOGUE_ENDS = 93,
             ITEM_ACQUISITION_MESSAGE = 94,
             SPAWN_POINT = 99,
             JUKEBOX_NAMES_BEGIN = 100,
             JUKEBOX_NAMES_END = 155,
-            ITEM_NAMES_BEGIN = 500,
-            ITEM_NAMES_END = 559,
-        };
-
+            TREASURE_NAMES_BEGIN = 500,
+            TREASURE_NAMES_END = 559,
+            SIGIL_NAMES_BEGIN = 555,
+            SIGIL_NAMES_END = 559,
+            MAIN_WEAPON_NAMES_BEGIN = 638,
+            MAIN_WEAPON_NAMES_END = 644,
+            SUB_WEAPON_NAMES_BEGIN = 645,
+            SUB_WEAPON_NAMES_END = 657,
+        }
         public enum PlatformingPhysics
         {
             CLASSIC,
@@ -569,7 +575,7 @@ namespace OpenLaMulana
         public static MobileSuperX MobileSuperX { get; set; }
         public static PlatformingPhysics ProtagPhysics { get; internal set; } = PlatformingPhysics.REVAMPED;
         public static bool QoLChanges { get; internal set; } = false;
-
+        public static NineSliceBox NineSliceBox { get; set; } = null;
 
         public static Dictionary<MainWeapons, int> WeaponsDamageTable = new Dictionary<MainWeapons, int>();
         public static Dictionary<SubWeapons, int> SubWeaponsDamageTable = new Dictionary<SubWeapons, int>();

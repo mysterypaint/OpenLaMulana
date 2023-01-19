@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class ObtainableMajorWeaponEntity : InteractableWorldEntity
+    internal class ObtainableMainWeaponEntity : InteractableWorldEntity
     {
         private Protag _protag = Global.Protag;
         private int _flagToSet = -1;
@@ -18,7 +18,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         public override int HitboxWidth { get; set; } = 16;
         public override int HitboxHeight { get; set; } = 16;
 
-        public ObtainableMajorWeaponEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        public ObtainableMainWeaponEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
             _itemID = op1;
@@ -68,9 +68,9 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case Global.WEStates.IDLE:
-                    if (BBox.Intersects(_protag.BBox))
+                    if (CollidesWithPlayer())
                     {
-                        HelperFunctions.UpdateInventory(Global.ItemTypes.MAIN_WEAPON, _itemID, true);
+                        HelperFunctions.UpdateInventory(Global.ItemTypes.MAIN_WEAPON, _itemID, true, SFX.P_ITEM_TAKEN, _weaponSprite);
                         if (_flagToSet >= 0)
                         {
                             Global.GameFlags.InGameFlags[_flagToSet] = true;
