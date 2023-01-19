@@ -82,7 +82,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             switch (State)
             {
                 case Global.WEStates.UNSPAWNED:
-                    if (HelperFunctions.EntityMaySpawn(_startFlags))
+                    if (HelperFunctions.EntityMaySpawn(StartFlags))
                         State = Global.WEStates.IDLE;
                     break;
                 case Global.WEStates.IDLE:

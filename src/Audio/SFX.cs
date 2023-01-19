@@ -17,7 +17,7 @@
         WATER_SUBMERGE,
         SHIELD_BLOCK,
         ANKH_ACTIVATED,
-        TITLE_PRESS_START,
+        SOFTWARE_TAKEN,       // Also used as the New File Begin SFX
         WARP_TRIGGERED,
         SE11, // Dais SFX?
         MSX_NAVIGATE,
@@ -73,7 +73,7 @@
         SE43,
         LOAD_FILE_1,
         LOAD_FILE_2,
-        GUILD_ALERT,
+        DETECTOR_SHOP_NEARBY,
         SE47,
         SE48,
         SE49,

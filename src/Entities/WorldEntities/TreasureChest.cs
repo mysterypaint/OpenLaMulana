@@ -48,14 +48,14 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _flagToTriggerWhenItemTaken = op3;      // If this flag is on, the chest is already empty: Do not open it
 
-            if (HelperFunctions.EntityMaySpawn(_startFlags) && !Global.GameFlags.InGameFlags[_flagToTriggerWhenItemTaken])
+            if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToTriggerWhenItemTaken])
             {
                 _sprIndex = _sprClosed;
                 State = WEStates.IDLE;
             }
             else {
                 // The chest should be invisible, if there are actual start flags to consider. Otherwise, the chest should be already opened and visible
-                if (_startFlags.Count <= 0 || Global.GameFlags.InGameFlags[_flagToTriggerWhenItemTaken])
+                if (StartFlags.Count <= 0 || Global.GameFlags.InGameFlags[_flagToTriggerWhenItemTaken])
                 {
                     _sprIndex = _sprOpen;
                     State = WEStates.DYING;
@@ -89,7 +89,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             switch (State)
             {
                 case WEStates.UNSPAWNED:
-                    if (HelperFunctions.EntityMaySpawn(_startFlags))
+                    if (HelperFunctions.EntityMaySpawn(StartFlags))
                     {
                         State = WEStates.ACTIVATING;
                         _sprIndex = _sprItem;

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 
@@ -25,6 +26,11 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _tex = null;
             _sprIndex = null;
+
+            if (HelperFunctions.EntityMaySpawn(StartFlags))
+            {
+                State = Global.WEStates.IDLE;
+            }
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
@@ -32,28 +38,42 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Update(GameTime gameTime)
         {
-            if (CollidesWithPlayer())
+            switch (State)
             {
-                if (Global.Protag.ContactWarpCooldownTimer <= 0 && _playerMayWarp) {
-                    Field currField = Global.World.GetCurrField();
-                    View currView = Global.World.GetCurrentView();
-                
-                    Field destField = Global.World.GetField(_fieldID);
-                    View destView = destField.GetView(_viewNumber);
+                case Global.WEStates.UNSPAWNED:
+                    if (HelperFunctions.EntityMaySpawn(StartFlags))
+                    {
+                        State = Global.WEStates.IDLE;
+                    }
+                    break;
+                case Global.WEStates.IDLE:
+                    if (CollidesWithPlayer())
+                    {
+                        if (Global.Protag.ContactWarpCooldownTimer <= 0 && _playerMayWarp)
+                        {
+                            Field currField = Global.World.GetCurrField();
+                            View currView = Global.World.GetCurrentView();
 
-                    bool updateEntities = currField.ID != destField.ID;
+                            Field destField = Global.World.GetField(_fieldID);
+                            View destView = destField.GetView(_viewNumber);
 
-                    Global.Protag.ContactWarpCooldownTimer = 10;
-                    Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
-                    Global.Protag.SetPositionToTile(_relViewX, _relViewY);
-                    Global.AudioManager.PlaySFX(SFX.WARP_TRIGGERED);
-                } else
-                {
-                    _playerMayWarp = false;
-                }
-            } else
-            {
-                _playerMayWarp = true;
+                            bool updateEntities = currField.ID != destField.ID;
+
+                            Global.Protag.ContactWarpCooldownTimer = 10;
+                            Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                            Global.Protag.SetPositionToTile(_relViewX, _relViewY);
+                            Global.AudioManager.PlaySFX(SFX.WARP_TRIGGERED);
+                        }
+                        else
+                        {
+                            _playerMayWarp = false;
+                        }
+                    }
+                    else
+                    {
+                        _playerMayWarp = true;
+                    }
+                    break;
             }
         }
     }

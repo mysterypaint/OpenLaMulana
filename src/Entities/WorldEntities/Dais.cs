@@ -30,7 +30,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _flagToSet = op1;
 
-            if (HelperFunctions.EntityMaySpawn(_startFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
+            if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {
                 State = Global.WEStates.IDLE;
             }
@@ -50,7 +50,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             switch (State)
             {
                 case WEStates.UNSPAWNED:
-                    if (HelperFunctions.EntityMaySpawn(_startFlags))
+                    if (HelperFunctions.EntityMaySpawn(StartFlags))
                     {
                         State = Global.WEStates.IDLE;
                     }

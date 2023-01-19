@@ -521,7 +521,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     newObj = new PushableBlock(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.OBTAINABLE_SUBWEAPON:
-                    newObj = new ObtainableSubweapon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    newObj = new ObtainableSubweaponEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.NPC_ROOM:
                     newObj = new NPCRoom(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
@@ -550,6 +550,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.RUINS_TABLET:
                     newObj = new RuinsTablet(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+                case EntityIDs.OBTAINABLE_SOFTWARE:
+                    newObj = new ObtainableSoftwareEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
                 case EntityIDs.DAIS:
                     newObj = new Dais(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
@@ -573,8 +576,17 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.GRAPHIC_DISPLAY:
                     newObj = new GraphicDisplay(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+                case EntityIDs.SHELL_HORN_SOUND_GENERATOR:
+                    newObj = new ShellHornSoundGenerator(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.SHOP_DETECTOR_SOUND_GENERATOR:
+                    newObj = new ShopDetectorSoundGenerator(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
                 case EntityIDs.OBTAINABLE_MAJOR_WEAPON:
-                    newObj = new ObtainableMajorWeapon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    newObj = new ObtainableMajorWeaponEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.DESTINATION_VIEW_CHANGER:
+                    newObj = new DestinationViewChanger(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.CONTACT_WARP:
                     newObj = new ContactWarp(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);

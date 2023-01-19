@@ -215,7 +215,7 @@ namespace OpenLaMulana
         public enum ItemTypes
         {
             UNKNOWN = -1,
-            WEAPON = 0,
+            MAIN_WEAPON = 0,
             SUBWEAPON = 1,
             TREASURE = 2,
             SOFTWARE = 3

@@ -49,7 +49,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _displayedGraphic = new Sprite(_tex, _texCoords, _spriteWidthHeight);
 
-            if (HelperFunctions.EntityMaySpawn(_startFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
+            if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
             {
                 State = Global.WEStates.IDLE;
                 _sprIndex = _displayedGraphic;
@@ -102,7 +102,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             switch (State)
             {
                 case Global.WEStates.UNSPAWNED:
-                    if (HelperFunctions.EntityMaySpawn(_startFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
+                    if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
                     {
                         State = Global.WEStates.IDLE;
                         _sprIndex = _displayedGraphic;

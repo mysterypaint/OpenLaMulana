@@ -13,6 +13,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public Effect ActiveShader { get; set; } = null;
         internal Texture2D _tex;
         internal World _world;
+        public List<ObjectStartFlag> StartFlags = null;
         internal Sprite _sprIndex;
         public Vector2 Position;
         public Vector2 RelativeViewTilePos { get; }
@@ -20,7 +21,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public bool ManuallySpawned = false;
 
         List<IGameEntity> _myEntities = new List<IGameEntity>();
-
+        public Global.WEStates State { get; set; } = Global.WEStates.UNSPAWNED;
+        
         internal View _parentView = null;
         internal Point viewCoords = new Point(-1, -1);
         internal float _imgScaleX = 1f, _imgScaleY = 1f;
@@ -30,6 +32,13 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
             _sprIndex = new Sprite(_tex, 16, 0, 16, 16);
             _world = Global.World;
+            StartFlags = startFlags;
+
+            if (StartFlags!= null)
+            {
+                if (HelperFunctions.EntityMaySpawn(StartFlags))
+                    State = Global.WEStates.IDLE;
+            }
 
             RelativeViewTilePos = new Vector2(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
             viewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);

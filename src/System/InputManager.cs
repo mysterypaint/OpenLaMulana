@@ -274,6 +274,12 @@ namespace OpenLaMulana.System
                 Global.GameFlags.InGameFlags[(int)GameFlags.Flags.POCHETTE_KEY_TAKEN] = true;
                 HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.PEPPER, true);
                 Global.GameFlags.InGameFlags[(int)GameFlags.Flags.PEPPER_TAKEN] = true;
+                HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.DETECTOR, true);
+                Global.GameFlags.InGameFlags[(int)GameFlags.Flags.DETECTOR_TAKEN] = true;
+                HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.CRYSTAL_SKULL, true);
+                Global.GameFlags.InGameFlags[(int)GameFlags.Flags.CRYSTAL_SKULL_TAKEN] = true;
+                HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.TWIN_STATUE, true);
+                Global.GameFlags.InGameFlags[(int)GameFlags.Flags.TWIN_STATUE_TAKEN] = true;
                 Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
             }
 

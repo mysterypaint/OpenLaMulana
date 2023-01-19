@@ -64,7 +64,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             switch (State)
             {
                 case WEStates.UNSPAWNED:
-                    if (HelperFunctions.EntityMaySpawn(_startFlags))
+                    if (HelperFunctions.EntityMaySpawn(StartFlags))
                     {
                         State = WEStates.IDLE;
                     }

@@ -25,7 +25,7 @@ namespace OpenLaMulana
         internal Point viewCoords = new Point(-1, -1);
         internal float _imgScaleX = 1f, _imgScaleY = 1f;
         public bool ManuallySpawned = false;
-        public List<ObjectStartFlag> _startFlags = null;
+        public List<ObjectStartFlag> StartFlags = null;
         List<IGameEntity> _myEntities = new List<IGameEntity>();
         public Global.WEStates State { get; set; } = Global.WEStates.UNSPAWNED;
 
@@ -34,7 +34,7 @@ namespace OpenLaMulana
             _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
             _sprIndex = new Sprite(_tex, 0, 0, 16, 16);
             _world = Global.World;
-            _startFlags = startFlags;
+            StartFlags = startFlags;
 
             RelativeViewTilePos = new Vector2(x, y);
             Position = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
@@ -44,8 +44,11 @@ namespace OpenLaMulana
             _parentView = destView;
             viewCoords = new Point(_parentView.X, _parentView.Y);
 
-            if (HelperFunctions.EntityMaySpawn(_startFlags))
-                State = Global.WEStates.IDLE;
+            if (startFlags != null)
+            {
+                if (HelperFunctions.EntityMaySpawn(StartFlags))
+                    State = Global.WEStates.IDLE;
+            }
         }
 
         ~IRoomWorldEntity()

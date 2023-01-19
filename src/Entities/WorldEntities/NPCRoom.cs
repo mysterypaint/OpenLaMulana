@@ -84,6 +84,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private Sprite _shopCursor = null;
         private Sprite[] _dialogueBoxSprites = null;
         private Sprite[] _productSprites = null;
+        private Sprite _doorwaySprite = null;
         private SpriteAnimation _playerShopSprite = SpriteAnimation.CreateSimpleAnimation(Global.TextureManager.GetTexture(Global.Textures.PROT1), new Point(4 * 16, 0 * 16), 16, 16, new Point(16, 0), 2, 0.02f);
         private ShopData[] _shopData = null;
         private NPCTypes _spawnType = NPCTypes.Store;
@@ -92,6 +93,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private string _currText = "";
         private Protag _protag = Global.Protag;
         private int _myBGM = -1;
+
         public NPCStates State { get; set; } = NPCStates.INACTIVE;
 
         public NPCRoom(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
@@ -100,6 +102,9 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _tex = null;
             _sprIndex = null;
+
+            Texture2D eventTex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
+            _doorwaySprite = new Sprite(eventTex, 256, 160, 8, 16);
 
             _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
             Sprite tl = Global.TextureManager.Get8x8Tile(_tex, 13, 1, Vector2.Zero);

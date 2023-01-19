@@ -9,10 +9,10 @@ namespace OpenLaMulana
 {
     public class View
     {
-        private int[] _destWorld = { 0, 0, 0, 0 };   // World may never go below 0
-        private int[] _destField = { 0, 0, 0, 0 };   // Field may never go below 0
-        private int[] _destX = { 0, 0, 0, 0 };       // If X is negative, forbid moving toward this direction
-        private int[] _destY = { 0, 0, 0, 0 };       // Y may never go below 0
+        private int[] _destWorld = new int[8];   // World may never go below 0
+        private int[] _destField = new int[8];   // Field may never go below 0
+        private int[] _destX = new int[8];       // If X is negative, forbid moving toward this direction
+        private int[] _destY = new int[8];       // Y may never go below 0
         private List<ObjectSpawnData> _viewSpawnData;
         private Field _parentField = null;
         private List<IGameEntity> _myEntities = new List<IGameEntity>();
@@ -240,6 +240,37 @@ namespace OpenLaMulana
         {
             _myEntities.Add(entity);
             _parentField.GetRoomEntities().Add(entity);
+        }
+
+        internal void OverwriteViewDestinationTemporarily(VIEW_DIR direction, int destWorld, int destField, int destX, int destY)
+        {
+            // Copy the to-be-overwritten data in the mirrored slots
+            _destWorld[(int)direction + 4] = _destWorld[(int)direction];
+            _destField[(int)direction + 4] = _destField[(int)direction];
+            _destX[(int)direction + 4] = _destX[(int)direction];
+            _destY[(int)direction + 4] = _destY[(int)direction];
+
+            // Overwrite the actual data with the new data
+            _destWorld[(int)direction] = destWorld;
+            _destField[(int)direction] = destField;
+            _destX[(int)direction] = destX;
+            _destY[(int)direction] = destY;
+        }
+
+        internal void RestoreOriginalViewDestination(VIEW_DIR direction, int destWorld, int destField, int destX, int destY)
+        {
+
+            // Move the original data back from the mirrored slots
+            _destWorld[(int)direction] = _destWorld[(int)direction + 4];
+            _destField[(int)direction] = _destField[(int)direction + 4];
+            _destX[(int)direction] = _destX[(int)direction + 4];
+            _destY[(int)direction] = _destY[(int)direction + 4];
+
+            // Re-Initialize the mirrored data 
+            _destWorld[(int)direction + 4] = 0;
+            _destField[(int)direction + 4] = 0;
+            _destX[(int)direction + 4] = 0;
+            _destY[(int)direction + 4] = 0;
         }
     }
 }

@@ -44,7 +44,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
             switch (State)
             {
                 case Global.WEStates.UNSPAWNED:
-                    if (HelperFunctions.EntityMaySpawn(_startFlags) && (!Global.GameFlags.InGameFlags[_triggerFlag]))
+                    if (HelperFunctions.EntityMaySpawn(StartFlags) && (!Global.GameFlags.InGameFlags[_triggerFlag]))
                         State = Global.WEStates.IDLE;
                     break;
                 case Global.WEStates.IDLE:

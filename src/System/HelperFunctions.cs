@@ -684,7 +684,7 @@ namespace OpenLaMulana.System
             Global.Inventory.CoinCount = GetWordAsInt(coins);
             Global.Inventory.WeightCount = GetWordAsInt(weights);
             Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.NONE, Global.ObtainableSoftware.NONE };
-            Global.Inventory.EquippedMainWeapon = Global.MainWeapons.FLAIL_WHIP;
+            Global.Inventory.EquippedMainWeapon = Global.MainWeapons.NONE;
             Global.Inventory.EquippedSubWeapon = Global.SubWeapons.NONE;
             foreach (var treasure in Global.Inventory.ObtainedTreasures.Keys.ToList())
             {
@@ -868,7 +868,7 @@ namespace OpenLaMulana.System
             new Point(-1,-1)    // Skimpy Swimsuit
         };
 
-        internal static void UpdateInventory(Global.ItemTypes itemType, int itemID, bool grantToPlayer = true)
+        internal static void UpdateInventory(Global.ItemTypes itemType, int itemID, bool grantToPlayer = true, SFX sfx = SFX.P_ITEM_TAKEN)
         {
             switch(itemType)
             {
@@ -905,11 +905,121 @@ namespace OpenLaMulana.System
                             break;
                     }
                     break;
+                case ItemTypes.SUBWEAPON:
+                    short subWeaponSlot = (short)itemID;
+                    switch ((SubWeapons)itemID)
+                    {
+                        default:
+                            Global.Inventory.ObtainedSubWeapons[subWeaponSlot] = (SubWeapons)itemID;
+                            break;
+                        case SubWeapons.BUCKLER:
+                        case SubWeapons.SILVER_SHIELD:
+                        case SubWeapons.ANGEL_SHIELD:
+                            subWeaponSlot = 8;
+                            if (Global.Inventory.ObtainedSubWeapons[subWeaponSlot] < (SubWeapons)itemID || Global.Inventory.ObtainedSubWeapons[subWeaponSlot] == SubWeapons.NONE)
+                            {
+                                Global.Inventory.ObtainedSubWeapons[subWeaponSlot] = (SubWeapons)itemID;
+                                if (Global.Inventory.EquippedSubWeapon == SubWeapons.BUCKLER || Global.Inventory.EquippedSubWeapon == SubWeapons.SILVER_SHIELD || Global.Inventory.EquippedSubWeapon == SubWeapons.ANGEL_SHIELD)
+                                {
+                                    Global.Inventory.EquippedSubWeapon = (SubWeapons)itemID;
+                                }
+                            }
+                            break;
+                    }
+                    Global.AudioManager.PlaySFX(sfx);
+                    break;
+                case ItemTypes.MAIN_WEAPON:
+                    short mainWeaponSlot = 0;
+                    switch ((MainWeapons)itemID)
+                    {
+                        default:
+                            Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                            break;
+                        case MainWeapons.WHIP:
+                        case MainWeapons.FLAIL_WHIP:
+                        case MainWeapons.CHAIN_WHIP:
+                            mainWeaponSlot = 0;
+                            if (Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] < (MainWeapons)itemID || Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] == MainWeapons.NONE)
+                            {
+                                Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+
+                                if (Global.Inventory.EquippedMainWeapon == MainWeapons.WHIP || Global.Inventory.EquippedMainWeapon == MainWeapons.CHAIN_WHIP || Global.Inventory.EquippedMainWeapon == MainWeapons.FLAIL_WHIP)
+                                    Global.Inventory.EquippedMainWeapon = (MainWeapons)itemID;
+                            }
+                            break;
+                        case MainWeapons.KNIFE:
+                            mainWeaponSlot = 1;
+                            Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                            break;
+                        case MainWeapons.KEYBLADE:
+                        case MainWeapons.KEYBLADE_BETA:
+                            mainWeaponSlot = 2;
+                            if (Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] < (MainWeapons)itemID || Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] == MainWeapons.NONE)
+                            {
+                                Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+
+                                if (Global.Inventory.EquippedMainWeapon == MainWeapons.KEYBLADE || Global.Inventory.EquippedMainWeapon == MainWeapons.KEYBLADE_BETA)
+                                    Global.Inventory.EquippedMainWeapon = (MainWeapons)itemID;
+                            }
+                            break;
+                        case MainWeapons.AXE:
+                            mainWeaponSlot = 3;
+                            Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                            break;
+                        case MainWeapons.KATANA:
+                            mainWeaponSlot = 4;
+                            Global.Inventory.ObtainedMainWeapons[mainWeaponSlot] = (MainWeapons)itemID;
+                            break;
+                    }
+                    Global.AudioManager.PlaySFX(sfx);
+                    break;
                 case ItemTypes.SOFTWARE:
                     Global.Inventory.ObtainedSoftware[(ObtainableSoftware)itemID] = grantToPlayer;
-                    Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                    Global.AudioManager.PlaySFX(sfx);
                     break;
             }
+        }
+
+        internal static int[] SeparateDigits(int inputDigit, int[] args)
+        {
+            int[] returnArgs = new int[args.Length];
+
+            int[] digits = GetDigits(inputDigit).ToArray();
+
+            int digitsOffset = digits.Length - 1;
+            int argIndex = 0;
+            foreach (int arg in args)
+            {
+                int numArgDigits = arg;
+                digitsOffset -= (numArgDigits - 1);
+                int finalArgValue = 0;
+                int baseFactor = (int)Math.Pow(10, numArgDigits - 1);
+
+
+                for (int i = 0; i < numArgDigits; i++)
+                {
+                    if (digitsOffset < 0)
+                    {
+                        digitsOffset++;
+                        baseFactor /= 10;
+                        continue;
+                    }
+                    if (digitsOffset >= digits.Length)
+                    {
+                        break;
+                    }
+                    finalArgValue += digits[digitsOffset] * baseFactor;
+
+                    baseFactor /= 10;
+                    digitsOffset++;
+                }
+                digitsOffset -= (numArgDigits + 1);
+
+                returnArgs[args.Length - 1 - argIndex] = finalArgValue;
+                argIndex++;
+            }
+
+            return returnArgs;
         }
         #endregion
 
