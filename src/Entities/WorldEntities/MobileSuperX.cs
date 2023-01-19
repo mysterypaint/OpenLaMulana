@@ -60,13 +60,6 @@ namespace OpenLaMulana
             MAX
         };
 
-        int[] _inventoryOrder = new int[] {
-            0, 2, 3, 16, 7, 24, 6, 4, 38, 27,
-            10, 33, 28, 13, 22, 32, 21, 1, 37, 11,
-            20, 5, 31, 23, 25, 36, 26, 30, 19, 35,
-            9, 17, 18, 29, 14, 12, 34, 15, 42, 39,
-            40, 46, 47, 8, 41, 48, 49, 50};
-
         string[] _strOptions = {
             "Load Save",
             "Configure Controls",
@@ -247,12 +240,12 @@ namespace OpenLaMulana
                     if (Global.GameFlags.InGameFlags[flagOffset + i])*/
                     
 
-                    for (var i = 0; i < Global.Inventory.TreasureIconIDs.Length; i++)
+                    for (var i = 0; i < Global.Inventory.TreasureIcons.Length; i++)
                     {
                         //Global.TextManager.DrawText(3 * 8, 17 * 8, "SUB-WEAPON");
-                        short iconID = Global.Inventory.TreasureIconIDs[i];
-                        if (iconID < 255)
-                            _treasureSprites[iconID].Draw(spriteBatch, new Vector2(48 + x * 16, 32 + y * 16));
+                        Global.ObtainableTreasures iconID = Global.Inventory.TreasureIcons[i];
+                        if (iconID != Global.ObtainableTreasures.NOTHING)
+                            _treasureSprites[(int)iconID].Draw(spriteBatch, new Vector2(48 + x * 16, 32 + y * 16));
                         //_treasureSprites[_inventoryOrder[i]].Draw(spriteBatch, new Vector2(48 + x * 16, 32 + y * 16));
                         x++;
                         if (x > 9)

@@ -777,7 +777,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
             int[] viewDest = thisView.GetDestinationView(movingDirection);
 
-
             // Remember the parameters that our destination View contains
             int destField = viewDest[(int)VIEW_DEST.FIELD];
             int destViewX = viewDest[(int)VIEW_DEST.X];
@@ -834,6 +833,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             View nextView = nextFieldMapData[destViewX, destViewY];
             nextAV.SetView(nextView);
 
+            DebugPlaySFXIfHardModeInRoom(nextView);
+
+
             // Slide the camera toward the new field
             Global.Camera.UpdateMoveTarget(movingDirection);
 
@@ -866,6 +868,33 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Global.AudioManager.ChangeSongs(_fields[destField].MusicNumber);
 
             UpdateEntities(destField, thisField, thisView, destViewX, destViewY, nextAV.Position);
+        }
+
+        private void DebugPlaySFXIfHardModeInRoom(View view)
+        {
+            List<ObjectSpawnData> spawnDataList = view.GetSpawnData();
+            bool hardModeFound = false;
+
+            foreach (ObjectSpawnData spawnData in spawnDataList)
+            {
+                if (spawnData.OP1 == 150 || spawnData.OP2 == 150 || spawnData.OP3 == 150 || spawnData.OP4 == 150)
+                {
+                    spawnData.IsHardModeChange = true;
+                    hardModeFound = true;
+                    return;
+                }
+
+                List<ObjectStartFlag> flags = spawnData.StartFlags;
+                foreach (ObjectStartFlag flag in flags)
+                {
+                    if (flag.GetIndex() == 150)
+                    {
+                        spawnData.IsHardModeChange = true;
+                        hardModeFound = true;
+                    }
+                }
+            }
+
         }
 
         public void FieldTransitionCardinalBoss(VIEW_DIR movingDirection, View srcView, View destView, Texture2D bossTexture = null, IGlobalWorldEntity guardian = null)

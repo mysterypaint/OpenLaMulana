@@ -153,8 +153,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             {
                 Global.Inventory.ObtainedTreasures.Add(treasures, false);
             }
-            Global.Inventory.TreasureIconIDs = new short[40];
-            Array.Fill((short[])Global.Inventory.TreasureIconIDs, (short)255);
+            Global.Inventory.TreasureIcons = new Global.ObtainableTreasures[40];
+            Array.Fill((Global.ObtainableTreasures[])Global.Inventory.TreasureIcons, (Global.ObtainableTreasures)255);
 
             Global.Inventory.ObtainedSoftware = new Dictionary<Global.ObtainableSoftware, bool>();//bool[(int)Global.ObtainableSoftware.MAX];
             for (Global.ObtainableSoftware software = (Global.ObtainableSoftware)0; software < Global.ObtainableSoftware.MAX; software++)
@@ -170,7 +170,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.EquippedMainWeapon = Global.MainWeapons.WHIP;
             Global.Inventory.EquippedSubWeapon = Global.SubWeapons.HANDY_SCANNER;
             Global.Inventory.CoinCount = 0;
-            Global.Inventory.WeightCount = 0;
+            Global.Inventory.WeightCount = 500;
             Global.Inventory.HP = 32;
             Global.Inventory.HPMax = 32; // A life orb will increase this value by 32. True max is 352.
             Global.Inventory.TrueHPMax = 352;
@@ -1098,6 +1098,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         internal void SetPositionToTile(int rTX, int rTY)
         {
             Position = new Vector2(rTX * CHIP_SIZE + BBox.Width - 1, rTY * CHIP_SIZE + BBox.Height + 5);
+        }
+
+        public void SetJumpsMax(short value)
+        {
+            _jumpsMax = value;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace OpenLaMulana.Entities.WorldEntities
     {
         private bool _daisPlaced = false;
         private Sprite _weightSprite = null;
+        private int _flagToSet = -1;
         private Protag _protag = Global.Protag;
         public override int HitboxWidth { get; set; } = 16;
         public override int HitboxHeight { get; set; } = 8;
@@ -26,6 +27,13 @@ namespace OpenLaMulana.Entities.WorldEntities
             _tex = Global.TextureManager.GetTexture(Textures.ITEM);
 
             _weightSprite = Global.TextureManager.Get8x8Tile(_tex, 20, 3, Vector2.Zero);
+
+            _flagToSet = op1;
+
+            if (HelperFunctions.EntityMaySpawn(_startFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
+            {
+                State = Global.WEStates.IDLE;
+            }
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
@@ -39,14 +47,31 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Update(GameTime gameTime)
         {
-            if (CollidesWithPlayer())
+            switch (State)
             {
-                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN] && !_daisPlaced && Global.Inventory.WeightCount > 0)
-                {
-                    _daisPlaced = true;
-                    Global.AudioManager.PlaySFX(SFX.SE11);
-                    Global.Inventory.WeightCount--;
-                }
+                case WEStates.UNSPAWNED:
+                    if (HelperFunctions.EntityMaySpawn(_startFlags))
+                    {
+                        State = Global.WEStates.IDLE;
+                    }
+                    break;
+                case WEStates.IDLE:
+                    if (!Global.GameFlags.InGameFlags[_flagToSet])
+                    {
+                        if (CollidesWithPlayer())
+                        {
+                            if (InputManager.PressedKeys[(int)ControllerKeys.DOWN] && !_daisPlaced && Global.Inventory.WeightCount > 0)
+                            {
+                                _daisPlaced = true;
+                                Global.AudioManager.PlaySFX(SFX.SE11);
+                                Global.Inventory.WeightCount--;
+
+                                if (_flagToSet >= 0)
+                                    Global.GameFlags.InGameFlags[_flagToSet] = true;
+                            }
+                        }
+                    }
+                    break;
             }
         }
     }

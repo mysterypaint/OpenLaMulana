@@ -25,7 +25,7 @@
         BOSS_DESTROYED,
         P_WEAK_WALL_1,
         P_WEAK_WALL_2,
-        P_ITEM_GET,
+        P_ITEM_TAKEN,
         P_SPEAR_THROW,
         P_GRAPPLE_CLING,
         SUBWEAPON_THROW,
@@ -42,7 +42,7 @@
         SE24,
         HANDY_SCANNER_DONE,
         HANDY_SCANNER_SCANNING,
-        P_GET_MEDICINE,
+        P_MAJOR_ITEM_TAKEN,
         BOSS_SEAL_BREAK,
         VIY_MOVE, // Maybe?
         SE2A,

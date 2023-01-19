@@ -268,6 +268,15 @@ namespace OpenLaMulana.System
                 Global.World.FieldTransitionCardinal(VIEW_DIR.UP);
             }
 
+            if (DirectKeyboardCheckPressed(Keys.E))
+            {
+                HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.POCHETTE_KEY, true);
+                Global.GameFlags.InGameFlags[(int)GameFlags.Flags.POCHETTE_KEY_TAKEN] = true;
+                HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.PEPPER, true);
+                Global.GameFlags.InGameFlags[(int)GameFlags.Flags.PEPPER_TAKEN] = true;
+                Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+            }
+
             if (DirectKeyboardCheckPressed(Keys.P))
             {
                 Field currField = Global.World.GetCurrField();

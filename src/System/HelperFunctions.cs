@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OpenLaMulana.Global;
 using static OpenLaMulana.System.InputManager;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -718,7 +719,7 @@ namespace OpenLaMulana.System
             j = 0;
             foreach (byte b in treasuresMenu)
             {
-                Global.Inventory.TreasureIconIDs[j] = b;
+                Global.Inventory.TreasureIcons[j] = (Global.ObtainableTreasures)b;
                 j++;
             }
 
@@ -801,6 +802,114 @@ namespace OpenLaMulana.System
             else
                 Global.Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
 
+        }
+
+        // Define where each icon should be displayed on the Inventory Screen
+        private static Point[] _inventoryOrderTreasures = new Point[] {
+            new Point(0,0),     // MSX1
+            new Point(7,1),     // Shell Horn
+            new Point(1,0),     // Waterproof Case
+            new Point(2,0),     // Heatproof Case
+            new Point(7,0),     // Detector
+            new Point(1,2),     // Grail
+            new Point(6,0),     // Lamp of Time (Active)
+            new Point(4,0),     // Body Armor
+            new Point(8,3),     // Talisman
+            new Point(0,3),     // Scripture
+            new Point(0,1),     // Gauntlet
+            new Point(9,1),     // Ring
+            new Point(5,3),     // Glove
+            new Point(3,1),     // Endless Key
+            new Point(4,3),     // Twin Statue
+            new Point(7,3),     // Bronze Mirror
+            new Point(3,0),     // Boots
+            new Point(1,3),     // Feather
+            new Point(2,3),     // Bracelet
+            new Point(8,2),     // Dragon Bone
+            new Point(0,2),     // Grapple Claw
+            new Point(6,1),     // Magatama
+            new Point(4,1),     // Cross
+            new Point(3,2),     // Book of the Dead
+            new Point(5,0),     // Perfume
+            new Point(4,2),     // Ocarina
+            new Point(6,2),     // Anchor
+            new Point(0,9),     // Woman Statue (Infertile)
+            new Point(2,1),     // Mini Doll
+            new Point(3,3),     // Eye of Truth
+            new Point(7,2),     // Serpent Staff
+            new Point(3,2),     // Ice Cape
+            new Point(5,1),     // Helmet
+            new Point(1,1),     // Scalesphere
+            new Point(6,3),     // Crystal Skull
+            new Point(9,2),     // Wedge
+            new Point(5,2),     // Plane Model
+            new Point(8,1),     // Flywheel
+            new Point(8,0),     // Pochette Key
+            new Point(9,3),     // Container (Empty)
+            new Point(0,0),     // MSX2
+            new Point(8,3),     // Diary
+            new Point(8,3),     // Mulana Talisman
+            new Point(6,0),     // Lamp of Time (Empty)
+            new Point(0,9),     // Woman Statue (Fertile)
+            new Point(-1,-1),   // Handy Scanner
+            new Point(6,2),     // Pepper
+            new Point(6,2),     // Treasure
+            new Point(9,3),     // Container (Medicine of Life)
+            new Point(9,3),     // Container (Green Medicine)
+            new Point(9,3),     // Container (Red Medicine)
+            new Point(-1,-1),   // Silver Shield
+            new Point(-1,-1),   // Treasure of La-Mulana
+            new Point(-1,-1),   // Life Orb
+            new Point(-1,-1),   // Map
+            new Point(-1,-1),   // Origin Sigil
+            new Point(-1,-1),   // Birth Sigil
+            new Point(-1,-1),   // Life Sigil
+            new Point(-1,-1),   // Death Sigil
+            new Point(-1,-1)    // Skimpy Swimsuit
+        };
+
+        internal static void UpdateInventory(Global.ItemTypes itemType, int itemID, bool grantToPlayer = true)
+        {
+            switch(itemType)
+            {
+                default:
+                case ItemTypes.UNKNOWN:
+                    break;
+                case ItemTypes.TREASURE:
+                    Global.Inventory.ObtainedTreasures[(ObtainableTreasures)itemID] = grantToPlayer;
+                    ObtainableTreasures thisTreasure = (ObtainableTreasures)itemID;
+
+                    Point inventoryCoords = _inventoryOrderTreasures[itemID];
+
+                    if (!inventoryCoords.Equals(new Point(-1, -1))) {
+                        int coordsAsIndex = Math.Clamp(inventoryCoords.Y * 10 + inventoryCoords.X, 0, 39);
+                        Global.Inventory.TreasureIcons[coordsAsIndex] = thisTreasure;
+                    }
+
+                    switch ((ObtainableTreasures)itemID)
+                    {
+                        default:
+                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                            break;
+                        case ObtainableTreasures.MAP:
+                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                            break;
+                        case ObtainableTreasures.LIFE_JEWEL:
+                            Global.AudioManager.PlaySFX(SFX.P_MAJOR_ITEM_TAKEN);
+                            Global.Inventory.HPMax += 32;
+                            Global.Inventory.HP = Global.Inventory.HPMax;
+                            break;
+                        case ObtainableTreasures.FEATHER:
+                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                            Global.Protag.SetJumpsMax(2);
+                            break;
+                    }
+                    break;
+                case ItemTypes.SOFTWARE:
+                    Global.Inventory.ObtainedSoftware[(ObtainableSoftware)itemID] = grantToPlayer;
+                    Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                    break;
+            }
         }
         #endregion
 

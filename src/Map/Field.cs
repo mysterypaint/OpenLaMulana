@@ -474,7 +474,24 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             var op3 = newObjData.OP3;
             var op4 = newObjData.OP4;
             var startFlags = newObjData.StartFlags;
+            var isHardModeChange = newObjData.IsHardModeChange;
             //var spawnIsGlobal = newObjData.SpawnIsGlobal; // No longer needed! Keeping it here just in case, though...
+
+            /*
+            if (isHardModeChange)
+            {
+                if (spawnIsGlobal)
+                    newObj = new GenericGlobalWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags, isHardModeChange);
+                else
+                    newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags, isHardModeChange);
+                
+                Global.AudioManager.PlaySFX(SFX.GUILD_ALERT);
+
+                _s_entityManager.AddEntity(newObj);
+
+                return newObj;
+            }*/
+
 
             switch ((EntityIDs)eventNumber)
             {
@@ -508,6 +525,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.NPC_ROOM:
                     newObj = new NPCRoom(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.INVISIBLE_COLLIDER:
+                    newObj = new InvisibleCollider(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.CEILING_SPIKE:
                     newObj = new CeilingSpike(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);

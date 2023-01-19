@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using OpenLaMulana.System;
 
 namespace OpenLaMulana.Entities.WorldEntities.Parents
 {

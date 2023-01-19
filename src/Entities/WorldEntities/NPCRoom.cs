@@ -40,13 +40,6 @@ namespace OpenLaMulana.Entities.WorldEntities
             MAX
         };
 
-        enum ProductTypes
-        {
-            SUBWEAPON = 1,
-            TREASURE = 2,
-            SOFTWARE = 3
-        };
-
         enum ShopParams
         {
             PRODUCT_TYPE,
@@ -75,11 +68,11 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         struct ShopData
         {
-            public ProductTypes ProductType;
+            public ItemTypes ProductType;
             public int ProductID;
             public int ProductPrice;
             public int ProductQuantity;
-            public byte[] FlagsToSet;
+            public ushort FlagToSet;
             public string ProductPriceString;
             public bool IsSoldOut;
         }
@@ -171,6 +164,8 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
 
                     // Parse and populate the shop's product data
+                    //  - Product data format -
+                    //  \ Product ID \ Product number \ Price \ Price \ Quantity \ Set flag \ Set flag
                     string[] shopDataStr = Global.TextManager.GetText(shopInfo, Global.CurrLang).Split("\\");
                     byte[] _shopDataValues = new byte[shopDataStr.Length - 1];
                     for (int i = 1; i < shopDataStr.Length; i++)
@@ -185,7 +180,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     {
                         int offset = i * (int)ShopParams.MAX;
 
-                        _shopData[i].ProductType = (ProductTypes)_shopDataValues[offset + (int)ShopParams.PRODUCT_TYPE];
+                        _shopData[i].ProductType = (ItemTypes)_shopDataValues[offset + (int)ShopParams.PRODUCT_TYPE];
                         _shopData[i].ProductPrice = _shopDataValues[offset + (int)ShopParams.PRICE_LO] + (_shopDataValues[offset + (int)ShopParams.PRICE_HI] - 1) * 256;
                         if (_shopData[i].ProductPrice > 999)
                             _shopData[i].ProductPrice = 999;
@@ -195,7 +190,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         switch (_shopData[i].ProductType)
                         {
                             default:
-                            case ProductTypes.SUBWEAPON:
+                            case ItemTypes.SUBWEAPON:
                                 _shopData[i].ProductID = _shopDataValues[offset + (int)ShopParams.PRODUCT_ID];
                                 _shopData[i].ProductQuantity = _shopDataValues[offset + (int)ShopParams.PRODUCT_QUANTITY] - 1; // Sell the actual subweapon if this value is 0. Anything higher is the quantity to grant.
                                 if (_shopData[i].ProductID == (int)Global.SubWeapons.ANKH_JEWEL || _shopData[i].ProductID == (int)Global.SubWeapons.PISTOL_AMMUNITION)
@@ -206,12 +201,12 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                                 _productSprites[i] = new Sprite(_tex, 256 + (_shopData[i].ProductID - 1) % 4 * 16, 96 + (_shopData[i].ProductID - 1) / 4 * 16, 16, 16);
                                 break;
-                            case ProductTypes.TREASURE:
+                            case ItemTypes.TREASURE:
                                 _shopData[i].ProductID = _shopDataValues[offset + (int)ShopParams.PRODUCT_ID] - 1;
                                 _shopData[i].ProductQuantity = 0;
                                 _productSprites[i] = new Sprite(_tex, 0 + _shopData[i].ProductID % 20 * 16, 192 + _shopData[i].ProductID / 20 * 16, 16, 16);
                                 break;
-                            case ProductTypes.SOFTWARE:
+                            case ItemTypes.SOFTWARE:
                                 _shopData[i].ProductID = _shopDataValues[offset + (int)ShopParams.PRODUCT_ID] - 1;
                                 _shopData[i].ProductQuantity = 0;
                                 //_shopData[i].ProductID
@@ -220,11 +215,13 @@ namespace OpenLaMulana.Entities.WorldEntities
                                 break;
                         }
 
+                        /*
                         if (_shopDataValues[offset + (int)ShopParams.FLAGS_HI] % 255 == 0 || _shopDataValues[offset + (int)ShopParams.FLAGS_LO] % 255 == 0)
                         {
-                            _shopData[i].FlagsToSet = null;
-                        }
-                        _shopData[i].FlagsToSet = new byte[2] { _shopDataValues[5], _shopDataValues[6] };
+                            _shopData[i].FlagToSet = null;
+                        }*/
+
+                        _shopData[i].FlagToSet = (ushort)(((_shopDataValues[offset + (int)ShopParams.FLAGS_HI] - 1) * 256) + _shopDataValues[offset + (int)ShopParams.FLAGS_LO]);
                     }
 
                     _currText = _dialogueStr[(int)ShopDialogue.WELCOME];

@@ -15,6 +15,7 @@ namespace OpenLaMulana
         public int OP4;
         public List<ObjectStartFlag> StartFlags;
         public bool SpawnIsGlobal = true; // Sanity checking
+        public bool IsHardModeChange { get; set; } = false; // For quick researching
 
         public ObjectSpawnData(int eventNumber, int x, int y, int OP1, int OP2, int OP3, int OP4)
         {
@@ -28,6 +29,7 @@ namespace OpenLaMulana
 
             StartFlags = new List<ObjectStartFlag>();
         }
+
 
         internal void AddStartFlag(int value, bool conditionMetIfFlagIsOn)
         {

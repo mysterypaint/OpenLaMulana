@@ -14,6 +14,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int _checkFlag = -1;
         private bool _notSolidWhenOP3IsOn = false;
         private bool _isSolid = false;
+        private Sprite _displayedGraphic;
 
         public GraphicDisplay(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
@@ -45,6 +46,19 @@ namespace OpenLaMulana.Entities.WorldEntities
                 _tex = Global.TextureManager.GetTexture(Global.World.GetCurrMapTexture());
                 Depth = (int)Global.DrawOrder.AboveEntitiesGraphicDisplay;
             }
+
+            _displayedGraphic = new Sprite(_tex, _texCoords, _spriteWidthHeight);
+
+            if (HelperFunctions.EntityMaySpawn(_startFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
+            {
+                State = Global.WEStates.IDLE;
+                _sprIndex = _displayedGraphic;
+            }
+            else
+            {
+                State = Global.WEStates.UNSPAWNED;
+                _sprIndex = null;
+            }
             /*
         switch (_texturePage)
         {
@@ -67,19 +81,20 @@ namespace OpenLaMulana.Entities.WorldEntities
                 break;
         }
             */
-
-            _sprIndex = new Sprite(_tex, _texCoords, _spriteWidthHeight);
         }
+
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            if (_sprIndex != null)
+                _sprIndex.Draw(spriteBatch, Position + new Vector2(0, World.HUD_HEIGHT));
+            /*
             switch (State)
             {
                 case Global.WEStates.UNSPAWNED:
                     break;
                 case Global.WEStates.IDLE:
-                    _sprIndex.Draw(spriteBatch, Position + new Vector2(0, World.HUD_HEIGHT));
                     break;
-            }
+            }*/
         }
 
         public override void Update(GameTime gameTime)
@@ -88,11 +103,17 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 case Global.WEStates.UNSPAWNED:
                     if (HelperFunctions.EntityMaySpawn(_startFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
+                    {
                         State = Global.WEStates.IDLE;
+                        _sprIndex = _displayedGraphic;
+                    }
                     break;
                 case Global.WEStates.IDLE:
                     if (Global.GameFlags.InGameFlags[_checkFlag])
+                    {
                         State = Global.WEStates.IDLE;
+                        _sprIndex = null;
+                    }
                     break;
             }
         }

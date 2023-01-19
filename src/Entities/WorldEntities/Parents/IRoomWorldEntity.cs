@@ -43,6 +43,9 @@ namespace OpenLaMulana
                 destView = Global.World.GetCurrentView();
             _parentView = destView;
             viewCoords = new Point(_parentView.X, _parentView.Y);
+
+            if (HelperFunctions.EntityMaySpawn(_startFlags))
+                State = Global.WEStates.IDLE;
         }
 
         ~IRoomWorldEntity()

@@ -212,6 +212,15 @@ namespace OpenLaMulana
             MAX
         }
 
+        public enum ItemTypes
+        {
+            UNKNOWN = -1,
+            WEAPON = 0,
+            SUBWEAPON = 1,
+            TREASURE = 2,
+            SOFTWARE = 3
+        };
+
         public enum MainWeapons
         {
             NONE = 255,
@@ -307,6 +316,7 @@ namespace OpenLaMulana
             LIFE_SIGIL,
             DEATH_SIGIL,
             HELL_TREASURE,
+            NOTHING = 255,
             MAX
         }
 
@@ -508,7 +518,7 @@ namespace OpenLaMulana
             public Dictionary<Global.ObtainableSoftware, bool> ObtainedSoftware { get; set; }
             public Global.MainWeapons[] ObtainedMainWeapons { get; set; }
             public Global.SubWeapons[] ObtainedSubWeapons { get; set; }
-            public short[] TreasureIconIDs { get; set; }
+            public Global.ObtainableTreasures[] TreasureIcons { get; set; }
 
             public int CoinCount { get; set; }
             public int WeightCount { get; set; }

@@ -628,7 +628,7 @@ namespace OpenLaMulana.System
 
                         if (script == ApplyControls)
                         {
-                            Global.AudioManager.PlaySFX(SFX.P_ITEM_GET);
+                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
                         } else
                             Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                         break;
