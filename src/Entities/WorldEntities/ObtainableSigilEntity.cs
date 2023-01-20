@@ -26,6 +26,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             int texOffX = _itemID * 16;
             _sigilSprite = new Sprite(_tex, 240 + texOffX, 224, 16, 16);
             HP = 1;
+            _sprIndex = null;
 
             if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {
@@ -46,7 +47,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (State == Global.WEStates.IDLE)
+            if (State == Global.WEStates.IDLE && _sprIndex != null)
                 _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 

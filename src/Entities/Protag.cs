@@ -29,11 +29,11 @@ namespace OpenLaMulana.Entities
         public Facing FacingX = Facing.RIGHT;
         public Facing FacingY = Facing.DOWN;
         public short BBoxOriginX { get; set; } = 5;
-        public short BBoxOriginY { get; set; } = 12;
-        public short BBoxCenterX { get; set; } = 4;
-        public short BBoxCenterY { get; set; } = 5;
+        public short BBoxOriginY { get; set; } = 11;
+        public short BBoxCenterX { get; set; } = 5;
+        public short BBoxCenterY { get; set; } = 6;
 
-        public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Max;
         public Effect ActiveShader { get; set; } = null;
 
         private short _moveX = 0;
@@ -79,16 +79,19 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             get
             {
                 Rectangle box = new Rectangle(
-                    (int)Math.Round(Position.X - BBoxOriginX),
-                    (int)Math.Round(Position.Y - BBoxOriginY),
-                    9,
-                    11
+                    (int)Math.Round(Position.X),
+                    (int)Math.Round(Position.Y),
+                    10,
+                    12
                 );
+                
+                box.Offset(new Point(-BBoxOriginX, -BBoxOriginY));
                 //box.Inflate(-COLLISION_BOX_INSET, -COLLISION_BOX_INSET);
                 return box;
             }
         }
 
+        private bool _debugDisableAutoScreenTransitions = true;
         public int ContactWarpCooldownTimer { get; set; } = 0;
 
         public const int SPRITE_WIDTH = 16;
@@ -179,16 +182,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.ShieldValue = 0;
             Global.Inventory.HandyScannerValue = 0;
 
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GRADIUS] = true;
-            //Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GLYPH_READER] = true;
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.HYPER_RALLY] = true;
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.KONAMI_TENNIS] = true;
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GAME_MASTER] = true;
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.A1_SPIRIT] = true;
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.SKY_JAGUAR] = true;
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.F1_SPIRIT] = true;
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.YIE_AR_KUNG_FU_2] = true;
-            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GLYPH_READER] = true;
+            GetDebugEquipment();
+
 
             // Damage Table:
             // Divine Lightning = 16;
@@ -217,6 +212,24 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             MoveToWorldSpawnPoint();
         }
 
+        private void GetDebugEquipment()
+        {
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GRADIUS] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GLYPH_READER] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.HYPER_RALLY] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.KONAMI_TENNIS] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GAME_MASTER] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.A1_SPIRIT] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.SKY_JAGUAR] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.F1_SPIRIT] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.YIE_AR_KUNG_FU_2] = true;
+            HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.SHELL_HORN, true);
+            HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.BOOTS, true);
+            HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.FEATHER, true);
+            HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.MSX2, true);
+            Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
+        }
+
         private void MoveToWorldSpawnPoint()
         {
             int[] spawnParams = Regex.Matches(Global.TextManager.GetText((int)Global.HardCodedText.SPAWN_POINT, Global.CurrLang), "(-?[0-9]+)").OfType<Match>().Select(m => int.Parse(m.Value)).ToArray();
@@ -232,7 +245,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _idleSprite.Draw(spriteBatch, Position + new Vector2(0, World.HUD_HEIGHT));
+            _idleSprite.Draw(spriteBatch, new Vector2(Position.X, Position.Y + World.HUD_HEIGHT));
             Rectangle dRect = BBox;
             dRect.Y += World.HUD_HEIGHT;
             RectangleSprite.DrawRectangle(spriteBatch, dRect, Color.Red, 1);
@@ -618,6 +631,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         private void HandleScreenTransitions(View currRoom)
         {
+            if (_debugDisableAutoScreenTransitions)
+                return;
             if (Global.Camera.GetState() == Camera.CamStates.NONE)
             {
                 // Handle screen transitions when the player touches the border of the screen

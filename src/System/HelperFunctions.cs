@@ -821,6 +821,7 @@ namespace OpenLaMulana.System
                 Global.Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
 
         }
+        #endregion
 
         // Define where each icon should be displayed on the Inventory Screen
         private static Point[] _inventoryOrderTreasures = new Point[] {
@@ -886,6 +887,58 @@ namespace OpenLaMulana.System
             new Point(-1,-1)    // Skimpy Swimsuit
         };
 
+        public static void UpdateInventorySilent(Global.ObtainableTreasures itemID, bool grantToPlayer)
+        {
+            Point inventoryCoords = _inventoryOrderTreasures[(int)itemID];
+            int coordsAsIndex = Math.Clamp(inventoryCoords.Y * 10 + inventoryCoords.X, 0, 39);
+            Global.Inventory.TreasureIcons[coordsAsIndex] = itemID;
+            Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)itemID] = grantToPlayer;
+            ImplementInventoryChanges(itemID, false, true);
+        }
+
+        private static void ImplementInventoryChanges(Global.ObtainableTreasures itemID, bool playSFX = false, bool forciblySetGameFlag = false)
+        {
+            switch (itemID)
+            {
+                default:
+                    if (playSFX)
+                        Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                    break;
+                case Global.ObtainableTreasures.MSX2:
+                    if (forciblySetGameFlag)
+                        Global.GameFlags.InGameFlags[(int)GameFlags.Flags.MSX2_TAKEN] = true;
+                    break;
+                case Global.ObtainableTreasures.SHELL_HORN:
+                    if (forciblySetGameFlag)
+                        Global.GameFlags.InGameFlags[(int)GameFlags.Flags.SHELL_HORN_TAKEN] = true;
+                    break;
+                case Global.ObtainableTreasures.MAP:
+                    if (playSFX)
+                        Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                    break;
+                case Global.ObtainableTreasures.LIFE_JEWEL:
+                    if (playSFX)
+                        Global.AudioManager.PlaySFX(SFX.P_MAJOR_ITEM_TAKEN);
+                    Global.Inventory.HPMax += 32;
+                    Global.Inventory.HP = Global.Inventory.HPMax;
+                    break;
+                case Global.ObtainableTreasures.FEATHER:
+                    if (playSFX)
+                        Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                    Global.Protag.SetHasFeather(true);
+                    if (forciblySetGameFlag)
+                        Global.GameFlags.InGameFlags[(int)GameFlags.Flags.FEATHER_TAKEN] = true;
+                    break;
+                case Global.ObtainableTreasures.BOOTS:
+                    if (playSFX)
+                        Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                    Global.Protag.SetHasBoots(true);
+                    if (forciblySetGameFlag)
+                        Global.GameFlags.InGameFlags[(int)GameFlags.Flags.BOOTS_TAKEN] = true;
+                    break;
+            }
+        }
+
         internal static void UpdateInventory(Global.ItemTypes itemType, int itemID, bool grantToPlayer = true, SFX sfx = SFX.P_ITEM_TAKEN, Sprite collectibleIcon = null)
         {
             string itemName = "Unknown";
@@ -907,28 +960,7 @@ namespace OpenLaMulana.System
                         Global.Inventory.TreasureIcons[coordsAsIndex] = thisTreasure;
                     }
 
-                    switch ((Global.ObtainableTreasures)itemID)
-                    {
-                        default:
-                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                            break;
-                        case Global.ObtainableTreasures.MAP:
-                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                            break;
-                        case Global.ObtainableTreasures.LIFE_JEWEL:
-                            Global.AudioManager.PlaySFX(SFX.P_MAJOR_ITEM_TAKEN);
-                            Global.Inventory.HPMax += 32;
-                            Global.Inventory.HP = Global.Inventory.HPMax;
-                            break;
-                        case Global.ObtainableTreasures.FEATHER:
-                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                            Global.Protag.SetHasFeather(true);
-                            break;
-                        case Global.ObtainableTreasures.BOOTS:
-                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                            Global.Protag.SetHasBoots(true);
-                            break;
-                    }
+                    ImplementInventoryChanges(thisTreasure, true, false);
                     break;
                 case Global.ItemTypes.SUBWEAPON:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.SUB_WEAPON_NAMES_BEGIN + itemID, Global.CurrLang);
@@ -1056,7 +1088,16 @@ namespace OpenLaMulana.System
 
             return returnArgs;
         }
-        #endregion
+
+        internal static bool CollisionRectangle(Rectangle boxA, Rectangle boxB)
+        {
+            if (boxB.Left <= boxA.Right && boxA.Left <= boxB.Right && boxB.Top <= boxA.Bottom)
+            {
+                return boxA.Top <= boxB.Bottom;
+            }
+
+            return false;
+        }
 
     }
 }

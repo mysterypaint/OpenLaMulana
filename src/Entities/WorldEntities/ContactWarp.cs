@@ -24,6 +24,8 @@ namespace OpenLaMulana.Entities.WorldEntities
             _viewNumber = op2;    // Specifies the graphics that are overwritten in front of Lemeza when he passes through the gate
             _relViewX = op3;
             _relViewY = op4;
+            HitboxWidth = 2 * World.CHIP_SIZE;
+            HitboxHeight = 2 * World.CHIP_SIZE;
 
             _tex = null;
             _sprIndex = null;
@@ -40,7 +42,8 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case WEStates.UNSPAWNED:
                     break;
                 case WEStates.IDLE:
-                    Rectangle rect = new Rectangle((int)Position.X, (int)Position.Y + Main.HUD_HEIGHT, HitboxWidth, HitboxHeight);//(int)(0.5f * (HitboxWidth / World.CHIP_SIZE)), (int)(0.5f * (HitboxWidth / World.CHIP_SIZE)));
+                    Rectangle rect = BBox;// new Rectangle((int)Position.X, (int)Position.Y + Main.HUD_HEIGHT, HitboxWidth, HitboxHeight);//(int)(0.5f * (HitboxWidth / World.CHIP_SIZE)), (int)(0.5f * (HitboxWidth / World.CHIP_SIZE)));
+                    rect.Y += World.HUD_HEIGHT;
                     HelperFunctions.DrawRectangle(spriteBatch, rect, new Color(75, 100, 100, 105));
                     break;
             }

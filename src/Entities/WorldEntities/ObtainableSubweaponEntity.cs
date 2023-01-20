@@ -44,6 +44,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             HP = 1;
             HitboxWidth = 16;
             HitboxHeight = 16;
+            _sprIndex = null;
             if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {
                 if (_itemID >= 0)
@@ -62,7 +63,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (State == Global.WEStates.IDLE) {
+            if (State == Global.WEStates.IDLE && _sprIndex != null) {
                 _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
             }
         }
@@ -75,7 +76,10 @@ namespace OpenLaMulana.Entities.WorldEntities
                     if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
                     {
                         if (_itemID >= 0)
+                        {
                             State = Global.WEStates.IDLE;
+                            _sprIndex = _subweaponSprite;
+                        }
                         else
                         {
                             _sprIndex = null;
