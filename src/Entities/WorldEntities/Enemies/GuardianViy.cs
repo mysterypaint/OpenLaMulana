@@ -128,7 +128,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Update(GameTime gameTime)
         {
-            if (InputManager.PressedKeys[(int)Global.ControllerKeys.WHIP])
+            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
             {
                 _sprNum++;
                 if (_sprNum >= spritesMax)

@@ -497,28 +497,36 @@ namespace OpenLaMulana.System
             int[] blockSizes = { 870, 60, 40, 24, 5, 24, 10, 20, 1, 2, 2, 4, 4, 336, 4, 20 };
             byte globalChecksum;
 
-            using (BinaryReader reader = new BinaryReader(new FileStream(fileName, FileMode.Open)))
+            try
             {
-                int bufferOffset = 0;
-                for (SaveRegions eB = (SaveRegions)0; eB < SaveRegions.MAX; eB++)
+                using (BinaryReader reader = new BinaryReader(new FileStream(fileName, FileMode.Open)))
                 {
-                    byte key = reader.ReadByte();
-                    bufferOffset++;
+                    int bufferOffset = 0;
+                    for (SaveRegions eB = (SaveRegions)0; eB < SaveRegions.MAX; eB++)
+                    {
+                        byte key = reader.ReadByte();
+                        bufferOffset++;
 
-                    byte[] data = new byte[blockSizes[(int)eB]];
-                    reader.Read(data, 0, blockSizes[(int)eB]);
-                    bufferOffset += blockSizes[(int)eB];
-                    reader.BaseStream.Seek(bufferOffset, SeekOrigin.Begin);
+                        byte[] data = new byte[blockSizes[(int)eB]];
+                        reader.Read(data, 0, blockSizes[(int)eB]);
+                        bufferOffset += blockSizes[(int)eB];
+                        reader.BaseStream.Seek(bufferOffset, SeekOrigin.Begin);
 
-                    byte checksum = reader.ReadByte();
-                    bufferOffset++;
+                        byte checksum = reader.ReadByte();
+                        bufferOffset++;
 
 
-                    allBlocks[(int)eB] = new EncryptionBlock(key, data, checksum);
+                        allBlocks[(int)eB] = new EncryptionBlock(key, data, checksum);
+                    }
+
+                    globalChecksum = reader.ReadByte();
                 }
-
-                globalChecksum = reader.ReadByte();
+            } catch (FileNotFoundException)
+            {
+                Debug.WriteLine("The file could not be found.", fileName);
+                return null;
             }
+            
             SaveData encryptedSave = new SaveData(false, allBlocks, globalChecksum);
 
             return encryptedSave;
@@ -713,6 +721,16 @@ namespace OpenLaMulana.System
             foreach (byte b in treasures)
             {
                 Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)j] = Convert.ToBoolean(b);
+
+                switch((Global.ObtainableTreasures)j)
+                {
+                    case Global.ObtainableTreasures.FEATHER:
+                        Global.Protag.SetHasFeather(true);
+                        break;
+                    case Global.ObtainableTreasures.BOOTS:
+                        Global.Protag.SetHasBoots(true);
+                        break;
+                }
                 j++;
             }
 
@@ -904,7 +922,11 @@ namespace OpenLaMulana.System
                             break;
                         case Global.ObtainableTreasures.FEATHER:
                             Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                            Global.Protag.SetJumpsMax(2);
+                            Global.Protag.SetHasFeather(true);
+                            break;
+                        case Global.ObtainableTreasures.BOOTS:
+                            Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+                            Global.Protag.SetHasBoots(true);
                             break;
                     }
                     break;

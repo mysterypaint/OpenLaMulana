@@ -6,6 +6,7 @@ using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
+using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
@@ -34,6 +35,15 @@ namespace OpenLaMulana.Entities.WorldEntities
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            switch (State)
+            {
+                case WEStates.UNSPAWNED:
+                    break;
+                case WEStates.IDLE:
+                    Rectangle rect = new Rectangle((int)Position.X, (int)Position.Y + Main.HUD_HEIGHT, HitboxWidth, HitboxHeight);//(int)(0.5f * (HitboxWidth / World.CHIP_SIZE)), (int)(0.5f * (HitboxWidth / World.CHIP_SIZE)));
+                    HelperFunctions.DrawRectangle(spriteBatch, rect, new Color(75, 100, 100, 105));
+                    break;
+            }
         }
 
         public override void Update(GameTime gameTime)

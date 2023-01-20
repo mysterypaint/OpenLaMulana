@@ -563,13 +563,6 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
 
-                    /*
-                case EntityIDs.BIG_ANKH:
-                    if (op1 != 8072 || op2 != 16008 || op3 != 361)
-                        newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
-                    else
-                        newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
-                    break;*/
                 case EntityIDs.AKNH:
                     newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
@@ -602,6 +595,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.SINKING_RUINS_TABLET:
                     newObj = new SinkingRuinsTablet(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.GREAT_ANKH:
+                    newObj = new GreatAnkh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_A_BAO_A_QU:
                     newObj = new EnemyABaoAQu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);

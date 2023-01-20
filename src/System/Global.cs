@@ -461,7 +461,7 @@ namespace OpenLaMulana
             CONFIG_MENU_LEFT,
             CONFIG_MENU_RIGHT,
             JUMP,
-            WHIP,
+            MAIN_WEAPON,
             SUB_WEAPON,
             ITEM,
             MENU_OPEN_INVENTORY,

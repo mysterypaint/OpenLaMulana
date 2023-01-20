@@ -209,7 +209,7 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.WHIP])
+                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
                             {
                                 Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] = Global.ObtainableSoftware.NONE;
                             }
@@ -252,12 +252,16 @@ namespace OpenLaMulana
                                 - keep looking toward the direction we are moving until we exhaust the possibilities
                                 - stop and do nothing, if we find nothing*/
 
-                                var searchingDirectionY = InputManager.DirPressedY;
+                                var searchingDirectionX = InputManager.DirPressedX;
+                                int _foundSoftware = FindSoftware(new Vector2(searchingDirectionX, 0), _softwareSelectionCursorPosition);
 
-
-                                _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
-                                _inventoryCursorVisible = true;
-                                Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                if (_foundSoftware >= 0)
+                                {
+                                    _softwareSelectionCursorPosition = _foundSoftware;
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                    _inventoryCursorVisible = true;
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                }
                             }
 
 
@@ -281,7 +285,7 @@ namespace OpenLaMulana
                                     Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
                                 }
                             }
-                            else if (InputManager.PressedKeys[(int)Global.ControllerKeys.WHIP])
+                            else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
                             {
                                 _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
                                 _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
@@ -446,7 +450,7 @@ namespace OpenLaMulana
                                     stopSearchingRight = false;
                                     checkingColumn = 1;
                                 }
-                                if (romPosY < 0 || (romPosY >= 5 && romPosX + checkingColumn > 14))
+                                if (romPosY < 0 || (romPosY > 5 && romPosX + checkingColumn > 14))
                                     break;
                                 continue;
                             }
@@ -459,10 +463,14 @@ namespace OpenLaMulana
                                 checkingColumn = 1;
                             }
 
-                            if (romPosY < 0 || (romPosY >= 5 && romPosX + checkingColumn >= 13))
+                            if (romPosY < 0)
                                 break;
 
                             currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+                            if ((romPosY >= 5 && romPosX + checkingColumn >= 14)) {
+                                currCheckingRom = (int)Global.ObtainableSoftware.MAX - 1;
+                                break;
+                            }
 
                         }
 
@@ -472,7 +480,7 @@ namespace OpenLaMulana
                             checkingColumn--;
                     }
 
-                    if (currCheckingRom >= (int)Global.ObtainableSoftware.MAX || currCheckingRom < 0)
+                    if (currCheckingRom > (int)Global.ObtainableSoftware.MAX || currCheckingRom < 0)
                         return -1;
 
                     if (Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingRom])
@@ -487,11 +495,25 @@ namespace OpenLaMulana
             } else
             {
                 // Horizontal checking
+                int checkingColumn = (int)movingDirection.X;
+                int currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
 
+                if ((romPosX >= 13 && movingDirection.X > 0) || romPosX <= 0 && movingDirection.X < 0)
+                    return -1;
+
+                if (currCheckingRom >= (int)Global.ObtainableSoftware.MAX || currCheckingRom < 0)
+                    return -1;
+
+                while (!Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingRom])
+                {
+                    checkingColumn += (int)movingDirection.X;
+                    currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+
+                    if (romPosX + checkingColumn < 0 || romPosX + checkingColumn > 14)
+                        return -1;
+                }
+                return currCheckingRom;
             }
-
-
-
 
             return -1;
         }

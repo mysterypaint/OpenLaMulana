@@ -1,18 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.Linq;
-using System.Runtime.Intrinsics.Arm;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using static OpenLaMulana.Entities.Protag;
 using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities
@@ -66,8 +59,8 @@ namespace OpenLaMulana.Entities
         private bool _fellOffLedge = false;
         private bool _onIce = false;
         private bool _wasOnIce = false;
-        private bool _hasBoots = true;
-        private bool _hasFeather = true;
+        private bool _hasBoots = false;
+        private bool _hasFeather = false;
 
 
 
@@ -102,7 +95,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         public const int SPRITE_HEIGHT = 16;
         public const int CHIP_EDGE = CHIP_SIZE - 1;
         private const double SPD_GRAVITY = 0.4;
-        private const double SPD_WALK = 1.5;
+        private double _spdWalk = 1.5;
         private const double SPD_JUMP = 7.0;
         private const double SPD_GRAV_MAX = 8f;
 
@@ -186,16 +179,17 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.ShieldValue = 0;
             Global.Inventory.HandyScannerValue = 0;
 
-
-
-
-
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GRADIUS] = true;
             //Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GLYPH_READER] = true;
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.HYPER_RALLY] = true;
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.KONAMI_TENNIS] = true;
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GAME_MASTER] = true;
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.A1_SPIRIT] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.SKY_JAGUAR] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.F1_SPIRIT] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.YIE_AR_KUNG_FU_2] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GLYPH_READER] = true;
+
             // Damage Table:
             // Divine Lightning = 16;
             // Skeleton = 1;
@@ -209,9 +203,13 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 Global.Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
 
 
-            //SaveData encryptedSave = HelperFunctions.LoadSaveFromFile("lamulana.sa0");
-            //SaveData decryptedSave = HelperFunctions.DecryptSaveFile(encryptedSave);
-            //HelperFunctions.ParseSaveData(decryptedSave);
+            SaveData encryptedSave = null;// HelperFunctions.LoadSaveFromFile("lamulana.sa0");
+
+            if (encryptedSave != null)
+            {
+                SaveData decryptedSave = HelperFunctions.DecryptSaveFile(encryptedSave);
+                HelperFunctions.ParseSaveData(decryptedSave);
+            }
 
             if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.FEATHER])
                 _jumpsMax = 2;
@@ -401,7 +399,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 }
                 else
                 {
-                    _hsp = _moveX * SPD_WALK;
+                    _hsp = _moveX * _spdWalk;
                 }
 
 
@@ -425,7 +423,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         if (_vsp >= 0)
                         {
                             if (_jumpCount < _jumpsMax && !_fellOffLedge)
-                                _hsp = _moveX * SPD_WALK; // Allow horizontal movement if we're falling
+                                _hsp = _moveX * _spdWalk; // Allow horizontal movement if we're falling
                             else
                             {
                                 // We walked off an edge: Instead, we should fall straight down until we touch ground
@@ -439,7 +437,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 else
                 {
                     if (_vsp < 0)
-                        _hsp = _moveX * SPD_WALK;
+                        _hsp = _moveX * _spdWalk;
                 }
             }
 
@@ -451,7 +449,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 _vsp = -SPD_JUMP;
                 _vsp_fract = 0;
                 _isGrounded = false;
-                _hsp = _moveX * SPD_WALK;
+                _hsp = _moveX * _spdWalk;
                 Global.AudioManager.PlaySFX(SFX.P_JUMP);
 
                 if (_onIce)
@@ -1114,9 +1112,24 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Position = new Vector2(rTX * CHIP_SIZE + BBox.Width - 1, rTY * CHIP_SIZE + BBox.Height + 5);
         }
 
-        public void SetJumpsMax(short value)
+        public void SetHasBoots(bool value)
         {
-            _jumpsMax = value;
+            _hasBoots = value;
+
+            if (_hasBoots)
+                _spdWalk *= 2;
+            else
+                _spdWalk = 1.5;
+        }
+
+        public void SetHasFeather(bool value)
+        {
+            _hasFeather = value;
+
+            if (_hasFeather)
+                _jumpsMax = 2;
+            else
+                _jumpsMax = 1;
         }
     }
 }

@@ -83,7 +83,7 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.UP] = (int)Keys.W;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.DOWN] = (int)Keys.S;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.WHIP] = (int)Keys.J;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MAIN_WEAPON] = (int)Keys.J;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.JUMP] = (int)Keys.K;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUB_WEAPON] = (int)Keys.L;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.I;
@@ -130,7 +130,7 @@ namespace OpenLaMulana.System
                 ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.JUMP] = (int)Buttons.A;
             }
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.ITEM] = (int)Buttons.Y;
-            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.WHIP] = (int)Buttons.X;
+            ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MAIN_WEAPON] = (int)Buttons.X;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.SUB_SHIFT_RIGHT] = (int)Buttons.RightShoulder;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.SUB_SHIFT_LEFT] = (int)Buttons.LeftShoulder;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MAIN_WEAPON_SHIFT_LEFT] = (int)Buttons.LeftTrigger;

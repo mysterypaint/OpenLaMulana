@@ -44,17 +44,24 @@ namespace OpenLaMulana.Entities.WorldEntities
         {
             //_tex = Global.TextureManager.MakeTexture(16, 8, new Vector4(0, 255, 0, 255));
             //_sprIndex = new Sprite(_tex, 0, 8, 16, 8);
-            _tex = Global.TextureManager.GetTexture(Textures.ITEM);
-
+            
             HitboxWidth = op1 * World.CHIP_SIZE;
             HitboxHeight = op2 * World.CHIP_SIZE;
             _flagToSet = op3;
             _deletionJudgement = op4;
-
+            Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), 0.5f * (HitboxWidth / World.CHIP_SIZE), 0.5f * (HitboxWidth / World.CHIP_SIZE));
+            switch (State)
+            {
+                case WEStates.UNSPAWNED:
+                    break;
+                case WEStates.IDLE:
+                    Rectangle rect = new Rectangle((int)Position.X, (int)Position.Y + Main.HUD_HEIGHT, HitboxWidth, HitboxHeight);//(int)(0.5f * (HitboxWidth / World.CHIP_SIZE)), (int)(0.5f * (HitboxWidth / World.CHIP_SIZE)));
+                    HelperFunctions.DrawRectangle(spriteBatch, rect, new Color(255, 134, 0, 40));
+                    break;
+            }
             //Rectangle offBox = new Rectangle(BBox.X, BBox.Y + World.HUD_HEIGHT, BBox.Width, BBox.Height);
             //HelperFunctions.DrawRectangle(spriteBatch, offBox, Color.Green);
         }
@@ -75,7 +82,6 @@ namespace OpenLaMulana.Entities.WorldEntities
                         if (_flagToSet > -1)
                         {
                             Global.GameFlags.InGameFlags[_flagToSet] = true;
-                            State = WEStates.UNSPAWNED;
                         }
                     }
                     break;

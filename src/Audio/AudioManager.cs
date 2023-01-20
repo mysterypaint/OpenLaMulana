@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,6 @@ namespace OpenLaMulana
         private List<MidiFile> songs = new List<MidiFile>();
         private int _currSongID = -1;//17;
         private string[] _bgmFNames = new string[76];
-        private bool _guidanceGateFirstTime = true;
 
         public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
@@ -219,16 +219,26 @@ namespace OpenLaMulana
             {
                 if (!isJukebox)
                 {
-                    if (musicNumber == 1)
+                    switch (musicNumber)
                     {
-                        if (_currSongID == 39)
-                            return;
+                        case 0:
+                            if (_currSongID == 17)
+                                return;
 
-                        if (_guidanceGateFirstTime)
-                        {
-                            musicNumber = 39;
-                            _guidanceGateFirstTime = false;
-                        }
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.GUARDIAN_DEFEATED_ALL])
+                            {
+                                musicNumber = 17;
+                            }
+                            break;
+                        case 1:
+                            if (_currSongID == 39)
+                                return;
+                            
+                            if (!Global.GameFlags.InGameFlags[(int)GameFlags.Flags.ENTERED_LAMULANA_FOR_THE_FIRST_TIME])
+                            {
+                                musicNumber = 39;
+                            }
+                            break;
                     }
                 }
                 midiPlayer.Stop();

@@ -53,7 +53,7 @@ namespace OpenLaMulana.System
             RFLAG_14 = 14,
             RFLAG_15 = 15,
             RFLAG_16 = 16,
-            RFLAG_17 = 17,
+            RFLAG_17 = 17,      // Use cases: Trigger spikes in F0[1,1] when touching Ev22 (InvisibleCollider) at the bottom right;
             RFLAG_18 = 18,
             RFLAG_19 = 19,
             RFLAG_20 = 20,
@@ -74,7 +74,7 @@ namespace OpenLaMulana.System
             RFLAG_35 = 35,
             RFLAG_36 = 36,
             RFLAG_37 = 37,
-            RFLAG_38 = 38,
+            RFLAG_38 = 38,      // Use cases: Hit detection when leaving Surface;
             RFLAG_39 = 39,
 
             // Saved Flags
@@ -124,7 +124,7 @@ namespace OpenLaMulana.System
             SFLAG_0083 = 83,
             SFLAG_0084 = 84,
             SFLAG_0085 = 85,
-            SFLAG_0086 = 86,
+            ENTERED_LAMULANA_FOR_THE_FIRST_TIME = 86,
             SFLAG_0087 = 87,
             SFLAG_0088 = 88,
             SFLAG_0089 = 89,
@@ -1076,7 +1076,7 @@ namespace OpenLaMulana.System
             SFLAG_1023 = 1023,
             SFLAG_1024 = 1024,
             SFLAG_1025 = 1025,
-            SFLAG_1026 = 1026,
+            SFLAG_1026 = 1026,      
             SFLAG_1027 = 1027,
             SFLAG_1028 = 1028,
             SFLAG_1029 = 1029,
@@ -1085,7 +1085,7 @@ namespace OpenLaMulana.System
             SFLAG_1032 = 1032,
             SFLAG_1033 = 1033,
             SFLAG_1034 = 1034,
-            SFLAG_1035 = 1035,
+            DURACUETS_ACTIVATES_SURFACE_SLEEPING_STATUE = 1035,  // Turns on immediately after talking to Duracuets. There's also an event on-screen that deletes his object (ID #6 in the room, EvID #14). His talk flag triggers \2\5\11: (5-1)*256 + 11 = 1035
             SFLAG_1036 = 1036,
             SFLAG_1037 = 1037,
             SFLAG_1038 = 1038,

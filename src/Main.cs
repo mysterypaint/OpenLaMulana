@@ -606,8 +606,6 @@ namespace OpenLaMulana
 
             Global.World.InitWorldEntities();
 
-            Global.AudioManager.ChangeSongs(0);
-
             State = Global.GameState.TRANSITION;
             return true;
         }

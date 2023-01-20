@@ -99,7 +99,7 @@ namespace OpenLaMulana.Entities
 
             if (_doneDrawing)
             {
-                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM] || InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] || InputManager.PressedKeys[(int)Global.ControllerKeys.WHIP] || InputManager.PressedKeys[(int)Global.ControllerKeys.SUB_WEAPON])
+                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM] || InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] || InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON] || InputManager.PressedKeys[(int)Global.ControllerKeys.SUB_WEAPON])
                 {
                     Global.EntityManager.RemoveEntity(this);
                     Global.NineSliceBox = null;

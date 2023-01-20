@@ -33,6 +33,7 @@
         ENEMY_SOUL = 133,
         FIELD_TRANSITION = 135,
         SINKING_RUINS_TABLET = 143,
+        GREAT_ANKH = 164,
         ENEMY_A_BAO_A_QU = 182,
     }
 }
