@@ -282,6 +282,17 @@ namespace OpenLaMulana.System
                 Global.GameFlags.InGameFlags[(int)GameFlags.Flags.TWIN_STATUE_TAKEN] = true;
                 HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.MSX2, true);
                 Global.GameFlags.InGameFlags[(int)GameFlags.Flags.MSX2_TAKEN] = true;
+
+
+                Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GRADIUS] = true;
+                //Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GLYPH_READER] = true;
+                Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.HYPER_RALLY] = true;
+                Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.KONAMI_TENNIS] = true;
+                Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GAME_MASTER] = true;
+                Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.A1_SPIRIT] = true;
+                
+
+
                 Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
             }
 

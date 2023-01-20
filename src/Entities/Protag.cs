@@ -166,7 +166,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.ObtainedMainWeapons = new Global.MainWeapons[5];
             Array.Fill((Global.MainWeapons[])Global.Inventory.ObtainedMainWeapons, (Global.MainWeapons)Global.MainWeapons.NONE);
 
-            Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
+            Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.NONE, Global.ObtainableSoftware.NONE };
             Global.Inventory.ObtainedMainWeapons[0] = Global.MainWeapons.WHIP;
             Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX] = true;
             Global.Inventory.TreasureIcons[(int)Global.ObtainableTreasures.MSX] = Global.ObtainableTreasures.MSX;
@@ -186,6 +186,16 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.ShieldValue = 0;
             Global.Inventory.HandyScannerValue = 0;
 
+
+
+
+
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GRADIUS] = true;
+            //Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GLYPH_READER] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.HYPER_RALLY] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.KONAMI_TENNIS] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GAME_MASTER] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.A1_SPIRIT] = true;
             // Damage Table:
             // Divine Lightning = 16;
             // Skeleton = 1;

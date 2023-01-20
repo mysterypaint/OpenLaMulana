@@ -176,23 +176,6 @@ namespace OpenLaMulana
                     }
                     break;
                 case Global.MSXStates.SOFTWARE_SELECTION:
-                    /*
-                     * default position: look from left->right, top->bottom for the very first rom.
-                        if absolutely nothing is found, do not do anything
-
-                        if moving vertically:
-	                        - look at rom below in selection
-	                        - no rom? go left
-	                        - still no rom? go right
-	                        - still no rom? go left * 2
-	                        - still no rom? go right * 2
-	                        - repeat until exhausted, then look at the next row
-	                        - repeat until we hit the end; do not wrap around vertically
-
-                        if moving horizontally:
-                        - keep looking toward the direction we are moving until we exhaust the possibilities
-                        - stop and do nothing, if we find nothing*/
-
                     if (Global.AnimationTimer.OneFrameElapsed())
                     {
                         if (_inventoryCursorBlinkTimer <= 0)
@@ -251,6 +234,36 @@ namespace OpenLaMulana
                             }
                             break;
                         case SoftwareSelectionStates.SELECTING_SOFTWARE:
+                            if (InputManager.DirPressedY != 0)
+                            {
+                                var searchingDirectionY = InputManager.DirPressedY;
+                                int _foundSoftware = FindSoftware(new Vector2 (0, searchingDirectionY), _softwareSelectionCursorPosition);
+
+                                if (_foundSoftware >= 0) {
+                                    _softwareSelectionCursorPosition = _foundSoftware;
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                    _inventoryCursorVisible = true;
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                }
+                            } else if (InputManager.DirPressedX != 0)
+                            {
+                                /*
+                                if moving horizontally:
+                                - keep looking toward the direction we are moving until we exhaust the possibilities
+                                - stop and do nothing, if we find nothing*/
+
+                                var searchingDirectionY = InputManager.DirPressedY;
+
+
+                                _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                _inventoryCursorVisible = true;
+                                Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                            }
+
+
+
+
+
                             if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
                             {
                                 // Equip the software we're hovering over, but only if the other slot does not contain the software that we're trying to equip
@@ -362,6 +375,125 @@ namespace OpenLaMulana
                     _f5Menu.Update(gameTime);
                     break;
             }
+        }
+
+        private int FindSoftware(Vector2 movingDirection, int initialRomPosition)
+        {
+            int romPosX = initialRomPosition % 14;
+            int romPosY = initialRomPosition / 14;
+
+            if (movingDirection.Y != 0)
+            {
+                /*
+                 * default position: look from left->right, top->bottom for the very first rom.
+                    if absolutely nothing is found, do not do anything
+
+                    if moving vertically:
+                        - look at rom below in selection
+                        - no rom? go left
+                        - still no rom? go right
+                        - still no rom? go left * 2
+                        - still no rom? go right * 2
+                        - repeat until exhausted, then look at the next row
+                        - repeat until we hit the end; do not wrap around vertically
+                */
+                int checkingRow = 1;
+                int checkingColumn = 1;
+                bool stopSearchingLeft = false;
+                bool stopSearchingRight = false;
+
+                if (romPosY + (movingDirection.Y * checkingRow) >= 0 && romPosY + (movingDirection.Y * checkingRow) < (int)Global.ObtainableSoftware.MAX)
+                {
+                    romPosY += (int)movingDirection.Y;
+
+                    int currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+
+                    if (currCheckingRom >= (int)Global.ObtainableSoftware.MAX || currCheckingRom < 0)
+                        return -1;
+
+                    while (!Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingRom])
+                    {
+                        checkingColumn *= -1;
+
+                        if (stopSearchingLeft && romPosX + checkingColumn < 0)
+                            checkingColumn *= -1;
+                        else if (stopSearchingRight && romPosX + checkingColumn >= 14)
+                            checkingColumn *= -1;
+
+                        currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+                        if (romPosX + checkingColumn < 0 || romPosX + checkingColumn >= 14)
+                        {
+                            if (romPosX + checkingColumn < 0) {
+                                stopSearchingLeft = true;
+                                checkingColumn *= -1;
+
+                                if (!stopSearchingRight)
+                                {
+                                    currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+
+                                    checkingColumn *= -1;
+                                    continue;
+                                }
+                            }
+                            else if (romPosX + checkingColumn > 14) {
+                                stopSearchingRight = true;
+                                checkingColumn++;
+
+                                if (stopSearchingLeft && stopSearchingRight)
+                                {
+                                    romPosY += (int)movingDirection.Y;
+                                    stopSearchingLeft = false;
+                                    stopSearchingRight = false;
+                                    checkingColumn = 1;
+                                }
+                                if (romPosY < 0 || (romPosY >= 5 && romPosX + checkingColumn > 14))
+                                    break;
+                                continue;
+                            }
+
+                            if (stopSearchingLeft && stopSearchingRight)
+                            {
+                                romPosY += (int)movingDirection.Y;
+                                stopSearchingLeft = false;
+                                stopSearchingRight = false;
+                                checkingColumn = 1;
+                            }
+
+                            if (romPosY < 0 || (romPosY >= 5 && romPosX + checkingColumn >= 13))
+                                break;
+
+                            currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+
+                        }
+
+                        if (checkingColumn > 0)
+                            checkingColumn++;
+                        else if (stopSearchingRight)
+                            checkingColumn--;
+                    }
+
+                    if (currCheckingRom >= (int)Global.ObtainableSoftware.MAX || currCheckingRom < 0)
+                        return -1;
+
+                    if (Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingRom])
+                        return currCheckingRom;
+                }
+                else
+                {
+
+                }
+
+
+            } else
+            {
+                // Horizontal checking
+
+            }
+
+
+
+
+            return -1;
         }
 
         private int PlayerHasAtLeastOneSoftware()
@@ -558,6 +690,8 @@ namespace OpenLaMulana
                         _softwareSelectionCursor.Draw(spriteBatch, new Vector2(8 * 8, 4 * 8 + (_softwareCartSlotCursorPosition * World.CHIP_SIZE * 3)));
                     break;
                 case SoftwareSelectionStates.SELECTING_SOFTWARE:
+                    string softwareName = Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + _softwareSelectionCursorPosition, Global.CurrLang);
+                    Global.TextManager.DrawText(12 * 8, 2 * 8, softwareName);
                     if (_inventoryCursorVisible)
                         _softwareSelectionCursor.Draw(spriteBatch, new Vector2(2 * 8 + ((int)_softwareSelectionCursorPosition % 14) * 16, 10 * 8 + ((int)_softwareSelectionCursorPosition / 14) * 16));
                     break;
