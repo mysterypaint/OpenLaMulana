@@ -280,6 +280,8 @@ namespace OpenLaMulana.System
                 Global.GameFlags.InGameFlags[(int)GameFlags.Flags.CRYSTAL_SKULL_TAKEN] = true;
                 HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.TWIN_STATUE, true);
                 Global.GameFlags.InGameFlags[(int)GameFlags.Flags.TWIN_STATUE_TAKEN] = true;
+                HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.MSX2, true);
+                Global.GameFlags.InGameFlags[(int)GameFlags.Flags.MSX2_TAKEN] = true;
                 Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
             }
 

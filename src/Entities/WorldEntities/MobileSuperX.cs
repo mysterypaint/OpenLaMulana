@@ -60,6 +60,13 @@ namespace OpenLaMulana
             MAX
         };
 
+        enum SoftwareSelectionStates
+        {
+            SELECTING_CART_SLOT,
+            SELECTING_SOFTWARE,
+            MAX
+        };
+
         string[] _strOptions = {
             "Load Save",
             "Configure Controls",
@@ -75,14 +82,24 @@ namespace OpenLaMulana
         private List<Sprite> _weaponSprites = new List<Sprite>();
         private List<Sprite> _subWeaponSprites = new List<Sprite>();
         private Sprite[] _romSprites = new Sprite[12];
+        private Sprite _softwareSelectionCursor = null;
+        private Sprite _subWeaponSelectionCursor = null;
+        private Sprite _mainWeaponSelectionCursor = null;
         private string _scannerText = String.Empty;
         private Sprite _tabletLeftImage;
         private Sprite _tabletRightImage;
+        private SoftwareSelectionStates _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+        private bool _inventoryCursorVisible = true;
+        private int _inventoryCursorBlinkTimer = -1;
+        private int _inventoryCursorBlinkTimerReset = 15;
+        private int _softwareSelectionCursorPosition = 0;
+        private int _softwareCartSlotCursorPosition = 0;
 
         public MobileSuperX()
         {
             InitAllMenuSprites();
             _f5Menu = new Menu();
+            _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
         }
 
         internal void Update(GameTime gameTime)
@@ -117,6 +134,12 @@ namespace OpenLaMulana
                 {
                     Global.Main.SetState(Global.GameState.PLAYING);
                     Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
+
+
+                    _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+                    _softwareCartSlotCursorPosition = 0;
+                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                    _inventoryCursorVisible = true;
                 }
             }
 
@@ -153,25 +176,143 @@ namespace OpenLaMulana
                     }
                     break;
                 case Global.MSXStates.SOFTWARE_SELECTION:
+                    /*
+                     * default position: look from left->right, top->bottom for the very first rom.
+                        if absolutely nothing is found, do not do anything
+
+                        if moving vertically:
+	                        - look at rom below in selection
+	                        - no rom? go left
+	                        - still no rom? go right
+	                        - still no rom? go left * 2
+	                        - still no rom? go right * 2
+	                        - repeat until exhausted, then look at the next row
+	                        - repeat until we hit the end; do not wrap around vertically
+
+                        if moving horizontally:
+                        - keep looking toward the direction we are moving until we exhaust the possibilities
+                        - stop and do nothing, if we find nothing*/
+
+                    if (Global.AnimationTimer.OneFrameElapsed())
+                    {
+                        if (_inventoryCursorBlinkTimer <= 0)
+                        {
+                            _inventoryCursorVisible = !_inventoryCursorVisible;
+                            _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                        }
+                        else
+                        {
+                            _inventoryCursorBlinkTimer--;
+                        }
+                    }
+
+
+                    switch (_softwareSelectionState)
+                    {
+                        case SoftwareSelectionStates.SELECTING_CART_SLOT:
+                            if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX2])
+                            {
+                                if (InputManager.DirPressedY != 0)
+                                {
+                                    _softwareCartSlotCursorPosition += InputManager.DirPressedY;
+                                    if (_softwareCartSlotCursorPosition > 1)
+                                        _softwareCartSlotCursorPosition = 0;
+                                    else if (_softwareCartSlotCursorPosition < 0)
+                                        _softwareCartSlotCursorPosition = 1;
+
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                    _inventoryCursorVisible = true;
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                }
+                            }
+
+                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.WHIP])
+                            {
+                                Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] = Global.ObtainableSoftware.NONE;
+                            }
+
+                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                            {
+                                int result = PlayerHasAtLeastOneSoftware();
+                                if (result >= 0)
+                                {
+                                    _softwareSelectionState = SoftwareSelectionStates.SELECTING_SOFTWARE;
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                    _inventoryCursorVisible = true;
+                                    if (Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] != Global.ObtainableSoftware.NONE)
+                                    {
+                                        _softwareSelectionCursorPosition = (int)Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition];
+                                    } else
+                                    {
+                                        _softwareSelectionCursorPosition = result;
+                                    }
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                }
+                            }
+                            break;
+                        case SoftwareSelectionStates.SELECTING_SOFTWARE:
+                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                            {
+                                // Equip the software we're hovering over, but only if the other slot does not contain the software that we're trying to equip
+                                int otherSlot = _softwareCartSlotCursorPosition + 1;
+                                if (otherSlot > 1)
+                                    otherSlot = 0;
+
+                                if (Global.Inventory.EquippedRoms[otherSlot] != (Global.ObtainableSoftware)_softwareSelectionCursorPosition)
+                                {
+                                    _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                    _inventoryCursorVisible = true;
+
+                                    Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] = (Global.ObtainableSoftware)_softwareSelectionCursorPosition;
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                }
+                            }
+                            else if (InputManager.PressedKeys[(int)Global.ControllerKeys.WHIP])
+                            {
+                                _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+                                _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                _inventoryCursorVisible = true;
+                            }
+                            break;
+                    }
+
+
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                        _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+                        _softwareCartSlotCursorPosition = 0;
+                        _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                        _inventoryCursorVisible = true;
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                        _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+                        _softwareCartSlotCursorPosition = 0;
+                        _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                        _inventoryCursorVisible = true;
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
+                        _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+                        _softwareCartSlotCursorPosition = 0;
+                        _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                        _inventoryCursorVisible = true;
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                        _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+                        _softwareCartSlotCursorPosition = 0;
+                        _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                        _inventoryCursorVisible = true;
                     }
                     break;
                 case Global.MSXStates.EMULATOR:
@@ -223,6 +364,16 @@ namespace OpenLaMulana
             }
         }
 
+        private int PlayerHasAtLeastOneSoftware()
+        {
+            for (Global.ObtainableSoftware soft = Global.ObtainableSoftware.GAME_MASTER; soft < Global.ObtainableSoftware.MAX; soft++)
+            {
+                if (Global.Inventory.ObtainedSoftware[soft])
+                    return (int)soft;
+            }
+            return -1;
+        }
+
         internal void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             switch (_state)
@@ -238,7 +389,7 @@ namespace OpenLaMulana
                      * 
                     int flagOffset = (int)GameFlags.Flags.MSX1_TAKEN;
                     if (Global.GameFlags.InGameFlags[flagOffset + i])*/
-                    
+
 
                     for (var i = 0; i < Global.Inventory.TreasureIcons.Length; i++)
                     {
@@ -288,7 +439,8 @@ namespace OpenLaMulana
                     break;
                 case Global.MSXStates.SOFTWARE_SELECTION:
                     DrawMSXBackground(spriteBatch, gameTime);
-                    DrawRomSelectionScreen(spriteBatch, gameTime);
+                    DrawSoftwareSelectionScreen(spriteBatch, gameTime);
+
                     break;
                 case Global.MSXStates.EMULATOR:
                     DrawMSXBackground(spriteBatch, gameTime, true);
@@ -319,7 +471,7 @@ namespace OpenLaMulana
             }
         }
 
-        private void DrawRomSelectionScreen(SpriteBatch spriteBatch, GameTime gameTime)
+        private void DrawSoftwareSelectionScreen(SpriteBatch spriteBatch, GameTime gameTime)
         {
             string msxStr = "MSX WINDOW";
 
@@ -328,48 +480,87 @@ namespace OpenLaMulana
 
             Global.TextManager.DrawText(1 * 8, 2 * 8, msxStr);
             Global.TextManager.DrawText(2 * 8, 5 * 8, "SLOT1");
-            Global.TextManager.DrawText(2 * 8, 8 * 8, "SLOT2");
-
             // Grab and draw the player's equipped roms
             int eqRom1 = (int)Global.Inventory.EquippedRoms[0];
-            int eqRom2 = (int)Global.Inventory.EquippedRoms[1];
             int equippedRomSprID1 = Global.World.SoftwareGetGraphicID(eqRom1);
-            int equippedRomSprID2 = Global.World.SoftwareGetGraphicID(eqRom2);
 
             if (equippedRomSprID1 >= 0)
                 _romSprites[equippedRomSprID1].Draw(spriteBatch, new Vector2(8 * 8, 4 * 8));
-            if (equippedRomSprID2 >= 0)
-                _romSprites[equippedRomSprID2].Draw(spriteBatch, new Vector2(8 * 8, 7 * 8));
 
             Global.TextManager.DrawText(11 * 8, 5 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom1, Global.CurrLang));
-            Global.TextManager.DrawText(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom2, Global.CurrLang));
 
             mainWindowSprites[(int)WindowSprites.INV_TL].Draw(spriteBatch, new Vector2(7 * 8, 3 * 8));
             mainWindowSprites[(int)WindowSprites.INV_TR].Draw(spriteBatch, new Vector2(10 * 8, 3 * 8));
-            mainWindowSprites[(int)WindowSprites.INV_BL].Draw(spriteBatch, new Vector2(7 * 8, 9 * 8));
-            mainWindowSprites[(int)WindowSprites.INV_BR].Draw(spriteBatch, new Vector2(10 * 8, 9 * 8));
-            mainWindowSprites[(int)WindowSprites.INV_BLTL].Draw(spriteBatch, new Vector2(7 * 8, 6 * 8));
-            mainWindowSprites[(int)WindowSprites.INV_BRTR].Draw(spriteBatch, new Vector2(10 * 8, 6 * 8));
-            for (int x = 8; x < 10; x++)
+
+            // Draw the second cart slot, but only if we have the MobileSuperX2 unlocked
+            if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX2])
             {
-                mainWindowSprites[(int)WindowSprites.INV_T].Draw(spriteBatch, new Vector2(x * 8, 3 * 8));
-                mainWindowSprites[(int)WindowSprites.INV_M].Draw(spriteBatch, new Vector2(x * 8, 6 * 8));
-                mainWindowSprites[(int)WindowSprites.INV_B].Draw(spriteBatch, new Vector2(x * 8, 9 * 8));
-            }
-            for (int y = 4; y < 9; y++)
+                Global.TextManager.DrawText(2 * 8, 8 * 8, "SLOT2");
+                int eqRom2 = (int)Global.Inventory.EquippedRoms[1];
+                int equippedRomSprID2 = Global.World.SoftwareGetGraphicID(eqRom2);
+                if (equippedRomSprID2 >= 0)
+                    _romSprites[equippedRomSprID2].Draw(spriteBatch, new Vector2(8 * 8, 7 * 8));
+                Global.TextManager.DrawText(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom2, Global.CurrLang));
+
+                mainWindowSprites[(int)WindowSprites.INV_BLTL].Draw(spriteBatch, new Vector2(7 * 8, 6 * 8));
+                mainWindowSprites[(int)WindowSprites.INV_BRTR].Draw(spriteBatch, new Vector2(10 * 8, 6 * 8));
+
+                mainWindowSprites[(int)WindowSprites.INV_BL].Draw(spriteBatch, new Vector2(7 * 8, 9 * 8));
+                mainWindowSprites[(int)WindowSprites.INV_BR].Draw(spriteBatch, new Vector2(10 * 8, 9 * 8));
+
+
+                for (int x = 8; x < 10; x++)
+                {
+                    mainWindowSprites[(int)WindowSprites.INV_T].Draw(spriteBatch, new Vector2(x * 8, 3 * 8));
+                    mainWindowSprites[(int)WindowSprites.INV_M].Draw(spriteBatch, new Vector2(x * 8, 6 * 8));
+                    mainWindowSprites[(int)WindowSprites.INV_B].Draw(spriteBatch, new Vector2(x * 8, 9 * 8));
+                }
+                for (int y = 4; y < 9; y++)
+                {
+                    if (y == 6)
+                        continue;
+                    mainWindowSprites[(int)WindowSprites.INV_L].Draw(spriteBatch, new Vector2(7 * 8, y * 8));
+                    mainWindowSprites[(int)WindowSprites.INV_R].Draw(spriteBatch, new Vector2(10 * 8, y * 8));
+                }
+            } else
             {
-                if (y == 6)
-                    continue;
-                mainWindowSprites[(int)WindowSprites.INV_L].Draw(spriteBatch, new Vector2(7 * 8, y * 8));
-                mainWindowSprites[(int)WindowSprites.INV_R].Draw(spriteBatch, new Vector2(10 * 8, y * 8));
+                // We don't have the upgrade; draw the MSX1 screen instead
+                mainWindowSprites[(int)WindowSprites.INV_BL].Draw(spriteBatch, new Vector2(7 * 8, 6 * 8));
+                mainWindowSprites[(int)WindowSprites.INV_BR].Draw(spriteBatch, new Vector2(10 * 8, 6 * 8));
+
+
+                for (int x = 8; x < 10; x++)
+                {
+                    mainWindowSprites[(int)WindowSprites.INV_T].Draw(spriteBatch, new Vector2(x * 8, 3 * 8));
+                    mainWindowSprites[(int)WindowSprites.INV_B].Draw(spriteBatch, new Vector2(x * 8, 6 * 8));
+                }
+                for (int y = 4; y < 6; y++)
+                {
+                    mainWindowSprites[(int)WindowSprites.INV_L].Draw(spriteBatch, new Vector2(7 * 8, y * 8));
+                    mainWindowSprites[(int)WindowSprites.INV_R].Draw(spriteBatch, new Vector2(10 * 8, y * 8));
+                }
             }
 
+            // Draw all the obtained software
             for (Global.ObtainableSoftware romID = (Global.ObtainableSoftware)0; romID < Global.ObtainableSoftware.MAX; romID++)
             {
                 if (Global.Inventory.ObtainedSoftware[romID]) {
                     int softwareSpriteID = Global.World.SoftwareGetGraphicID((int)romID);
                     _romSprites[softwareSpriteID].Draw(spriteBatch, new Vector2(2 * 8 + ((int)romID % 14) * 16, 10 * 8 + ((int)romID / 14) * 16));
                 }
+            }
+
+            // Draw the selection cursors
+            switch (_softwareSelectionState)
+            {
+                case SoftwareSelectionStates.SELECTING_CART_SLOT:
+                    if (_inventoryCursorVisible)
+                        _softwareSelectionCursor.Draw(spriteBatch, new Vector2(8 * 8, 4 * 8 + (_softwareCartSlotCursorPosition * World.CHIP_SIZE * 3)));
+                    break;
+                case SoftwareSelectionStates.SELECTING_SOFTWARE:
+                    if (_inventoryCursorVisible)
+                        _softwareSelectionCursor.Draw(spriteBatch, new Vector2(2 * 8 + ((int)_softwareSelectionCursorPosition % 14) * 16, 10 * 8 + ((int)_softwareSelectionCursorPosition / 14) * 16));
+                    break;
             }
         }
 
@@ -461,6 +652,10 @@ namespace OpenLaMulana
         private void InitAllMenuSprites()
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
+            _mainWeaponSelectionCursor = Global.TextureManager.Get16x16Tile(_tex, 4, 1, new Vector2(8, 0));
+            _subWeaponSelectionCursor = Global.TextureManager.Get16x16Tile(_tex, 5, 1, new Vector2(8, 0));
+            _softwareSelectionCursor = Global.TextureManager.Get16x16Tile(_tex, 6, 1, new Vector2(8, 0));
+
             Sprite tl = Global.TextureManager.Get8x8Tile(_tex, 13, 0, Vector2.Zero);
             Sprite tm = Global.TextureManager.Get8x8Tile(_tex, 14, 0, Vector2.Zero);
             Sprite tm2 = Global.TextureManager.Get8x8Tile(_tex, 15, 0, Vector2.Zero);

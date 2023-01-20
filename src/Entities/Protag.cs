@@ -167,7 +167,10 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Array.Fill((Global.MainWeapons[])Global.Inventory.ObtainedMainWeapons, (Global.MainWeapons)Global.MainWeapons.NONE);
 
             Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
-            Global.Inventory.ObtainedMainWeapons[0] = Global.MainWeapons.WHIP; 
+            Global.Inventory.ObtainedMainWeapons[0] = Global.MainWeapons.WHIP;
+            Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX] = true;
+            Global.Inventory.TreasureIcons[(int)Global.ObtainableTreasures.MSX] = Global.ObtainableTreasures.MSX;
+
             Global.Inventory.EquippedMainWeapon = Global.MainWeapons.WHIP;
             Global.Inventory.EquippedSubWeapon = Global.SubWeapons.HANDY_SCANNER;
             Global.Inventory.CoinCount = 0;
