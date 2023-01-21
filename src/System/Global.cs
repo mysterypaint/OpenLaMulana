@@ -413,6 +413,7 @@ namespace OpenLaMulana
 
         public enum SoftwareCombos
         {
+            NONE,
             RUINS8K_16K,        // Detailed map display in MSX Emulator
             UNREL_GR3,          // Mukimuki SD: Memorial Minigame in MSX Emulator
             PR3_GR3,            // PR3 Minigame in MSX Emulator
@@ -508,6 +509,7 @@ namespace OpenLaMulana
             SUB_WEAPON_NAMES_BEGIN = 645,
             SUB_WEAPON_NAMES_END = 657,
         }
+
         public enum PlatformingPhysics
         {
             CLASSIC,

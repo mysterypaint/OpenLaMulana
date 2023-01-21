@@ -272,7 +272,6 @@ namespace OpenLaMulana
                     Global.NineSliceBox.Update(gameTime);
                     break;
                 case Global.GameState.PAUSED:
-                    JukeboxRoutine();
                     Global.AudioManager.PauseMusic();
                     if (!isAltKeyDown && InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE])
                     {
@@ -288,7 +287,6 @@ namespace OpenLaMulana
                     break;
                 case Global.GameState.MSX_LOADING_FILE:
                     Global.MobileSuperX.Update(gameTime);
-                    JukeboxRoutine();
                     break;
                 case Global.GameState.INITIAL:
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.PAUSE])
@@ -426,11 +424,8 @@ namespace OpenLaMulana
                     DrawHud(Global.SpriteBatch, gameTime);
                     HelperFunctions.DrawRectangle(Global.SpriteBatch, new Rectangle(13 * 8, 12 * 8, 5 * 8, 8), Color.Black);
                     Global.TextManager.DrawText(13 * 8, 12 * 8, "PAUSE");
-                    //_jukebox.Draw(_spriteBatch, gameTime);
                     break;
                 case Global.GameState.PLAYING:
-                    //_jukebox.Draw(_spriteBatch, gameTime);
-
                     //View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();
                     //View thisView = thisFieldMapData[Global.World.CurrViewX, Global.World.CurrViewY];
 
@@ -454,8 +449,7 @@ namespace OpenLaMulana
                     //Global.TextManager.DrawOwnString();
 
                     /*
-                    Globals.TextManager.DrawText(0, 0, "Player State: " + _protag.PrintState()
-                        + "\nWASD, JK: Move between rooms\nF2: Open MSX [Jukebox]");*/
+                    
 
                     /*"\\10bboxLeft: " + Math.Floor(_protag.CollisionBox.Left / (float)World.tileHeight).ToString()
                     + "\\10bboxBottom: " + Math.Floor(_protag.CollisionBox.Bottom / (float)World.tileHeight).ToString()
@@ -595,11 +589,6 @@ namespace OpenLaMulana
             string strWeights = numWeights.ToString(fmt);
 
             Global.TextManager.DrawText(_camPos + new Vector2(28 * 8, 0 * 8), String.Format("={0}\\10={1}", strCoins, strWeights));
-        }
-
-        private void JukeboxRoutine()
-        {
-
         }
 
         private bool StartGame()

@@ -1166,27 +1166,29 @@ break;
             Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedRoms;
 
             bool result = false;
+            Global.MobileSuperX.SetEmulatorState(MobileSuperX.EmulatorStates.NONE);
+
             switch (combo)
             {
                 case Global.SoftwareCombos.RUINS8K_16K:
                     result = CheckSoftwareSlots(Global.ObtainableSoftware.RUINS_RAM_8K, Global.ObtainableSoftware.RUINS_RAM_16K, true);
                     if (result && executeTheCombo)
                     {
-
+                        Global.MobileSuperX.SetCurrentSoftwareCombo(Global.SoftwareCombos.RUINS8K_16K);
                     }
                     break;
                 case Global.SoftwareCombos.UNREL_GR3:
                     result = CheckSoftwareSlots(Global.ObtainableSoftware.UNRELEASED_ROM, Global.ObtainableSoftware.GR3, true);
                     if (result && executeTheCombo)
                     {
-
+                        Global.MobileSuperX.SetCurrentSoftwareCombo(Global.SoftwareCombos.UNREL_GR3);
                     }
                     break;
                 case Global.SoftwareCombos.PR3_GR3:
                     result = CheckSoftwareSlots(Global.ObtainableSoftware.PR3, Global.ObtainableSoftware.GR3, true);
                     if (result && executeTheCombo)
                     {
-
+                        Global.MobileSuperX.SetCurrentSoftwareCombo(Global.SoftwareCombos.PR3_GR3);
                     }
                     break;
                 case Global.SoftwareCombos.ATHL_CABB:
@@ -1238,14 +1240,14 @@ break;
                     result = CheckSoftwareSlots(Global.ObtainableSoftware.SHIN_SYNTHESIZER, Global.ObtainableSoftware.SNATCHER, true);
                     if (result && executeTheCombo)
                     {
-
+                        Global.MobileSuperX.SetCurrentSoftwareCombo(Global.SoftwareCombos.SHINS_SNATC);
                     }
                     break;
                 case Global.SoftwareCombos.SHINS_SDSNATC:
                     result = CheckSoftwareSlots(Global.ObtainableSoftware.SHIN_SYNTHESIZER, Global.ObtainableSoftware.SD_SNATCHER, true);
                     if (result && executeTheCombo)
                     {
-
+                        Global.MobileSuperX.SetCurrentSoftwareCombo(Global.SoftwareCombos.SHINS_SDSNATC);
                     }
                     break;
                 case Global.SoftwareCombos.PENG_GR2:
@@ -1322,7 +1324,7 @@ break;
                     result = CheckSoftwareSlots(Global.ObtainableSoftware.BADLANDS, Global.ObtainableSoftware.A1_SPIRIT, true);
                     if (result && executeTheCombo)
                     {
-
+                        Global.MobileSuperX.SetCurrentSoftwareCombo(Global.SoftwareCombos.BADL_A1SPR);
                     }
                     break;
             }

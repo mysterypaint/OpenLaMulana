@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Entities;
 using OpenLaMulana.System;
 using System;
+using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Audio
 {
@@ -16,6 +18,8 @@ namespace OpenLaMulana.Audio
 
         private int selectedSong = 2;
         private int totalSongs = 75;
+        private int _actualGameBGM = -1;
+        private bool _isPlaying = false;
 
         public Jukebox()
         {
@@ -26,42 +30,75 @@ namespace OpenLaMulana.Audio
 
         public void Update(GameTime gameTime)
         {
-        }
+            if (_actualGameBGM < 0 && !_isPlaying)
+            {
+                _actualGameBGM = Global.AudioManager.IsPlaying();
+                Global.AudioManager.StopMusic();
+            }
+            var selectionMoveX = InputManager.DirPressedX;
+            var keyCancelPressed = InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL];
+            var keyConfirmPressed = InputManager.PressedKeys[(int)ControllerKeys.MENU_CONFIRM];
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            //Globals.TextManager.DrawText(0, 0, Globals.TextManager.GetText(textIndex, Languages.English));
-            int songID = GetCurrentSongID();
-            int isPlaying = IsPlaying();
-
-            string str = "";
-            /*
-            if (songID < 10)
-                str += "0";
-
-            str += songID.ToString();*/
-
-            if (isPlaying > -1)
-                str += "[Playing]";
-            else
-                str += "[Stopped]";
-            Global.TextManager.DrawText(0, 8 * 22, String.Format("{0}:{1} {2}", selectedSong, GetSongName(), str));
-            Global.TextManager.DrawText(0, 0, "W/D to cycle tracks\\10J/K to Stop/Play\\10Enter to Pause");
-        }
-
-
-        internal void Control(int selectionMoveX, bool keyCancelPressed, bool keyConfirmPressed)
-        {
             selectedSong += selectionMoveX;
             if (selectedSong < 0)
                 selectedSong = totalSongs;
             if (selectedSong > totalSongs)
                 selectedSong = 0;
 
+            if (selectionMoveX != 0)
+                Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
             if (keyConfirmPressed)
+            {
                 Global.AudioManager.ChangeSongs(JukeboxSongOrder[selectedSong], true);
+                _isPlaying = true;
+            }
             if (keyCancelPressed)
+            {
                 Global.AudioManager.StopMusic();
+                _isPlaying = false;
+            }
+        }
+
+        public void ResetJukeBox()
+        {
+            Global.AudioManager.ChangeSongs(_actualGameBGM, false);
+            selectedSong = 0;
+            _actualGameBGM = -1;
+            _isPlaying = false;
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            //Globals.TextManager.DrawText(0, 0, Globals.TextManager.GetText(textIndex, Languages.English));
+            int songID = GetCurrentSongID();
+
+            string str = String.Empty;
+            /*
+            if (songID < 10)
+                str += "0";
+
+            str += songID.ToString();*/
+
+            string versionString = String.Empty;
+            switch (Global.MobileSuperX.GetEmulatorState())
+            {
+                case MobileSuperX.EmulatorStates.JKB_1:
+                    versionString = "0.0 ALPHA";
+                    break;
+                case MobileSuperX.EmulatorStates.JKB_2:
+                    versionString = "0.5 BETA";
+                    break;
+                case MobileSuperX.EmulatorStates.JKB_3:
+                    versionString = "1.0";
+                    break;
+            }
+            string headerString = "La-Mulana Jukebox v" + versionString + "\\10\\10Left/Right - cycle tracks\\10Confirm/Cancel - Stop/Play";
+            if (_isPlaying)
+                headerString += "\\10[Playing]";
+            else
+                headerString += "\\10[Stopped]";
+            Global.TextManager.DrawText(3 * 8, 8 * 18, String.Format("{0}:{1} {2}", selectedSong, GetSongName(), str), 26);
+            Global.TextManager.DrawText(3 * 8, 3 * 8, headerString);
         }
 
         internal int GetCurrentSongID()

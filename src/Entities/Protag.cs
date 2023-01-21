@@ -222,6 +222,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.YIE_AR_KUNG_FU_2] = true;
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.COMIC_BAKERY] = true;
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.ANTARCTIC_ADVENTURE] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.SHIN_SYNTHESIZER] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.SNATCHER] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.SD_SNATCHER] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.A1_SPIRIT] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.BADLANDS] = true;
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.SHELL_HORN, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.BOOTS, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.FEATHER, true);

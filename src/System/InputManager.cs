@@ -26,7 +26,6 @@ namespace OpenLaMulana.System
         };
 
         private static Protag _protag;
-        private static Jukebox _jukebox;
 
         static KeyboardState t_keyboardState;
         static KeyboardState t_previousKeyboardState;
@@ -56,7 +55,6 @@ namespace OpenLaMulana.System
         public void Init()
         {
             _protag = Global.Protag;
-            _jukebox = Global.Jukebox;
 
             // The actual default controls
             /*
@@ -172,7 +170,6 @@ namespace OpenLaMulana.System
             DirConfPressedX = (short)(Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_RIGHT]) - Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_LEFT]));
             DirConfPressedY = (short)(Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_DOWN]) - Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_UP]));
             WorldTransitionTesting();
-            //JukeboxControls();
         }
 
         private void SwapABButtons()
@@ -237,11 +234,6 @@ namespace OpenLaMulana.System
                     break;
             }
             return false;
-        }
-
-        private void JukeboxControls()
-        {
-            _jukebox.Control(DirHeldX, PressedKeys[(int)ControllerKeys.MENU_CANCEL], PressedKeys[(int)ControllerKeys.MENU_CONFIRM]);
         }
 
         public static void BlockInputTemporarily()

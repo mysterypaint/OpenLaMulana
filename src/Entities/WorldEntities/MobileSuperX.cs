@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using static OpenLaMulana.MobileSuperX;
 
 namespace OpenLaMulana
 {
@@ -19,9 +20,24 @@ namespace OpenLaMulana
 
         Effect IGameEntity.ActiveShader => null;
 
+        public enum EmulatorStates
+        {
+            NONE,
+            MAP8K,
+            MAP16K,
+            MAP32K,
+            PR3,
+            MUKIMUKI,
+            JKB_1,
+            JKB_2,
+            JKB_3,
+            MAX
+        };
+
         private Sprite[] mainWindowSprites = null;
         private Texture2D _tex = null;
         private Menu _f5Menu = null;
+        private EmulatorStates _emulatorState = EmulatorStates.NONE;
 
         enum WindowSprites
         {
@@ -95,6 +111,7 @@ namespace OpenLaMulana
         private int _inventoryCursorBlinkTimerReset = 15;
         private int _softwareSelectionCursorPosition = 0;
         private int _softwareCartSlotCursorPosition = 0;
+        private Global.SoftwareCombos _combo = Global.SoftwareCombos.NONE;
 
         public MobileSuperX()
         {
@@ -341,23 +358,73 @@ namespace OpenLaMulana
                     }
                     break;
                 case Global.MSXStates.EMULATOR:
+                    if (_emulatorState == EmulatorStates.NONE)
+                    {
+                        ResetEmulatorState();
+                        switch (_combo)
+                        {
+                            default:
+                                break;
+                            case Global.SoftwareCombos.RUINS8K_16K:
+                                _emulatorState = EmulatorStates.MAP32K;
+                                break;
+                            case Global.SoftwareCombos.UNREL_GR3:
+                                _emulatorState = EmulatorStates.MUKIMUKI;
+                                break;
+                            case Global.SoftwareCombos.PR3_GR3:
+                                _emulatorState = EmulatorStates.PR3;
+                                break;
+                            case Global.SoftwareCombos.SHINS_SNATC:
+                                _emulatorState = EmulatorStates.JKB_1;
+                                break;
+                            case Global.SoftwareCombos.SHINS_SDSNATC:
+                                _emulatorState = EmulatorStates.JKB_2;
+                                break;
+                            case Global.SoftwareCombos.BADL_A1SPR:
+                                _emulatorState = EmulatorStates.JKB_3;
+                                break;
+                        }
+                    }
+
+                    switch (_emulatorState)
+                    {
+                        default:
+                        case EmulatorStates.NONE:
+                            break;
+                        case EmulatorStates.MAP32K:
+                            break;
+                        case EmulatorStates.JKB_1:
+                        case EmulatorStates.JKB_2:
+                        case EmulatorStates.JKB_3:
+                            Global.Jukebox.Update(gameTime);
+                            break;
+                        case EmulatorStates.PR3:
+                            break;
+                        case EmulatorStates.MUKIMUKI:
+                            break;
+                    }
+
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
                     {
+                        ResetEmulatorState();
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
+                        ResetEmulatorState();
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
+                        ResetEmulatorState();
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
+                        ResetEmulatorState();
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
@@ -391,10 +458,27 @@ namespace OpenLaMulana
 
         private void ResetMSXState()
         {
+            // Reset the Software Selection Screen State
             _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
             _softwareCartSlotCursorPosition = 0;
             _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
             _inventoryCursorVisible = true;
+
+            // Reset the Emulator Screen State
+            ResetEmulatorState();
+        }
+
+        private void ResetEmulatorState()
+        {
+            switch (_emulatorState)
+            {
+                case EmulatorStates.JKB_1:
+                case EmulatorStates.JKB_2:
+                case EmulatorStates.JKB_3:
+                    Global.Jukebox.ResetJukeBox();
+                    break;
+            }
+            SetEmulatorState(EmulatorStates.NONE);
         }
 
         private void HolyGrailWarpingUpdateRoutine()
@@ -884,10 +968,29 @@ namespace OpenLaMulana
                     break;
                 case Global.MSXStates.EMULATOR:
                     DrawMSXBackground(spriteBatch, gameTime, true);
-                    Global.TextManager.DrawText(2 * 8, 3 * 8, "MSX? BASIC version 1.x\\10Copyright 1987 by Kobamisoft");
-                    Global.TextManager.DrawText(2 * 8, 5 * 8, "8806 Bytes free\\10ROM BASIC version 1.0\\10Ok");
-                    Global.TextManager.DrawText(2 * 8, 20 * 8, "color  auto  goto  list  run");
-                    mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 8 * 8));
+
+                    switch (_emulatorState)
+                    {
+                        default:
+                        case EmulatorStates.NONE:
+                            Global.TextManager.DrawText(2 * 8, 3 * 8, "MSX? BASIC version 1.x\\10Copyright 1987 by Kobamisoft");
+                            Global.TextManager.DrawText(2 * 8, 5 * 8, "8806 Bytes free\\10ROM BASIC version 1.0\\10Ok");
+                            Global.TextManager.DrawText(2 * 8, 20 * 8, "color  auto  goto  list  run");
+                            mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 8 * 8));
+                            break;
+                        case EmulatorStates.MAP32K:
+                            break;
+                        case EmulatorStates.JKB_1:
+                        case EmulatorStates.JKB_2:
+                        case EmulatorStates.JKB_3:
+                            Global.Jukebox.Draw(spriteBatch, gameTime);
+                            break;
+                        case EmulatorStates.PR3:
+                            break;
+                        case EmulatorStates.MUKIMUKI:
+                            break;
+                    }
+
                     break;
                 case Global.MSXStates.CONFIG_SCREEN:
                     DrawMSXBackground(spriteBatch, gameTime);
@@ -1173,11 +1276,26 @@ namespace OpenLaMulana
             return _state;
         }
 
+        public void SetEmulatorState(EmulatorStates state)
+        {
+            _emulatorState = state;
+        }
+
         internal void SetScannerText(string str, Sprite tabletLeftImage, Sprite tabletRightImage)
         {
             _scannerText = str;
             _tabletLeftImage = tabletLeftImage;
             _tabletRightImage = tabletRightImage;
+        }
+
+        internal void SetCurrentSoftwareCombo(Global.SoftwareCombos combo)
+        {
+            _combo = combo;
+        }
+
+        internal EmulatorStates GetEmulatorState()
+        {
+            return _emulatorState;
         }
     }
 }
