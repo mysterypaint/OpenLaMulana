@@ -307,8 +307,11 @@ namespace OpenLaMulana
             MouseState mouseState = Mouse.GetState();
 
             if (mouseState.RightButton == ButtonState.Pressed)
-                _protag.Position = new Vector2(mouseState.X / _displayZoomFactor, (mouseState.Y / _displayZoomFactor) - _protag.BBoxOriginY - _protag.BBoxCenterY);
-
+            {
+                int centerX = _protag.BBox.Width / 2;
+                _protag.BBox.X = (int)Math.Floor((float)mouseState.X / _displayZoomFactor) - centerX;
+                _protag.BBox.Y = (int)Math.Floor((float)mouseState.Y / _displayZoomFactor) - World.HUD_HEIGHT - _protag.BBox.Height;
+            }
             if (InputManager.DirectKeyboardCheckPressed(Keys.F6))
             {
                 //ResetSaveState();

@@ -125,7 +125,7 @@ namespace OpenLaMulana.System
                         break;
                     float posX = Position.X;
                     _protag.SetHsp(0);
-                    float newPlayerX = _protag.Position.X;
+                    float newPlayerX = _protag.BBox.X;
 
                     float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -138,12 +138,12 @@ namespace OpenLaMulana.System
 
                             newPlayerX = HelperFunctions.Lerp(SCREEN_LEFT_EDGE, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)
                             );// Lerp(newPX, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX));
-                            _protag.Position = new Vector2((float)Math.Round(newPlayerX), _protag.Position.Y);
+                            _protag.SetPosition(new Point((int)Math.Round(newPlayerX), _protag.BBox.Y));
                         }
                         else
                         {
                             posX = 0;
-                            _protag.Position = new Vector2(ROOM_PX_WIDTH + targetX, _protag.Position.Y);
+                            _protag.SetPosition(new Point(ROOM_PX_WIDTH + (int)targetX, _protag.BBox.Y));
                             MoveAllRoomEntities(new Vector2(ROOM_PX_WIDTH, 0));
                             _moveSpeedX = 0;
                             _moveToX = 0;
@@ -158,12 +158,12 @@ namespace OpenLaMulana.System
                         if (Position.X + _moveSpeedX < _moveToX)
                         {
                             posX += _moveSpeedX;
-                            _protag.Position = new Vector2(HelperFunctions.Lerp(ROOM_PX_WIDTH + SCREEN_RIGHT_EDGE, ROOM_PX_WIDTH + targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)), _protag.Position.Y);
+                            _protag.SetPosition(new Point((int)HelperFunctions.Lerp(ROOM_PX_WIDTH + SCREEN_RIGHT_EDGE, ROOM_PX_WIDTH + targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)), _protag.BBox.Y));
                         }
                         else
                         {
                             posX = 0;
-                            _protag.Position = new Vector2(SCREEN_LEFT_EDGE, _protag.Position.Y);
+                            _protag.SetPosition(new Point(SCREEN_LEFT_EDGE, _protag.BBox.Y));
                             MoveAllRoomEntities(new Vector2(-ROOM_PX_WIDTH, 0));
                             _moveSpeedX = 0;
                             _moveToX = 0;
@@ -178,7 +178,7 @@ namespace OpenLaMulana.System
 
                     float posY = Position.Y;
                     _protag.SetVsp(0);
-                    float newPlayerY = _protag.Position.Y;
+                    float newPlayerY = _protag.BBox.Y;
 
                     if (_moveToY < 0)
                     {
@@ -189,12 +189,12 @@ namespace OpenLaMulana.System
 
                             newPlayerY = HelperFunctions.Lerp(World.HUD_HEIGHT + Protag.SPRITE_HEIGHT, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY)
                             );// Lerp(newPX, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY));
-                            _protag.Position = new Vector2(_protag.Position.X, (float)Math.Round(newPlayerY));
+                            _protag.SetPosition(new Point(_protag.BBox.X, (int)Math.Round(newPlayerY)));
                         }
                         else
                         {
                             posY = 0;
-                            _protag.Position = new Vector2(_protag.Position.X, ROOM_PX_HEIGHT + targetY);
+                            _protag.SetPosition(new Point(_protag.BBox.X, ROOM_PX_HEIGHT + (int)targetY));
                             MoveAllRoomEntities(new Vector2(0, ROOM_PX_HEIGHT));
                             _moveSpeedY = 0;
                             _moveToY = 0;
@@ -209,14 +209,14 @@ namespace OpenLaMulana.System
                         if (Position.Y + _moveSpeedY < _moveToY - World.HUD_HEIGHT)
                         {
                             posY += _moveSpeedY;
-                            _protag.Position = new Vector2(_protag.Position.X,
-                                HelperFunctions.Lerp(ROOM_PX_HEIGHT, ROOM_PX_HEIGHT + targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY))
-                                );
+                            _protag.SetPosition(new Point(_protag.BBox.X,
+                                (int)HelperFunctions.Lerp(ROOM_PX_HEIGHT, ROOM_PX_HEIGHT + targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY))
+                                ));
                         }
                         else
                         {
                             posY = 0;
-                            _protag.Position = new Vector2(_protag.Position.X, targetY);
+                            _protag.SetPosition(new Point(_protag.BBox.X, (int)targetY));
                             MoveAllRoomEntities(new Vector2(0, -ROOM_PX_HEIGHT));
                             _moveSpeedY = 0;
                             _moveToY = 0;

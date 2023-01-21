@@ -229,7 +229,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         }
 
 
-        public static World.ChipTypes TileGetCellAtPixel(View currRoom, double pX, double pY)
+        public static World.ChipTypes TileGetAtPixel(View currRoom, double pX, double pY)
         {
             int rTX = (int)Math.Floor(pX / World.CHIP_SIZE);
             int rTY = (int)Math.Floor(pY / World.CHIP_SIZE);
@@ -258,7 +258,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         /// <returns></returns>
         public static int InFloor(View currRoom, double pX, double pY)
         {
-            World.ChipTypes chip = TileGetCellAtPixel(currRoom, pX, pY);
+            World.ChipTypes chip = TileGetAtPixel(currRoom, pX, pY);
             int yDiff = (int)(pY - Math.Floor(pY / CHIP_SIZE) * CHIP_SIZE);//(int)(pY % CHIP_SIZE);
             int xDiff = (int)(pX - Math.Floor(pX / CHIP_SIZE) * CHIP_SIZE);//(int)(pY % CHIP_SIZE);
 
@@ -323,13 +323,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             return false;
         }
 
-        public static ChipTypes TilePlaceMeeting(View currRoom, Rectangle bbox, Vector2 position, double checkingX, double checkingY, ChipTypes checkingType = ChipTypes.VOID)
+        public static ChipTypes TilePlaceMeeting(View currRoom, Rectangle bbox, double checkingX, double checkingY, ChipTypes checkingType = ChipTypes.VOID)
         {
             int ts = World.CHIP_SIZE;
-            int _x1 = (int)Math.Floor(Math.Round(bbox.Left + (checkingX - position.X)) / ts);
-            int _y1 = (int)Math.Floor(Math.Ceiling(bbox.Top + (checkingY - position.Y)) / ts);
-            int _x2 = (int)Math.Floor(Math.Round(bbox.Right + (checkingX - position.X)) / ts);
-            int _y2 = (int)Math.Floor(Math.Ceiling(bbox.Bottom + (checkingY - position.Y)) / ts);
+            int _x1 = (int)Math.Floor(Math.Round(bbox.Left + (checkingX - bbox.X)) / ts);
+            int _y1 = (int)Math.Floor(Math.Ceiling(bbox.Top + (checkingY - bbox.Y)) / ts);
+            int _x2 = (int)Math.Floor(Math.Round(bbox.Right + (checkingX - bbox.X)) / ts);
+            int _y2 = (int)Math.Floor(Math.Ceiling(bbox.Bottom + (checkingY - bbox.Y)) / ts);
 
             for (int _x = _x1; _x <= _x2; _x++)
             {

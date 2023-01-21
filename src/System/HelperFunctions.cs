@@ -1091,7 +1091,7 @@ namespace OpenLaMulana.System
 
         internal static bool CollisionRectangle(Rectangle boxA, Rectangle boxB)
         {
-            if (boxB.Left <= boxA.Right && boxA.Left <= boxB.Right && boxB.Top <= boxA.Bottom)
+            if (boxB.Left < boxA.Right && boxA.Left <= boxB.Right && boxB.Top < boxA.Bottom)
             {
                 return boxA.Top <= boxB.Bottom;
             }

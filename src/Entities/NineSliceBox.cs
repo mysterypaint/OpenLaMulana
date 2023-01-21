@@ -158,7 +158,7 @@ namespace OpenLaMulana.Entities
                 {
                     if (_treasureIcon != null)
                         _treasureIcon.Draw(spriteBatch, new Vector2(Position.X + tSize, Position.Y + tSize));
-                    string displayedTreasureName = _treasureName.Substring(0, Math.Clamp(_treasureName.Length, 1, columns - 8));
+                    string displayedTreasureName = _treasureName.Substring(0, Math.Clamp(_treasureName.Length, 1, columns - 7));
                     Global.TextManager.DrawText(new Vector2(Position.X + (4 * tSize), Position.Y + (1 * tSize)), displayedTreasureName);
                     string displayedTakenString = _takenString.Substring(0, Math.Clamp(_takenString.Length, 1, columns - 7));
                     Global.TextManager.DrawText(new Vector2(Position.X + ((columns - 1) * tSize) - (displayedTakenString.Length * tSize), Position.Y + (2 * tSize)), displayedTakenString);

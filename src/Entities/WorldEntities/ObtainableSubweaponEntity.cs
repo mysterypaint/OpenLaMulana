@@ -90,16 +90,13 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case Global.WEStates.IDLE:
                     if (CollidesWithPlayer())
                     {
-                        if (_protag.IsGrounded())
+                        HelperFunctions.UpdateInventory(Global.ItemTypes.SUBWEAPON, _itemID, true, SFX.P_ITEM_TAKEN, _subweaponSprite);
+                        if (_flagToSet >= 0)
                         {
-                            HelperFunctions.UpdateInventory(Global.ItemTypes.SUBWEAPON, _itemID, true, SFX.P_ITEM_TAKEN, _subweaponSprite);
-                            if (_flagToSet >= 0)
-                            {
-                                Global.GameFlags.InGameFlags[_flagToSet] = true;
-                            }
-                            _sprIndex = null;
-                            State = Global.WEStates.DYING;
+                            Global.GameFlags.InGameFlags[_flagToSet] = true;
                         }
+                        _sprIndex = null;
+                        State = Global.WEStates.DYING;
                     }
                     break;
                 case Global.WEStates.DYING:

@@ -33,8 +33,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         }
 
         public bool CollidesWithPlayer() {
-            return BBox.Intersects(_protag.BBox);
-            //return HelperFunctions.CollisionRectangle(BBox, _protag.BBox);
+            //return BBox.Intersects(_protag.BBox);
+            return HelperFunctions.CollisionRectangle(BBox, _protag.BBox);
         }
     }
 }

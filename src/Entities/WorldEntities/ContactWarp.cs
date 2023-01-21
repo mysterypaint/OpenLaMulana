@@ -74,7 +74,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                             Global.Protag.ContactWarpCooldownTimer = 10;
                             Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
-                            Global.Protag.SetPositionToTile(_relViewX, _relViewY);
+                            Global.Protag.SetPositionToTile(new Point(_relViewX, _relViewY));
                             Global.AudioManager.PlaySFX(SFX.WARP_TRIGGERED);
                         }
                         else
