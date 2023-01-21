@@ -94,7 +94,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private Protag _protag = Global.Protag;
         private int _myBGM = -1;
 
-        public NPCStates State { get; set; } = NPCStates.INACTIVE;
+        public new NPCStates State { get; set; } = NPCStates.INACTIVE;
 
 
         /* TEXT CONTROL CODES

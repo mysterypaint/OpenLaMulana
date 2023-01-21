@@ -12,6 +12,7 @@ namespace OpenLaMulana.Entities.WorldEntities
     internal class GraphicDisplay : InteractableWorldEntity
     {
         private int _checkFlag = -1;
+        private bool _revertMapCollisionAfterDestroyed = false;
         private bool _notSolidWhenOP3IsOn = false;
         private bool _isSolid = false;
         private Sprite _displayedGraphic;
@@ -24,15 +25,40 @@ namespace OpenLaMulana.Entities.WorldEntities
             _checkFlag = op3;
 
             bool _useEventTexture = false;
-            if (op4 > 2)
+            if (op4 >= 4)
+            {
+                _revertMapCollisionAfterDestroyed = true;
+                _notSolidWhenOP3IsOn = HelperFunctions.GetBit((byte)op4, 3);
+                _isSolid = HelperFunctions.GetBit((byte)op4, 2);
+
+                if (_isSolid)
+                {
+                    CollisionBehavior = World.ChipTypes.SOLID;
+                    HitboxWidth = (int)_spriteWidthHeight.X;
+                    HitboxHeight = (int)_spriteWidthHeight.Y;
+                }
+
+                _useEventTexture = HelperFunctions.GetBit((byte)op4, 1);
+            }
+            else if (op4 >= 2)
             {
                 _notSolidWhenOP3IsOn = HelperFunctions.GetBit((byte)op4, 3);
                 _isSolid = HelperFunctions.GetBit((byte)op4, 2);
+
+                if (_isSolid)
+                {
+                    CollisionBehavior = World.ChipTypes.SOLID;
+                    HitboxWidth = (int)_spriteWidthHeight.X;
+                    HitboxHeight = (int)_spriteWidthHeight.Y;
+                }
+
                 _useEventTexture = HelperFunctions.GetBit((byte)op4, 1);
-            } else if (op4 > 1)
+            }
+            else if (op4 > 1)
             {
                 _useEventTexture = HelperFunctions.GetBit((byte)op4, 1);
-            } else if (op4 == 1)
+            }
+            else if (op4 == 1)
             {
                 _useEventTexture = true;
             }
@@ -41,7 +67,8 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
                 Depth = (int)Global.DrawOrder.AboveEntitiesGraphicDisplay;
-            } else
+            }
+            else
             {
                 _tex = Global.TextureManager.GetTexture(Global.World.GetCurrMapTexture());
                 Depth = (int)Global.DrawOrder.AboveEntitiesGraphicDisplay;
@@ -58,6 +85,12 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 State = Global.WEStates.UNSPAWNED;
                 _sprIndex = null;
+
+                if (!_revertMapCollisionAfterDestroyed)
+                {
+                    _isSolid = false;
+                    CollisionBehavior = World.ChipTypes.VOID;
+                }
             }
             /*
         switch (_texturePage)
@@ -113,6 +146,11 @@ namespace OpenLaMulana.Entities.WorldEntities
                     {
                         State = Global.WEStates.IDLE;
                         _sprIndex = null;
+                        if (!_revertMapCollisionAfterDestroyed)
+                        {
+                            _isSolid = false;
+                            CollisionBehavior = World.ChipTypes.VOID;
+                        }
                     }
                     break;
             }

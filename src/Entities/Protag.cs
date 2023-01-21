@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
@@ -33,7 +34,7 @@ namespace OpenLaMulana.Entities
         public short BBoxCenterX { get; set; } = 5;
         public short BBoxCenterY { get; set; } = 6;
 
-        public int Depth { get; set; } = (int)Global.DrawOrder.Max;
+        public int Depth { get; set; } = (int)Global.DrawOrder.Protag;
         public Effect ActiveShader { get; set; } = null;
 
         private short _moveX = 0;
@@ -51,7 +52,7 @@ namespace OpenLaMulana.Entities
         private double _acc = 0.3f;
         private double _drag = 0.1f;
         private double _chipWidth, _chipHeight;
-        private double _moveSpeed = 1f;
+        private double _moveSpeed = 1.5f;
         private double _gravMax = 9.81f;
 
         private bool _isGrounded = false;
@@ -76,7 +77,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public Rectangle BBox;
 
-        private bool _debugDisableAutoScreenTransitions = true;
+        private bool _debugDisableAutoScreenTransitions = false;
         public int ContactWarpCooldownTimer { get; set; } = 0;
 
         public const int SPRITE_WIDTH = 16;
@@ -84,6 +85,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         public const int CHIP_EDGE = CHIP_SIZE - 1;
         private const double SPD_GRAVITY = 0.4;
         private double _spdWalk = 1;
+        private bool _enemyGrounded;
         private const double SPD_JUMP = 7.0;
         private const double SPD_GRAV_MAX = 8f;
 
@@ -377,15 +379,182 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         {
 
             _moveX = InputManager.DirHeldX;
-            _moveY = InputManager.DirHeldY;
+            //_moveY = InputManager.DirHeldY;
 
-            _hsp = _moveX * _moveSpeed;
+            double bboxSide;
 
-            _vsp = _moveY * _moveSpeed;
+            //_vsp = _moveY * SPD_WALK;
+            if (_vsp < SPD_GRAV_MAX)
+                _vsp += SPD_GRAVITY;// _moveY * _moveSpeed;
+            else
+            {
+                _vsp = SPD_GRAV_MAX;
+                _vsp_fract = 0;
+            }
 
-            var bboxSide = 0;
+            // Is my middle center touching the floor at the start of this frame?
+            _isGrounded = (InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1) >= 0);
+
+            // Jump
+            if ((_isGrounded || InFloor(currRoom, BBox.Left, BBox.Bottom + 1) >= 0) ||
+                (_isGrounded || InFloor(currRoom, BBox.Right, BBox.Bottom + 1) >= 0) ||
+                (_isGrounded || InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1) >= 0)
+                )
+            {
+                if (_jumpCount < _jumpsMax || _fellOffLedge)
+                    Global.AudioManager.PlaySFX(SFX.P_GROUNDED);
+                _jumpCount = _jumpsMax;
+                _fellOffLedge = false;
+                //_vsp = 0;
+                //_vsp_fract = 0;
+                State = PlayerState.IDLE;
+
+
+                if (_onIce)
+                {
+                    if (_moveX != 0)
+                    {
+                        if (_moveX > 0)
+                            FacingX = Facing.RIGHT;
+                        else
+                            FacingX = Facing.LEFT;
+
+                        _hsp += _acc * _moveX;
+                    }
+                    _hsp = HelperFunctions.Lerp((float)_hsp, 0, (float)_drag);
+                }
+                else
+                {
+                    _hsp = _moveX * _spdWalk;
+                }
+            }
+            else
+            {
+                if (!_inLiquid)
+                {
+                    /*
+                    if (_jumpCount == _jumpsMax)
+                        _jumpCount--;
+                    */
+
+                    if (_wasOnIce)
+                    {
+                        _wasOnIce = false;
+                    }
+                    else
+                    {
+                        if (_vsp >= 0)
+                        {
+                            if (_jumpCount < _jumpsMax && !_fellOffLedge)
+                                _hsp = _moveX * _spdWalk; // Allow horizontal movement if we're falling
+                            else
+                            {
+                                // We walked off an edge: Instead, we should fall straight down until we touch ground
+                                _hsp = 0;
+                                _jumpCount = 0;
+                                _fellOffLedge = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (_vsp < 0)
+                        _hsp = _moveX * _spdWalk;
+                }
+            }
+
+
+
+            if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP] && _jumpCount > 0)
+            {
+                State = PlayerState.JUMPING;
+                _jumpCount--;
+                _vsp = -SPD_JUMP;
+                _vsp_fract = 0;
+                _isGrounded = false;
+                _hsp = _moveX * _spdWalk;
+                Global.AudioManager.PlaySFX(SFX.P_JUMP);
+            }
+
+            if ((_vsp < 0) && !InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP])
+            {
+                Math.Max(_vsp, -SPD_JUMP / 2);
+            }
+
+
+
+            // Reapply fractional movement
+            _hsp += _hsp_fract;
+            _vsp += _vsp_fract;
+
+            // Store and Remove fractions
+            _hsp_fract = _hsp - (Math.Floor(Math.Abs(_hsp)) * Math.Sign(_hsp));
+            _hsp -= _hsp_fract;
+            _vsp_fract = _vsp - (Math.Floor(Math.Abs(_vsp)) * Math.Sign(_vsp));
+            _vsp -= _vsp_fract;
+
+
+            // Entity Collisions
+            _enemyGrounded = false;
+
+            foreach (IGameEntity entity in Global.EntityManager.Entities)
+            {
+                if (entity != null)
+                {
+                    switch (entity)
+                    {
+                        case InteractableWorldEntity:
+                            InteractableWorldEntity interactiveEntity = (InteractableWorldEntity)entity;
+
+                            if (interactiveEntity.CollisionBehavior != ChipTypes.VOID)
+                            {
+                                switch (interactiveEntity.CollisionBehavior)
+                                {
+                                    case ChipTypes.SOLID:
+                                    case ChipTypes.CLINGABLE_WALL:
+                                    case ChipTypes.UNCLINGABLE_WALL:
+                                    case ChipTypes.ICE:
+                                        int xOff = 0;
+                                        if (_hsp > 0)
+                                        {
+                                            xOff = 1;
+                                        }
+                                        if (HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp + xOff, 0))
+                                        {
+                                            while (!HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, Math.Sign(_hsp) + xOff, 0))
+                                            {
+                                                BBox.X += Math.Sign(_hsp);
+                                            }
+                                            _hsp = 0;
+                                            _hsp_fract = 0;
+                                        }
+
+                                        if (HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp, (int)_vsp))
+                                        {
+                                            while (!HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp, Math.Sign(_vsp)))
+                                            {
+                                                BBox.Y += Math.Sign(_vsp);
+                                            }
+                                            _vsp = 0;
+                                            _vsp_fract = 0;
+                                            _enemyGrounded = true;
+                                        }
+                                        break;
+                                }
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            _isGrounded |= _enemyGrounded;
+
+            bboxSide = 0;
 
             // Horizontal Collision
+
             if (_hsp > 0)
             {
                 bboxSide = BBox.Right;
@@ -396,17 +565,27 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             int pxT = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Top));
             int pxB = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Bottom));
             int pxSC = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Center.Y));
+            ChipTypes tileBC = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom);
+            if (TileIsASlope(tileBC))
+            {                               // Did we find a slope tile at the bottom-center of the player's hitbox?
+                pxB = 0;                    // If we did, pretend that we didn't find any solid tiles on the bottom-left/bottom-right and top-left/top-right edges of our hitbox, even if we did
+            }
+
             if (pxT > 0 || pxSC > 0 || pxB > 0)
             {
                 if (_hsp > 0)
-                    BBox.X = BBox.X - (BBox.X % CHIP_SIZE) + CHIP_SIZE + CHIP_SIZE - 1 - (BBox.Right - BBox.X);
+                {
+                    BBox.X = BBox.Center.X - (BBox.Center.X % CHIP_SIZE) + CHIP_SIZE - 1 - (BBox.Right - BBox.X);
+                }
                 else
-                    BBox.X = BBox.X - (BBox.X % CHIP_SIZE) - (BBox.Left - BBox.X);
+                    BBox.X = BBox.Center.X - (BBox.Center.X % CHIP_SIZE) - (BBox.Left - BBox.X);
 
                 _hsp = 0;
             }
 
             BBox.X += (int)_hsp;
+
+
 
             // Vertical Collision
             if (_vsp > 0)
@@ -416,19 +595,109 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             else
                 bboxSide = BBox.Top;
 
-            int pxL = TileIsSolid(TileGetAtPixel(currRoom, BBox.Left, bboxSide + _vsp));
-            int pxR = TileIsSolid(TileGetAtPixel(currRoom, BBox.Right, bboxSide + _vsp));
-            pxSC = TileIsSolid(TileGetAtPixel(currRoom, BBox.Center.X, bboxSide + _vsp));
-            if (pxL > 0 || pxSC > 0 || pxR > 0)
+            // First, consider if we are on a slope or not, using the bottom center pixel + vsp
+            ChipTypes tilePXC = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom + _vsp);
+
+            if (!TileIsASlope(tilePXC))
             {
-                if (_vsp > 0)
-                    BBox.Y = BBox.Y - (BBox.Y % CHIP_SIZE) + CHIP_SIZE + CHIP_SIZE - 1 - (BBox.Bottom - BBox.Y);
-                else
-                    BBox.Y = BBox.Y - (BBox.Y % CHIP_SIZE) - (BBox.Top - BBox.Y);
+                int pxL = TileIsSolid(TileGetAtPixel(currRoom, BBox.Left, bboxSide + _vsp));
+                int pxR = TileIsSolid(TileGetAtPixel(currRoom, BBox.Right, bboxSide + _vsp));
+                pxSC = TileIsSolid(TileGetAtPixel(currRoom, BBox.Center.X, bboxSide + _vsp));
+                if (pxL > 0 || pxSC > 0 || pxR > 0)
+                {
+                    if (_vsp > 0)
+                    {
+                        BBox.Y = BBox.Bottom - (BBox.Bottom % CHIP_SIZE) + CHIP_SIZE + 1 - (BBox.Bottom - BBox.Y);
+                    }
+                    else
+                        BBox.Y = BBox.Bottom - (BBox.Bottom % CHIP_SIZE) - CHIP_SIZE - (BBox.Top - BBox.Y);
+
+                    _vsp = 0;
+                }
+            }
+
+            // Regardless we hit a slope or not, correct our position, juuust in case we might still have any remaining vertical speed
+            int floorDist = InFloor(currRoom, BBox.Center.X, BBox.Bottom + _vsp);
+            if (floorDist >= 0)
+            {
+                // We are inside the floor. Correct the Y position so we are exactly one pixel above the ground
+                BBox.Y += (int)_vsp;
+                BBox.Y -= (floorDist + 1);
 
                 _vsp = 0;
+                //_vsp_final = 0;
+                _vsp_fract = 0;
+                floorDist = -1;
             }
+
+
+
+
+            // Walk down slopes
+            if (_isGrounded)
+            {
+                BBox.Y += Math.Abs(floorDist) - 1;
+
+                if (Global.AnimationTimer.OneFrameElapsed())
+                {
+                    switch (tilePXC)
+                    {
+                        case ChipTypes.ASCENDING_SLOPE_LEFT:
+                            // Drag the player along the slope if they're standing on it
+                            BBox.X += 1;
+                            BBox.Y += 1;
+                            break;
+                        case ChipTypes.ASCENDING_SLOPE_RIGHT:
+                            // Drag the player along the slope if they're standing on it
+                            BBox.X += 1;
+                            BBox.Y += 1;
+                            break;
+                        case ChipTypes.ICE_SLOPE_RIGHT:
+                        case ChipTypes.ICE_SLOPE_LEFT:          // Enable slippery physics, because we've landed on ice
+                            _onIce = true;
+                            break;
+                    }
+                }
+
+                var yDiff = (int)(BBox.Bottom - Math.Floor((double)BBox.Bottom / CHIP_SIZE) * CHIP_SIZE);
+                if (yDiff == CHIP_SIZE - 1)
+                {
+                    // If the slope continues
+                    ChipTypes secondCheckingTile = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom + 1);
+                    if (TileIsASlope(secondCheckingTile))
+                    {
+                        // Move there
+                        BBox.Y += Math.Abs(InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1));
+
+
+                        // If applicable, drag the player along the slope if they're standing on it
+                        if (Global.AnimationTimer.OneFrameElapsed())
+                        {
+                            switch (secondCheckingTile)
+                            {
+                                case ChipTypes.ASCENDING_SLOPE_LEFT:
+                                    BBox.X += 1;
+                                    BBox.Y += 1;
+                                    break;
+                                case ChipTypes.ASCENDING_SLOPE_RIGHT:
+                                    BBox.X -= 1;
+                                    BBox.Y += 1;
+                                    break;
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+
+
+
             BBox.Y += (int)_vsp;
+
+            if (BBox.Y < -8)
+                BBox.Y = -8;
         }
 
         private void HandleScreenTransitions(View currRoom)
@@ -441,12 +710,12 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 if (BBox.Right + _hsp > ROOM_WIDTH * World.CHIP_SIZE)
                 {
                     Global.World.FieldTransitionCardinal(VIEW_DIR.RIGHT);
-                    BBox.X = ROOM_WIDTH * World.CHIP_SIZE - (BBox.Width / 2) - 1;
+                    BBox.X = ROOM_WIDTH * World.CHIP_SIZE - (BBox.Width / 2);
                 }
                 else if (BBox.Left + _hsp < 0)
                 {
                     Global.World.FieldTransitionCardinal(VIEW_DIR.LEFT);
-                    BBox.X = BBox.Width / 2 + 1;
+                    BBox.X = BBox.Width / 2;
                 }
                 else if (HUD_HEIGHT + BBox.Bottom + _vsp > (ROOM_HEIGHT * World.CHIP_SIZE) + HUD_HEIGHT)
                 {
@@ -561,12 +830,12 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Otherwise, the order shouldn’t matter much. Then, for each axis:
             */
 
-                    // Step X
+                                    // Step X
 
-                    // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
-                    //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
+                                    // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
+                                    //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-                    _moveX = InputManager.DirHeldX;
+                                    _moveX = InputManager.DirHeldX;
             if (_moveX == 1)
                 FacingX = Facing.RIGHT;
             else if (_moveX == -1)

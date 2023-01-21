@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OpenLaMulana.Entities.World;
 using static OpenLaMulana.System.InputManager;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -1099,5 +1100,14 @@ namespace OpenLaMulana.System
             return false;
         }
 
+        internal static bool CollisionRectangle(Rectangle boxA, Rectangle boxB, int xOff, int yOff)
+        {
+            if (boxB.Left < boxA.Right + xOff && boxA.Left + xOff < boxB.Right && boxB.Top < boxA.Bottom + yOff)
+            {
+                return boxA.Top + yOff < boxB.Bottom;
+            }
+
+            return false;
+        }
     }
 }

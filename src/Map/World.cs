@@ -260,7 +260,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         {
             World.ChipTypes chip = TileGetAtPixel(currRoom, pX, pY);
             int yDiff = (int)(pY - Math.Floor(pY / CHIP_SIZE) * CHIP_SIZE);//(int)(pY % CHIP_SIZE);
-            int xDiff = (int)(pX - Math.Floor(pX / CHIP_SIZE) * CHIP_SIZE);//(int)(pY % CHIP_SIZE);
+            int xDiff = (int)(pX - Math.Floor(pX / CHIP_SIZE) * CHIP_SIZE);//(int)(pX % CHIP_SIZE);
 
             if (TileIsSolid(chip) > 0 || TileIsASlope(chip))
             {

@@ -131,7 +131,7 @@ namespace OpenLaMulana.System
 
                     if (_moveToX < 0)
                     {
-                        float targetX = SCREEN_RIGHT_EDGE;
+                        float targetX = SCREEN_RIGHT_EDGE -5;
                         if (Position.X + _moveSpeedX > _moveToX)
                         {
                             posX += _moveSpeedX;
@@ -154,7 +154,7 @@ namespace OpenLaMulana.System
                     }
                     else if (_moveToX > 0)
                     {
-                        float targetX = SCREEN_LEFT_EDGE;
+                        float targetX = SCREEN_LEFT_EDGE - 5;
                         if (Position.X + _moveSpeedX < _moveToX)
                         {
                             posX += _moveSpeedX;
@@ -163,7 +163,7 @@ namespace OpenLaMulana.System
                         else
                         {
                             posX = 0;
-                            _protag.SetPosition(new Point(SCREEN_LEFT_EDGE, _protag.BBox.Y));
+                            _protag.SetPosition(new Point((int)targetX, _protag.BBox.Y));
                             MoveAllRoomEntities(new Vector2(-ROOM_PX_WIDTH, 0));
                             _moveSpeedX = 0;
                             _moveToX = 0;
@@ -182,7 +182,7 @@ namespace OpenLaMulana.System
 
                     if (_moveToY < 0)
                     {
-                        float targetY = SCREEN_BOTTOM_EDGE - World.CHIP_SIZE;
+                        float targetY = SCREEN_BOTTOM_EDGE - World.CHIP_SIZE*2 - _protag.BBox.Height;
                         if (Position.Y + _moveSpeedY > _moveToY)
                         {
                             posY += _moveSpeedY;

@@ -526,6 +526,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.NPC_ROOM:
                     newObj = new NPCRoom(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+                case EntityIDs.WEAPONS_SAFE:
+                    newObj = new WeaponsSafe(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
                 case EntityIDs.INVISIBLE_COLLIDER:
                     newObj = new InvisibleCollider(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;

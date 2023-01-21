@@ -10,6 +10,7 @@
         PUSHABLE_BLOCK = 12,
         OBTAINABLE_SUBWEAPON = 13,
         NPC_ROOM = 14,
+        WEAPONS_SAFE = 20,
         INVISIBLE_COLLIDER = 22,
         CEILING_SPIKE = 23,
         ENEMY_MYRMECOLEON = 24,
