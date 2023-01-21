@@ -51,6 +51,7 @@ namespace OpenLaMulana.System
         private static bool _joysticksEnabled = true;
         private static ControllerNames? _identifiedController = null;
         private static ControllerNames? _previouslyIdentifiedController = null;
+        private Keys[] _lastKeyStroke = null;
 
         public void Init()
         {
@@ -142,6 +143,8 @@ namespace OpenLaMulana.System
         public void Update(GameTime gameTime)
         {
             GetKeyboardState();
+            _lastKeyStroke = t_keyboardState.GetPressedKeys();
+
 
             if (_identifiedController != null) {
                 _previouslyIdentifiedController = _identifiedController;
@@ -567,6 +570,11 @@ namespace OpenLaMulana.System
             }
 
             return pressedButtons;
+        }
+
+        public Keys[] GetPressedKeys()
+        {
+            return _lastKeyStroke;
         }
     }
 }

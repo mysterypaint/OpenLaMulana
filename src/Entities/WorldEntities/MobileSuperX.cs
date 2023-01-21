@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
@@ -105,7 +106,8 @@ namespace OpenLaMulana
         internal void Update(GameTime gameTime)
         {
             // Abort if we're configuring anything in the Config menu
-            if (_f5Menu.IsInputting()) {
+            if (_f5Menu.IsInputting())
+            {
                 _f5Menu.Update(gameTime);
                 return;
             }
@@ -132,14 +134,9 @@ namespace OpenLaMulana
 
                 if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] && _state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.CONFIG_SCREEN)
                 {
+                    ResetMSXState();
                     Global.Main.SetState(Global.GameState.PLAYING);
                     Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
-
-
-                    _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
-                    _softwareCartSlotCursorPosition = 0;
-                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
-                    _inventoryCursorVisible = true;
                 }
             }
 
@@ -154,6 +151,10 @@ namespace OpenLaMulana
                     }
                     break;
                 case Global.MSXStates.INVENTORY:
+
+                    HolyGrailWarpingUpdateRoutine();
+
+
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
@@ -225,7 +226,8 @@ namespace OpenLaMulana
                                     if (Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] != Global.ObtainableSoftware.NONE)
                                     {
                                         _softwareSelectionCursorPosition = (int)Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition];
-                                    } else
+                                    }
+                                    else
                                     {
                                         _softwareSelectionCursorPosition = result;
                                     }
@@ -237,15 +239,17 @@ namespace OpenLaMulana
                             if (InputManager.DirPressedY != 0)
                             {
                                 var searchingDirectionY = InputManager.DirPressedY;
-                                int _foundSoftware = FindSoftware(new Vector2 (0, searchingDirectionY), _softwareSelectionCursorPosition);
+                                int _foundSoftware = FindSoftware(new Vector2(0, searchingDirectionY), _softwareSelectionCursorPosition);
 
-                                if (_foundSoftware >= 0) {
+                                if (_foundSoftware >= 0)
+                                {
                                     _softwareSelectionCursorPosition = _foundSoftware;
                                     _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
                                     _inventoryCursorVisible = true;
                                     Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
                                 }
-                            } else if (InputManager.DirPressedX != 0)
+                            }
+                            else if (InputManager.DirPressedX != 0)
                             {
                                 /*
                                 if moving horizontally:
@@ -282,7 +286,23 @@ namespace OpenLaMulana
                                     _inventoryCursorVisible = true;
 
                                     Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] = (Global.ObtainableSoftware)_softwareSelectionCursorPosition;
-                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+
+                                    bool softwareComboDetected = false;
+                                    for (Global.SoftwareCombos combo = 0; combo < Global.SoftwareCombos.MAX; combo++)
+                                    {
+                                        if (combo == Global.SoftwareCombos.ANTA_COMIC)
+                                            softwareComboDetected = HelperFunctions.CheckSoftwareCombo(combo, false);
+                                        else
+                                            softwareComboDetected = HelperFunctions.CheckSoftwareCombo(combo, true);
+
+                                        if (softwareComboDetected)
+                                            break;
+                                    }
+
+                                    if (softwareComboDetected)
+                                        Global.AudioManager.PlaySFX(SFX.P_MAJOR_ITEM_TAKEN);
+                                    else
+                                        Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
                                 }
                             }
                             else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
@@ -299,37 +319,25 @@ namespace OpenLaMulana
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
-                        _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
-                        _softwareCartSlotCursorPosition = 0;
-                        _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
-                        _inventoryCursorVisible = true;
+                        ResetMSXState();
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
-                        _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
-                        _softwareCartSlotCursorPosition = 0;
-                        _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
-                        _inventoryCursorVisible = true;
+                        ResetMSXState();
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
-                        _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
-                        _softwareCartSlotCursorPosition = 0;
-                        _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
-                        _inventoryCursorVisible = true;
+                        ResetMSXState();
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
-                        _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
-                        _softwareCartSlotCursorPosition = 0;
-                        _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
-                        _inventoryCursorVisible = true;
+                        ResetMSXState();
                     }
                     break;
                 case Global.MSXStates.EMULATOR:
@@ -381,6 +389,279 @@ namespace OpenLaMulana
             }
         }
 
+        private void ResetMSXState()
+        {
+            _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
+            _softwareCartSlotCursorPosition = 0;
+            _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+            _inventoryCursorVisible = true;
+        }
+
+        private void HolyGrailWarpingUpdateRoutine()
+        {
+            if (!Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.GRAIL])
+                return;     // Abort: The player does not have the Grail
+
+            // Abort if we haven't defeated Tiamat and we're in the Dimensional Corridor
+            if (Global.World.CurrField == 17)
+            {
+                if (!Global.GameFlags.InGameFlags[(int)GameFlags.Flags.GUARDIAN_DEFEATED_TIAMAT])
+                    return;
+            }
+
+            int grailChanted = -1;
+
+            Keys[] pressedKeys = Global.GlobalInput.GetPressedKeys();
+
+            if (pressedKeys.Length > 0)
+            {
+                Keys lastKey = pressedKeys[0];
+
+                switch (lastKey)
+                {
+                    default:
+                        break;
+                    case Keys.D0:
+                        grailChanted = 0;
+                        break;
+                    case Keys.D1:
+                        grailChanted = 1;
+                        break;
+                    case Keys.D2:
+                        grailChanted = 2;
+                        break;
+                    case Keys.D3:
+                        grailChanted = 3;
+                        break;
+                    case Keys.D4:
+                        grailChanted = 4;
+                        break;
+                    case Keys.D5:
+                        grailChanted = 5;
+                        break;
+                    case Keys.D6:
+                        grailChanted = 6;
+                        break;
+                    case Keys.D7:
+                        grailChanted = 7;
+                        break;
+                    case Keys.D8:
+                        grailChanted = 8;
+                        break;
+                    case Keys.D9:
+                        grailChanted = 9;
+                        break;
+                }
+            }
+
+            bool _backSide = HelperFunctions.CheckSoftwareCombo(Global.SoftwareCombos.ANTA_COMIC, false);
+
+            if (grailChanted >= 0)
+            {
+                ResetMSXState();
+
+                View currView = Global.World.GetCurrentView();
+                View destView = null;
+
+                switch (grailChanted)
+                {
+                    case 0:
+                        if (!_backSide)
+                        {
+                            destView = Global.World.GetView(1, 3, 1);
+                            Global.World.FieldTransitionImmediate(currView, destView);
+                            Global.Protag.SetPositionToTile(new Point(9, 8));
+                        }
+                        break;
+                    case 1:
+                        if (_backSide)
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_GATE_OF_ILLUSION])
+                            {
+                                destView = Global.World.GetView(11, 0, 1);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(14, 4));
+                            }
+                        }
+                        else
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_GATE_OF_GUIDANCE])
+                            {
+                                destView = Global.World.GetView(0, 2, 1);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(7, 20));
+                            }
+                        }
+                        break;
+                    case 2:
+                        if (_backSide)
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_GRAVEYARD_OF_THE_GIANTS])
+                            {
+                                destView = Global.World.GetView(12, 3, 1);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(8, 8));
+                            }
+                        }
+                        else
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_GIANTS_MAUSOLEUM])
+                            {
+                                destView = Global.World.GetView(2, 0, 2);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(8, 16));
+                            }
+                        }
+                        break;
+                    case 3:
+                        if (_backSide)
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TEMPLE_OF_THE_MOON])
+                            {
+                                destView = Global.World.GetView(14, 0, 1);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(11, 12));
+                            }
+                        }
+                        else
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TEMPLE_OF_THE_SUN])
+                            {
+                                destView = Global.World.GetView(3, 2, 0);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(28, 8));
+                            }
+                        }
+                        break;
+                    case 4:
+                        if (_backSide)
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TOWER_OF_THE_GODDESS])
+                            {
+                                destView = Global.World.GetView(13, 0, 4);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(15, 4));
+                            }
+                        }
+                        else
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_SPRING_IN_THE_SKY])
+                            {
+                                destView = Global.World.GetView(4, 1, 3);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(7, 8));
+                            }
+                        }
+                        break;
+                    case 5:
+                        if (_backSide)
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TOWER_OF_RUIN])
+                            {
+                                destView = Global.World.GetView(15, 0, 1);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(15, 20));
+                            }
+                        }
+                        else
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_INFERNO_CAVERN])
+                            {
+                                destView = Global.World.GetView(5, 2, 3);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(15, 4));
+                            }
+                        }
+                        break;
+                    case 6:
+                        if (_backSide)
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_CHAMBER_OF_BIRTH])
+                            {
+                                destView = Global.World.GetView(16, 3, 0);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(29, 20));
+                            }
+                        }
+                        else
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_CHAMBER_OF_EXTINCTION])
+                            {
+                                destView = Global.World.GetView(6, 3, 4);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(2, 8));
+                            }
+                        }
+                        break;
+                    case 7:
+                        if (_backSide)
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TWIN_LABYRINTH_BACK])
+                            {
+                                destView = Global.World.GetView(10, 3, 0);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(25, 20));
+                            }
+                        }
+                        else
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TWIN_LABYRINTH])
+                            {
+                                destView = Global.World.GetView(9, 0, 0);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(5, 20));
+                            }
+                        }
+                        break;
+                    case 8:
+                        if (_backSide)
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_DIMENSIONAL_CORRIDOR])
+                            {
+                                destView = Global.World.GetView(17, 2, 2);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(9, 12));
+                            }
+                        }
+                        else
+                        {
+                            if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_INFINITE_CORRIDOR])
+                            {
+                                destView = Global.World.GetView(7, 0, 0);
+                                Global.World.FieldTransitionImmediate(currView, destView);
+                                Global.Protag.SetPositionToTile(new Point(22, 4));
+                            }
+                        }
+                        break;
+                    case 9:
+                        if (!_backSide)
+                        {
+                            if (!Global.GameFlags.InGameFlags[(int)GameFlags.Flags.GUARDIAN_DEFEATED_ALL])
+                            {
+                                if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_SHRINE_OF_MOTHER])
+                                {
+                                    destView = Global.World.GetView(8, 1, 4);
+                                    Global.World.FieldTransitionImmediate(currView, destView);
+                                    Global.Protag.SetPositionToTile(new Point(21, 4));
+                                }
+                            }
+                        }
+                        break;
+                }
+
+                if (destView != null)
+                {
+                    Global.AudioManager.PlaySFX(SFX.GRAIL_WARP);
+                    Global.Main.SetState(Global.GameState.PLAYING);
+                    Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
+                    Global.Protag.SetHsp(0);
+                    Global.Protag.SetVsp(0);
+                    Global.Protag.State = PlayerState.IDLE;
+                }
+            }
+            return;
+        }
+
         private int FindSoftware(Vector2 movingDirection, int initialRomPosition)
         {
             int romPosX = initialRomPosition % 14;
@@ -427,7 +708,8 @@ namespace OpenLaMulana
                         currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
                         if (romPosX + checkingColumn < 0 || romPosX + checkingColumn >= 14)
                         {
-                            if (romPosX + checkingColumn < 0) {
+                            if (romPosX + checkingColumn < 0)
+                            {
                                 stopSearchingLeft = true;
                                 checkingColumn *= -1;
 
@@ -439,7 +721,8 @@ namespace OpenLaMulana
                                     continue;
                                 }
                             }
-                            else if (romPosX + checkingColumn > 14) {
+                            else if (romPosX + checkingColumn > 14)
+                            {
                                 stopSearchingRight = true;
                                 checkingColumn++;
 
@@ -467,7 +750,8 @@ namespace OpenLaMulana
                                 break;
 
                             currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
-                            if ((romPosY >= 5 && romPosX + checkingColumn >= 14)) {
+                            if ((romPosY >= 5 && romPosX + checkingColumn >= 14))
+                            {
                                 currCheckingRom = (int)Global.ObtainableSoftware.MAX - 1;
                                 break;
                             }
@@ -492,7 +776,8 @@ namespace OpenLaMulana
                 }
 
 
-            } else
+            }
+            else
             {
                 // Horizontal checking
                 int checkingColumn = (int)movingDirection.X;
@@ -561,7 +846,7 @@ namespace OpenLaMulana
                     }
 
                     int j = 0;
-                    foreach(Global.MainWeapons weapons in Global.Inventory.ObtainedMainWeapons)
+                    foreach (Global.MainWeapons weapons in Global.Inventory.ObtainedMainWeapons)
                     {
                         if (weapons != Global.MainWeapons.NONE)
                             _weaponSprites[(int)weapons].Draw(spriteBatch, new Vector2(14 * 8 + (j % 5) * 24, 14 * 8 + (j / 5) * 16));
@@ -581,7 +866,8 @@ namespace OpenLaMulana
                     Global.TextManager.DrawText(2 * 8, 4 * 8, _scannerText, 28, Color.White, 0, 8, true);
 
                     int leftTabletOffset = 12;
-                    if (_tabletRightImage != null) {
+                    if (_tabletRightImage != null)
+                    {
                         _tabletRightImage.Draw(spriteBatch, new Vector2(16 * 8, 11 * 8));
                         leftTabletOffset = 8;
                     }
@@ -676,7 +962,8 @@ namespace OpenLaMulana
                     mainWindowSprites[(int)WindowSprites.INV_L].Draw(spriteBatch, new Vector2(7 * 8, y * 8));
                     mainWindowSprites[(int)WindowSprites.INV_R].Draw(spriteBatch, new Vector2(10 * 8, y * 8));
                 }
-            } else
+            }
+            else
             {
                 // We don't have the upgrade; draw the MSX1 screen instead
                 mainWindowSprites[(int)WindowSprites.INV_BL].Draw(spriteBatch, new Vector2(7 * 8, 6 * 8));
@@ -698,7 +985,8 @@ namespace OpenLaMulana
             // Draw all the obtained software
             for (Global.ObtainableSoftware romID = (Global.ObtainableSoftware)0; romID < Global.ObtainableSoftware.MAX; romID++)
             {
-                if (Global.Inventory.ObtainedSoftware[romID]) {
+                if (Global.Inventory.ObtainedSoftware[romID])
+                {
                     int softwareSpriteID = Global.World.SoftwareGetGraphicID((int)romID);
                     _romSprites[softwareSpriteID].Draw(spriteBatch, new Vector2(2 * 8 + ((int)romID % 14) * 16, 10 * 8 + ((int)romID / 14) * 16));
                 }
@@ -790,7 +1078,7 @@ namespace OpenLaMulana
 
                 if (_state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.SCANNING)
                     mainWindowSprites[(int)WindowSprites.AB].Draw(spriteBatch, new Vector2(x * 8, 22 * 8));
-                
+
                 if (x == 15)
                     mainWindowSprites[(int)WindowSprites.MS].Draw(spriteBatch, new Vector2(x * 8, 23 * 8));
                 else if (x == 16)
@@ -844,7 +1132,7 @@ namespace OpenLaMulana
 
             Sprite scannerOK = new Sprite(_tex, 19 * 8, 2 * 8, 16, 8);
             Sprite emuCursor = Global.TextureManager.Get8x8Tile(_tex, 19, 3, Vector2.Zero);
-            
+
             mainWindowSprites = new Sprite[] { tl, tm, tm2, tr, l, l2, blu, bl, r, r2, bru, br, ab, bm, ms, sx,
                 invTL, invTR, invBL, invBR, invBLTL, invBRTR, invT, invB, invL, invR, invM,
                 scannerOK, emuCursor};

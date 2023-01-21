@@ -91,8 +91,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         //public int CurrField { get; set; } = 1;
         //public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
-//        public int CurrField { get; set; } = 2;
-//        public int CurrViewX = 2, CurrViewY = 4, FieldCount = 0;
+        //        public int CurrField { get; set; } = 2;
+        //        public int CurrViewX = 2, CurrViewY = 4, FieldCount = 0;
         public int CurrField { get; set; } = 5;
         public int CurrViewX = 0, CurrViewY = 0, FieldCount = 0;
         private int[] _currChipLine;
@@ -726,7 +726,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             }
         }
 
-            public void CreateRenderTargets()
+        public void CreateRenderTargets()
         {
             _bkgRenderTarget = new RenderTarget2D(
                 Global.GraphicsDevice,
@@ -918,9 +918,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Field srcField = srcView.GetParentField();
             Global.Textures correctedTexID = Global.TextureManager.GetMappedWorldTexID(srcField.MapGraphics);
             var srcFieldTex = Global.TextureManager.GetTexture(correctedTexID);
-            
+
             // Determine the next field and its texture
-            
+
             Field destField = destView.GetParentField();
             Texture2D destFieldTex;
             if (destField != null)
@@ -1259,8 +1259,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _drawBossRoom = false;
 
             // Game is busy; Do not transition.
-            if (Global.Main.State != Global.GameState.PLAYING)
-                return;
+            if (Global.MobileSuperX.GetState() != MSXStates.INVENTORY)
+            {
+                if (Global.Main.State != Global.GameState.PLAYING)
+                    return;
+            }
 
             // Camera is busy; Do not transition.
             Camera.CamStates camState = Global.Camera.GetState();
@@ -1371,6 +1374,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Global.NineSliceBox = new NineSliceBox(new Vector2(15 * CHIP_SIZE, 15 * CHIP_SIZE), treasureIcon, treasureName);
             Global.EntityManager.AddEntity(Global.NineSliceBox);
             Global.Main.SetState(Global.GameState.ITEM_ACQUIRED);
+        }
+
+        internal View GetView(int fieldID, int roomX, int roomY)
+        {
+            return _fields[fieldID].GetView(roomX, roomY);
         }
     }
 }

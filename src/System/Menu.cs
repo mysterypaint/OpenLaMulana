@@ -514,7 +514,7 @@ namespace OpenLaMulana.System
                         break;
                     case MenuTypes.INPUT_KB:
                         if (_inputCooldownTimer <= 0) {
-                            Keys[] pressedKeys = InputManager.GetKeyboardState().GetPressedKeys();
+                            Keys[] pressedKeys = Global.GlobalInput.GetPressedKeys();
 
                             if (pressedKeys.Length > 0)
                             {

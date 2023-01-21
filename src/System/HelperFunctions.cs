@@ -727,10 +727,12 @@ namespace OpenLaMulana.System
                 {
                     case Global.ObtainableTreasures.FEATHER:
                         Global.Protag.SetHasFeather(true);
-                        break;
+                       
+break;
                     case Global.ObtainableTreasures.BOOTS:
                         Global.Protag.SetHasBoots(true);
-                        break;
+                       
+break;
                 }
                 j++;
             }
@@ -773,37 +775,48 @@ namespace OpenLaMulana.System
                 switch (i / 2)
                 {
                     default:
-                        break;
+                       
+break;
                     case 0:
                         Global.Inventory.ShurikenCount = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 1:
                         Global.Inventory.ThrowingKnivesCount = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 2:
                         Global.Inventory.SpearsCount = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 3:
                         Global.Inventory.FlaresCount = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 4:
                         Global.Inventory.BombsCount = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 5:
                         Global.Inventory.BulletCount = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 6:
                         Global.Inventory.AmmunitionRefills = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 7:
                         Global.Inventory.AnkhJewelCount = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 8:
                         Global.Inventory.ShieldValue = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                     case 9:
                         Global.Inventory.HandyScannerValue = GetWordAsInt(bytes);
-                        break;
+                       
+break;
                 }
             }
 
@@ -904,39 +917,62 @@ namespace OpenLaMulana.System
                 default:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                    break;
+                   
+break;
                 case Global.ObtainableTreasures.MSX2:
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.MSX2_TAKEN] = true;
-                    break;
+                   
+break;
                 case Global.ObtainableTreasures.SHELL_HORN:
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.SHELL_HORN_TAKEN] = true;
-                    break;
+                   
+break;
+                case Global.ObtainableTreasures.GRAIL:
+                    if (forciblySetGameFlag)
+                    {
+                        Global.GameFlags.InGameFlags[(int)GameFlags.Flags.GRAIL_TAKEN] = true;
+                        // Unlock all the Grail tablets, too
+                        for (GameFlags.Flags flags = GameFlags.Flags.HOLY_GRAIL_GATE_OF_GUIDANCE; flags <= GameFlags.Flags.HOLY_GRAIL_SHRINE_OF_MOTHER; flags++)
+                        {
+                            Global.GameFlags.InGameFlags[(int)flags] = true;
+                        }
+                        for (GameFlags.Flags flags = GameFlags.Flags.HOLY_GRAIL_GATE_OF_ILLUSION; flags <= GameFlags.Flags.HOLY_GRAIL_DIMENSIONAL_CORRIDOR; flags++)
+                        {
+                            Global.GameFlags.InGameFlags[(int)flags] = true;
+                        }
+                    }
+                   
+break;
                 case Global.ObtainableTreasures.MAP:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                    break;
+                   
+break;
                 case Global.ObtainableTreasures.LIFE_JEWEL:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_MAJOR_ITEM_TAKEN);
                     Global.Inventory.HPMax += 32;
                     Global.Inventory.HP = Global.Inventory.HPMax;
-                    break;
+                   
+break;
                 case Global.ObtainableTreasures.FEATHER:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
                     Global.Protag.SetHasFeather(true);
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.FEATHER_TAKEN] = true;
-                    break;
+                   
+break;
                 case Global.ObtainableTreasures.BOOTS:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
                     Global.Protag.SetHasBoots(true);
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.BOOTS_TAKEN] = true;
-                    break;
+                   
+break;
             }
         }
 
@@ -948,7 +984,8 @@ namespace OpenLaMulana.System
             {
                 default:
                 case Global.ItemTypes.UNKNOWN:
-                    break;
+                   
+break;
                 case Global.ItemTypes.TREASURE:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.TREASURE_NAMES_BEGIN + itemID, Global.CurrLang);
                     Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)itemID] = grantToPlayer;
@@ -962,7 +999,8 @@ namespace OpenLaMulana.System
                     }
 
                     ImplementInventoryChanges(thisTreasure, true, false);
-                    break;
+                   
+break;
                 case Global.ItemTypes.SUBWEAPON:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.SUB_WEAPON_NAMES_BEGIN + itemID, Global.CurrLang);
                     short subWeaponsSlot = (short)itemID;
@@ -970,7 +1008,8 @@ namespace OpenLaMulana.System
                     {
                         default:
                             Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = (Global.SubWeapons)itemID;
-                            break;
+                           
+break;
                         case Global.SubWeapons.BUCKLER:
                         case Global.SubWeapons.SILVER_SHIELD:
                         case Global.SubWeapons.ANGEL_SHIELD:
@@ -983,10 +1022,12 @@ namespace OpenLaMulana.System
                                     Global.Inventory.EquippedSubWeapon = (Global.SubWeapons)itemID;
                                 }
                             }
-                            break;
+                           
+break;
                     }
                     Global.AudioManager.PlaySFX(sfx);
-                    break;
+                   
+break;
                 case Global.ItemTypes.MAIN_WEAPON:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.MAIN_WEAPON_NAMES_BEGIN + itemID, Global.CurrLang);
                     short mainWeaponsSlot = 0;
@@ -994,7 +1035,8 @@ namespace OpenLaMulana.System
                     {
                         default:
                             Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
-                            break;
+                           
+break;
                         case Global.MainWeapons.WHIP:
                         case Global.MainWeapons.FLAIL_WHIP:
                         case Global.MainWeapons.CHAIN_WHIP:
@@ -1006,11 +1048,13 @@ namespace OpenLaMulana.System
                                 if (Global.Inventory.EquippedMainWeapon == Global.MainWeapons.WHIP || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.CHAIN_WHIP || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.FLAIL_WHIP)
                                     Global.Inventory.EquippedMainWeapon = (Global.MainWeapons)itemID;
                             }
-                            break;
+                           
+break;
                         case Global.MainWeapons.KNIFE:
                             mainWeaponsSlot = 1;
                             Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
-                            break;
+                           
+break;
                         case Global.MainWeapons.KEYBLADE:
                         case Global.MainWeapons.KEYBLADE_BETA:
                             mainWeaponsSlot = 2;
@@ -1021,28 +1065,34 @@ namespace OpenLaMulana.System
                                 if (Global.Inventory.EquippedMainWeapon == Global.MainWeapons.KEYBLADE || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.KEYBLADE_BETA)
                                     Global.Inventory.EquippedMainWeapon = (Global.MainWeapons)itemID;
                             }
-                            break;
+                           
+break;
                         case Global.MainWeapons.AXE:
                             mainWeaponsSlot = 3;
                             Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
-                            break;
+                           
+break;
                         case Global.MainWeapons.KATANA:
                             mainWeaponsSlot = 4;
                             Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
-                            break;
+                           
+break;
                     }
                     Global.AudioManager.PlaySFX(sfx);
-                    break;
+                   
+break;
                 case Global.ItemTypes.SOFTWARE:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + itemID, Global.CurrLang);
                     Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)itemID] = grantToPlayer;
                     Global.AudioManager.PlaySFX(sfx);
-                    break;
+                   
+break;
                 case Global.ItemTypes.SIGILS:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.SIGIL_NAMES_BEGIN + itemID, Global.CurrLang);
                     Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)(itemID + (int)Global.ObtainableTreasures.ORIGIN_SIGIL)] = grantToPlayer;
                     Global.AudioManager.PlaySFX(sfx);
-                    break;
+                   
+break;
             }
 
             World.PlayerGotItem(collectibleIcon, itemName);
@@ -1074,7 +1124,8 @@ namespace OpenLaMulana.System
                     }
                     if (digitsOffset >= digits.Length)
                     {
-                        break;
+                       
+break;
                     }
                     finalArgValue += digits[digitsOffset] * baseFactor;
 
@@ -1108,6 +1159,194 @@ namespace OpenLaMulana.System
             }
 
             return false;
+        }
+
+        internal static bool CheckSoftwareCombo(Global.SoftwareCombos combo, bool executeTheCombo)
+        {
+            Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedRoms;
+
+            bool result = false;
+            switch (combo)
+            {
+                case Global.SoftwareCombos.RUINS8K_16K:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.RUINS_RAM_8K, Global.ObtainableSoftware.RUINS_RAM_16K, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.UNREL_GR3:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.UNRELEASED_ROM, Global.ObtainableSoftware.GR3, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.PR3_GR3:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.PR3, Global.ObtainableSoftware.GR3, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.ATHL_CABB:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.ATHLETIC_LAND, Global.ObtainableSoftware.CABBAGE_PATCH_KIDS, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.ANTA_COMIC:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.ANTARCTIC_ADVENTURE, Global.ObtainableSoftware.COMIC_BAKERY, true);   // Combo Execution (Backside Grail Warp) is handled in MobileSuperX.cs and Main.cs (Pausing for QoL changes)
+                    break;
+                case Global.SoftwareCombos.VID_HUST_BREAKSHOT:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.VIDEO_HUSTLER, Global.ObtainableSoftware.BREAK_SHOT, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.HYPERRAL_ROADF:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.HYPER_RALLY, Global.ObtainableSoftware.ROAD_FIGHTER, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.YIEARKUNG_1AND2:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.YIE_AR_KUNG_FU, Global.ObtainableSoftware.YIE_AR_KUNG_FU_2, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.KNIGHT_MAZE:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.KNIGHTMARE, Global.ObtainableSoftware.MAZE_OF_GALIOUS, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.TWINB_GR2:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.TWINBEE, Global.ObtainableSoftware.GRADIUS_2, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.SHINS_SNATC:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.SHIN_SYNTHESIZER, Global.ObtainableSoftware.SNATCHER, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.SHINS_SDSNATC:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.SHIN_SYNTHESIZER, Global.ObtainableSoftware.SD_SNATCHER, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.PENG_GR2:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.PENGUIN_ADVENTURE, Global.ObtainableSoftware.GRADIUS_2, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.CASTLV_MAHJONGWIZ:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.CASTLEVANIA, Global.ObtainableSoftware.MAHJONG_WIZARD, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.KKONG2_FBIRD:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.KING_KONG_2, Global.ObtainableSoftware.FIREBIRD, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.QB_DIVINER:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.QBERT, Global.ObtainableSoftware.DIVINER_SENSATION, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.MAZE_ELGIZ:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.MAZE_OF_GALIOUS, Global.ObtainableSoftware.SEAL_OF_EL_GIZA, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.METALG_1AND2:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.METAL_GEAR, Global.ObtainableSoftware.METAL_GEAR_2, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.GR2_SALAM:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.GRADIUS_2, Global.ObtainableSoftware.SALAMANDER, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.SHALO_DIVIN:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.SHALOM, Global.ObtainableSoftware.DIVINER_SENSATION, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.CONTR_F1_SPIR:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.CONTRA, Global.ObtainableSoftware.F1_SPIRIT, false);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.F1_SPIR_CONT:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.F1_SPIRIT, Global.ObtainableSoftware.CONTRA, false);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+                case Global.SoftwareCombos.BADL_A1SPR:
+                    result = CheckSoftwareSlots(Global.ObtainableSoftware.BADLANDS, Global.ObtainableSoftware.A1_SPIRIT, true);
+                    if (result && executeTheCombo)
+                    {
+
+                    }
+                    break;
+            }
+            return result;
+        }
+
+        private static bool CheckSoftwareSlots(Global.ObtainableSoftware software1, Global.ObtainableSoftware software2, bool interchangeable)
+        {
+            bool result = false;
+            Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedRoms;
+
+            if (equippedRoms[0] == software1 && equippedRoms[1] == software2) {
+                result = true;
+            }
+
+            if (interchangeable)
+            {
+                if (equippedRoms[0] == software2 && equippedRoms[1] == software1)
+                {
+                    result = true;
+                }
+            }
+
+            return result;
         }
     }
 }

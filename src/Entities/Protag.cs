@@ -131,8 +131,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.SubWeaponsDamageTable[Global.SubWeapons.BOMB] = 2*4;
             Global.SubWeaponsDamageTable[Global.SubWeapons.PISTOL] = 20;
 
-            Global.RomDamageMultipliers[Global.RomCombos.VID_HUST_BREAKSHOT] = 2;      // Knife and Keyblade Attack Power +2
-            Global.RomDamageMultipliers[Global.RomCombos.CASTLV_MAHJONGWIZ] = 2;       // Whip Attack Power +2
+            Global.RomDamageMultipliers[Global.SoftwareCombos.VID_HUST_BREAKSHOT] = 2;      // Knife and Keyblade Attack Power +2
+            Global.RomDamageMultipliers[Global.SoftwareCombos.CASTLV_MAHJONGWIZ] = 2;       // Whip Attack Power +2
         }
 
         public void Initialize()
@@ -220,10 +220,13 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.SKY_JAGUAR] = true;
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.F1_SPIRIT] = true;
             Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.YIE_AR_KUNG_FU_2] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.COMIC_BAKERY] = true;
+            Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.ANTARCTIC_ADVENTURE] = true;
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.SHELL_HORN, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.BOOTS, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.FEATHER, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.MSX2, true);
+            HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.GRAIL, true);
             Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
         }
 

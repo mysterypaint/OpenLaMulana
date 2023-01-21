@@ -411,7 +411,7 @@ namespace OpenLaMulana
             NONE = -1,
         }
 
-        public enum RomCombos
+        public enum SoftwareCombos
         {
             RUINS8K_16K,        // Detailed map display in MSX Emulator
             UNREL_GR3,          // Mukimuki SD: Memorial Minigame in MSX Emulator
@@ -579,6 +579,6 @@ namespace OpenLaMulana
 
         public static Dictionary<MainWeapons, int> WeaponsDamageTable = new Dictionary<MainWeapons, int>();
         public static Dictionary<SubWeapons, int> SubWeaponsDamageTable = new Dictionary<SubWeapons, int>();
-        public static Dictionary<RomCombos, int> RomDamageMultipliers = new Dictionary<RomCombos, int>();
+        public static Dictionary<SoftwareCombos, int> RomDamageMultipliers = new Dictionary<SoftwareCombos, int>();
     }
 }
