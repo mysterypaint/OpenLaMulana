@@ -191,7 +191,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 Global.Inventory.ExpMax = Global.Inventory.HPMax;
             }
             else
-                Global.Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
+                Global.Inventory.ExpMax = Global.InventoryStruct.ExpMaxClassic; // When this is 88, trigger and reset to 0
 
 
             SaveData encryptedSave = null;// HelperFunctions.LoadSaveFromFile("lamulana.sa0");

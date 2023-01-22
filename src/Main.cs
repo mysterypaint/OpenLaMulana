@@ -37,6 +37,10 @@ namespace OpenLaMulana
         private int _displayZoomMax = 10;
         private int _pauseToggleTimer = 0;
         private int _shaderMode = 0;
+        private int _drawnCurrHp = 0;
+        private int _drawnCurrExp = 0;
+        private int _drawnDestHp = 0;
+        private int _drawnDestExp = 0;
         private float _shdHueShiftTime = 0.0f;
 
         private Protag _protag;
@@ -300,6 +304,13 @@ namespace OpenLaMulana
                     break;
             }
 
+            if (Global.Inventory.CurrExp > Global.Inventory.ExpMax)
+            {
+                Global.Inventory.HP = Global.Inventory.HPMax;
+                Global.Inventory.CurrExp = 0;
+                Global.AudioManager.PlaySFX(SFX.P_EXP_MAX);
+            }
+
             if (Global.AnimationTimer.OneFrameElapsed(true))
             {
                 if (_pauseToggleTimer > 0)
@@ -413,7 +424,7 @@ namespace OpenLaMulana
                 case Global.GameState.TRANSITION:
                     //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
                     //Globals.TextManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
-                    Global.TextManager.QueueText(0, 0, "Press Select, or F1, to Begin");
+                    Global.TextManager.QueueTexT(0, 0, "Press Select, or F1, to Begin");
                     break;
                 default:
                 case Global.GameState.MSX_OPEN:
@@ -427,7 +438,7 @@ namespace OpenLaMulana
                 case Global.GameState.PAUSED:
                     DrawHud(Global.SpriteBatch, gameTime);
                     HelperFunctions.DrawRectangle(Global.SpriteBatch, new Rectangle(13 * 8, 12 * 8, 5 * 8, 8), Color.Black);
-                    Global.TextManager.QueueText(13 * 8, 12 * 8, "PAUSE");
+                    Global.TextManager.QueueTexT(13 * 8, 12 * 8, "PAUSE");
                     break;
                 case Global.GameState.PLAYING:
                     //View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();
@@ -550,19 +561,43 @@ namespace OpenLaMulana
             // Draw the white line representing max HP
             float maxHPRatio = maxHP / (float)trueHPMax;
             int hpPixels = Math.Clamp((int)Math.Round(maxHPRatio * 88), 1, 88);
-            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + hpPixels, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
+
+            if (_drawnCurrHp < hpPixels)
+                _drawnCurrHp++;
+            if (_drawnCurrHp > Global.Inventory.HPMax)
+                _drawnCurrHp = Global.Inventory.HPMax;
+            if (_drawnCurrHp > Global.Inventory.TrueHPMax)
+                _drawnCurrHp = 0;
+            //Global.InventoryStruct.ExpMaxClassic
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + _drawnCurrHp, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
+
+
+            // Calculate the Current and Max EXP positions for drawing
+            Global.Inventory.CurrExp++;
+            int maxExpPixels, currExpPixels;
+            int currExp = Global.Inventory.CurrExp;
+            float currEXPRatio;
+            if (Global.QoLChanges)
+            {
+                maxExpPixels = Math.Clamp((int)Math.Round(maxHPRatio * 88), 1, 88);
+                currEXPRatio = currExp / (float)trueHPMax;
+                currExpPixels = (int)Math.Round(currEXPRatio * 88);
+                if (maxExpPixels < 1)
+                    maxExpPixels = 1;
+            }
+            else {
+                maxExpPixels = Global.Inventory.ExpMax;
+                currExpPixels = Global.Inventory.CurrExp;
+                if (maxExpPixels < 1)
+                    maxExpPixels = 1;
+            }
 
             // Draw the white line representing max EXP
-            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + hpPixels, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + maxExpPixels, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
 
-
-            int currExp = Global.Inventory.CurrExp;
-            float currEXPRatio = currExp / (float)trueHPMax; // Remake behavior
-            int expPixels = (int)Math.Round(currEXPRatio * 88);
-            if (expPixels < 1)
-                expPixels = 1;
+            // Draw the current Exp
             if (currExp > 0)
-                HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + 9, expPixels, 5), new Color(51, 204, 51, 255));
+                HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + 9, currExpPixels, 5), new Color(51, 204, 51, 255));
 
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 23, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 23, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));

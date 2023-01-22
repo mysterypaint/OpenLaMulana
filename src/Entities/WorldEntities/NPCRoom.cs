@@ -281,12 +281,12 @@ namespace OpenLaMulana.Entities.WorldEntities
                                 _productSprites[i].Draw(spriteBatch, new Vector2((8 + 7 * i) * 8, 13 * 8));
 
                                 if (!_shopData[i].IsSoldOut)
-                                    Global.TextManager.QueueText((7 + (i * 7)) * 8, 15 * 8, _shopData[i].ProductPriceString);
+                                    Global.TextManager.QueueTexT((7 + (i * 7)) * 8, 15 * 8, _shopData[i].ProductPriceString);
                                 else
-                                    Global.TextManager.QueueText((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
+                                    Global.TextManager.QueueTexT((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
                             }
                             _playerShopSprite.Draw(spriteBatch, new Vector2(15 * 8, 21 * 8));
-                            Global.TextManager.QueueText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
+                            Global.TextManager.QueueTexT(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
@@ -297,7 +297,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             break;
                         case NPCStates.ACTIVE:
                             DrawNPCRoom(spriteBatch, gameTime);
-                            Global.TextManager.QueueText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
+                            Global.TextManager.QueueTexT(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
@@ -308,7 +308,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             break;
                         case NPCStates.ACTIVE:
                             DrawNPCRoom(spriteBatch, gameTime);
-                            Global.TextManager.QueueText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
+                            Global.TextManager.QueueTexT(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;

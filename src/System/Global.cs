@@ -528,6 +528,7 @@ namespace OpenLaMulana
             public Global.SubWeapons[] ObtainedSubWeapons { get; set; }
             public Global.ObtainableTreasures[] TreasureIcons { get; set; }
 
+            public const int ExpMaxClassic = 88;
             public int CoinCount { get; set; }
             public int WeightCount { get; set; }
 

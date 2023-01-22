@@ -834,7 +834,7 @@ namespace OpenLaMulana.System
                 Global.Inventory.ExpMax = Global.Inventory.HPMax;
             }
             else
-                Global.Inventory.ExpMax = 88; // When this is 88, trigger and reset to 0
+                Global.Inventory.ExpMax = Global.InventoryStruct.ExpMaxClassic; // When this is 88, trigger and reset to 0
 
         }
         #endregion
@@ -982,6 +982,12 @@ namespace OpenLaMulana.System
                     Global.Inventory.HPMax += 32;
                     Global.Inventory.HP = Global.Inventory.HPMax;
 
+                    if (Global.QoLChanges)
+                    {
+                        Global.Inventory.ExpMax = Global.Inventory.HPMax; // Remake behavior
+                    }
+                    else
+                        Global.Inventory.ExpMax = Global.InventoryStruct.ExpMaxClassic; // When this is 88, trigger and reset to 0
                     break;
                 case Global.ObtainableTreasures.FEATHER:
                     if (playSFX)
