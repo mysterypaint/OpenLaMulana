@@ -235,6 +235,7 @@ namespace OpenLaMulana
                                     State = Global.GameState.MSX_OPEN;
                                     Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                                     Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                                    Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
                                 }
 
                                 if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
@@ -242,6 +243,7 @@ namespace OpenLaMulana
                                     State = Global.GameState.MSX_OPEN;
                                     Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                                     Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                                    Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
                                 }
 
                                 if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
@@ -249,6 +251,7 @@ namespace OpenLaMulana
                                     State = Global.GameState.MSX_OPEN;
                                     Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                                     Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                                    Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
                                 }
 
                                 if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
@@ -256,6 +259,7 @@ namespace OpenLaMulana
                                     State = Global.GameState.MSX_OPEN;
                                     Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                                     Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                                    Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
                                 }
                                 break;
                         }

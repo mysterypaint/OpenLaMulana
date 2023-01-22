@@ -20,6 +20,13 @@ namespace OpenLaMulana
 
         Effect IGameEntity.ActiveShader => null;
 
+        public enum MSXInventoryStates
+        {
+            MAIN_WEAPON_SELECTION,
+            SUB_WEAPON_SELECTION,
+            MAX
+        };
+
         public enum EmulatorStates
         {
             NONE,
@@ -109,9 +116,15 @@ namespace OpenLaMulana
         private bool _inventoryCursorVisible = true;
         private int _inventoryCursorBlinkTimer = -1;
         private int _inventoryCursorBlinkTimerReset = 15;
+        private bool _subWeaponInventoryCursorVisible = true;
+        private int _subWeaponInventoryCursorBlinkTimer = -1;
         private int _softwareSelectionCursorPosition = 0;
         private int _softwareCartSlotCursorPosition = 0;
+        private int _weaponSelectionPosition = 0;
+        private int _subWeaponSelectionPosition = 0;
         private Global.SoftwareCombos _equippedSoftwareCombo = Global.SoftwareCombos.NONE;
+        private MSXInventoryStates _inventoryState = MSXInventoryStates.MAIN_WEAPON_SELECTION;
+        private bool _playerHasAtLeastOneSubweapon = false;
 
         public MobileSuperX()
         {
@@ -172,6 +185,217 @@ namespace OpenLaMulana
                 case Global.MSXStates.INVENTORY:
 
                     HolyGrailWarpingUpdateRoutine();
+
+
+                    switch (_inventoryState)
+                    {
+                        case MSXInventoryStates.MAIN_WEAPON_SELECTION:
+                            if (InputManager.DirPressedX > 0)
+                            {
+                                int originalPosition = _weaponSelectionPosition;
+                                _weaponSelectionPosition++;
+
+                                if (_weaponSelectionPosition >= Global.Inventory.ObtainedMainWeapons.Length)
+                                    _weaponSelectionPosition = 0;
+
+                                while (Global.Inventory.ObtainedMainWeapons[_weaponSelectionPosition] == Global.MainWeapons.NONE)
+                                {
+                                    if (Global.Inventory.ObtainedMainWeapons[_weaponSelectionPosition] != Global.MainWeapons.NONE)
+                                        break;
+                                    _weaponSelectionPosition++;
+
+                                    if (_weaponSelectionPosition >= Global.Inventory.ObtainedMainWeapons.Length)
+                                        _weaponSelectionPosition = 0;
+                                }
+
+                                if (originalPosition != _weaponSelectionPosition)
+                                {
+                                    Global.Inventory.EquippedMainWeapon = Global.Inventory.ObtainedMainWeapons[_weaponSelectionPosition];
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    _inventoryCursorVisible = true;
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                            }
+                            else if (InputManager.DirPressedX < 0)
+                            {
+                                int originalPosition = _weaponSelectionPosition;
+                                _weaponSelectionPosition--;
+
+                                if (_weaponSelectionPosition < 0)
+                                    _weaponSelectionPosition = Global.Inventory.ObtainedMainWeapons.Length - 1;
+
+                                while (Global.Inventory.ObtainedMainWeapons[_weaponSelectionPosition] == Global.MainWeapons.NONE)
+                                {
+                                    if (Global.Inventory.ObtainedMainWeapons[_weaponSelectionPosition] != Global.MainWeapons.NONE)
+                                        break;
+                                    _weaponSelectionPosition--;
+
+                                    if (_weaponSelectionPosition < 0)
+                                        _weaponSelectionPosition = Global.Inventory.ObtainedMainWeapons.Length - 1;
+                                }
+
+                                if (originalPosition != _weaponSelectionPosition)
+                                {
+                                    Global.Inventory.EquippedMainWeapon = Global.Inventory.ObtainedMainWeapons[_weaponSelectionPosition];
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    _inventoryCursorVisible = true;
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                            }
+
+
+                            if (Global.AnimationTimer.OneFrameElapsed())
+                            {
+                                if (_inventoryCursorBlinkTimer <= 0)
+                                {
+                                    _inventoryCursorVisible = !_inventoryCursorVisible;
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                                else
+                                {
+                                    _inventoryCursorBlinkTimer--;
+                                }
+                            }
+
+                            if (InputManager.DirPressedY > 0)
+                            {
+                                VerifyThatPlayerHasAtLeastOneSubweapon();
+
+                                if (_playerHasAtLeastOneSubweapon)
+                                {
+                                    _inventoryState = MSXInventoryStates.SUB_WEAPON_SELECTION;
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    _subWeaponInventoryCursorVisible = true;
+                                    _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                            }
+                            break;
+
+                        case MSXInventoryStates.SUB_WEAPON_SELECTION:
+                            if (InputManager.DirPressedX > 0)
+                            {
+                                int originalPosition = _subWeaponSelectionPosition;
+                                _subWeaponSelectionPosition++;
+
+                                if (_subWeaponSelectionPosition >= Global.Inventory.ObtainedSubWeapons.Length)
+                                    _subWeaponSelectionPosition = 0;
+
+                                while (Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition] == Global.SubWeapons.NONE)
+                                {
+                                    if (Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition] != Global.SubWeapons.NONE)
+                                        break;
+                                    _subWeaponSelectionPosition++;
+
+                                    if (_subWeaponSelectionPosition >= Global.Inventory.ObtainedSubWeapons.Length)
+                                        _subWeaponSelectionPosition = 0;
+                                }
+
+                                if (originalPosition != _subWeaponSelectionPosition)
+                                {
+                                    Global.Inventory.EquippedSubWeapon = Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition];
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    _subWeaponInventoryCursorVisible = true;
+                                    _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                            }
+                            else if (InputManager.DirPressedX < 0)
+                            {
+                                int originalPosition = _subWeaponSelectionPosition;
+                                _subWeaponSelectionPosition--;
+
+                                if (_subWeaponSelectionPosition < 0)
+                                    _subWeaponSelectionPosition = Global.Inventory.ObtainedSubWeapons.Length - 1;
+
+                                while (Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition] == Global.SubWeapons.NONE)
+                                {
+                                    if (Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition] != Global.SubWeapons.NONE)
+                                        break;
+                                    _subWeaponSelectionPosition--;
+
+                                    if (_subWeaponSelectionPosition < 0)
+                                        _subWeaponSelectionPosition = Global.Inventory.ObtainedSubWeapons.Length - 1;
+                                }
+
+                                if (originalPosition != _subWeaponSelectionPosition)
+                                {
+                                    Global.Inventory.EquippedSubWeapon = Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition];
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    _subWeaponInventoryCursorVisible = true;
+                                    _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                            }
+
+                            if (Global.AnimationTimer.OneFrameElapsed())
+                            {
+                                if (_subWeaponInventoryCursorBlinkTimer <= 0)
+                                {
+                                    _subWeaponInventoryCursorVisible = !_subWeaponInventoryCursorVisible;
+                                    _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                                else
+                                {
+                                    _subWeaponInventoryCursorBlinkTimer--;
+                                }
+                            }
+
+                            if (InputManager.DirPressedY < 0)
+                            {
+                                int originalPosition = _subWeaponSelectionPosition;
+                                if (_subWeaponSelectionPosition <= 4)
+                                {
+                                    _inventoryState = MSXInventoryStates.MAIN_WEAPON_SELECTION;
+                                    _inventoryCursorVisible = true;
+                                    _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                                else
+                                {
+                                    _subWeaponSelectionPosition -= 5;
+
+                                    while (Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition] == Global.SubWeapons.NONE)
+                                    {
+                                        if (Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition] != Global.SubWeapons.NONE)
+                                            break;
+                                        _subWeaponSelectionPosition--;
+
+                                        if (_subWeaponSelectionPosition < 0)
+                                            _subWeaponSelectionPosition = Global.Inventory.ObtainedSubWeapons.Length - 1;
+                                    }
+                                }
+
+                                if (_subWeaponSelectionPosition != originalPosition || _inventoryState == MSXInventoryStates.MAIN_WEAPON_SELECTION)
+                                {
+                                    Global.Inventory.EquippedSubWeapon = Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition];
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    _subWeaponInventoryCursorVisible = true;
+                                    _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                            }
+                            else if (InputManager.DirPressedY > 0)
+                            {
+                                int originalPosition = _subWeaponSelectionPosition;
+                                if (_subWeaponSelectionPosition <= 4)
+                                    _subWeaponSelectionPosition += 5;
+
+                                while (Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition] == Global.SubWeapons.NONE)
+                                {
+                                    if (Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition] != Global.SubWeapons.NONE)
+                                        break;
+                                    _subWeaponSelectionPosition++;
+
+                                    if (_subWeaponSelectionPosition >= Global.Inventory.ObtainedSubWeapons.Length)
+                                        _subWeaponSelectionPosition = 0;
+                                }
+
+                                if (originalPosition != _subWeaponSelectionPosition)
+                                {
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    _subWeaponInventoryCursorVisible = true;
+                                    _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+                                }
+                            }
+                            break;
+                    }
+
 
 
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
@@ -442,6 +666,21 @@ namespace OpenLaMulana
             }
         }
 
+        public void VerifyThatPlayerHasAtLeastOneSubweapon()
+        {
+            if (_playerHasAtLeastOneSubweapon)
+                return;
+
+            foreach (Global.SubWeapons subWeapon in Global.Inventory.ObtainedSubWeapons)
+            {
+                if (subWeapon != Global.SubWeapons.NONE)
+                {
+                    _playerHasAtLeastOneSubweapon = true;
+                    break;
+                }
+            }
+        }
+
         private void UpdateEmulatorState()
         {
             switch (_equippedSoftwareCombo)
@@ -476,6 +715,9 @@ namespace OpenLaMulana
             _softwareCartSlotCursorPosition = 0;
             _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
             _inventoryCursorVisible = true;
+            _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
+            _subWeaponInventoryCursorVisible = true;
+            _inventoryState = MSXInventoryStates.MAIN_WEAPON_SELECTION;
 
             // Reset the Emulator Screen State
             ResetEmulatorState();
@@ -976,6 +1218,27 @@ namespace OpenLaMulana
                             _subWeaponSprites[(int)subWeapons].Draw(spriteBatch, new Vector2(14 * 8 + (j % 5) * 24, 17 * 8 + (j / 5) * 16));
                         j++;
                     }
+
+                    switch (_inventoryState)
+                    {
+                        case MSXInventoryStates.MAIN_WEAPON_SELECTION:
+                            if (_inventoryCursorVisible)
+                                _mainWeaponSelectionCursor.Draw(spriteBatch, new Vector2(14 * 8 + (_weaponSelectionPosition % 5) * 24, 14 * 8 + (_weaponSelectionPosition / 5) * 16));
+
+                            if (_playerHasAtLeastOneSubweapon)
+                                _subWeaponSelectionCursor.Draw(spriteBatch, new Vector2(14 * 8 + (_subWeaponSelectionPosition % 5) * 24, 17 * 8 + (_subWeaponSelectionPosition / 5) * 16));
+                            break;
+                        case MSXInventoryStates.SUB_WEAPON_SELECTION:
+                            if (_playerHasAtLeastOneSubweapon)
+                            {
+                                if (_subWeaponInventoryCursorVisible)
+                                    _subWeaponSelectionCursor.Draw(spriteBatch, new Vector2(14 * 8 + (_subWeaponSelectionPosition % 5) * 24, 17 * 8 + (_subWeaponSelectionPosition / 5) * 16));
+                            }
+
+                            _mainWeaponSelectionCursor.Draw(spriteBatch, new Vector2(14 * 8 + (_weaponSelectionPosition % 5) * 24, 14 * 8 + (_weaponSelectionPosition / 5) * 16));
+                            break;
+                    }
+
                     break;
                 case Global.MSXStates.SCANNING:
                     DrawMSXBackground(spriteBatch, gameTime, true);

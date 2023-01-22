@@ -181,7 +181,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             GetDebugEquipment();
 
-
             // Damage Table:
             // Divine Lightning = 16;
             // Skeleton = 1;
@@ -205,6 +204,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.FEATHER])
                 _jumpsMax = 2;
+
+            Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
 
             MoveToWorldSpawnPoint();
         }
@@ -232,6 +233,10 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.FEATHER, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.MSX2, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.GRAIL, true);
+            HelperFunctions.UpdateInventorySilent(Global.SubWeapons.SHURIKEN, true);
+            HelperFunctions.UpdateInventorySilent(Global.SubWeapons.HANDY_SCANNER, true);
+
+            Global.Inventory.ObtainedMainWeapons[4] = Global.MainWeapons.KATANA;
             Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
         }
 

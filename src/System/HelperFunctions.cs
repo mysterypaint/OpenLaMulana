@@ -76,7 +76,7 @@ namespace OpenLaMulana.System
         /// Inputs a key to the textbox.
         /// </summary>
         /// <param name="Key">The key to input.</param>
-        
+
         /*
         protected void InputKey(Keys Key)
         {
@@ -232,7 +232,8 @@ namespace OpenLaMulana.System
                         if (Shift)
                         {
                             return "\"";
-                        } else { return "\'"; }
+                        }
+                        else { return "\'"; }
                     case Keys.OemQuestion:
                         if (Shift) { return "?"; } else { return "/"; }
                     case Keys.OemPlus:
@@ -522,12 +523,13 @@ namespace OpenLaMulana.System
 
                     globalChecksum = reader.ReadByte();
                 }
-            } catch (FileNotFoundException)
+            }
+            catch (FileNotFoundException)
             {
                 Debug.WriteLine("The file could not be found.", fileName);
                 return null;
             }
-            
+
             SaveData encryptedSave = new SaveData(false, allBlocks, globalChecksum);
 
             return encryptedSave;
@@ -586,7 +588,7 @@ namespace OpenLaMulana.System
                 block.Data[i] ^= state;
                 checksum += (byte)(i + block.Data[i]);
             }
-            
+
             /*
             if (checksum != block.Checksum)
                 throw new Exception("Bad checksum error while encrypting this save block!");*/
@@ -652,7 +654,7 @@ namespace OpenLaMulana.System
             {
                 using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
-                    foreach(EncryptionBlock b in saveBlocks)
+                    foreach (EncryptionBlock b in saveBlocks)
                     {
                         fs.WriteByte(b.Key);
                         fs.Write(b.Data, 0, b.Data.Length);
@@ -723,16 +725,16 @@ namespace OpenLaMulana.System
             {
                 Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)j] = Convert.ToBoolean(b);
 
-                switch((Global.ObtainableTreasures)j)
+                switch ((Global.ObtainableTreasures)j)
                 {
                     case Global.ObtainableTreasures.FEATHER:
                         Global.Protag.SetHasFeather(true);
-                       
-break;
+
+                        break;
                     case Global.ObtainableTreasures.BOOTS:
                         Global.Protag.SetHasBoots(true);
-                       
-break;
+
+                        break;
                 }
                 j++;
             }
@@ -775,48 +777,48 @@ break;
                 switch (i / 2)
                 {
                     default:
-                       
-break;
+
+                        break;
                     case 0:
                         Global.Inventory.ShurikenCount = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 1:
                         Global.Inventory.ThrowingKnivesCount = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 2:
                         Global.Inventory.SpearsCount = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 3:
                         Global.Inventory.FlaresCount = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 4:
                         Global.Inventory.BombsCount = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 5:
                         Global.Inventory.BulletCount = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 6:
                         Global.Inventory.AmmunitionRefills = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 7:
                         Global.Inventory.AnkhJewelCount = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 8:
                         Global.Inventory.ShieldValue = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                     case 9:
                         Global.Inventory.HandyScannerValue = GetWordAsInt(bytes);
-                       
-break;
+
+                        break;
                 }
             }
 
@@ -910,6 +912,30 @@ break;
             ImplementInventoryChanges(itemID, false, true);
         }
 
+        internal static void UpdateInventorySilent(Global.SubWeapons itemID, bool grantToPlayer)
+        {
+            short subWeaponsSlot = (short)itemID;
+            switch ((Global.SubWeapons)itemID)
+            {
+                default:
+                    if (grantToPlayer)
+                        Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = itemID;
+                    else
+                        Global.Inventory.ObtainedSubWeapons[(int)itemID] = Global.SubWeapons.NONE;
+
+                    break;
+                case Global.SubWeapons.BUCKLER:
+                case Global.SubWeapons.SILVER_SHIELD:
+                case Global.SubWeapons.ANGEL_SHIELD:
+                    subWeaponsSlot = 8;
+                    if (grantToPlayer)
+                        Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = itemID;
+                    else
+                        Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = Global.SubWeapons.NONE;
+                    break;
+            }
+        }
+
         private static void ImplementInventoryChanges(Global.ObtainableTreasures itemID, bool playSFX = false, bool forciblySetGameFlag = false)
         {
             switch (itemID)
@@ -917,18 +943,18 @@ break;
                 default:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                   
-break;
+
+                    break;
                 case Global.ObtainableTreasures.MSX2:
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.MSX2_TAKEN] = true;
-                   
-break;
+
+                    break;
                 case Global.ObtainableTreasures.SHELL_HORN:
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.SHELL_HORN_TAKEN] = true;
-                   
-break;
+
+                    break;
                 case Global.ObtainableTreasures.GRAIL:
                     if (forciblySetGameFlag)
                     {
@@ -943,36 +969,36 @@ break;
                             Global.GameFlags.InGameFlags[(int)flags] = true;
                         }
                     }
-                   
-break;
+
+                    break;
                 case Global.ObtainableTreasures.MAP:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
-                   
-break;
+
+                    break;
                 case Global.ObtainableTreasures.LIFE_JEWEL:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_MAJOR_ITEM_TAKEN);
                     Global.Inventory.HPMax += 32;
                     Global.Inventory.HP = Global.Inventory.HPMax;
-                   
-break;
+
+                    break;
                 case Global.ObtainableTreasures.FEATHER:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
                     Global.Protag.SetHasFeather(true);
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.FEATHER_TAKEN] = true;
-                   
-break;
+
+                    break;
                 case Global.ObtainableTreasures.BOOTS:
                     if (playSFX)
                         Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
                     Global.Protag.SetHasBoots(true);
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.BOOTS_TAKEN] = true;
-                   
-break;
+
+                    break;
             }
         }
 
@@ -984,8 +1010,8 @@ break;
             {
                 default:
                 case Global.ItemTypes.UNKNOWN:
-                   
-break;
+
+                    break;
                 case Global.ItemTypes.TREASURE:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.TREASURE_NAMES_BEGIN + itemID, Global.CurrLang);
                     Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)itemID] = grantToPlayer;
@@ -993,14 +1019,15 @@ break;
 
                     Point inventoryCoords = _inventoryOrderTreasures[itemID];
 
-                    if (!inventoryCoords.Equals(new Point(-1, -1))) {
+                    if (!inventoryCoords.Equals(new Point(-1, -1)))
+                    {
                         int coordsAsIndex = Math.Clamp(inventoryCoords.Y * 10 + inventoryCoords.X, 0, 39);
                         Global.Inventory.TreasureIcons[coordsAsIndex] = thisTreasure;
                     }
 
                     ImplementInventoryChanges(thisTreasure, true, false);
-                   
-break;
+
+                    break;
                 case Global.ItemTypes.SUBWEAPON:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.SUB_WEAPON_NAMES_BEGIN + itemID, Global.CurrLang);
                     short subWeaponsSlot = (short)itemID;
@@ -1008,8 +1035,8 @@ break;
                     {
                         default:
                             Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = (Global.SubWeapons)itemID;
-                           
-break;
+
+                            break;
                         case Global.SubWeapons.BUCKLER:
                         case Global.SubWeapons.SILVER_SHIELD:
                         case Global.SubWeapons.ANGEL_SHIELD:
@@ -1022,12 +1049,12 @@ break;
                                     Global.Inventory.EquippedSubWeapon = (Global.SubWeapons)itemID;
                                 }
                             }
-                           
-break;
+
+                            break;
                     }
                     Global.AudioManager.PlaySFX(sfx);
-                   
-break;
+
+                    break;
                 case Global.ItemTypes.MAIN_WEAPON:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.MAIN_WEAPON_NAMES_BEGIN + itemID, Global.CurrLang);
                     short mainWeaponsSlot = 0;
@@ -1035,8 +1062,8 @@ break;
                     {
                         default:
                             Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
-                           
-break;
+
+                            break;
                         case Global.MainWeapons.WHIP:
                         case Global.MainWeapons.FLAIL_WHIP:
                         case Global.MainWeapons.CHAIN_WHIP:
@@ -1048,13 +1075,13 @@ break;
                                 if (Global.Inventory.EquippedMainWeapon == Global.MainWeapons.WHIP || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.CHAIN_WHIP || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.FLAIL_WHIP)
                                     Global.Inventory.EquippedMainWeapon = (Global.MainWeapons)itemID;
                             }
-                           
-break;
+
+                            break;
                         case Global.MainWeapons.KNIFE:
                             mainWeaponsSlot = 1;
                             Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
-                           
-break;
+
+                            break;
                         case Global.MainWeapons.KEYBLADE:
                         case Global.MainWeapons.KEYBLADE_BETA:
                             mainWeaponsSlot = 2;
@@ -1065,34 +1092,34 @@ break;
                                 if (Global.Inventory.EquippedMainWeapon == Global.MainWeapons.KEYBLADE || Global.Inventory.EquippedMainWeapon == Global.MainWeapons.KEYBLADE_BETA)
                                     Global.Inventory.EquippedMainWeapon = (Global.MainWeapons)itemID;
                             }
-                           
-break;
+
+                            break;
                         case Global.MainWeapons.AXE:
                             mainWeaponsSlot = 3;
                             Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
-                           
-break;
+
+                            break;
                         case Global.MainWeapons.KATANA:
                             mainWeaponsSlot = 4;
                             Global.Inventory.ObtainedMainWeapons[mainWeaponsSlot] = (Global.MainWeapons)itemID;
-                           
-break;
+
+                            break;
                     }
                     Global.AudioManager.PlaySFX(sfx);
-                   
-break;
+
+                    break;
                 case Global.ItemTypes.SOFTWARE:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + itemID, Global.CurrLang);
                     Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)itemID] = grantToPlayer;
                     Global.AudioManager.PlaySFX(sfx);
-                   
-break;
+
+                    break;
                 case Global.ItemTypes.SIGILS:
                     itemName = Global.TextManager.GetText((int)Global.HardCodedText.SIGIL_NAMES_BEGIN + itemID, Global.CurrLang);
                     Global.Inventory.ObtainedTreasures[(Global.ObtainableTreasures)(itemID + (int)Global.ObtainableTreasures.ORIGIN_SIGIL)] = grantToPlayer;
                     Global.AudioManager.PlaySFX(sfx);
-                   
-break;
+
+                    break;
             }
 
             World.PlayerGotItem(collectibleIcon, itemName);
@@ -1124,8 +1151,8 @@ break;
                     }
                     if (digitsOffset >= digits.Length)
                     {
-                       
-break;
+
+                        break;
                     }
                     finalArgValue += digits[digitsOffset] * baseFactor;
 
@@ -1336,7 +1363,8 @@ break;
             bool result = false;
             Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedRoms;
 
-            if (equippedRoms[0] == software1 && equippedRoms[1] == software2) {
+            if (equippedRoms[0] == software1 && equippedRoms[1] == software2)
+            {
                 result = true;
             }
 

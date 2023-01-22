@@ -122,6 +122,7 @@ namespace OpenLaMulana.System
                 codeMapDictJPN[c] = i;
                 i++;
             }
+            codeMapDictJPN['没'] = 66;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -309,8 +310,15 @@ namespace OpenLaMulana.System
                     case Global.Languages.Japanese:
                         if (c == '"')
                             c = 'ﾞ';
-                        thisChar = codeMapDictJPN[c] - 32;
 
+                        try
+                        {
+                            thisChar = codeMapDictJPN[c] - 32;
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            thisChar = 0;
+                        }
                         switch (thisChar)
                         {
                             case 190: // ﾞ
