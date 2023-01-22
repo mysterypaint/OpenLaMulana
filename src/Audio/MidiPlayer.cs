@@ -15,6 +15,7 @@ namespace OpenLaMulana.Audio
 
         private DynamicSoundEffectInstance dynamicSound;
         private byte[] buffer;
+        private bool _noMusic = false;
 
         public MidiPlayer(string soundFontPath, SynthesizerSettings settings)
         {
@@ -22,14 +23,23 @@ namespace OpenLaMulana.Audio
 
             sequencer = new MidiFileSequencer(synthesizer);
 
-            dynamicSound = new DynamicSoundEffectInstance(sampleRate, AudioChannels.Stereo);
-            buffer = new byte[4 * bufferLength];
+            try
+            {
+                dynamicSound = new DynamicSoundEffectInstance(sampleRate, AudioChannels.Stereo);
+                buffer = new byte[4 * bufferLength];
 
-            dynamicSound.BufferNeeded += (s, e) => SubmitBuffer();
+                dynamicSound.BufferNeeded += (s, e) => SubmitBuffer();
+            }
+            catch (NoAudioHardwareException)
+            {
+                _noMusic = true;
+            }
         }
 
         public void Play(MidiFile midiFile, bool loop = false)
         {
+            if (_noMusic)
+                return;
             sequencer.Play(midiFile, loop);
 
             if (dynamicSound.State != SoundState.Playing)
@@ -46,6 +56,8 @@ namespace OpenLaMulana.Audio
 
         private void SubmitBuffer()
         {
+            if (_noMusic)
+                return;
             sequencer.RenderInterleavedInt16(MemoryMarshal.Cast<byte, short>(buffer));
             dynamicSound.SubmitBuffer(buffer, 0, buffer.Length);
         }

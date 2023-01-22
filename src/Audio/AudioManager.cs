@@ -34,6 +34,7 @@ namespace OpenLaMulana
         private static Dictionary<SFX, SoundEffect> _sfxBank = new Dictionary<SFX, SoundEffect>();
 
         private List<SoundEffectInstance> _activeSoundEffects = new List<SoundEffectInstance>();
+        private bool _noAudioHardware = false;
 
         public AudioManager()
         {
@@ -155,17 +156,26 @@ namespace OpenLaMulana
                 "se5C"
             };
 
-            for (SFX sfx = SFX.PAUSE; sfx < SFX.MAX; sfx++)
+            try
             {
-                string fName = sfxList[(int)sfx];
-                _sfxBank[sfx] = content.Load<SoundEffect>(Path.Combine("sound", fName));
-                _activeSoundEffects.Add(_sfxBank[sfx].CreateInstance());
+                for (SFX sfx = SFX.PAUSE; sfx < SFX.MAX; sfx++)
+                {
+                    string fName = sfxList[(int)sfx];
+                    _sfxBank[sfx] = content.Load<SoundEffect>(Path.Combine("sound", fName));
+                    _activeSoundEffects.Add(_sfxBank[sfx].CreateInstance());
+                }
+            }
+            catch (NoAudioHardwareException)
+            {
+                _noAudioHardware = true;
             }
 
         }
 
         public void UnloadContent()
         {
+            if (_noAudioHardware)
+                return;
             _midiPlayer.Dispose();
             foreach (SoundEffectInstance sfx in _activeSoundEffects)
             {
@@ -185,6 +195,8 @@ namespace OpenLaMulana
 
         public void Update(GameTime gameTime)
         {
+            if (_noAudioHardware)
+                return;
             if (_midiPlayer.State == SoundState.Stopped && _currSongID >= 0)
             {
                 _midiPlayer.Play(songs[_currSongID], true);
@@ -273,6 +285,8 @@ namespace OpenLaMulana
 
         public void SetMasterVolume(float newVal)
         {
+            if (_noAudioHardware)
+                return;
             _userMasterVolScale = newVal;
             float preSet = (float)Math.Round((_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale) * 100) / 100;
             _midiPlayer.SetMasterVolume(preSet);
@@ -291,6 +305,8 @@ namespace OpenLaMulana
 
         public void SetBGMVolume(float newVal)
         {
+            if (_noAudioHardware)
+                return;
             _userBGMVolScale = newVal;
             float preSet = (float)Math.Round((_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale) * 100) / 100;
             _midiPlayer.SetMasterVolume(preSet);
@@ -298,6 +314,8 @@ namespace OpenLaMulana
 
         public void SetSFXVolume(float newVal)
         {
+            if (_noAudioHardware)
+                return;
             _userSFXVolScale = newVal;
 
             // Hacky solution, because SoundEffect.Master volume is shared with the BGM synthesizer...
@@ -333,6 +351,8 @@ namespace OpenLaMulana
 
         internal void PlaySFX(SFX sfxId)
         {
+            if (_noAudioHardware)
+                return;
             _activeSoundEffects[(int)sfxId].Stop();
             _activeSoundEffects[(int)sfxId].Play();
         }
