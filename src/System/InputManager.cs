@@ -285,10 +285,11 @@ namespace OpenLaMulana.System
                 Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.KONAMI_TENNIS] = true;
                 Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.GAME_MASTER] = true;
                 Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.A1_SPIRIT] = true;
-                
-
 
                 Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+
+                Global.Inventory.CurrExp += Global.Inventory.ExpMax;
+
             }
 
             if (DirectKeyboardCheckPressed(Keys.P))

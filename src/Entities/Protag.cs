@@ -112,6 +112,9 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Texture2D spriteSheet = Global.TextureManager.GetTexture(Global.Textures.PROT1);
             _idleSprite = new Sprite(spriteSheet, 0, 0, 16, 16, 8, 16);
             _sprIndex = _idleSprite;
+
+            Global.Inventory.HP = 32;
+            Global.Inventory.HPMax = 32;
         }
 
         private void InitWeaponDamageTables()

@@ -41,6 +41,13 @@ namespace OpenLaMulana
         private int _drawnCurrExp = 0;
         private int _drawnDestHp = 0;
         private int _drawnDestExp = 0;
+        private int _drawnMaxHPLine = 0;
+        private Color _hpColorRed = new Color(255, 51, 51, 255);
+        private Color _hpColorBlue = new Color(51, 102, 255, 255);
+        private Color _hpColorYellow = new Color(204, 204, 51, 255);
+        public Color _hpColor { get; private set; }
+        private int _maxExpPixels = 0;
+        private int _currExpPixels = 0;
         private float _shdHueShiftTime = 0.0f;
 
         private Protag _protag;
@@ -169,6 +176,7 @@ namespace OpenLaMulana
 
             _protag = new Protag(new Vector2(0, 0));
             Global.Protag = _protag;
+
             Global.TextManager = new TextManager();
             Global.World = new World(_protag);
             _jukebox = new Jukebox();
@@ -275,9 +283,11 @@ namespace OpenLaMulana
                     }
 
                     Global.EntityManager.Update(gameTime);
+                    UpdateExpAndHP();
                     break;
                 case Global.GameState.ITEM_ACQUIRED:
                     Global.NineSliceBox.Update(gameTime);
+                    UpdateExpAndHP();
                     break;
                 case Global.GameState.PAUSED:
                     Global.AudioManager.PauseMusic();
@@ -289,6 +299,7 @@ namespace OpenLaMulana
                 case Global.GameState.TRANSITION:
                     State = Global.GameState.PLAYING;
                     _protag.Initialize();
+                    UpdateExpAndHP();
                     break;
                 case Global.GameState.MSX_OPEN:
                     Global.MobileSuperX.Update(gameTime);
@@ -302,13 +313,6 @@ namespace OpenLaMulana
                         StartGame();
                     }
                     break;
-            }
-
-            if (Global.Inventory.CurrExp > Global.Inventory.ExpMax)
-            {
-                Global.Inventory.HP = Global.Inventory.HPMax;
-                Global.Inventory.CurrExp = 0;
-                Global.AudioManager.PlaySFX(SFX.P_EXP_MAX);
             }
 
             if (Global.AnimationTimer.OneFrameElapsed(true))
@@ -341,6 +345,75 @@ namespace OpenLaMulana
                     _displayZoomFactor = 1;
                 ToggleDisplayMode();
             }
+        }
+
+        private void UpdateExpAndHP()
+        {
+            if (Global.Inventory.CurrExp >= Global.Inventory.ExpMax)
+            {
+                Global.Inventory.HP = Global.Inventory.HPMax;
+
+                Global.Inventory.CurrExp = 0;
+
+                if (State != Global.GameState.INITIAL)
+                    Global.AudioManager.PlaySFX(SFX.P_EXP_MAX);
+            }
+
+
+            int trueHPMax = Global.Inventory.TrueHPMax;
+            int maxHP = Global.Inventory.HPMax;
+            // Calculate the white line representing max HP
+            float maxHPRatio = maxHP / (float)trueHPMax;
+            _drawnMaxHPLine = Math.Clamp((int)Math.Round(maxHPRatio * 88), 1, 88);
+
+            if (maxHP > 0)
+                _drawnDestHp = (int)Math.Round(88 * ((float)Global.Inventory.HP / trueHPMax));
+            else
+                _drawnDestHp = 0;
+
+            if (Global.Inventory.HPMax <= 0)
+                Global.Inventory.HPMax = 32;
+            float healthColorRatio = _drawnCurrHp / _drawnMaxHPLine;
+            if (healthColorRatio < 0.25f)
+            {
+                if (_hpColor != _hpColorRed && Global.Inventory.HP != Global.Inventory.HPMax)
+                    Global.AudioManager.PlaySFX(SFX.P_LOW_HP);
+                _hpColor = _hpColorRed; // Change health color to red
+            }
+            else if (healthColorRatio < 0.5f)
+                _hpColor = _hpColorYellow; // Change health color to yellow
+            else
+                _hpColor = _hpColorBlue; // Health color is blue by default
+
+            if (_drawnCurrHp != _drawnDestHp)
+                _drawnCurrHp++;
+            if (_drawnCurrHp > _drawnMaxHPLine)
+                _drawnCurrHp = 0;
+
+            // Calculate the Current and Max EXP positions for drawing
+            _drawnDestExp = Global.Inventory.CurrExp;
+            float currEXPRatio;
+            if (Global.QoLChanges)
+            {
+                _maxExpPixels = Math.Clamp((int)Math.Round(maxHPRatio * 88), 1, 88);
+                currEXPRatio = _drawnDestExp / (float)trueHPMax;
+                _currExpPixels = (int)Math.Round(currEXPRatio * 88);
+                if (_maxExpPixels < 1)
+                    _maxExpPixels = 1;
+            }
+            else
+            {
+                _maxExpPixels = Global.Inventory.ExpMax;
+                _currExpPixels = Global.Inventory.CurrExp;
+                if (_maxExpPixels < 1)
+                    _maxExpPixels = 1;
+            }
+
+            if (_drawnCurrExp != _drawnDestExp)
+                _drawnCurrExp++;
+
+            if (_drawnCurrExp > Global.InventoryStruct.ExpMaxClassic)
+                _drawnCurrExp = 0;
         }
 
         private void CalcDisplayZoomMax()
@@ -540,64 +613,19 @@ namespace OpenLaMulana
             }
 
 
-            // Calculate and draw the blue HP bar
-            int trueHPMax = Global.Inventory.TrueHPMax;
-            int maxHP = Global.Inventory.HPMax;
-            int currHP = Global.Inventory.HP;
-            float currHPRatio = currHP / 352.0f;
-            float healthColorRatio = currHP / (float)maxHP;
-            Color HPColor = new Color(51, 102, 255, 255); // Health color is blue by default
-            if (healthColorRatio < 0.25f)
-                HPColor = new Color(255, 51, 51, 255); // Change health color to red
-            else if (healthColorRatio < 0.5f)
-                HPColor = new Color(204, 204, 51, 255); // Change health color to yellow
+            // Draw the HP bar and its max position
 
-            int currHPPixels = (int)Math.Round(currHPRatio * 88);
-            if (currHPPixels < 1)
-                currHPPixels = 1;
-            if (currHP > 0)
-                HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + 1, currHPPixels, 5), HPColor);
+            if (_drawnDestHp > 0)
+                HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + 1, _drawnCurrHp, 5), _hpColor);
 
-            // Draw the white line representing max HP
-            float maxHPRatio = maxHP / (float)trueHPMax;
-            int hpPixels = Math.Clamp((int)Math.Round(maxHPRatio * 88), 1, 88);
-
-            if (_drawnCurrHp < hpPixels)
-                _drawnCurrHp++;
-            if (_drawnCurrHp > Global.Inventory.HPMax)
-                _drawnCurrHp = Global.Inventory.HPMax;
-            if (_drawnCurrHp > Global.Inventory.TrueHPMax)
-                _drawnCurrHp = 0;
-            //Global.InventoryStruct.ExpMaxClassic
-            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + _drawnCurrHp, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
-
-
-            // Calculate the Current and Max EXP positions for drawing
-            Global.Inventory.CurrExp++;
-            int maxExpPixels, currExpPixels;
-            int currExp = Global.Inventory.CurrExp;
-            float currEXPRatio;
-            if (Global.QoLChanges)
-            {
-                maxExpPixels = Math.Clamp((int)Math.Round(maxHPRatio * 88), 1, 88);
-                currEXPRatio = currExp / (float)trueHPMax;
-                currExpPixels = (int)Math.Round(currEXPRatio * 88);
-                if (maxExpPixels < 1)
-                    maxExpPixels = 1;
-            }
-            else {
-                maxExpPixels = Global.Inventory.ExpMax;
-                currExpPixels = Global.Inventory.CurrExp;
-                if (maxExpPixels < 1)
-                    maxExpPixels = 1;
-            }
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + _drawnMaxHPLine, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
 
             // Draw the white line representing max EXP
-            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + maxExpPixels, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
+            HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24 + _maxExpPixels, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
 
             // Draw the current Exp
-            if (currExp > 0)
-                HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + 9, currExpPixels, 5), new Color(51, 204, 51, 255));
+            if (_drawnCurrExp > 0)
+                HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 24, (int)_camPos.Y + 9, _drawnCurrExp, 5), new Color(51, 204, 51, 255));
 
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 23, (int)_camPos.Y + 0, 1, 7), new Color(255, 255, 255, 255));
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)_camPos.X + 23, (int)_camPos.Y + 8, 1, 7), new Color(255, 255, 255, 255));
@@ -635,6 +663,7 @@ namespace OpenLaMulana
             if (State != Global.GameState.INITIAL)
                 return false;
 
+            UpdateExpAndHP();
             Global.World.InitWorldEntities();
 
             State = Global.GameState.TRANSITION;
