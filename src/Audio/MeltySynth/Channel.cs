@@ -34,7 +34,7 @@ namespace MeltySynth
             this.synthesizer = synthesizer;
             this.isPercussionChannel = isPercussionChannel;
             
-            polyphonyLimit = 16;
+            polyphonyLimit = 64;
 
             Reset();
         }
@@ -57,7 +57,7 @@ namespace MeltySynth
             pitchBendRange = 2 << 7;
             coarseTune = 0;
             fineTune = 8192;
-            polyphonyLimit = 10;
+            polyphonyLimit = 64;
 
             pitchBend = 0F;
         }
@@ -92,7 +92,7 @@ namespace MeltySynth
                 switch (value)
                 {
                     default:
-                        polyphonyLimit = 16;
+                        polyphonyLimit = 64;
                         break;
                     case 0:
                         polyphonyLimit = 1;
@@ -103,7 +103,7 @@ namespace MeltySynth
                 }
             } else
             {
-                polyphonyLimit = 16;
+                polyphonyLimit = 64;
             }
 
             ClearAllActiveVoices();
