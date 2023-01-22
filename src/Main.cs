@@ -413,7 +413,7 @@ namespace OpenLaMulana
                 case Global.GameState.TRANSITION:
                     //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
                     //Globals.TextManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
-                    Global.TextManager.DrawText(0, 0, "Press Select, or F1, to Begin");
+                    Global.TextManager.QueueText(0, 0, "Press Select, or F1, to Begin");
                     break;
                 default:
                 case Global.GameState.MSX_OPEN:
@@ -427,7 +427,7 @@ namespace OpenLaMulana
                 case Global.GameState.PAUSED:
                     DrawHud(Global.SpriteBatch, gameTime);
                     HelperFunctions.DrawRectangle(Global.SpriteBatch, new Rectangle(13 * 8, 12 * 8, 5 * 8, 8), Color.Black);
-                    Global.TextManager.DrawText(13 * 8, 12 * 8, "PAUSE");
+                    Global.TextManager.QueueText(13 * 8, 12 * 8, "PAUSE");
                     break;
                 case Global.GameState.PLAYING:
                     //View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();

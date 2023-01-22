@@ -410,7 +410,7 @@ namespace OpenLaMulana.System
             return new Vector2(_otx, dakutenHandakutenUsed);
         }
 
-        public void DrawText(int x, int y, string str, int charLimit = 32, Color col = default, int paddingX = 0, int paddingY = 0, bool potentiallyLamulanese = false)
+        public void QueueText(int x, int y, string str, int charLimit = 32, Color col = default, int paddingX = 0, int paddingY = 0, bool potentiallyLamulanese = false)
         {
             if (str == null)
                 return;
@@ -498,7 +498,7 @@ namespace OpenLaMulana.System
 
         internal void DrawText(Vector2 position, string str, int charLimit = 32, Color col = default)
         {
-            DrawText((int)position.X, (int)position.Y, str, charLimit, col);
+            QueueText((int)position.X, (int)position.Y, str, charLimit, col);
         }
 
         internal void DrawTextImmediate(Vector2 position, string str, int charLimit = 32)

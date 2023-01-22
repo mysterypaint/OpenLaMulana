@@ -258,7 +258,7 @@ namespace OpenLaMulana.System
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Global.TextManager.DrawText(PADDING_X - 2 * 8, 2 * 8, "- Options -");
+            Global.TextManager.QueueText(PADDING_X - 2 * 8, 2 * 8, "- Options -");
 
             int y = 0;
             foreach (MenuOption option in _currPage.MenuOptions)
@@ -278,11 +278,11 @@ namespace OpenLaMulana.System
 
                 if (_currOptionPosition > WRAP_LIMIT - 1 && _currPage.MenuOptions.Count > ELEMENT_DISPLAY_LIMIT) {
                     if ((WRAP_LIMIT + y - _currOptionPosition) >= 0 && (WRAP_LIMIT + y - _currOptionPosition) < ELEMENT_DISPLAY_LIMIT)
-                        Global.TextManager.DrawText(PADDING_X, PADDING_Y + ((WRAP_LIMIT + y - _currOptionPosition) * BUFFER_Y), option.Name, 32, navigationCol);
+                        Global.TextManager.QueueText(PADDING_X, PADDING_Y + ((WRAP_LIMIT + y - _currOptionPosition) * BUFFER_Y), option.Name, 32, navigationCol);
                     _menuCursor.Draw(spriteBatch, new Vector2(PADDING_X - 16, PADDING_Y + (WRAP_LIMIT * BUFFER_Y)));
                 }
                 else if (y < ELEMENT_DISPLAY_LIMIT) {
-                        Global.TextManager.DrawText(PADDING_X, PADDING_Y + (y * BUFFER_Y), option.Name, 32, navigationCol);
+                        Global.TextManager.QueueText(PADDING_X, PADDING_Y + (y * BUFFER_Y), option.Name, 32, navigationCol);
 
                     _menuCursor.Draw(spriteBatch, new Vector2(PADDING_X - 16, PADDING_Y + (_currOptionPosition * BUFFER_Y)));
                 }
@@ -326,11 +326,11 @@ namespace OpenLaMulana.System
                         if (_currOptionPosition > WRAP_LIMIT - 1 && _currPage.MenuOptions.Count > ELEMENT_DISPLAY_LIMIT)
                         {
                             if ((WRAP_LIMIT + y - _currOptionPosition) >= 0 && (WRAP_LIMIT + y - _currOptionPosition) < ELEMENT_DISPLAY_LIMIT)
-                                Global.TextManager.DrawText(hAlignRight, PADDING_Y + ((WRAP_LIMIT + y - _currOptionPosition) * BUFFER_Y), finalStr, 32, highlightCol);
+                                Global.TextManager.QueueText(hAlignRight, PADDING_Y + ((WRAP_LIMIT + y - _currOptionPosition) * BUFFER_Y), finalStr, 32, highlightCol);
                         }
                         else if (y < ELEMENT_DISPLAY_LIMIT)
                         {
-                            Global.TextManager.DrawText(hAlignRight, PADDING_Y + (y * BUFFER_Y), finalStr, 32, highlightCol);
+                            Global.TextManager.QueueText(hAlignRight, PADDING_Y + (y * BUFFER_Y), finalStr, 32, highlightCol);
                         }
                         break;
                     case MenuTypes.SLIDER:
@@ -350,7 +350,7 @@ namespace OpenLaMulana.System
                             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle(toggleLen + PADDING_X + (int)(togglePos * toggleLen), PADDING_Y + (y * BUFFER_Y) + 1, 2, 8), highlightCol);
 
                             string percentage = Math.Floor(togglePos * 100).ToString();
-                            Global.TextManager.DrawText(toggleLen + PADDING_X + (int)(toggleLen * 1.2) + 8, PADDING_Y + (y * BUFFER_Y), percentage, 32, highlightCol);
+                            Global.TextManager.QueueText(toggleLen + PADDING_X + (int)(toggleLen * 1.2) + 8, PADDING_Y + (y * BUFFER_Y), percentage, 32, highlightCol);
                         }
                         break;
                     case MenuTypes.TOGGLE:
@@ -377,8 +377,8 @@ namespace OpenLaMulana.System
                         }
                         else if (y < ELEMENT_DISPLAY_LIMIT)
                         {
-                            Global.TextManager.DrawText(PADDING_X + _rightSidePadding, PADDING_Y + (y * BUFFER_Y), option.Strings[0], 32, highlightCol);
-                            Global.TextManager.DrawText(((option.Strings[0].Length + 1) * World.CHIP_SIZE) + PADDING_X + _rightSidePadding, PADDING_Y + (y * BUFFER_Y), option.Strings[1], 32, highlightCol);
+                            Global.TextManager.QueueText(PADDING_X + _rightSidePadding, PADDING_Y + (y * BUFFER_Y), option.Strings[0], 32, highlightCol);
+                            Global.TextManager.QueueText(((option.Strings[0].Length + 1) * World.CHIP_SIZE) + PADDING_X + _rightSidePadding, PADDING_Y + (y * BUFFER_Y), option.Strings[1], 32, highlightCol);
                         }
                         break;
                     case MenuTypes.INPUT_KB:
@@ -439,10 +439,10 @@ namespace OpenLaMulana.System
                         if (_currOptionPosition > WRAP_LIMIT - 1 && _currPage.MenuOptions.Count > ELEMENT_DISPLAY_LIMIT)
                         {
                             if ((WRAP_LIMIT + y - _currOptionPosition) >= 0 && (WRAP_LIMIT + y - _currOptionPosition) < ELEMENT_DISPLAY_LIMIT)
-                                Global.TextManager.DrawText(PADDING_X + (19 * 8), PADDING_Y + ((WRAP_LIMIT + y - _currOptionPosition) * BUFFER_Y), currStr, 32, highlightCol);
+                                Global.TextManager.QueueText(PADDING_X + (19 * 8), PADDING_Y + ((WRAP_LIMIT + y - _currOptionPosition) * BUFFER_Y), currStr, 32, highlightCol);
                         }
                         else if (y < ELEMENT_DISPLAY_LIMIT) {
-                            Global.TextManager.DrawText(PADDING_X + (19 * 8), PADDING_Y + (y * BUFFER_Y), currStr, 32, highlightCol);
+                            Global.TextManager.QueueText(PADDING_X + (19 * 8), PADDING_Y + (y * BUFFER_Y), currStr, 32, highlightCol);
                         }
                         break;
                     case MenuTypes.INPUT_GP:
@@ -452,11 +452,11 @@ namespace OpenLaMulana.System
                         if (_currOptionPosition > WRAP_LIMIT - 1 && _currPage.MenuOptions.Count > ELEMENT_DISPLAY_LIMIT)
                         {
                             if ((WRAP_LIMIT + y - _currOptionPosition) >= 0 && (WRAP_LIMIT + y - _currOptionPosition) < ELEMENT_DISPLAY_LIMIT)
-                                Global.TextManager.DrawText(PADDING_X + (19 * 8), PADDING_Y + ((WRAP_LIMIT + y - _currOptionPosition) * BUFFER_Y), currStr, 32, highlightCol);
+                                Global.TextManager.QueueText(PADDING_X + (19 * 8), PADDING_Y + ((WRAP_LIMIT + y - _currOptionPosition) * BUFFER_Y), currStr, 32, highlightCol);
                         }
                         else if (y < ELEMENT_DISPLAY_LIMIT)
                         {
-                            Global.TextManager.DrawText(PADDING_X + (19 * 8), PADDING_Y + (y * BUFFER_Y), currStr, 32, highlightCol);
+                            Global.TextManager.QueueText(PADDING_X + (19 * 8), PADDING_Y + (y * BUFFER_Y), currStr, 32, highlightCol);
                         }
 
                         break;
