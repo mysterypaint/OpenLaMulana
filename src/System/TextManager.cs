@@ -256,7 +256,7 @@ namespace OpenLaMulana.System
                     lineBreak = false;
 
                     Vector2 shiftedVecAfterWriting = Vector2.Zero;
-                    if (c != ' ')
+                    if (c != ' ' || drawTile > 15)
                     {
                         shiftedVecAfterWriting = DrawChar(spriteBatch, new Point(posX + xOff + (int)_drawOff.X, posY + yOff + (int)_drawOff.Y), c, drawTile, col, potentiallyLamulanese);
 

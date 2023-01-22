@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Audio;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using System;
 using System.Collections.Generic;
@@ -165,7 +166,7 @@ namespace OpenLaMulana.Entities
             foreach (IGameEntity entity in _entities)
             {
                 bool deleteMe = true;
-                if (entity is Protag || entity is World || entity is SpriteDefManager || entity is GameMenu || entity is MobileSuperX)
+                if (entity is Protag || entity is World || entity is SpriteDefManager || entity is GameMenu || entity is MobileSuperX || entity is Jukebox)
                 {
                     deleteMe = false;
                 }

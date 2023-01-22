@@ -16,7 +16,7 @@ namespace OpenLaMulana
 {
     public class AudioManager : IGameEntity
     {
-        private MidiPlayer midiPlayer;
+        private MidiPlayer _midiPlayer;
         private List<MidiFile> songs = new List<MidiFile>();
         private int _currSongID = -1;//17;
         private string[] _bgmFNames = new string[76];
@@ -44,8 +44,8 @@ namespace OpenLaMulana
             int sampleRate = 44100;
 
             SynthesizerSettings settings = new SynthesizerSettings(sampleRate);
-            midiPlayer = new MidiPlayer(musPath + "SanbikiScc.sf2", settings);
-            midiPlayer.SetMasterVolume(_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale);
+            _midiPlayer = new MidiPlayer(musPath + "SanbikiScc.sf2", settings);
+            _midiPlayer.SetMasterVolume(_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale);
             SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale;
 
             for (var i = 0; i <= 75; i++)
@@ -166,7 +166,7 @@ namespace OpenLaMulana
 
         public void UnloadContent()
         {
-            midiPlayer.Dispose();
+            _midiPlayer.Dispose();
             foreach (SoundEffectInstance sfx in _activeSoundEffects)
             {
                 sfx.Dispose();
@@ -185,16 +185,26 @@ namespace OpenLaMulana
 
         public void Update(GameTime gameTime)
         {
-            if (midiPlayer.State == SoundState.Stopped && _currSongID >= 0)
+            if (_midiPlayer.State == SoundState.Stopped && _currSongID >= 0)
             {
-                midiPlayer.Play(songs[_currSongID], true);
-                Debug.WriteLine(midiPlayer.GetMasterVolume());
+                _midiPlayer.Play(songs[_currSongID], true);
+                Debug.WriteLine(_midiPlayer.GetMasterVolume());
             }
+        }
+
+        public void ToggleMIDIChannel(int channel)
+        {
+            _midiPlayer.ToggleChannel(channel - 1);
+        }
+
+        public float GetChannelVolume(int channelID)
+        {
+            return _midiPlayer.GetChannelVolume(channelID - 1);
         }
 
         internal void StopMusic()
         {
-            midiPlayer.Stop();
+            _midiPlayer.Stop();
             _currSongID = -1;
         }
 
@@ -205,12 +215,12 @@ namespace OpenLaMulana
 
         internal void PauseMusic()
         {
-            midiPlayer.Pause();
+            _midiPlayer.Pause();
         }
 
         internal void ResumeMusic()
         {
-            midiPlayer.Resume();
+            _midiPlayer.Resume();
         }
 
         internal void ChangeSongs(int musicNumber, bool isJukebox = false)
@@ -241,10 +251,10 @@ namespace OpenLaMulana
                             break;
                     }
                 }
-                midiPlayer.Stop();
+                _midiPlayer.Stop();
                 //midiPlayer.Dispose();
                 _currSongID = musicNumber;
-                midiPlayer.Play(songs[_currSongID]);
+                _midiPlayer.Play(songs[_currSongID]);
             }
         }
 
@@ -265,7 +275,7 @@ namespace OpenLaMulana
         {
             _userMasterVolScale = newVal;
             float preSet = (float)Math.Round((_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale) * 100) / 100;
-            midiPlayer.SetMasterVolume(preSet);
+            _midiPlayer.SetMasterVolume(preSet);
             //SoundEffect.MasterVolume = _userMasterVolScale * _userSFXVolScale * _internalSFXVolScale;
 
             // Hacky solution, because SoundEffect.Master volume is shared with the BGM synthesizer...
@@ -283,7 +293,7 @@ namespace OpenLaMulana
         {
             _userBGMVolScale = newVal;
             float preSet = (float)Math.Round((_userMasterVolScale * _userBGMVolScale * _internalBGMVolScale) * 100) / 100;
-            midiPlayer.SetMasterVolume(preSet);
+            _midiPlayer.SetMasterVolume(preSet);
         }
 
         public void SetSFXVolume(float newVal)
@@ -304,12 +314,17 @@ namespace OpenLaMulana
 
         internal float GetMasterBGMVolume()
         {
-            return midiPlayer.GetMasterVolume();
+            return _midiPlayer.GetMasterVolume();
         }
 
         internal float GetMasterSFXVolume()
         {
             return SoundEffect.MasterVolume;
+        }
+
+        public UInt32 GetEnabledChannels()
+        {
+            return _midiPlayer.GetEnabledChannels();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -320,6 +335,11 @@ namespace OpenLaMulana
         {
             _activeSoundEffects[(int)sfxId].Stop();
             _activeSoundEffects[(int)sfxId].Play();
+        }
+
+        internal void SetEnabledChannels(UInt32 value)
+        {
+            _midiPlayer.SetEnabledChannels(value);
         }
     }
 }

@@ -80,6 +80,26 @@ namespace OpenLaMulana.Audio
             return synthesizer.MasterVolume;
         }
 
+        internal void ToggleChannel(int channelID)
+        {
+            synthesizer.ToggleChannel(channelID);
+        }
+
+        internal float GetChannelVolume(int channelID)
+        {
+            return synthesizer.GetChannelVolume(channelID);
+        }
+
+        internal UInt32 GetEnabledChannels()
+        {
+            return synthesizer.GetEnabledChannels();
+        }
+
+        internal void SetEnabledChannels(UInt32 value)
+        {
+            synthesizer.SetEnabledChannels(value);
+        }
+
         public SoundState State => dynamicSound.State;
     }
 }

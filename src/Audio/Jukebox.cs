@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
+using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using static OpenLaMulana.Global;
@@ -20,9 +21,14 @@ namespace OpenLaMulana.Audio
         private int totalSongs = 75;
         private int _actualGameBGM = -1;
         private bool _isPlaying = false;
+        private int _mutingChannelPosition = 1;
+        private Sprite _menuCursor = null;
 
         public Jukebox()
         {
+            Texture2D _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
+            _menuCursor = Global.TextureManager.Get8x8Tile(_tex, 0, 1, Vector2.Zero);
+
             InitializeComments();
         }
 
@@ -36,22 +42,37 @@ namespace OpenLaMulana.Audio
                 Global.AudioManager.StopMusic();
             }
             var selectionMoveX = InputManager.DirPressedX;
+            var selectionMoveY = InputManager.DirPressedY;
             var keyCancelPressed = InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL];
             var keyConfirmPressed = InputManager.PressedKeys[(int)ControllerKeys.MENU_CONFIRM];
+            var keyMainWeaponPressed = InputManager.PressedKeys[(int)ControllerKeys.MAIN_WEAPON];
 
-            selectedSong += selectionMoveX;
+            selectedSong += -selectionMoveY;
             if (selectedSong < 0)
                 selectedSong = totalSongs;
             if (selectedSong > totalSongs)
                 selectedSong = 0;
 
-            if (selectionMoveX != 0)
+            _mutingChannelPosition += selectionMoveX;
+            if (_mutingChannelPosition < 1)
+                _mutingChannelPosition = 16;
+            if (_mutingChannelPosition > 16)
+                _mutingChannelPosition = 1;
+
+            if (selectionMoveY != 0)
                 Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+
+            if (keyMainWeaponPressed)
+            {
+                Global.AudioManager.ToggleMIDIChannel(_mutingChannelPosition);
+            }
+
             if (keyConfirmPressed)
             {
                 Global.AudioManager.ChangeSongs(JukeboxSongOrder[selectedSong], true);
                 _isPlaying = true;
             }
+
             if (keyCancelPressed)
             {
                 Global.AudioManager.StopMusic();
@@ -61,10 +82,12 @@ namespace OpenLaMulana.Audio
 
         public void ResetJukeBox()
         {
-            Global.AudioManager.ChangeSongs(_actualGameBGM, false);
+            if (_actualGameBGM >= 0)
+                Global.AudioManager.ChangeSongs(_actualGameBGM, false);
             selectedSong = 0;
             _actualGameBGM = -1;
             _isPlaying = false;
+            Global.AudioManager.SetEnabledChannels(0xFFFF);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -92,13 +115,37 @@ namespace OpenLaMulana.Audio
                     versionString = "1.0";
                     break;
             }
-            string headerString = "La-Mulana Jukebox v" + versionString + "\\10\\10Left/Right - cycle tracks\\10Confirm/Cancel - Stop/Play";
+            string headerString = String.Format("La-Mulana Jukebox v" + versionString + "\\10\\10Left/Right - cycle tracks\\10Confirm/Cancel - Stop/Play\\10Muting Channel: {0}", _mutingChannelPosition);
             if (_isPlaying)
                 headerString += "\\10[Playing]";
             else
                 headerString += "\\10[Stopped]";
             Global.TextManager.DrawText(3 * 8, 8 * 18, String.Format("{0}:{1} {2}", selectedSong, GetSongName(), str), 26);
             Global.TextManager.DrawText(3 * 8, 3 * 8, headerString);
+
+            UInt32 enabledChannels = Global.AudioManager.GetEnabledChannels();
+            for (int i = 0; i < 16; i++)
+            {
+                int channelVolume = (int)Math.Clamp(Math.Round(Global.AudioManager.GetChannelVolume(i + 1) * 255), 0, 255);
+                Color color = Color.White;
+                if (((enabledChannels >> i) & 1U) == 0)
+                    color = new Color(255, 51, 51, 255);
+
+                var xOff = (i % 8) * 8 * 3;
+                var yOff = (i / 8) * 16;
+
+                if (i == _mutingChannelPosition - 1)
+                    Global.TextManager.DrawText(6 * 8 + xOff, 11 * 8 + yOff, "\\255", 1, Color.White);//_menuCursor.Draw(spriteBatch, new Vector2(4 * 8 + xOff, 12 * 8 + yOff));
+
+                string outStr = String.Empty;
+                if (channelVolume < 0x10)
+                {
+                    outStr += "0";
+                }
+                outStr += Convert.ToString(channelVolume, 16).ToUpper();
+
+                Global.TextManager.DrawText(5 * 8 + xOff, 12 * 8 + yOff, outStr, 32, color);
+            }
         }
 
         internal int GetCurrentSongID()

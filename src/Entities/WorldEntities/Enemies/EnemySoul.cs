@@ -50,13 +50,6 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (Global.AnimationTimer.OneFrameElapsed())
-            {
-                if (_blinkTimer <= 0)
-                    _isBlue = !_isBlue;
-                else
-                    _blinkTimer--;
-            }
 
             if (_isBlue)
                 _sprIndex = _sprAnimBlueSpinning.CurrentFrame.Sprite;
@@ -73,6 +66,13 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
             _sprAnimBlueMoveCardinal.Update(gameTime);
             _sprAnimRedMoveDiagonal.Update(gameTime);
             _sprAnimRedMoveCardinal.Update(gameTime);
+            if (Global.AnimationTimer.OneFrameElapsed())
+            {
+                if (_blinkTimer <= 0)
+                    _isBlue = !_isBlue;
+                else
+                    _blinkTimer--;
+            }
         }
     }
 }

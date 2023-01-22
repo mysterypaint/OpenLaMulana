@@ -111,7 +111,7 @@ namespace OpenLaMulana
         private int _inventoryCursorBlinkTimerReset = 15;
         private int _softwareSelectionCursorPosition = 0;
         private int _softwareCartSlotCursorPosition = 0;
-        private Global.SoftwareCombos _combo = Global.SoftwareCombos.NONE;
+        private Global.SoftwareCombos _equippedSoftwareCombo = Global.SoftwareCombos.NONE;
 
         public MobileSuperX()
         {
@@ -138,6 +138,7 @@ namespace OpenLaMulana
                     {
                         _state = (Global.MSXStates)1;
                     }
+                    ResetMSXState();
                 }
                 else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_MOVE_LEFT])
                 {
@@ -147,6 +148,7 @@ namespace OpenLaMulana
                     {
                         _state = Global.MSXStates.MAX - 1;
                     }
+                    ResetMSXState();
                 }
 
                 if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] && _state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.CONFIG_SCREEN)
@@ -176,6 +178,7 @@ namespace OpenLaMulana
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
+                        ResetMSXState();
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
@@ -305,6 +308,7 @@ namespace OpenLaMulana
                                     Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] = (Global.ObtainableSoftware)_softwareSelectionCursorPosition;
 
                                     bool softwareComboDetected = false;
+                                    _equippedSoftwareCombo = Global.SoftwareCombos.NONE;
                                     for (Global.SoftwareCombos combo = 0; combo < Global.SoftwareCombos.MAX; combo++)
                                     {
                                         if (combo == Global.SoftwareCombos.ANTA_COMIC)
@@ -361,29 +365,7 @@ namespace OpenLaMulana
                     if (_emulatorState == EmulatorStates.NONE)
                     {
                         ResetEmulatorState();
-                        switch (_combo)
-                        {
-                            default:
-                                break;
-                            case Global.SoftwareCombos.RUINS8K_16K:
-                                _emulatorState = EmulatorStates.MAP32K;
-                                break;
-                            case Global.SoftwareCombos.UNREL_GR3:
-                                _emulatorState = EmulatorStates.MUKIMUKI;
-                                break;
-                            case Global.SoftwareCombos.PR3_GR3:
-                                _emulatorState = EmulatorStates.PR3;
-                                break;
-                            case Global.SoftwareCombos.SHINS_SNATC:
-                                _emulatorState = EmulatorStates.JKB_1;
-                                break;
-                            case Global.SoftwareCombos.SHINS_SDSNATC:
-                                _emulatorState = EmulatorStates.JKB_2;
-                                break;
-                            case Global.SoftwareCombos.BADL_A1SPR:
-                                _emulatorState = EmulatorStates.JKB_3;
-                                break;
-                        }
+                        UpdateEmulatorState();
                     }
 
                     switch (_emulatorState)
@@ -406,25 +388,25 @@ namespace OpenLaMulana
 
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
                     {
-                        ResetEmulatorState();
+                        ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
-                        ResetEmulatorState();
+                        ResetMSXState();
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
-                        ResetEmulatorState();
+                        ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
-                        ResetEmulatorState();
+                        ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
@@ -432,26 +414,57 @@ namespace OpenLaMulana
                 case Global.MSXStates.CONFIG_SCREEN:
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
                     {
+                        ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
                     {
+                        ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
+                        ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
+                        ResetMSXState();
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
 
                     _f5Menu.Update(gameTime);
+                    break;
+            }
+        }
+
+        private void UpdateEmulatorState()
+        {
+            switch (_equippedSoftwareCombo)
+            {
+                default:
+                    break;
+                case Global.SoftwareCombos.RUINS8K_16K:
+                    _emulatorState = EmulatorStates.MAP32K;
+                    break;
+                case Global.SoftwareCombos.UNREL_GR3:
+                    _emulatorState = EmulatorStates.MUKIMUKI;
+                    break;
+                case Global.SoftwareCombos.PR3_GR3:
+                    _emulatorState = EmulatorStates.PR3;
+                    break;
+                case Global.SoftwareCombos.SHINS_SNATC:
+                    _emulatorState = EmulatorStates.JKB_1;
+                    break;
+                case Global.SoftwareCombos.SHINS_SDSNATC:
+                    _emulatorState = EmulatorStates.JKB_2;
+                    break;
+                case Global.SoftwareCombos.BADL_A1SPR:
+                    _emulatorState = EmulatorStates.JKB_3;
                     break;
             }
         }
@@ -466,6 +479,7 @@ namespace OpenLaMulana
 
             // Reset the Emulator Screen State
             ResetEmulatorState();
+            UpdateEmulatorState();
         }
 
         private void ResetEmulatorState()
@@ -1194,6 +1208,7 @@ namespace OpenLaMulana
         public void SetState(Global.MSXStates state)
         {
             _state = state;
+            ResetMSXState();
         }
 
         private void InitAllMenuSprites()
@@ -1290,7 +1305,7 @@ namespace OpenLaMulana
 
         internal void SetCurrentSoftwareCombo(Global.SoftwareCombos combo)
         {
-            _combo = combo;
+            _equippedSoftwareCombo = combo;
         }
 
         internal EmulatorStates GetEmulatorState()

@@ -569,6 +569,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.AKNH:
                     newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+                case EntityIDs.KAKOUJUU:
+                    newObj = new Kakoujuu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
                 case EntityIDs.GRAPHIC_DISPLAY:
                     newObj = new GraphicDisplay(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;

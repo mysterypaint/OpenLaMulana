@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Drawing;
 using static OpenLaMulana.Global;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace OpenLaMulana.Graphics
 {
@@ -10,6 +13,12 @@ namespace OpenLaMulana.Graphics
         private Texture2D tex;
         private Vector2 texCoords;
         private Vector2 spriteWidthHeight;
+        private float Rotation = 0.0f;
+        private Vector2 Origin = Vector2.Zero;
+        private SpriteEffects SpriteEffects = SpriteEffects.None;
+        private float LayerDepth = 0.0f;
+        private bool _flipX = false;
+        private bool _flipY = false;
 
         public Texture2D Texture { get; set; } = null;
 
@@ -23,6 +32,8 @@ namespace OpenLaMulana.Graphics
         public int OriginY { get; set; } = 0;
 
         public Color TintColor { get; set; } = Color.White;
+        public Vector2 Scale { get; set; } = Vector2.One;
+
         public Sprite()
         {
             Texture = null;
@@ -70,7 +81,13 @@ namespace OpenLaMulana.Graphics
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
 
-            spriteBatch.Draw(Texture, new Vector2((int)Math.Round(position.X - OriginX), (int)Math.Round(position.Y - OriginY)), new Rectangle(X, Y, Width, Height), TintColor);
+            SpriteEffects flipXSE = SpriteEffects.None;
+            SpriteEffects flipYSE = SpriteEffects.None;
+            if (_flipX)
+                flipXSE = SpriteEffects.FlipHorizontally;
+            if (_flipY)
+                flipYSE = SpriteEffects.FlipVertically;
+            spriteBatch.Draw(Texture, new Vector2((int)Math.Round(position.X - OriginX), (int)Math.Round(position.Y - OriginY)), new Rectangle(X, Y, Width, Height), TintColor, Rotation, Origin, Scale, SpriteEffects, LayerDepth);
 
         }
 
@@ -80,12 +97,31 @@ namespace OpenLaMulana.Graphics
             Rectangle destRect = new Rectangle(
                 (int)Math.Round(position.X - OriginX),
                 (int)Math.Round(position.Y - OriginY), (int)Math.Round(Width * scaleX), (int)Math.Round(Height * scaleY));
-            spriteBatch.Draw(Texture, destRect, srcRect, TintColor);
+            //spriteBatch.Draw(Texture, destRect, srcRect, TintColor);
+            SpriteEffects flipXSE = SpriteEffects.None;
+            SpriteEffects flipYSE = SpriteEffects.None;
+            if (_flipX)
+                flipXSE = SpriteEffects.FlipHorizontally;
+            if (_flipY)
+                flipYSE = SpriteEffects.FlipVertically;
+            SpriteEffects = flipXSE;
+            spriteBatch.Draw(Texture, destRect, srcRect, TintColor, Rotation, Origin, SpriteEffects, LayerDepth);
         }
 
         internal Sprite Clone()
         {
             return this;
         }
+
+        internal void FlipX(bool value)
+        {
+            _flipX = value;
+        }
+
+        internal void FlipY(bool value)
+        {
+            _flipY = value;
+        }
+
     }
 }

@@ -14,6 +14,8 @@ namespace OpenLaMulana.Graphics
         }
 
         private List<SpriteAnimationFrame> _frames = new List<SpriteAnimationFrame>();
+        private bool _flipX = false;
+        private bool _flipY = false;
 
         public SpriteAnimationFrame this[int index]
         {
@@ -176,6 +178,24 @@ namespace OpenLaMulana.Graphics
             SpriteAnimation anim = new SpriteAnimation();
             anim.AddFrame(sprite, frameLength);
             return anim;
+        }
+
+        internal void FlipX()
+        {
+            for (int i = 0; i < _frames.Count; i++)
+            {
+                _frames[i].Sprite.FlipX(_flipX);
+            }
+            _flipX = !_flipX;
+        }
+
+        internal void FlipY()
+        {
+            for (int i = 0; i < _frames.Count; i++)
+            {
+                _frames[i].Sprite.FlipY(_flipY);
+            }
+            _flipY = !_flipY;
         }
     }
 }

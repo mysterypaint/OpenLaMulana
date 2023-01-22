@@ -66,12 +66,12 @@ namespace OpenLaMulana.Entities.WorldEntities
             if (_useEventTexture)
             {
                 _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
-                Depth = (int)Global.DrawOrder.AboveEntitiesGraphicDisplay;
+                Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
             }
             else
             {
                 _tex = Global.TextureManager.GetTexture(Global.World.GetCurrMapTexture());
-                Depth = (int)Global.DrawOrder.AboveEntitiesGraphicDisplay;
+                Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
             }
 
             _displayedGraphic = new Sprite(_tex, _texCoords, _spriteWidthHeight);

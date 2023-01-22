@@ -254,5 +254,13 @@ namespace MeltySynth
         {
             _myActiveVoices.Clear();
         }
+
+        internal float GetActiveVoiceVolume(int voiceID)
+        {
+            if (_myActiveVoices.Count > 0)
+                return _myActiveVoices[voiceID].GetNoteGain();
+            else
+                return 0.0f;
+        }
     }
 }

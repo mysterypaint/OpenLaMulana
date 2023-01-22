@@ -38,6 +38,7 @@ namespace MeltySynth
         private readonly float inverseBlockSize;
 
         private int blockRead;
+        private UInt32 _enabledChannels = 0xFFFF; // 16 bits that are either ON or OFF
 
         private float masterVolume;
 
@@ -193,6 +194,7 @@ namespace MeltySynth
 
             var channelInfo = channels[channel];
 
+
             switch (command)
             {
                 case 0x80: // Note Off
@@ -200,6 +202,12 @@ namespace MeltySynth
                     break;
 
                 case 0x90: // Note On
+                    // Check if the channel in question is on or not
+                    if (!(((_enabledChannels >> channel) & 1U) != 0))
+                    {
+                        NoteOffAll(channel, false);
+                        return;
+                    }
                     NoteOn(channel, data1, data2);
                     break;
 
@@ -623,6 +631,29 @@ namespace MeltySynth
         {
             get => masterVolume;
             set => masterVolume = value;
+        }
+
+        public void ToggleChannel(int channelID)
+        {
+            _enabledChannels ^= (uint)(1UL << channelID);
+
+            if (((_enabledChannels >> channelID) & 1U) == 0)
+                channels[channelID].ClearAllActiveVoices();
+        }
+
+        public UInt32 GetEnabledChannels()
+        {
+            return _enabledChannels;
+        }
+
+        public float GetChannelVolume(int channelID)
+        {
+            return channels[channelID].GetActiveVoiceVolume(0);
+        }
+
+        internal void SetEnabledChannels(UInt32 value)
+        {
+            _enabledChannels = value;
         }
 
         internal int MinimumVoiceDuration => minimumVoiceDuration;

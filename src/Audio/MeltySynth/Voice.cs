@@ -256,6 +256,11 @@ namespace MeltySynth
             }
         }
 
+        internal float GetNoteGain()
+        {
+            return volEnv.Value;
+        }
+
         public float Priority
         {
             get

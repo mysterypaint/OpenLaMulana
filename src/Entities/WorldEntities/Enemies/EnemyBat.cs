@@ -2,12 +2,31 @@
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
+using System;
 using System.Collections.Generic;
+using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
     internal class EnemyBat : InteractableWorldEntity
     {
+
+        enum BatStates
+        {
+            Unspawned = -999,
+            Flying = 0,
+            Hanging,
+            Dying
+        }
+
+        private BatStates _state = BatStates.Unspawned;
+        private int _flyTimer = 0;
+        private View _currView = null;
+        private int _hsp = 0;
+        private int _vsp = 0;
+
+
         public EnemyBat(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             // Fields 10 and above are programmatically treated as back fields. Enemy object bats automatically become back bats when placed behind them.
@@ -22,15 +41,79 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
 
             _sprIndex = new Sprite(_tex, (int)gfxOffset.X, (int)gfxOffset.Y, 16, 16);
             HP = 1;
+
+            _currView = Global.World.GetCurrentView();
+
+            if (HelperFunctions.EntityMaySpawn(StartFlags))
+            {
+                _state = BatStates.Hanging;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+            switch (_state)
+            {
+                case BatStates.Unspawned:
+                    break;
+                case BatStates.Flying:
+                case BatStates.Hanging:
+                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+                    break;
+                case BatStates.Dying:
+                    break;
+            }
         }
 
         public override void Update(GameTime gameTime)
         {
+            switch (_state)
+            {
+                case BatStates.Unspawned:
+                    if (HelperFunctions.EntityMaySpawn(StartFlags))
+                    {
+                        _state = BatStates.Hanging;
+                        _flyTimer = 50;
+                    }
+                    break;
+                case BatStates.Hanging:
+
+
+
+                    int tileX = (int)Math.Floor(Position.X / World.CHIP_SIZE);
+                    int tileY = (int)Math.Floor(Position.Y / World.CHIP_SIZE);
+                    World.ChipTypes currTile = World.TileGetAtPixel(_currView, tileX, tileY);
+
+                    if (World.TileIsSolid(currTile) > 0)
+                    {
+                        // Tile is solid: Perform collision here
+
+                    }
+
+
+
+
+
+                    if (_flyTimer <= 0)
+                    {
+                        _state = BatStates.Flying;
+                    }
+                    else
+                    {
+                        _flyTimer--;
+                    }
+                    break;
+                case BatStates.Flying:
+                    if (_flyTimer <= 0)
+                    {
+                        _state = BatStates.Flying;
+                    }
+                    else
+                    {
+                        _flyTimer--;
+                    }
+                    break;
+            }
         }
     }
 }
