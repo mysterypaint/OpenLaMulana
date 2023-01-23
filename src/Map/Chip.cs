@@ -1,6 +1,5 @@
 ﻿using OpenLaMulana.Entities;
 using System;
-using System.Linq;
 
 namespace OpenLaMulana
 {
@@ -17,8 +16,11 @@ namespace OpenLaMulana
         public float CurrFrame = 0;
         public bool IsAnime = false;
         public int AnimeSpeed = 0;
+        public World.ChipTypes SpecialChipBehavior = World.ChipTypes.UNDEFINED;
+        public bool IsOverlay { get; set; } = false;
         private int _animationTimer = 0;
         private int[] _animeFrames = null;
+
 
         public Chip(short tileID = 0, int[] animeTileInfo = null)
         {
@@ -83,6 +85,8 @@ namespace OpenLaMulana
             this.AnimeSpeed = modelChip.AnimeSpeed;
             this.SetAnimeFrames(modelChip.GetAnimeFrames());
             this.IsAnime = modelChip.IsAnime;
+            this.IsOverlay = modelChip.IsOverlay;
+            this.SpecialChipBehavior = modelChip.SpecialChipBehavior;
         }
 
         internal int[] GetAnimeFrames()

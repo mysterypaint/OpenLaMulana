@@ -568,7 +568,6 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.BACKGROUND_SIGIL:
                     newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
-
                 case EntityIDs.AKNH:
                     newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
@@ -601,6 +600,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.FIELD_TRANSITION:
                     newObj = new FieldTransition(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.OVERLAY_CHIP_REGION:
+                    newObj = new OverlayChipRegion(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.SINKING_RUINS_TABLET:
                     newObj = new SinkingRuinsTablet(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
@@ -742,11 +744,16 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             return _bossID;
         }
 
-        internal int GetHitValue(int relativeTileID)
+        public int GetHitValue(int relativeTileID)
         {
             if (_hitList.ContainsKey(relativeTileID))
                 return _hitList[relativeTileID];
             return 0;
+        }
+
+        public World.ChipTypes GetSpecialChipTypeAtIndex(int chipIndex)
+        {
+            return (World.ChipTypes)GetHitValue(chipIndex);
         }
 
         internal IEnumerable<ObjectSpawnData> GetFieldSpawnData()

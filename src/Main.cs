@@ -1,17 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Audio;
 using OpenLaMulana.Entities;
-using OpenLaMulana.Entities.WorldEntities;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Intrinsics.X86;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace OpenLaMulana

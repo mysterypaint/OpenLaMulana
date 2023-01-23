@@ -23,22 +23,40 @@ namespace OpenLaMulana
         public int X { get; internal set; } = 0;
         public int Y { get; internal set; } = 0;
 
-        public View(int roomWidth, int roomHeight, Field parentField, int x, int y)
+        private int _roomWidth;
+        private int _roomHeight;
+
+        public View(int roomWidth, int roomHeight, Field parentField, int x, int y, bool initDummyChips = false)
         {
             Chips = new Chip[roomWidth, roomHeight];
             _viewSpawnData = new List<ObjectSpawnData>();
             _parentField = parentField;
             X = x;
             Y = y;
-            /*
-            for (var y = 0; y < roomHeight; y++)
+            _roomWidth = roomWidth;
+            _roomHeight = roomHeight;
+
+            if (initDummyChips)
             {
-                for (var x = 0; x < roomWidth; x++)
+                for (var tY = 0; tY < _roomHeight; tY++)
                 {
-                    Tiles[x, y] = -1;
+                    for (var tX = 0; tX < _roomWidth; tX++)
+                    {
+                        Chips[tX, tY] = new Chip(0, null);
+                    }
                 }
             }
-            */
+        }
+
+        public void ClearViewChips()
+        {
+            for (var tY = 0; tY < _roomHeight; tY++)
+            {
+                for (var tX = 0; tX < _roomWidth; tX++)
+                {
+                    Chips[tX, tY] = new Chip(-1, null);
+                }
+            }
         }
 
         internal void DefineViewDestination(VIEW_DIR direction, int destWorld, int destField, int destX, int destY)
@@ -87,6 +105,8 @@ namespace OpenLaMulana
                 {
                     // Grab the current Chip (tile) we're looking at
                     Chip thisChip = Chips[x, y];
+                    if (thisChip.TileID < 0)
+                        continue;
 
                     // Animate the Chip, if applicable
                     if (!thisChip.IsAnime)

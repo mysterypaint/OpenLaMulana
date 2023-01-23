@@ -50,6 +50,7 @@ namespace OpenLaMulana.Entities
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, GraphicsDevice graphicsDevice)
         {
+            World worldEnt = null;
             foreach (IGameEntity entity in _entities.OrderBy(e => e.Depth))
             {
                 switch(entity)
@@ -64,7 +65,7 @@ namespace OpenLaMulana.Entities
                         Global.SpriteBatch.End();
                         break;
                     case World:
-                        World worldEnt = (World)entity;
+                        worldEnt = (World)entity;
                         switch (Global.Camera.GetState())
                         {
                             default:
@@ -122,7 +123,15 @@ namespace OpenLaMulana.Entities
                         break;
                 }
             }
-
+            if (worldEnt != null)
+            {
+                Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                    samplerState: SamplerState.PointClamp,
+                    transformMatrix: Global.Camera.GetTransformation(graphicsDevice),
+                    effect: worldEnt.ActiveShader);
+                worldEnt.DrawOverlayAView(spriteBatch, gameTime);
+                Global.SpriteBatch.End();
+            }
         }
 
         public void AddEntity(IGameEntity entity)

@@ -6,9 +6,6 @@ using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using static OpenLaMulana.Global;
 using static OpenLaMulana.System.Camera;
 
@@ -65,6 +62,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         public enum ChipTypes : int
         {
+            UNDEFINED = -2,
             SOLID = -1,
             VOID = 0,
             LADDER = 1,
@@ -87,8 +85,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             ICE = 129,
             UNCLINGABLE_WALL = 255,
             MAX = 21
-        };
-
+        }
         //public int CurrField { get; set; } = 1;
         //public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
         //        public int CurrField { get; set; } = 2;
@@ -118,6 +115,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         {
             CURR = 0,
             DEST = 1,
+            OVERLAY = 2,
             MAX
         };
 
@@ -206,8 +204,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Field thisField = _fields[CurrField];
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
+            View dummyView = new View(ROOM_WIDTH, ROOM_HEIGHT, null, -1, -1, true);
             _activeViews[(int)AViews.DEST].SetView(thisView);
             _activeViews[(int)AViews.DEST].SetField(thisField);
+            _activeViews[(int)AViews.OVERLAY].SetView(dummyView);
+            _activeViews[(int)AViews.OVERLAY].SetField(null);
             var correctedTexID = Global.TextureManager.GetMappedWorldTexID(thisField.MapGraphics);
             var nextFieldTex = Global.TextureManager.GetTexture(correctedTexID);
             _activeViews[(int)AViews.DEST].SetFieldTex(nextFieldTex);
@@ -242,8 +243,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             if (!returnAnEmptyTile)
             {
-                int tID = currRoom.Chips[rTX, rTY].TileID;
-                returningTile = DetermineCollidingTile(tID);
+                Chip chip = currRoom.Chips[rTX, rTY];
+                returningTile = DetermineCollidingTile(chip);
             }
 
             return returningTile;
@@ -338,8 +339,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                     if (_x >= World.ROOM_WIDTH || _y >= World.ROOM_HEIGHT || _x < 0 || _y < 0)
                         continue;
 
-                    int tID = currRoom.Chips[_x, _y].TileID;
-                    World.ChipTypes returningTile = DetermineCollidingTile(tID);
+                    Chip thisChip = currRoom.Chips[_x, _y];
+                    World.ChipTypes returningTile = DetermineCollidingTile(thisChip);
 
                     if (checkingType != ChipTypes.VOID)
                     {
@@ -359,10 +360,14 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             return ChipTypes.VOID;
         }
 
-        private static ChipTypes DetermineCollidingTile(int tID)
+        private static ChipTypes DetermineCollidingTile(Chip chip)
         {
+            if (chip.SpecialChipBehavior != World.ChipTypes.UNDEFINED)
+                return chip.SpecialChipBehavior;
+
             World.ChipTypes returningTile = World.ChipTypes.VOID;
             Field currField = Global.World.GetCurrField();
+            int tID = chip.TileID;
             int[] chipLines = currField.GetChipline();
             int chipLine1 = chipLines[0];
             int chipLine2 = chipLines[1];
@@ -373,8 +378,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 if (relativeTileID >= 0)
                 {
                     // This tile is at 1120 or higher (the last 2 rows of the tilemap)
-                    int hitValue = currField.GetHitValue(relativeTileID);
-                    returningTile = (World.ChipTypes)hitValue;
+                    returningTile = currField.GetSpecialChipTypeAtIndex(relativeTileID);
                 }
                 else
                 {
@@ -574,25 +578,42 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public void Update(GameTime gameTime)
         {
         }
+
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Global.GraphicsDevice.SetRenderTarget(null);
-            foreach (ActiveView a in _activeViews)
+            for (AViews aViewID = AViews.CURR; aViewID < AViews.OVERLAY; aViewID++)
             {
+                ActiveView aView = _activeViews[(int)aViewID];
+
                 // Do not attempt to draw null
-                if (a == null)
+                if (aView == null)
                     continue;
 
                 // Only draw the current active view if the Camera is not moving
-                if (a != _activeViews[(int)AViews.CURR])
+                if (aView != _activeViews[(int)AViews.CURR])
                 {
                     if (Global.Camera.GetState() == CamStates.NONE)
                         continue;
                 }
 
                 // Draw the current view
-                a.DrawView(spriteBatch, gameTime);
+                aView.DrawView(spriteBatch, gameTime);
             }
+        }
+
+        public void DrawOverlayAView(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if (Global.Protag.State == PlayerState.NPC_DIALOGUE)
+                return;
+            ActiveView aView = _activeViews[(int)AViews.OVERLAY];
+
+            // Do not attempt to draw null
+            if (aView == null)
+                return;
+
+            // Draw the Active Overlay View
+            aView.DrawView(spriteBatch, gameTime);
         }
 
         public void DrawPixelate(SpriteBatch spriteBatch, GameTime gameTime, ShaderDrawingState shaderState)
@@ -813,25 +834,32 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // Set the transitioning Active View to the next field + its texture
 
             ActiveView nextAV = _activeViews[(int)AViews.DEST];
+            ActiveView nextOverlayAV = _activeViews[(int)AViews.OVERLAY];
 
             switch (movingDirection)
             {
                 case World.VIEW_DIR.LEFT:
                     nextAV.Position = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.DOWN:
                     nextAV.Position = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE) * 1);
+                    nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.RIGHT:
                     nextAV.Position = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.UP:
                     nextAV.Position = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    nextOverlayAV.Position = nextAV.Position;
                     break;
             }
 
             nextAV.SetField(nextField);
             nextAV.SetFieldTex(nextFieldTex);
+            nextOverlayAV.SetFieldTex(nextFieldTex);
+            nextOverlayAV.GetView().ClearViewChips();
 
             var nextFieldMapData = nextField.GetMapData();
             View nextView = nextFieldMapData[destViewX, destViewY];
@@ -938,26 +966,33 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             // Set the transitioning Active View to the next field + its texture
             ActiveView nextAV = _activeViews[(int)AViews.DEST];
+            ActiveView nextOverlayAV = _activeViews[(int)AViews.OVERLAY];
 
             switch (movingDirection)
             {
                 case World.VIEW_DIR.LEFT:
                     nextAV.Position = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.DOWN:
                     nextAV.Position = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE) * 1);
+                    nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.RIGHT:
                     nextAV.Position = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.UP:
                     nextAV.Position = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    nextOverlayAV.Position = nextAV.Position;
                     break;
             }
 
             nextAV.SetField(destField);
             nextAV.SetFieldTex(destFieldTex);
             nextAV.SetView(destView);
+            nextOverlayAV.SetFieldTex(destFieldTex);
+            nextOverlayAV.GetView().ClearViewChips();
 
             // Slide the camera toward the new field
             Global.Camera.UpdateMoveTarget(movingDirection);
@@ -992,8 +1027,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _activeViews[(int)AViews.CURR].SetView(_activeViews[(int)AViews.DEST].GetView());
             _activeViews[(int)AViews.CURR].SetField(_activeViews[(int)AViews.DEST].GetField());
             _activeViews[(int)AViews.CURR].SetFieldTex(_activeViews[(int)AViews.DEST].GetFieldTex());
-
-
+            _activeViews[(int)AViews.OVERLAY].SetFieldTex(_activeViews[(int)AViews.DEST].GetFieldTex());
+            //_activeViews[(int)AViews.OVERLAY].GetView().ClearViewChips();
+            _activeViews[(int)AViews.OVERLAY].Position = Vector2.Zero;
         }
 
         internal void FieldTransitionPixelate(int warpType, int destField, int destViewX, int destViewY)
@@ -1026,7 +1062,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             int animeSpeed;
             int[] animatedTileInfo;
 
-            ActiveView nextAV;
+            ActiveView nextAV, nextOverlayAV;
 
             if (destField < 0)
             {
@@ -1046,6 +1082,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
                         nextAV = _activeViews[(int)AViews.DEST];
                         nextAV.Position = new Vector2(0, 0);
+                        nextOverlayAV = _activeViews[(int)AViews.OVERLAY];
+                        nextOverlayAV.Position = nextAV.Position;
 
                         View bossView = bossViews[destViewX];//.CloneView();
                         if (thisField.ID == 5) {
@@ -1132,9 +1170,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             nextAV = _activeViews[(int)AViews.DEST];
             nextAV.Position = new Vector2(0, 0);
+            nextOverlayAV = _activeViews[(int)AViews.OVERLAY];
+            nextOverlayAV.Position = nextAV.Position;
 
             nextAV.SetField(nextField);
             nextAV.SetFieldTex(nextFieldTex);
+            nextOverlayAV.SetFieldTex(nextFieldTex);
+            nextOverlayAV.GetView().ClearViewChips();
 
             var nextFieldMapData = nextField.GetMapData();
             View nextView = nextFieldMapData[destViewX, destViewY];
@@ -1313,8 +1355,12 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
             nextAV.SetField(destField);
             nextAV.SetFieldTex(nextFieldTex);
+            ActiveView nextOverlayAV = _activeViews[(int)AViews.OVERLAY];
+            nextOverlayAV.Position = nextAV.Position;
 
             nextAV.SetView(destView);
+            nextOverlayAV.SetFieldTex(nextFieldTex);
+            nextOverlayAV.GetView().ClearViewChips();
 
             // Prepare the camera to transition to the new field
             Global.Camera.UpdateMoveTarget(World.VIEW_DIR.SELF);
