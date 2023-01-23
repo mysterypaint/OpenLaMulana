@@ -42,19 +42,12 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 _revertMapCollisionAfterDestroyed = true;
                 _restoreCollisionWhenFlagConditionIsMet = HelperFunctions.GetBit((byte)op4, 3);
-                _isSolid = true;// HelperFunctions.GetBit((byte)op4, 2);
 
-                if (_isSolid)
+                _rewritingTileType = World.ChipTypes.SOLID;
+                if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
                 {
-                    //CollisionBehavior = World.ChipTypes.SOLID;
-
-                    if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
-                    {
-                        _rewritingTileType = World.ChipTypes.SOLID;
-                        RewriteMapRegion(_rewritingTileType);
-                    }
+                    RewriteMapRegion(_rewritingTileType);
                 }
-
                 _useEventTexture = HelperFunctions.GetBit((byte)op4, 1);
             }
             else if (op4 >= 2)
