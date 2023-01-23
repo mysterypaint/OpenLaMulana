@@ -18,7 +18,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         public override int HitboxHeight { get; set; } = 16;
 
         private int _flagToSet = -1;
-        private int _deletionJudgement = -1;
+        private bool _flagValueToSet = true;
 
         /// <summary>
         /// An object that turns on the flag by contacting the main character.
@@ -48,7 +48,8 @@ namespace OpenLaMulana.Entities.WorldEntities
             HitboxWidth = op1 * World.CHIP_SIZE;
             HitboxHeight = op2 * World.CHIP_SIZE;
             _flagToSet = op3;
-            _deletionJudgement = op4;
+            if (op4 == 0)
+                _flagValueToSet = false;
             Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -84,7 +85,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     {
                         if (_flagToSet > -1)
                         {
-                            Global.GameFlags.InGameFlags[_flagToSet] = true;
+                            Global.GameFlags.InGameFlags[_flagToSet] = _flagValueToSet;
                         }
                     }
                     break;

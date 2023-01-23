@@ -392,7 +392,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         private static List<IGameEntity> _fieldEntities = new List<IGameEntity>();
         private static List<IGameEntity> _roomEntities = new List<IGameEntity>();*/
 
-        internal void SpawnEntities(View destView, Field destField, View prevView, Field prevField, Vector2 offsetVector)
+        internal void SpawnEntities(View destView, Field destField, View prevView, Field prevField, Vector2 offsetVector, bool forceRespawnGlobals = false)
         {
             // Abort if the destination View is not allowed to spawn entities (true on initialization)
             if (!destView.CanSpawnEntities)
@@ -429,7 +429,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             }
 
             // We are moving to a new field, so we should spawn all the destination Field's global entities right now
-            if (destField.MapIndex != prevField.MapIndex)
+            if (destField.MapIndex != prevField.MapIndex || forceRespawnGlobals)
             {
                 foreach (ObjectSpawnData fieldObj in destField._fieldSpawnData)
                 {

@@ -486,8 +486,8 @@ namespace OpenLaMulana
                     break;
             }
 
-
-            Global.EntityManager.Draw(Global.SpriteBatch, gameTime, GraphicsDevice);
+            if (Global.MobileSuperX.GetState() == Global.MSXStates.INACTIVE)
+                Global.EntityManager.Draw(Global.SpriteBatch, gameTime, GraphicsDevice);
 
             Global.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
             samplerState: SamplerState.PointClamp,

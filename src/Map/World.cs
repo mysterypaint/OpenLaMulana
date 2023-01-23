@@ -878,6 +878,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 // Give permission back to all the views to allow them to spawn entities
                 thisField.QueueDeleteAllFieldAndRoomEntities();
                 thisField.UnlockAllViewSpawning();
+                thisField.ForgetVisitedViews();
                 //nextField.DeleteAllFieldAndRoomEntities();
                 //nextField.UnlockAllViewSpawning();
                 //nextField.ClearVisitedViews();
@@ -998,7 +999,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Global.Camera.UpdateMoveTarget(movingDirection);
         }
 
-        private void UpdateEntities(int destField, Field thisField, View thisView, int destViewX, int destViewY, Vector2 offsetVector)
+        private void UpdateEntities(int destField, Field thisField, View thisView, int destViewX, int destViewY, Vector2 offsetVector, bool forceRespawnGlobals = false)
         {
 
             Field nextField = _fields[destField];
@@ -1006,7 +1007,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             View nextView = nextFieldMapData[destViewX, destViewY];
 
             // Finally, spawn the new entities for the destination View, but let the destination Field keep track of ALL of the entities (Field Entities, View Entities)
-            nextField.SpawnEntities(nextView, nextField, thisView, thisField, offsetVector); // "thisField" was the previous Field we were on, regardless if we moved Fields or not
+            nextField.SpawnEntities(nextView, nextField, thisView, thisField, offsetVector, forceRespawnGlobals); // "thisField" was the previous Field we were on, regardless if we moved Fields or not
         }
 
         internal void UpdateCurrActiveView()
@@ -1296,7 +1297,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             return _protag;
         }
 
-        internal void FieldTransitionImmediate(View currView, View destView, bool updateEntities = true, bool updateMusic = true)
+        internal void FieldTransitionImmediate(View currView, View destView, bool updateEntities = true, bool updateMusic = true, bool forceRespawnGlobals = false)
         {
             _drawBossRoom = false;
 
@@ -1392,7 +1393,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             UpdateCurrActiveView();
             
             if (updateEntities)
-                UpdateEntities(destField.ID, currField, currView, destView.X, destView.Y, Vector2.Zero);
+                UpdateEntities(destField.ID, currField, currView, destView.X, destView.Y, Vector2.Zero, forceRespawnGlobals);
         }
 
         internal void SetDrawBossRoom(bool value)

@@ -232,7 +232,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                     if (_previousDestView != _activeDestView)
                     {
-                        if (Global.World.CurrViewX == SourceDestView.X && Global.World.CurrViewY == SourceDestView.Y)
+                        if (Global.World.CurrViewX == SourceDestView.X && Global.World.CurrViewY == SourceDestView.Y && Global.World.GetCurrField() == SourceDestView.GetParentField())
                             RewriteMapRegion(_rewritingTileType);
                     }
                     _previousDestView = _activeDestView;
@@ -249,7 +249,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         } else
                         {
                             _rewritingTileType = ChipTypes.VOID;
-                            if (Global.World.CurrViewX == SourceDestView.X && Global.World.CurrViewY == SourceDestView.Y)
+                            if (Global.World.CurrViewX == SourceDestView.X && Global.World.CurrViewY == SourceDestView.Y && Global.World.GetCurrField() == SourceDestView.GetParentField())
                                 RestoreMapRegion(); //RewriteMapRegion(_rewritingTileType);
                         }
                     }

@@ -810,8 +810,7 @@ namespace OpenLaMulana
                         if (!_backSide)
                         {
                             destView = Global.World.GetView(1, 3, 1);
-                            bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                            Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                            GrailTransition(currView, destView);
                             Global.Protag.SetPositionToTile(new Point(9, 8));
                         }
                         break;
@@ -821,8 +820,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_GATE_OF_ILLUSION])
                             {
                                 destView = Global.World.GetView(11, 0, 1);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(14, 4));
                             }
                         }
@@ -831,8 +829,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_GATE_OF_GUIDANCE])
                             {
                                 destView = Global.World.GetView(0, 2, 1);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(7, 20));
                             }
                         }
@@ -843,8 +840,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_GRAVEYARD_OF_THE_GIANTS])
                             {
                                 destView = Global.World.GetView(12, 3, 1);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(8, 8));
                             }
                         }
@@ -853,8 +849,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_GIANTS_MAUSOLEUM])
                             {
                                 destView = Global.World.GetView(2, 0, 2);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(8, 16));
                             }
                         }
@@ -865,8 +860,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TEMPLE_OF_THE_MOON])
                             {
                                 destView = Global.World.GetView(14, 0, 1);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(11, 12));
                             }
                         }
@@ -875,8 +869,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TEMPLE_OF_THE_SUN])
                             {
                                 destView = Global.World.GetView(3, 2, 0);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(28, 8));
                             }
                         }
@@ -887,8 +880,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TOWER_OF_THE_GODDESS])
                             {
                                 destView = Global.World.GetView(13, 0, 4);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(15, 4));
                             }
                         }
@@ -897,8 +889,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_SPRING_IN_THE_SKY])
                             {
                                 destView = Global.World.GetView(4, 1, 3);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(7, 8));
                             }
                         }
@@ -909,8 +900,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TOWER_OF_RUIN])
                             {
                                 destView = Global.World.GetView(15, 0, 1);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(15, 20));
                             }
                         }
@@ -919,8 +909,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_INFERNO_CAVERN])
                             {
                                 destView = Global.World.GetView(5, 2, 3);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(15, 4));
                             }
                         }
@@ -931,8 +920,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_CHAMBER_OF_BIRTH])
                             {
                                 destView = Global.World.GetView(16, 3, 0);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(29, 20));
                             }
                         }
@@ -941,8 +929,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_CHAMBER_OF_EXTINCTION])
                             {
                                 destView = Global.World.GetView(6, 3, 4);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(2, 8));
                             }
                         }
@@ -953,8 +940,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TWIN_LABYRINTH_BACK])
                             {
                                 destView = Global.World.GetView(10, 3, 0);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(25, 20));
                             }
                         }
@@ -963,8 +949,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_TWIN_LABYRINTH])
                             {
                                 destView = Global.World.GetView(9, 0, 0);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(5, 20));
                             }
                         }
@@ -975,8 +960,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_DIMENSIONAL_CORRIDOR])
                             {
                                 destView = Global.World.GetView(17, 2, 2);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(9, 12));
                             }
                         }
@@ -985,8 +969,7 @@ namespace OpenLaMulana
                             if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_INFINITE_CORRIDOR])
                             {
                                 destView = Global.World.GetView(7, 0, 0);
-                                bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                GrailTransition(currView, destView);
                                 Global.Protag.SetPositionToTile(new Point(22, 4));
                             }
                         }
@@ -999,8 +982,7 @@ namespace OpenLaMulana
                                 if (Global.GameFlags.InGameFlags[(int)GameFlags.Flags.HOLY_GRAIL_SHRINE_OF_MOTHER])
                                 {
                                     destView = Global.World.GetView(8, 1, 4);
-                                    bool updateEntities = currView.GetParentField().ID != destView.GetParentField().ID;
-                                    Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+                                    GrailTransition(currView, destView);
                                     Global.Protag.SetPositionToTile(new Point(21, 4));
                                 }
                             }
@@ -1019,6 +1001,31 @@ namespace OpenLaMulana
                 }
             }
             return;
+        }
+
+        private void GrailTransition(View currView, View destView)
+        {
+            Field currField = currView.GetParentField();
+            Field destField = destView.GetParentField();
+            bool updateEntities = (currView.X != destView.X || currView.Y != destView.Y || currField.ID != destField.ID);
+            bool forceRespawnGlobals = false;
+            bool updateMusic = false;
+            if (updateEntities)
+            {
+                currField.QueueDeleteAllFieldAndRoomEntities();
+                currField.UnlockAllViewSpawning();
+                currField.ForgetVisitedViews();
+
+                destField.QueueDeleteAllFieldAndRoomEntities();
+                destField.UnlockAllViewSpawning();
+                destField.ForgetVisitedViews();
+
+                forceRespawnGlobals = true;
+
+                if (currField.ID != destField.ID)
+                    updateMusic = true;
+            }
+            Global.World.FieldTransitionImmediate(currView, destView, updateEntities, updateMusic, forceRespawnGlobals);
         }
 
         private int FindSoftware(Vector2 movingDirection, int initialRomPosition)
