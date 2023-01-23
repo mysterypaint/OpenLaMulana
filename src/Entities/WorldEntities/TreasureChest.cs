@@ -112,11 +112,6 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case WEStates.DYING:        // The chest is already opened
                     break;
                 case WEStates.IDLE:
-                    /*
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
-                    {
-                        Global.GameFlags.InGameFlags[_openConditionFlag] = true;
-                    }*/
                     if (Global.GameFlags.InGameFlags[_openConditionFlag])
                     {
                         State = WEStates.ACTIVATING;

@@ -14,9 +14,8 @@ namespace OpenLaMulana.Entities.WorldEntities
     internal class GraphicDisplay : InteractableWorldEntity
     {
         private int _checkFlag = -1;
-        private View _sourceDestView = null;
         private bool _revertMapCollisionAfterDestroyed = false;
-        private bool _notSolidWhenOP3IsOn = false;
+        private bool _restoreCollisionWhenFlagConditionIsMet = false;
         private bool _isSolid = false;
         private Sprite _displayedGraphic;
         private Field _currField = null;
@@ -32,7 +31,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             _checkFlag = op3;
 
             _activeDestView = Global.World.GetActiveViews()[(int)AViews.DEST].GetView();
-            _sourceDestView = destView;
+            SourceDestView = destView;
             _currField = destView.GetParentField();
 
             HitboxWidth = (int)_spriteWidthHeight.X;
@@ -42,7 +41,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             if (op4 >= 4)
             {
                 _revertMapCollisionAfterDestroyed = true;
-                _notSolidWhenOP3IsOn = HelperFunctions.GetBit((byte)op4, 3);
+                _restoreCollisionWhenFlagConditionIsMet = HelperFunctions.GetBit((byte)op4, 3);
                 _isSolid = true;// HelperFunctions.GetBit((byte)op4, 2);
 
                 if (_isSolid)
@@ -60,18 +59,13 @@ namespace OpenLaMulana.Entities.WorldEntities
             }
             else if (op4 >= 2)
             {
-                _notSolidWhenOP3IsOn = HelperFunctions.GetBit((byte)op4, 3);
+                _restoreCollisionWhenFlagConditionIsMet = HelperFunctions.GetBit((byte)op4, 3);
                 _isSolid = true;// HelperFunctions.GetBit((byte)op4, 2);
 
-                if (_isSolid)
+                _rewritingTileType = World.ChipTypes.SOLID;
+                if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
                 {
-                    //CollisionBehavior = World.ChipTypes.SOLID;
-
-                    if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
-                    {
-                        _rewritingTileType = World.ChipTypes.SOLID;
-                        RewriteMapRegion(_rewritingTileType);
-                    }
+                    RewriteMapRegion(_rewritingTileType);
                 }
 
                 _useEventTexture = HelperFunctions.GetBit((byte)op4, 1);
@@ -227,20 +221,25 @@ namespace OpenLaMulana.Entities.WorldEntities
                     {
                         State = Global.WEStates.IDLE;
                         _sprIndex = _displayedGraphic;
-                        _rewritingTileType = ChipTypes.VOID;
+                        //_rewritingTileType = ChipTypes.VOID;
                         RewriteMapRegion(_rewritingTileType);
                     }
                     break;
                 case Global.WEStates.IDLE:
-                    /*
-                     * 
-                    if (Global.Camera.GetState() != Camera.CamStates.NONE)
-                        RewriteMapRegion(_rewritingTileType);*/
+
+                    if (Global.DevModeEnabled)
+                    {
+                        if (InputManager.DirectKeyboardCheckPressed(Microsoft.Xna.Framework.Input.Keys.E))
+                        {
+                            Global.GameFlags.InGameFlags[_checkFlag] = true;
+                        }
+                    }
+
                     _activeDestView = Global.World.GetActiveViews()[(int)AViews.DEST].GetView();
 
                     if (_previousDestView != _activeDestView)
                     {
-                        if (Global.World.CurrViewX == _sourceDestView.X && Global.World.CurrViewY == _sourceDestView.Y)
+                        if (Global.World.CurrViewX == SourceDestView.X && Global.World.CurrViewY == SourceDestView.Y)
                             RewriteMapRegion(_rewritingTileType);
                     }
                     _previousDestView = _activeDestView;
@@ -249,11 +248,15 @@ namespace OpenLaMulana.Entities.WorldEntities
                     {
                         State = Global.WEStates.DYING;
                         _sprIndex = null;
-                        RestoreMapRegion();
                         if (_revertMapCollisionAfterDestroyed)
                         {
+                            RestoreMapRegion();
                             _isSolid = false;
                             CollisionBehavior = World.ChipTypes.VOID;
+                        } else
+                        {
+                            if (Global.World.CurrViewX == SourceDestView.X && Global.World.CurrViewY == SourceDestView.Y)
+                                RewriteMapRegion(_rewritingTileType);
                         }
                     }
                     break;

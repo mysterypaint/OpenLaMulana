@@ -16,7 +16,6 @@ namespace OpenLaMulana.Entities.WorldEntities
         private ChipTypes _rewritingTileType;
         private View _previousDestView = null;
         private View _activeDestView = null;
-        private View _sourceDestView = null;
         private Field _currField = null;
         private int _tileWidth;
         private int _tileHeight;
@@ -29,7 +28,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             HitboxHeight = _tileHeight * World.CHIP_SIZE;
             _rewritingTileType = Global.World.GetCurrField().GetSpecialChipTypeAtIndex(op3 - 1);
             _activeDestView = Global.World.GetActiveViews()[(int)AViews.DEST].GetView();
-            _sourceDestView = destView;
+            SourceDestView = destView;
             _currField = destView.GetParentField();
             _sprIndex = null;
 
@@ -66,7 +65,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     if ((tX + x > ROOM_WIDTH - 1) || (tY + y > ROOM_HEIGHT - 1))
                         continue;
 
-                    Chip thisDestViewChip = _sourceDestView.Chips[(tX + x), (tY + y)];
+                    Chip thisDestViewChip = SourceDestView.Chips[(tX + x), (tY + y)];
                     thisDestViewChip.SpecialChipBehavior = _rewritingTileType;
                     thisDestViewChip.IsOverlay = true;
 
@@ -116,7 +115,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
                     if (_previousDestView != _activeDestView)
                     {
-                        if (Global.World.CurrViewX == _sourceDestView.X && Global.World.CurrViewY == _sourceDestView.Y)
+                        if (Global.World.CurrViewX == SourceDestView.X && Global.World.CurrViewY == SourceDestView.Y)
                             RewriteMapRegion(_rewritingTileType);
                     }
                     _previousDestView = _activeDestView;
