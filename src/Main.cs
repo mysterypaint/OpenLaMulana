@@ -321,20 +321,24 @@ namespace OpenLaMulana
                     _pauseToggleTimer--;
             }
 
-            MouseState mouseState = Mouse.GetState();
 
-            if (mouseState.RightButton == ButtonState.Pressed)
+            if (Global.DevModeEnabled)
             {
-                int centerX = _protag.BBox.Width / 2;
-                _protag.BBox.X = (int)Math.Floor((float)mouseState.X / _displayZoomFactor) - centerX;
-                _protag.BBox.Y = (int)Math.Floor((float)mouseState.Y / _displayZoomFactor) - World.HUD_HEIGHT - _protag.BBox.Height;
-            }
-            if (InputManager.DirectKeyboardCheckPressed(Keys.F6))
-            {
-                //ResetSaveState();
-                _shaderMode++;
-                if (_shaderMode >= (int)Global.Shaders.MAX)
-                    _shaderMode = 0;
+                MouseState mouseState = Mouse.GetState();
+
+                if (mouseState.RightButton == ButtonState.Pressed)
+                {
+                    int centerX = _protag.BBox.Width / 2;
+                    _protag.BBox.X = (int)Math.Floor((float)mouseState.X / _displayZoomFactor) - centerX;
+                    _protag.BBox.Y = (int)Math.Floor((float)mouseState.Y / _displayZoomFactor) - World.HUD_HEIGHT - _protag.BBox.Height;
+                }
+                if (InputManager.DirectKeyboardCheckPressed(Keys.F6))
+                {
+                    //ResetSaveState();
+                    _shaderMode++;
+                    if (_shaderMode >= (int)Global.Shaders.MAX)
+                        _shaderMode = 0;
+                }
             }
 
             if (InputManager.DirectKeyboardCheckPressed(Keys.F7) && !Global.GraphicsDeviceManager.IsFullScreen)

@@ -58,15 +58,14 @@ namespace OpenLaMulana.System
             _protag = Global.Protag;
 
             // The actual default controls
-            /*
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.LEFT] = (int)Keys.Left;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.RIGHT] = (int)Keys.Right;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.UP] = (int)Keys.Up;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.DOWN] = (int)Keys.Down;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.WHIP] = (int)Keys.Space;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MAIN_WEAPON] = (int)Keys.Space;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.JUMP] = (int)Keys.Up;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUBWEAPON] = (int)Keys.M;
+            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUB_WEAPON] = (int)Keys.M;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.N;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Keys.F2;
@@ -75,34 +74,31 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_CONFIG] = (int)Keys.F5;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CONFIRM] = (int)Keys.Z;
             ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CANCEL] = (int)Keys.X;
-            */
 
-            // Only for testing
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.LEFT] = (int)Keys.A;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.RIGHT] = (int)Keys.D;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.UP] = (int)Keys.W;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.DOWN] = (int)Keys.S;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MAIN_WEAPON] = (int)Keys.J;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.JUMP] = (int)Keys.K;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUB_WEAPON] = (int)Keys.L;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.I;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Keys.F2;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION] = (int)Keys.F3;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_EMULATOR] = (int)Keys.F4;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_CONFIG] = (int)Keys.F5;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CONFIRM] = (int)Keys.L;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CANCEL] = (int)Keys.K;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.CONFIG_MENU_LEFT] = (int)Keys.A;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.CONFIG_MENU_RIGHT] = (int)Keys.D;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.CONFIG_MENU_UP] = (int)Keys.W;
-            ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.CONFIG_MENU_DOWN] = (int)Keys.S;
-
-
-
-
-
+            // For testing: Replace default controls
+            if (Global.DevModeEnabled)
+            {
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.LEFT] = (int)Keys.A;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.RIGHT] = (int)Keys.D;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.UP] = (int)Keys.W;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.DOWN] = (int)Keys.S;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MAIN_WEAPON] = (int)Keys.J;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.JUMP] = (int)Keys.K;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.SUB_WEAPON] = (int)Keys.L;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.ITEM] = (int)Keys.I;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.PAUSE] = (int)Keys.F1;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_INVENTORY] = (int)Keys.F2;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION] = (int)Keys.F3;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_MSX_EMULATOR] = (int)Keys.F4;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_OPEN_CONFIG] = (int)Keys.F5;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CONFIRM] = (int)Keys.L;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.MENU_CANCEL] = (int)Keys.K;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.CONFIG_MENU_LEFT] = (int)Keys.A;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.CONFIG_MENU_RIGHT] = (int)Keys.D;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.CONFIG_MENU_UP] = (int)Keys.W;
+                ConfigKeys[(int)ControllerTypes.Keyboard, (int)ControllerKeys.CONFIG_MENU_DOWN] = (int)Keys.S;
+            }
 
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.LEFT] = (int)Buttons.DPadLeft;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.RIGHT] = (int)Buttons.DPadRight;

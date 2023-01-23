@@ -37,7 +37,6 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Update(GameTime gameTime)
         {
-
             switch (State)
             {
                 case Global.WEStates.UNSPAWNED:
