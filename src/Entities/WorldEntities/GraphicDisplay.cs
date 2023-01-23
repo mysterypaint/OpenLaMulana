@@ -19,7 +19,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private bool _isSolid = false;
         private Sprite _displayedGraphic;
         private Field _currField = null;
-        private ChipTypes _rewritingTileType;
+        private ChipTypes _rewritingTileType = ChipTypes.VOID;
         private View _previousDestView = null;
         private View _activeDestView = null;
 
@@ -255,8 +255,9 @@ namespace OpenLaMulana.Entities.WorldEntities
                             CollisionBehavior = World.ChipTypes.VOID;
                         } else
                         {
+                            _rewritingTileType = ChipTypes.VOID;
                             if (Global.World.CurrViewX == SourceDestView.X && Global.World.CurrViewY == SourceDestView.Y)
-                                RewriteMapRegion(_rewritingTileType);
+                                RestoreMapRegion(); //RewriteMapRegion(_rewritingTileType);
                         }
                     }
                     break;
