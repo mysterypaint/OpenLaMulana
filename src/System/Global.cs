@@ -11,7 +11,10 @@ namespace OpenLaMulana
 {
     public static class Global
     {
-        public enum DrawOrder {
+        public static bool DevModeEnabled { get; internal set; } = true;
+
+        public enum DrawOrder : int
+        {
             Abstract = 0,
             Background = 100,
             Tileset = 200,
@@ -27,20 +30,20 @@ namespace OpenLaMulana
             Max = 10000,
         }
 
-        public enum DisplayMode
+        public enum DisplayMode : int
         {
             Default,
             Zoomed
         }
 
-        public enum Languages
+        public enum Languages : int
         {
             English,
             Japanese,
             Max
         };
 
-        public enum Shaders
+        public enum Shaders : int
         {
             NONE,
             TRANSITION,
@@ -49,7 +52,7 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum GameState
+        public enum GameState : int
         {
             INITIAL,
             TRANSITION,
@@ -63,7 +66,7 @@ namespace OpenLaMulana
             MSX_MANTRAS,
             MAX,
         }
-        public enum ScreenOverlayState
+        public enum ScreenOverlayState : int
         {
             INVISIBLE,
             PAUSE,
@@ -75,7 +78,7 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum Textures
+        public enum Textures : int
         {
             BOSS00,
             BOSS01,
@@ -177,7 +180,7 @@ namespace OpenLaMulana
         };
 
         // Ordered by the asset values in Content/data/
-        public enum SpriteDefs
+        public enum SpriteDefs : int
         {
             BOSS01,
             BOSS03,
@@ -187,7 +190,8 @@ namespace OpenLaMulana
         };
 
         // Ordered by the asset values in Content/data/
-        public enum BossIDs {
+        public enum BossIDs : int
+        {
             AMPHISBAENA = 0,
             SAKIT = 1,
             ELLMAC = 2,
@@ -200,7 +204,8 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum WEStates {
+        public enum WEStates : int
+        {
             UNSPAWNED,
             INIT,
             ACTIVATING,
@@ -213,7 +218,7 @@ namespace OpenLaMulana
             MAX
         }
 
-        public enum ItemTypes
+        public enum ItemTypes : int
         {
             UNKNOWN = -1,
             MAIN_WEAPON = 0,
@@ -222,7 +227,7 @@ namespace OpenLaMulana
             SOFTWARE = 3,
             SIGILS = 4
         }
-        public enum MainWeapons
+        public enum MainWeapons : int
         {
             NONE = 255,
             WHIP = 0,
@@ -236,7 +241,7 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum SubWeapons
+        public enum SubWeapons : int
         {
             NONE = 255,
             SHURIKEN = 0,
@@ -255,7 +260,7 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum ObtainableTreasures
+        public enum ObtainableTreasures : int
         {
             MSX,
             SHELL_HORN,
@@ -321,7 +326,7 @@ namespace OpenLaMulana
             MAX
         }
 
-        public enum ObtainableSoftware
+        public enum ObtainableSoftware : int
         {
             GAME_MASTER,
             GAME_MASTER_2,
@@ -411,7 +416,7 @@ namespace OpenLaMulana
             NONE = -1,
         }
 
-        public enum SoftwareCombos
+        public enum SoftwareCombos : int
         {
             NONE,
             RUINS8K_16K,        // Detailed map display in MSX Emulator
@@ -440,14 +445,14 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum ControllerTypes
+        public enum ControllerTypes : int
         {
             Keyboard,
             Gamepad,
             Max
         };
 
-        public enum ControllerKeys
+        public enum ControllerKeys : int
         {
             UP,
             DOWN,
@@ -481,7 +486,8 @@ namespace OpenLaMulana
             MAX
         };
 
-        public enum MSXStates {
+        public enum MSXStates : int
+        {
             INACTIVE,
             INVENTORY,
             SOFTWARE_SELECTION,
@@ -490,7 +496,7 @@ namespace OpenLaMulana
             SCANNING,
             MAX
         }
-        public enum HardCodedText
+        public enum HardCodedText : int
         {
             SOFTWARE_NAMES_BEGIN = 0,
             SOFTWARE_NAMES_END = 83,
@@ -510,7 +516,7 @@ namespace OpenLaMulana
             SUB_WEAPON_NAMES_END = 657,
         }
 
-        public enum PlatformingPhysics
+        public enum PlatformingPhysics : int
         {
             CLASSIC,
             REVAMPED,

@@ -182,7 +182,18 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.ShieldValue = 0;
             Global.Inventory.HandyScannerValue = 0;
 
-            GetDebugEquipment();
+            if (Global.DevModeEnabled)
+            {
+                GetDebugEquipment();
+                //_debugDisableAutoScreenTransitions = true;
+                SaveData encryptedSave = null;// HelperFunctions.LoadSaveFromFile("lamulana.sa0");
+
+                if (encryptedSave != null)
+                {
+                    SaveData decryptedSave = HelperFunctions.DecryptSaveFile(encryptedSave);
+                    HelperFunctions.ParseSaveData(decryptedSave);
+                }
+            }
 
             // Damage Table:
             // Divine Lightning = 16;
@@ -195,15 +206,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             }
             else
                 Global.Inventory.ExpMax = Global.InventoryStruct.ExpMaxClassic; // When this is 88, trigger and reset to 0
-
-
-            SaveData encryptedSave = null;// HelperFunctions.LoadSaveFromFile("lamulana.sa0");
-
-            if (encryptedSave != null)
-            {
-                SaveData decryptedSave = HelperFunctions.DecryptSaveFile(encryptedSave);
-                HelperFunctions.ParseSaveData(decryptedSave);
-            }
 
             if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.FEATHER])
                 _jumpsMax = 2;
@@ -665,8 +667,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                             break;
                         case ChipTypes.ASCENDING_SLOPE_RIGHT:
                             // Drag the player along the slope if they're standing on it
-                            BBox.X += 1;
-                            BBox.Y += 1;
+                            BBox.X -= 1;
+                            BBox.Y -= 1;
                             break;
                         case ChipTypes.ICE_SLOPE_RIGHT:
                         case ChipTypes.ICE_SLOPE_LEFT:          // Enable slippery physics, because we've landed on ice
@@ -693,11 +695,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                             {
                                 case ChipTypes.ASCENDING_SLOPE_LEFT:
                                     BBox.X += 1;
-                                    BBox.Y += 1;
+                                    //BBox.Y += 1;
                                     break;
                                 case ChipTypes.ASCENDING_SLOPE_RIGHT:
                                     BBox.X -= 1;
-                                    BBox.Y += 1;
+                                    //BBox.Y -= 1;
                                     break;
                             }
                         }
@@ -1248,6 +1250,11 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         {
             BBox.X = coords.X;
             BBox.Y = coords.Y;
+        }
+
+        internal void Hurt(int damageValue)
+        {
+            /// TODO: Implement
         }
     }
 }

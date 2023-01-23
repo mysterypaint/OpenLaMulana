@@ -14,11 +14,12 @@ namespace OpenLaMulana.System
 {
     public class InputManager
     {
-        public enum ControllerNames
+        public enum ControllerNames : int
         {
             GENERIC,
             XBOX_360,
             XBOX_ONE,
+            PS3,
             PS4,
             PS5,
             NINTENDO_SWITCH,
@@ -169,7 +170,11 @@ namespace OpenLaMulana.System
 
             DirConfPressedX = (short)(Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_RIGHT]) - Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_LEFT]));
             DirConfPressedY = (short)(Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_DOWN]) - Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_UP]));
-            WorldTransitionTesting();
+
+            if (Global.DevModeEnabled)
+            {
+                DebugControls();
+            }
         }
 
         private void SwapABButtons()
@@ -241,7 +246,7 @@ namespace OpenLaMulana.System
             _isBlocked = true;
         }
 
-        private void WorldTransitionTesting()
+        private void DebugControls()
         {
             int camMoveX = Convert.ToInt32(DirectKeyboardCheckPressed(Keys.Right)) - Convert.ToInt32(DirectKeyboardCheckPressed(Keys.Left));
             int camMoveY = Convert.ToInt32(DirectKeyboardCheckPressed(Keys.Down)) - Convert.ToInt32(DirectKeyboardCheckPressed(Keys.Up));
@@ -355,6 +360,12 @@ namespace OpenLaMulana.System
                 {
                     default:
                         _identifiedController = ControllerNames.GENERIC;
+                        break;
+                    case "Xbox 360 Controller (XInput STANDARD GAMEPAD)":
+                        _identifiedController = ControllerNames.XBOX_360;
+                        break;
+                    case "PLAYSTATION(R)3 Controller":
+                        _identifiedController = ControllerNames.PS3;
                         break;
                     case "Nintendo Switch Pro Controller":
                         _identifiedController = ControllerNames.NINTENDO_SWITCH;

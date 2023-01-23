@@ -30,7 +30,7 @@ namespace OpenLaMulana.System
         }
     }
 
-    public enum SaveRegions
+    public enum SaveRegions : int
     {
         Flags,          // data[870]        // There are 6960 Save Flags (SFLAGs) in the game. Every bit within every byte represents one of those flags
         Treasures,      // data[60]

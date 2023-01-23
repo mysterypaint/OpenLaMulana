@@ -532,8 +532,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.INVISIBLE_COLLIDER:
                     newObj = new InvisibleCollider(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
-                case EntityIDs.CEILING_SPIKE:
-                    newObj = new CeilingSpike(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                case EntityIDs.CONTACT_DAMAGE:
+                    newObj = new ContactDamage(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_MYRMECOLEON:
                     newObj = new EnemyMyrmecoleon(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
@@ -561,6 +561,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.BLOCK_FLOOR_SWITCH:
                     newObj = new BlockFloorSwitch(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.MEMO:
+                    newObj = new Memo(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.BACKGROUND_SIGIL:
                     newObj = new BackgroundSigil(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);

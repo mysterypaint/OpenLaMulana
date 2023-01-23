@@ -33,7 +33,7 @@ namespace OpenLaMulana.System
          * - Spike ceiling -
          * A Holy Grail sealing event is set up so that you cannot teleport with the Holy Grail while a spike ceiling is active.*/
 
-        public enum Flags
+        public enum Flags : int
         {
             // Immediate View Reset flags
             RFLAG_00 = 0,

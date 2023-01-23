@@ -110,8 +110,8 @@ namespace OpenLaMulana.Audio
                 headerString += "\\10[Playing]";
             else
                 headerString += "\\10[Stopped]";
-            Global.TextManager.QueueTexT(3 * 8, 8 * 18, String.Format("{0}:{1} {2}", selectedSong, GetSongName(), str), 26);
-            Global.TextManager.QueueTexT(3 * 8, 3 * 8, headerString);
+            Global.TextManager.QueueText(3 * 8, 8 * 18, String.Format("{0}:{1} {2}", selectedSong, GetSongName(), str), 26);
+            Global.TextManager.QueueText(3 * 8, 3 * 8, headerString);
 
             UInt32 enabledChannels = Global.AudioManager.GetEnabledChannels();
             for (int i = 0; i < 16; i++)
@@ -125,7 +125,7 @@ namespace OpenLaMulana.Audio
                 var yOff = (i / 8) * 16;
 
                 if (i == _mutingChannelPosition - 1)
-                    Global.TextManager.QueueTexT(6 * 8 + xOff, 11 * 8 + yOff, "\\255", 1, Color.White);//_menuCursor.Draw(spriteBatch, new Vector2(4 * 8 + xOff, 12 * 8 + yOff));
+                    Global.TextManager.QueueText(6 * 8 + xOff, 11 * 8 + yOff, "\\255", 1, Color.White);//_menuCursor.Draw(spriteBatch, new Vector2(4 * 8 + xOff, 12 * 8 + yOff));
 
                 string outStr = String.Empty;
                 if (channelVolume < 0x10)
@@ -134,7 +134,7 @@ namespace OpenLaMulana.Audio
                 }
                 outStr += Convert.ToString(channelVolume, 16).ToUpper();
 
-                Global.TextManager.QueueTexT(5 * 8 + xOff, 12 * 8 + yOff, outStr, 32, color);
+                Global.TextManager.QueueText(5 * 8 + xOff, 12 * 8 + yOff, outStr, 32, color);
             }
         }
 

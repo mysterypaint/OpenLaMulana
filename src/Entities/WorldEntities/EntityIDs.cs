@@ -1,6 +1,6 @@
 ﻿namespace OpenLaMulana
 {
-    public enum EntityIDs
+    public enum EntityIDs : int
     {
         ENEMY_SKELETON = 0,
         TREASURE_CHEST = 1,
@@ -12,7 +12,7 @@
         NPC_ROOM = 14,
         WEAPONS_SAFE = 20,
         INVISIBLE_COLLIDER = 22,
-        CEILING_SPIKE = 23,
+        CONTACT_DAMAGE = 23,
         ENEMY_MYRMECOLEON = 24,
         ENEMY_TOG_GENERATOR = 26,
         ONE_WAY_DOOR = 27,
@@ -22,6 +22,7 @@
         OBTAINABLE_SOFTWARE = 32,
         DAIS = 34,
         BLOCK_FLOOR_SWITCH = 36,
+        MEMO = 37,
         AKNH = 38,
         BACKGROUND_SIGIL = 47,
         KAKOUJUU = 54,

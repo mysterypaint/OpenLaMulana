@@ -216,8 +216,6 @@ namespace OpenLaMulana.Entities.WorldEntities
         {
             if (_sprIndex != null)
                 _sprIndex.Draw(spriteBatch, Position + new Vector2(0, World.HUD_HEIGHT));
-            //Rectangle rect = new Rectangle((int)Position.X, (int)Position.Y + HUD_HEIGHT, HitboxWidth, HitboxHeight);
-            //HelperFunctions.DrawRectangle(spriteBatch, rect, new Color(255, 0, 0, 5));
         }
 
         public override void Update(GameTime gameTime)

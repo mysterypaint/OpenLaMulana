@@ -70,7 +70,8 @@ namespace OpenLaMulana.System
             set { Position = value; }
         }
 
-        public enum CamStates {
+        public enum CamStates : int
+        {
             NONE,
             TRANSITION_CARDINAL,
             TRANSITION_PIXELATE,

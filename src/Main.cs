@@ -96,7 +96,7 @@ namespace OpenLaMulana
             //_fadeInTexturePosX = Protag.DEFAULT_SPRITE_WIDTH;
         }
 
-        enum HudSprites
+        enum HudSprites : int
         {
             COINS,
             WEIGHTS,
@@ -353,7 +353,10 @@ namespace OpenLaMulana
             {
                 Global.Inventory.HP = Global.Inventory.HPMax;
 
-                Global.Inventory.CurrExp = 0;
+                if (Global.Inventory.ExpMax > 0)
+                    Global.Inventory.CurrExp = Global.Inventory.CurrExp % Global.Inventory.ExpMax;
+                else
+                    Global.Inventory.CurrExp = 0;
 
                 if (State != Global.GameState.INITIAL)
                     Global.AudioManager.PlaySFX(SFX.P_EXP_MAX);
@@ -373,8 +376,8 @@ namespace OpenLaMulana
 
             if (Global.Inventory.HPMax <= 0)
                 Global.Inventory.HPMax = 32;
-            float healthColorRatio = _drawnCurrHp / _drawnMaxHPLine;
-            if (healthColorRatio < 0.25f)
+            float healthColorRatio = (float)_drawnCurrHp / _drawnMaxHPLine;
+            if (healthColorRatio <= 0.25f)
             {
                 if (_hpColor != _hpColorRed && Global.Inventory.HP != Global.Inventory.HPMax)
                     Global.AudioManager.PlaySFX(SFX.P_LOW_HP);
@@ -497,7 +500,7 @@ namespace OpenLaMulana
                 case Global.GameState.TRANSITION:
                     //_spriteBatch.Draw(_fadeInTexture, new Rectangle((int)Math.Round(_fadeInTexturePosX), 0, WINDOW_WIDTH, WINDOW_HEIGHT), Color.White);
                     //Globals.TextManager.DrawText(0, 0, "Press Enter to Begin\\10WASD to move camera\\10J/K to switch maps");
-                    Global.TextManager.QueueTexT(0, 0, "Press Select, or F1, to Begin");
+                    Global.TextManager.QueueText(0, 0, "Press Select, or F1, to Begin");
                     break;
                 default:
                 case Global.GameState.MSX_OPEN:
@@ -511,7 +514,7 @@ namespace OpenLaMulana
                 case Global.GameState.PAUSED:
                     DrawHud(Global.SpriteBatch, gameTime);
                     HelperFunctions.DrawRectangle(Global.SpriteBatch, new Rectangle(13 * 8, 12 * 8, 5 * 8, 8), Color.Black);
-                    Global.TextManager.QueueTexT(13 * 8, 12 * 8, "PAUSE");
+                    Global.TextManager.QueueText(13 * 8, 12 * 8, "PAUSE");
                     break;
                 case Global.GameState.PLAYING:
                     //View[,] thisFieldMapData = Global.World.GetField(Global.World.CurrField).GetMapData();

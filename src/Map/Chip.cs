@@ -6,7 +6,7 @@ namespace OpenLaMulana
 {
     public class Chip
     {
-        public enum TileTypes
+        public enum TileTypes : int
         {
             BLANK,
             SOLID

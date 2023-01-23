@@ -58,8 +58,11 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case WEStates.UNSPAWNED:
                     break;
                 case WEStates.IDLE:
-                    Rectangle rect = new Rectangle((int)Position.X, (int)Position.Y + Main.HUD_HEIGHT, HitboxWidth, HitboxHeight);//(int)(0.5f * (HitboxWidth / World.CHIP_SIZE)), (int)(0.5f * (HitboxWidth / World.CHIP_SIZE)));
-                    HelperFunctions.DrawRectangle(spriteBatch, rect, new Color(255, 134, 0, 40));
+                    if (Global.DevModeEnabled)
+                    {
+                        Rectangle rect = new Rectangle((int)Position.X, (int)Position.Y + Main.HUD_HEIGHT, HitboxWidth, HitboxHeight);//(int)(0.5f * (HitboxWidth / World.CHIP_SIZE)), (int)(0.5f * (HitboxWidth / World.CHIP_SIZE)));
+                        HelperFunctions.DrawRectangle(spriteBatch, rect, new Color(255, 134, 0, 40));
+                    }
                     break;
             }
             //Rectangle offBox = new Rectangle(BBox.X, BBox.Y + World.HUD_HEIGHT, BBox.Width, BBox.Height);

@@ -32,7 +32,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         */
 
 
-        public enum ShaderDrawingState
+        public enum ShaderDrawingState : int
         {
             NO_SHADER = 0,
             CURR_VIEW,
@@ -63,7 +63,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         private Protag _protag = null;
 
-        public enum ChipTypes
+        public enum ChipTypes : int
         {
             SOLID = -1,
             VOID = 0,
@@ -105,7 +105,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         private bool _drawBossRoom = false;
         private static int[] _slopeHeights = new int[CHIP_SIZE * 2];
 
-        public enum VIEW_DEST
+        public enum VIEW_DEST : int
         {
             WORLD,
             FIELD,
@@ -114,14 +114,14 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         };
 
-        public enum AViews
+        public enum AViews : int
         {
             CURR = 0,
             DEST = 1,
             MAX
         };
 
-        public enum VIEW_DIR
+        public enum VIEW_DIR : int
         {
             UP,
             RIGHT,

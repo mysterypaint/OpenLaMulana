@@ -11,7 +11,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class GreatAnkh : InteractableWorldEntity
     {
-        enum AnkhStates
+        enum AnkhStates : int
         {
             VISIBLE,
             USABLE,

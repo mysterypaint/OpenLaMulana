@@ -20,14 +20,14 @@ namespace OpenLaMulana
 
         Effect IGameEntity.ActiveShader => null;
 
-        public enum MSXInventoryStates
+        public enum MSXInventoryStates : int
         {
             MAIN_WEAPON_SELECTION,
             SUB_WEAPON_SELECTION,
             MAX
         };
 
-        public enum EmulatorStates
+        public enum EmulatorStates : int
         {
             NONE,
             MAP8K,
@@ -46,7 +46,7 @@ namespace OpenLaMulana
         private Menu _f5Menu = null;
         private EmulatorStates _emulatorState = EmulatorStates.NONE;
 
-        enum WindowSprites
+        enum WindowSprites : int
         {
             TL,
             TM,
@@ -84,7 +84,7 @@ namespace OpenLaMulana
             MAX
         };
 
-        enum SoftwareSelectionStates
+        enum SoftwareSelectionStates : int
         {
             SELECTING_CART_SLOT,
             SELECTING_SOFTWARE,
@@ -112,6 +112,7 @@ namespace OpenLaMulana
         private string _scannerText = String.Empty;
         private Sprite _tabletLeftImage;
         private Sprite _tabletRightImage;
+        private bool _potentiallyLamulanese;
         private SoftwareSelectionStates _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
         private bool _inventoryCursorVisible = true;
         private int _inventoryCursorBlinkTimer = -1;
@@ -257,7 +258,7 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.DirPressedY > 0)
+                            if (InputManager.DirPressedY > 0 || InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
                             {
                                 VerifyThatPlayerHasAtLeastOneSubweapon();
 
@@ -338,10 +339,10 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.DirPressedY < 0)
+                            if (InputManager.DirPressedY < 0 || InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
                             {
                                 int originalPosition = _subWeaponSelectionPosition;
-                                if (_subWeaponSelectionPosition <= 4)
+                                if (_subWeaponSelectionPosition <= 4 || InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
                                 {
                                     _inventoryState = MSXInventoryStates.MAIN_WEAPON_SELECTION;
                                     _inventoryCursorVisible = true;
@@ -1242,7 +1243,7 @@ namespace OpenLaMulana
                     break;
                 case Global.MSXStates.SCANNING:
                     DrawMSXBackground(spriteBatch, gameTime, true);
-                    Global.TextManager.QueueTexT(2 * 8, 4 * 8, _scannerText, 28, Color.White, 0, 8, true);
+                    Global.TextManager.QueueText(2 * 8, 4 * 8, _scannerText, 28, Color.White, 0, 8, _potentiallyLamulanese);
 
                     int leftTabletOffset = 12;
                     if (_tabletRightImage != null)
@@ -1268,9 +1269,9 @@ namespace OpenLaMulana
                     {
                         default:
                         case EmulatorStates.NONE:
-                            Global.TextManager.QueueTexT(2 * 8, 3 * 8, "MSX? BASIC version 1.x\\10Copyright 1987 by Kobamisoft");
-                            Global.TextManager.QueueTexT(2 * 8, 5 * 8, "8806 Bytes free\\10ROM BASIC version 1.0\\10Ok");
-                            Global.TextManager.QueueTexT(2 * 8, 20 * 8, "color  auto  goto  list  run");
+                            Global.TextManager.QueueText(2 * 8, 3 * 8, "MSX? BASIC version 1.x\\10Copyright 1987 by Kobamisoft");
+                            Global.TextManager.QueueText(2 * 8, 5 * 8, "8806 Bytes free\\10ROM BASIC version 1.0\\10Ok");
+                            Global.TextManager.QueueText(2 * 8, 20 * 8, "color  auto  goto  list  run");
                             mainWindowSprites[(int)WindowSprites.EMU_CURSOR].Draw(spriteBatch, new Vector2(2 * 8, 8 * 8));
                             break;
                         case EmulatorStates.MAP32K:
@@ -1316,8 +1317,8 @@ namespace OpenLaMulana
             if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX2] == true)
                 msxStr = "MSX2WINDOW";
 
-            Global.TextManager.QueueTexT(1 * 8, 2 * 8, msxStr);
-            Global.TextManager.QueueTexT(2 * 8, 5 * 8, "SLOT1");
+            Global.TextManager.QueueText(1 * 8, 2 * 8, msxStr);
+            Global.TextManager.QueueText(2 * 8, 5 * 8, "SLOT1");
             // Grab and draw the player's equipped roms
             int eqRom1 = (int)Global.Inventory.EquippedRoms[0];
             int equippedRomSprID1 = Global.World.SoftwareGetGraphicID(eqRom1);
@@ -1325,7 +1326,7 @@ namespace OpenLaMulana
             if (equippedRomSprID1 >= 0)
                 _romSprites[equippedRomSprID1].Draw(spriteBatch, new Vector2(8 * 8, 4 * 8));
 
-            Global.TextManager.QueueTexT(11 * 8, 5 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom1, Global.CurrLang));
+            Global.TextManager.QueueText(11 * 8, 5 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom1, Global.CurrLang));
 
             mainWindowSprites[(int)WindowSprites.INV_TL].Draw(spriteBatch, new Vector2(7 * 8, 3 * 8));
             mainWindowSprites[(int)WindowSprites.INV_TR].Draw(spriteBatch, new Vector2(10 * 8, 3 * 8));
@@ -1333,12 +1334,12 @@ namespace OpenLaMulana
             // Draw the second cart slot, but only if we have the MobileSuperX2 unlocked
             if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX2])
             {
-                Global.TextManager.QueueTexT(2 * 8, 8 * 8, "SLOT2");
+                Global.TextManager.QueueText(2 * 8, 8 * 8, "SLOT2");
                 int eqRom2 = (int)Global.Inventory.EquippedRoms[1];
                 int equippedRomSprID2 = Global.World.SoftwareGetGraphicID(eqRom2);
                 if (equippedRomSprID2 >= 0)
                     _romSprites[equippedRomSprID2].Draw(spriteBatch, new Vector2(8 * 8, 7 * 8));
-                Global.TextManager.QueueTexT(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom2, Global.CurrLang));
+                Global.TextManager.QueueText(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom2, Global.CurrLang));
 
                 mainWindowSprites[(int)WindowSprites.INV_BLTL].Draw(spriteBatch, new Vector2(7 * 8, 6 * 8));
                 mainWindowSprites[(int)WindowSprites.INV_BRTR].Draw(spriteBatch, new Vector2(10 * 8, 6 * 8));
@@ -1399,7 +1400,7 @@ namespace OpenLaMulana
                     break;
                 case SoftwareSelectionStates.SELECTING_SOFTWARE:
                     string softwareName = Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + _softwareSelectionCursorPosition, Global.CurrLang);
-                    Global.TextManager.QueueTexT(12 * 8, 2 * 8, softwareName);
+                    Global.TextManager.QueueText(12 * 8, 2 * 8, softwareName);
                     if (_inventoryCursorVisible)
                         _softwareSelectionCursor.Draw(spriteBatch, new Vector2(2 * 8 + ((int)_softwareSelectionCursorPosition % 14) * 16, 10 * 8 + ((int)_softwareSelectionCursorPosition / 14) * 16));
                     break;
@@ -1408,9 +1409,9 @@ namespace OpenLaMulana
 
         private void DrawInventoryWindowBorders(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Global.TextManager.QueueTexT(4 * 8, 2 * 8, "ITEM WINDOW");
-            Global.TextManager.QueueTexT(7 * 8, 14 * 8, "WEAPON");
-            Global.TextManager.QueueTexT(3 * 8, 17 * 8, "SUB-WEAPON");
+            Global.TextManager.QueueText(4 * 8, 2 * 8, "ITEM WINDOW");
+            Global.TextManager.QueueText(7 * 8, 14 * 8, "WEAPON");
+            Global.TextManager.QueueText(3 * 8, 17 * 8, "SUB-WEAPON");
 
             mainWindowSprites[(int)WindowSprites.INV_TL].Draw(spriteBatch, new Vector2(13 * 8, 13 * 8));
             mainWindowSprites[(int)WindowSprites.INV_TR].Draw(spriteBatch, new Vector2(28 * 8, 13 * 8));
@@ -1577,11 +1578,12 @@ namespace OpenLaMulana
             _emulatorState = state;
         }
 
-        internal void SetScannerText(string str, Sprite tabletLeftImage, Sprite tabletRightImage)
+        internal void SetScannerText(string str, Sprite tabletLeftImage, Sprite tabletRightImage, bool potentiallyLamulanese = true)
         {
             _scannerText = str;
             _tabletLeftImage = tabletLeftImage;
             _tabletRightImage = tabletRightImage;
+            _potentiallyLamulanese = potentiallyLamulanese;
         }
 
         internal void SetCurrentSoftwareCombo(Global.SoftwareCombos combo)

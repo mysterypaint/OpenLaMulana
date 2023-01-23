@@ -13,21 +13,21 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class NPCRoom : InteractableWorldEntity // Enemy, so that it has a hitbox
     {
-        enum NPCTypes
+        enum NPCTypes : int
         {
             Store,
             Storyteller,
             Xelpud
         };
 
-        public enum NPCStates
+        public enum NPCStates : int
         {
             INACTIVE,
             ACTIVE,
             MAX
         };
 
-        enum ShopDialogue
+        enum ShopDialogue : int
         {
             WELCOME,
             PRODUCT_1_HOVER,
@@ -40,7 +40,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             MAX
         };
 
-        enum ShopParams
+        enum ShopParams : int
         {
             PRODUCT_TYPE,
             PRODUCT_ID,
@@ -52,7 +52,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             MAX
         };
 
-        enum DialogueBoxSprites
+        enum DialogueBoxSprites : int
         {
             TL,
             T,
@@ -281,12 +281,12 @@ namespace OpenLaMulana.Entities.WorldEntities
                                 _productSprites[i].Draw(spriteBatch, new Vector2((8 + 7 * i) * 8, 13 * 8));
 
                                 if (!_shopData[i].IsSoldOut)
-                                    Global.TextManager.QueueTexT((7 + (i * 7)) * 8, 15 * 8, _shopData[i].ProductPriceString);
+                                    Global.TextManager.QueueText((7 + (i * 7)) * 8, 15 * 8, _shopData[i].ProductPriceString);
                                 else
-                                    Global.TextManager.QueueTexT((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
+                                    Global.TextManager.QueueText((7 + (i * 7)) * 8, 15 * 8, "\\16\\17\\18"); // Draw "SoldOut"
                             }
                             _playerShopSprite.Draw(spriteBatch, new Vector2(15 * 8, 21 * 8));
-                            Global.TextManager.QueueTexT(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
+                            Global.TextManager.QueueText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
@@ -297,7 +297,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             break;
                         case NPCStates.ACTIVE:
                             DrawNPCRoom(spriteBatch, gameTime);
-                            Global.TextManager.QueueTexT(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
+                            Global.TextManager.QueueText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
@@ -308,7 +308,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             break;
                         case NPCStates.ACTIVE:
                             DrawNPCRoom(spriteBatch, gameTime);
-                            Global.TextManager.QueueTexT(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
+                            Global.TextManager.QueueText(5 * 8, 9 * 8, _currText, 22, Color.White, 0, World.CHIP_SIZE, false);
                             break;
                     }
                     break;
