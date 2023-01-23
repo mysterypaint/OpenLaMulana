@@ -750,5 +750,21 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         {
             return _fieldSpawnData;
         }
+
+        internal Chip CreateTileOfType(World.ChipTypes tileType)
+        {
+            Chip chip = null;
+            switch(tileType)
+            {
+                case World.ChipTypes.VOID:
+                    chip = new Chip(0, null);
+                    break;
+                case World.ChipTypes.SOLID:
+                    chip = new Chip((short)_chipline[0], null);
+                    break;
+            }
+
+            return chip;
+        }
     }
 }

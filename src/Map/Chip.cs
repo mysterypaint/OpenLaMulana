@@ -50,11 +50,11 @@ namespace OpenLaMulana
         {
             if (!IsAnime)
                 return null;
-            int[] rawAnimeFrames = new int[2 + _animeFrames.Length];
+            int[] rawAnimeFrames = new int[2 + _animeFrames.Length - 1];
             rawAnimeFrames[0] = _animeFrames[0] - World.ANIME_TILES_BEGIN;
             rawAnimeFrames[1] = AnimeSpeed;
-            Array.Copy(_animeFrames, 0, rawAnimeFrames, 2, _animeFrames.Length);
-            return _animeFrames;
+            Array.Copy(_animeFrames, 1, rawAnimeFrames, 2, _animeFrames.Length - 1);
+            return rawAnimeFrames;
         }
 
         internal void StepFrame()
@@ -81,8 +81,13 @@ namespace OpenLaMulana
         {
             this.TileID = modelChip.TileID;
             this.AnimeSpeed = modelChip.AnimeSpeed;
-            this.SetAnimeFrames(modelChip.GetAnimeFramesAsRawData());
+            this.SetAnimeFrames(modelChip.GetAnimeFrames());
             this.IsAnime = modelChip.IsAnime;
+        }
+
+        internal int[] GetAnimeFrames()
+        {
+            return _animeFrames;
         }
     }
 }

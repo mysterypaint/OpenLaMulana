@@ -18,7 +18,7 @@ namespace OpenLaMulana.Entities
         }
         public void SetView(View v)
         {
-            currView = v;
+            currView = v.CloneView();
         }
 
         internal void DrawView(SpriteBatch spriteBatch, GameTime gameTime)

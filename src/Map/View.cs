@@ -104,7 +104,7 @@ namespace OpenLaMulana
                         // Handle animated Chips here
 
                         var animeSpeed = thisChip.AnimeSpeed;
-                        var animeFrames = thisChip.GetAnimeFramesAsRawData();
+                        var animeFrames = thisChip.GetAnimeFrames();//GetAnimeFramesAsRawData();
 
                         if (animeSpeed > 0)
                         {
@@ -223,7 +223,13 @@ namespace OpenLaMulana
                 }
             }
 
+            clonedView.SetParentField(this.GetParentField());
             return clonedView;
+        }
+
+        private void SetParentField(Field field)
+        {
+            _parentField = field;
         }
 
         internal void DeleteEntities()

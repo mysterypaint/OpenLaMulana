@@ -265,7 +265,8 @@ namespace OpenLaMulana.System
 
             if (DirectKeyboardCheckPressed(Keys.E))
             {
-                HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.POCHETTE_KEY, true);
+/*
+ *                 HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.POCHETTE_KEY, true);
                 Global.GameFlags.InGameFlags[(int)GameFlags.Flags.POCHETTE_KEY_TAKEN] = true;
                 HelperFunctions.UpdateInventory(ItemTypes.TREASURE, (int)ObtainableTreasures.PEPPER, true);
                 Global.GameFlags.InGameFlags[(int)GameFlags.Flags.PEPPER_TAKEN] = true;
@@ -287,8 +288,10 @@ namespace OpenLaMulana.System
                 Global.Inventory.ObtainedSoftware[Global.ObtainableSoftware.A1_SPIRIT] = true;
 
                 Global.AudioManager.PlaySFX(SFX.P_ITEM_TAKEN);
+*/
 
-                Global.Inventory.CurrExp += Global.Inventory.ExpMax;
+                Global.Inventory.HP = 3;
+                Global.Inventory.CurrExp += 41;//Global.Inventory.ExpMax;
 
             }
 
