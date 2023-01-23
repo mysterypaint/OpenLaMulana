@@ -322,7 +322,7 @@ namespace OpenLaMulana.System
                             option.Strings = winSizes.ToArray();
                         }
 
-                        currVal = option.Value;
+                        currVal = Math.Clamp(option.Value, 0, option.Strings.Length - 1);
                         if ((int)currVal == 0)
                             lShift = "";
                         if ((int)currVal == option.Strings.Length - 1)
