@@ -44,7 +44,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         private EntityManager _s_entityManager;
         private TextManager _textManager;
         private List<IGameEntity> _fieldEntities = new List<IGameEntity>();
-        private List<IGameEntity> _roomEntities = new List<IGameEntity>();
+        private List<IGameEntity> _viewEntities = new List<IGameEntity>();
         private List<IGameEntity> _fieldRememberedSameRoomEntities = new List<IGameEntity>();
         private World _world;
         View[] _bossViews = null;
@@ -386,7 +386,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 {
                     foreach (IGameEntity entity in _fieldRememberedSameRoomEntities)
                     {
-                        _roomEntities.Remove(entity);
+                        _viewEntities.Remove(entity);
                         Global.EntityManager.RemoveEntity(entity);
                     }
                     _fieldRememberedSameRoomEntities.Clear();
@@ -409,7 +409,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
          * 
         private EntityManager _s_entityManager;
         private static List<IGameEntity> _fieldEntities = new List<IGameEntity>();
-        private static List<IGameEntity> _roomEntities = new List<IGameEntity>();*/
+        private static List<IGameEntity> _viewEntities = new List<IGameEntity>();*/
 
         internal void SpawnEntities(View destView, Field destField, View prevView, Field prevField, Vector2 offsetVector, bool forceRespawnGlobals = false)
         {
@@ -667,9 +667,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             return _fieldEntities;
         }
 
-        internal List<IGameEntity> GetRoomEntities()
+        internal List<IGameEntity> GetViewEntities()
         {
-            return _roomEntities;
+            return _viewEntities;
         }
 
         internal void UnlockAllViewSpawning()
@@ -719,7 +719,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 {
                     foreach(IGameEntity entity in _fieldRememberedSameRoomEntities)
                     {
-                        _roomEntities.Remove(entity);
+                        _viewEntities.Remove(entity);
                         Global.EntityManager.RemoveEntity(entity);
                     }
                     _fieldRememberedSameRoomEntities.Clear();
