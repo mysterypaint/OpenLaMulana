@@ -27,6 +27,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             _sigilSprite = new Sprite(_tex, 240 + texOffX, 224, 16, 16);
             HP = 1;
             _sprIndex = null;
+            Depth = (int)Global.DrawOrder.ObtainableItems;
 
             if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {

@@ -36,6 +36,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             HitboxWidth = (int)_spriteWidthHeight.X;
             HitboxHeight = (int)_spriteWidthHeight.Y;
+            Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
 
             bool _useEventTexture = false;
             if (op4 >= 4)
@@ -96,12 +97,10 @@ namespace OpenLaMulana.Entities.WorldEntities
             if (_useEventTexture)
             {
                 _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
-                Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
             }
             else
             {
                 _tex = Global.TextureManager.GetTexture(Global.World.GetCurrMapTexture());
-                Depth = (int)Global.DrawOrder.AboveTilesetGraphicDisplay;
             }
 
             _displayedGraphic = new Sprite(_tex, _texCoords, _spriteWidthHeight);

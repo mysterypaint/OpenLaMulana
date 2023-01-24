@@ -28,6 +28,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             _weaponSprite = new Sprite(_tex, 256 + texOffX, 0 + texOffY, 16, 16);
             _sprIndex = null;
             HP = 1;
+            Depth = (int)Global.DrawOrder.ObtainableItems;
 
             if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {

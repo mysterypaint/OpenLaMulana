@@ -29,6 +29,8 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _openConditionFlag = op1;
 
+            Depth = (int)Global.DrawOrder.TreasureChests;
+
             if (op2 >= 0)
             {
                 Texture2D itemTex = Global.TextureManager.GetTexture(Textures.ITEM);

@@ -27,6 +27,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
             _softwareSprite = new Sprite(_tex, 256 + softwareSpriteID % 4 * 16, 144 + softwareSpriteID / 4 * 16, 16, 16);
             _sprIndex = null;
+            Depth = (int)Global.DrawOrder.ObtainableItems;
 
             if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {

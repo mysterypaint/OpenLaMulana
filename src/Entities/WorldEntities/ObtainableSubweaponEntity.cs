@@ -45,6 +45,8 @@ namespace OpenLaMulana.Entities.WorldEntities
             HitboxWidth = 16;
             HitboxHeight = 16;
             _sprIndex = null;
+            Depth = (int)Global.DrawOrder.ObtainableItems;
+
             if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {
                 if (_itemID >= 0)
