@@ -17,14 +17,22 @@ namespace OpenLaMulana.Entities
 
         private readonly List<IGameEntity> _entitiesToAdd = new List<IGameEntity>();
         private readonly List<IGameEntity> _entitiesToRemove = new List<IGameEntity>();
-        
+        private readonly List<IGameEntity> _staticEntities = new List<IGameEntity>();
+
         //private Effect _shdHueShift;
         public IEnumerable<IGameEntity> Entities => new ReadOnlyCollection<IGameEntity>(_entities);
 
         public void Update(GameTime gameTime)
         {
+            // Always keep track of how many static entities there are
+            _staticEntities.Clear();
             foreach (IGameEntity entity in _entities)
             {
+
+                if (entity is Protag || entity is World || entity is SpriteDefManager || entity is GameMenu || entity is Jukebox || entity is MobileSuperX || entity is GameMenu)
+                {
+                    _staticEntities.Add(entity);
+                }
 
                 if (_entitiesToRemove.Contains(entity))
                     continue;
@@ -45,7 +53,6 @@ namespace OpenLaMulana.Entities
 
             _entitiesToAdd.Clear();
             _entitiesToRemove.Clear();
-
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, GraphicsDevice graphicsDevice)
@@ -169,13 +176,23 @@ namespace OpenLaMulana.Entities
             return _entities.Count;
         }
 
+        public List<IGameEntity> GetEntityList()
+        {
+            return _entities;
+        }
+
+        public int GetStaticEntityCount()
+        {
+            return _staticEntities.Count;
+        }
+
         public void SanityCheck()
         {
             // Juuuust in case there's any lingering particles we don't want loaded in memory... This deletes all the non-global entities
             foreach (IGameEntity entity in _entities)
             {
                 bool deleteMe = true;
-                if (entity is Protag || entity is World || entity is SpriteDefManager || entity is GameMenu || entity is MobileSuperX || entity is Jukebox)
+                if (entity is Protag || entity is World || entity is SpriteDefManager || entity is GameMenu || entity is Jukebox || entity is MobileSuperX || entity is GameMenu)
                 {
                     deleteMe = false;
                 }
