@@ -31,7 +31,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+            //_sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
         public override void Update(GameTime gameTime)

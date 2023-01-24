@@ -25,9 +25,12 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         
         internal View _parentView = null;
         public Point ViewCoords = new Point(-1, -1);
+        public Point TrueGlobalTilePosition { get; }
+        public Point TrueSpawnCoord { get; }
+
         internal float _imgScaleX = 1f, _imgScaleY = 1f;
 
-        public IGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags)
+        public IGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, View prevView)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
             _sprIndex = new Sprite(_tex, 16, 0, 16, 16);
@@ -40,13 +43,29 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
                     State = Global.WEStates.IDLE;
             }
 
+            bool sameField = prevView.GetParentField() == destView.GetParentField();
             RelativeView = new Point(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
             ViewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);
-            Point spawnCoords = ViewCoords - new Point(Global.World.CurrViewX, Global.World.CurrViewY);
-            spawnCoords.X *= World.ROOM_WIDTH;
-            spawnCoords.Y *= World.ROOM_HEIGHT;
-            spawnCoords += new Point(RelativeView.X, RelativeView.Y);
-            Position = new Vector2(spawnCoords.X * World.CHIP_SIZE, spawnCoords.Y * World.CHIP_SIZE);
+            TrueGlobalTilePosition = new Point(ViewCoords.X * World.ROOM_WIDTH, ViewCoords.Y * World.ROOM_HEIGHT) + RelativeView;
+            TrueSpawnCoord = new Point(TrueGlobalTilePosition.X * World.CHIP_SIZE, TrueGlobalTilePosition.Y * World.CHIP_SIZE);
+            
+            Point tileOffset;
+            Vector2 offsetCoords;
+
+            if (sameField)
+            {
+                tileOffset = new Point(TrueGlobalTilePosition.X - (destView.X * World.ROOM_WIDTH), TrueGlobalTilePosition.Y - (destView.Y * World.ROOM_HEIGHT));
+                offsetCoords = new Vector2(tileOffset.X * World.ROOM_WIDTH, tileOffset.Y * World.ROOM_HEIGHT);
+                Position = TrueSpawnCoord.ToVector2() - offsetCoords;
+            }
+            else
+            {
+                Point roomOffset = new Point(ViewCoords.X - Global.World.CurrViewX, ViewCoords.Y - Global.World.CurrViewY);
+                tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + RelativeView;
+                offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                Position = offsetCoords;
+            }
         }
 
         public abstract void Update(GameTime gameTime);

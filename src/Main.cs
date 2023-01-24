@@ -533,7 +533,7 @@ namespace OpenLaMulana
                     if (Global.DevModeEnabled)
                     {
                         List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
-                        List<IGameEntity> roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
+                        List<IGameEntity> viewEntities = Global.World.GetField(Global.World.CurrField).GetViewEntities();
 
                         int staticEntityCount = Global.EntityManager.GetStaticEntityCount();
                         int entityCount = Global.EntityManager.GetCount();
@@ -541,7 +541,7 @@ namespace OpenLaMulana
                         Vector2 _camPos = Global.Camera.Position;
                         Rectangle rect = new Rectangle((int)_camPos.X, (int)_camPos.Y, World.ROOM_WIDTH * World.CHIP_SIZE, World.HUD_HEIGHT);
                         HelperFunctions.DrawRectangle(Global.SpriteBatch, rect, Color.Black);
-                        Global.TextManager.DrawText(_camPos, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, staticEntityCount, fieldEntities.Count, entityCount));
+                        Global.TextManager.DrawText(_camPos, String.Format("View Entities: {0}   Static: {1}\\10Field Entities:{2}  Total: {3}", viewEntities.Count, staticEntityCount, fieldEntities.Count, entityCount));
                     } else
                         DrawHud(Global.SpriteBatch, gameTime);
                     

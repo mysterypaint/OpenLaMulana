@@ -256,7 +256,7 @@ namespace OpenLaMulana
         {
             foreach(IGameEntity entity in _myEntities)
             {
-                _parentField.GetRoomEntities().Remove(entity);
+                _parentField.GetViewEntities().Remove(entity);
                 Global.EntityManager.RemoveEntity(entity);
             }
             _myEntities.Clear();
@@ -265,7 +265,7 @@ namespace OpenLaMulana
         public void AddEntity(IGameEntity entity)
         {
             _myEntities.Add(entity);
-            _parentField.GetRoomEntities().Add(entity);
+            _parentField.GetViewEntities().Add(entity);
         }
 
         internal void OverwriteViewDestinationTemporarily(VIEW_DIR direction, int destWorld, int destField, int destX, int destY)

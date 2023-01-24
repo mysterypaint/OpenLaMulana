@@ -12,7 +12,7 @@ namespace OpenLaMulana
     public static class Global
     {
         public static bool DevModeEnabled { get; internal set; } = true;
-        public static bool DevModeAllEntitiesGeneric { get; internal set; } = true;
+        public static bool DevModeAllEntitiesGeneric { get; internal set; } = false;
 
         public enum DrawOrder : int
         {

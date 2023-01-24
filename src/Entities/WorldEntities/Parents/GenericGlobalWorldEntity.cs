@@ -10,9 +10,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class GenericGlobalWorldEntity : IGlobalWorldEntity
     {
-        private bool _texChanged = false;
-
-        public GenericGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        public GenericGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, View prevView) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags, prevView)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
             _sprIndex = new Sprite(_tex, 16, 0, 16, 16);
@@ -21,7 +19,7 @@ namespace OpenLaMulana.Entities.WorldEntities
             _imgScaleY = 0.5f;
         }
 
-        public GenericGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, bool isHardModeChange) : this(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        public GenericGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, bool isHardModeChange, View prevView) : this(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags, prevView)
         {
             // Hard mode entity
             _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
@@ -32,11 +30,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (!_texChanged) {
-                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-            }
-            else
-                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+            _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
         public override void Update(GameTime gameTime)
@@ -48,7 +42,6 @@ namespace OpenLaMulana.Entities.WorldEntities
             _sprIndex = sprIndex;
             _imgScaleX = 1;
             _imgScaleY = 1;
-            _texChanged = true;
         }
     }
 }

@@ -23,6 +23,11 @@ namespace OpenLaMulana
 
         internal View _parentView = null;
         internal Point viewCoords = new Point(-1, -1);
+
+        public Point TrueGlobalTilePosition { get; private set; }
+        public Vector2 TrueSpawnCoord { get; private set; }
+        public bool IsGlobal { get; private set; } = false;
+
         internal float _imgScaleX = 1f, _imgScaleY = 1f;
         public bool ManuallySpawned = false;
         public List<ObjectStartFlag> StartFlags = null;
@@ -36,8 +41,27 @@ namespace OpenLaMulana
             _world = Global.World;
             StartFlags = startFlags;
 
-            RelativeViewTilePos = new Vector2(x, y);
-            Position = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
+            if (!spawnIsGlobal)
+            {
+                RelativeViewTilePos = new Vector2(x, y);
+                Position = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
+            }
+            else
+            {
+                RelativeViewTilePos = new Vector2(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
+                viewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);
+                TrueGlobalTilePosition = new Point(viewCoords.X * World.ROOM_WIDTH, viewCoords.Y * World.ROOM_HEIGHT) + RelativeViewTilePos.ToPoint();
+                TrueSpawnCoord = new Vector2(TrueGlobalTilePosition.X * World.CHIP_SIZE, TrueGlobalTilePosition.Y * World.CHIP_SIZE);
+                IsGlobal = true;
+
+                Point tileOffset;
+                Vector2 offsetCoords;
+                Point roomOffset = new Point(viewCoords.X - Global.World.CurrViewX, viewCoords.Y - Global.World.CurrViewY);
+                tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + RelativeViewTilePos.ToPoint();
+                offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                Position = offsetCoords;
+            }
 
             if (destView == null)
                 destView = Global.World.GetCurrentView();
@@ -58,7 +82,7 @@ namespace OpenLaMulana
                 Global.EntityManager.RemoveEntity(entity);
             }
 
-            Global.World.GetCurrField().GetRoomEntities().Remove(this);
+            Global.World.GetCurrField().GetViewEntities().Remove(this);
         }
 
         public abstract void Update(GameTime gameTime);

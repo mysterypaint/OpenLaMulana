@@ -130,14 +130,16 @@ namespace OpenLaMulana.System
 
                     float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+                    View destView, currView;
+                    int destRoomX, destRoomY, currRoomX, currRoomY;
+                    Vector2 globalOffsetVector;
+
                     if (_moveToX < 0)
                     {
                         float targetX = SCREEN_RIGHT_EDGE -5;
                         if (Position.X + _moveSpeedX > _moveToX)
                         {
                             posX += _moveSpeedX;
-                            MoveAllGlobalEntities(new Vector2(-_moveSpeedX, 0));
-
                             newPlayerX = HelperFunctions.Lerp(SCREEN_LEFT_EDGE, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)
                             );// Lerp(newPX, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX));
                             _protag.SetPosition(new Point((int)Math.Round(newPlayerX), _protag.BBox.Y));
@@ -146,7 +148,16 @@ namespace OpenLaMulana.System
                         {
                             posX = 0;
                             _protag.SetPosition(new Point(ROOM_PX_WIDTH + (int)targetX, _protag.BBox.Y));
-                            MoveAllRoomEntities(new Vector2(ROOM_PX_WIDTH, 0));
+
+                            destView = Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView();
+                            destRoomX = destView.X;
+                            destRoomY = destView.Y;
+                            currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
+                            currRoomX = currView.X;
+                            currRoomY = currView.Y;
+                            globalOffsetVector = new Vector2(-(destRoomX) * World.ROOM_WIDTH * World.CHIP_SIZE, -(destRoomY) * World.ROOM_HEIGHT * World.CHIP_SIZE);
+                            MoveAllEntities(new Vector2(ROOM_PX_WIDTH, 0), true, globalOffsetVector);
+                            
                             _moveSpeedX = 0;
                             _moveToX = 0;
                             Global.World.UpdateCurrActiveView();
@@ -160,14 +171,22 @@ namespace OpenLaMulana.System
                         if (Position.X + _moveSpeedX < _moveToX)
                         {
                             posX += _moveSpeedX;
-                            MoveAllGlobalEntities(new Vector2(-_moveSpeedX, 0));
                             _protag.SetPosition(new Point((int)HelperFunctions.Lerp(ROOM_PX_WIDTH + SCREEN_RIGHT_EDGE, ROOM_PX_WIDTH + targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)), _protag.BBox.Y));
                         }
                         else
                         {
                             posX = 0;
                             _protag.SetPosition(new Point((int)targetX, _protag.BBox.Y));
-                            MoveAllRoomEntities(new Vector2(-ROOM_PX_WIDTH, 0));
+
+                            destView = Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView();
+                            destRoomX = destView.X;
+                            destRoomY = destView.Y;
+                            currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
+                            currRoomX = currView.X;
+                            currRoomY = currView.Y;
+                            globalOffsetVector = new Vector2(-(destRoomX) * World.ROOM_WIDTH * World.CHIP_SIZE, -(destRoomY) * World.ROOM_HEIGHT * World.CHIP_SIZE);
+                            MoveAllEntities(new Vector2(-ROOM_PX_WIDTH, 0), true, globalOffsetVector);
+                            
                             _moveSpeedX = 0;
                             _moveToX = 0;
                             Global.World.UpdateCurrActiveView();
@@ -189,7 +208,6 @@ namespace OpenLaMulana.System
                         if (Position.Y + _moveSpeedY > _moveToY)
                         {
                             posY += _moveSpeedY;
-                            MoveAllGlobalEntities(new Vector2(0, -_moveSpeedY));
                             newPlayerY = HelperFunctions.Lerp(World.HUD_HEIGHT + Protag.SPRITE_HEIGHT, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY)
                             );// Lerp(newPX, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY));
                             _protag.SetPosition(new Point(_protag.BBox.X, (int)Math.Round(newPlayerY)));
@@ -198,7 +216,16 @@ namespace OpenLaMulana.System
                         {
                             posY = 0;
                             _protag.SetPosition(new Point(_protag.BBox.X, ROOM_PX_HEIGHT + (int)targetY));
-                            MoveAllRoomEntities(new Vector2(0, ROOM_PX_HEIGHT));
+
+                            destView = Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView();
+                            destRoomX = destView.X;
+                            destRoomY = destView.Y;
+                            currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
+                            currRoomX = currView.X;
+                            currRoomY = currView.Y;
+                            globalOffsetVector = new Vector2(-(destRoomX) * World.ROOM_WIDTH * World.CHIP_SIZE, -(destRoomY) * World.ROOM_HEIGHT * World.CHIP_SIZE);
+                            MoveAllEntities(new Vector2(0, ROOM_PX_HEIGHT), true, globalOffsetVector);
+                            
                             _moveSpeedY = 0;
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
@@ -212,7 +239,6 @@ namespace OpenLaMulana.System
                         if (Position.Y + _moveSpeedY < _moveToY - World.HUD_HEIGHT)
                         {
                             posY += _moveSpeedY;
-                            MoveAllGlobalEntities(new Vector2(0, -_moveSpeedY));
                             _protag.SetPosition(new Point(_protag.BBox.X,
                                 (int)HelperFunctions.Lerp(ROOM_PX_HEIGHT, ROOM_PX_HEIGHT + targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY))
                                 ));
@@ -221,7 +247,15 @@ namespace OpenLaMulana.System
                         {
                             posY = 0;
                             _protag.SetPosition(new Point(_protag.BBox.X, (int)targetY));
-                            MoveAllRoomEntities(new Vector2(0, -ROOM_PX_HEIGHT));
+
+                            destView = Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView();
+                            destRoomX = destView.X;
+                            destRoomY = destView.Y;
+                            currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
+                            currRoomX = currView.X;
+                            currRoomY = currView.Y;
+                            globalOffsetVector = new Vector2(-(destRoomX) * World.ROOM_WIDTH * World.CHIP_SIZE, -(destRoomY) * World.ROOM_HEIGHT * World.CHIP_SIZE);
+                            MoveAllEntities(new Vector2(0, -ROOM_PX_HEIGHT), true, globalOffsetVector);
                             _moveSpeedY = 0;
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
@@ -235,7 +269,7 @@ namespace OpenLaMulana.System
             }
         }
 
-        private void MoveAllGlobalEntities(Vector2 offsetVector)
+        private void MoveAllGlobalEntities(Vector2 globalOffsetVector)
         {
             Field currField = Global.World.GetField(Global.World.CurrField);
             List<IGameEntity> allFieldEntities = new List<IGameEntity>();
@@ -246,16 +280,23 @@ namespace OpenLaMulana.System
                 if (worldEntity is IGlobalWorldEntity)
                 {
                     IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
-                    gE.Position += offsetVector;
+                    gE.Position = gE.TrueSpawnCoord.ToVector2() + globalOffsetVector;
+                } else if (worldEntity is IRoomWorldEntity)
+                {
+                    IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
+                    if (rE.IsGlobal)
+                        rE.Position = rE.TrueSpawnCoord + globalOffsetVector;
                 }
             }
         }
 
-        private void MoveAllRoomEntities(Vector2 offsetVector)
+        private void MoveAllEntities(Vector2 offsetVector, bool includeGlobals = false, Vector2 globalOffsetVector = default)
         {
             Field currField = Global.World.GetField(Global.World.CurrField);
             List<IGameEntity> allFieldEntities = new List<IGameEntity>();
-            allFieldEntities.AddRange(currField.GetRoomEntities());
+            allFieldEntities.AddRange(currField.GetViewEntities());
+            if (includeGlobals)
+                allFieldEntities.AddRange(currField.GetFieldEntities());
 
             foreach (IGameEntity worldEntity in allFieldEntities)
             {
@@ -263,8 +304,25 @@ namespace OpenLaMulana.System
                 {
                     IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
 
-                    if (!rE.ManuallySpawned)
+                    if (rE.IsGlobal)
+                    {
+                        rE.Position = rE.TrueSpawnCoord + globalOffsetVector;
+                    }
+                    else if (!rE.ManuallySpawned)
                         rE.Position += offsetVector;
+                }
+                else
+                {
+                    if (includeGlobals)
+                    {
+                        if (worldEntity is IGlobalWorldEntity)
+                        {
+                            IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
+
+                            if (!gE.ManuallySpawned)
+                                gE.Position = gE.TrueSpawnCoord.ToVector2() + globalOffsetVector;
+                        }
+                    }
                 }
             }
         }
