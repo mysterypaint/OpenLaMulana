@@ -73,10 +73,29 @@ namespace OpenLaMulana.Entities.WorldEntities
                             Field destField = Global.World.GetField(_fieldID);
                             View destView = destField.GetView(_viewNumber);
 
-                            bool updateEntities = currField.ID != destField.ID;
+                            bool updateEntities = currField.ID != destField.ID || currView.X != destView.X || currView.Y != destView.Y;
 
                             Global.Protag.ContactWarpCooldownTimer = 10;
-                            Global.World.FieldTransitionImmediate(currView, destView, updateEntities);
+
+                            bool forceRespawnGlobals = false;
+                            bool updateMusic = false;
+                            if (updateEntities)
+                            {
+                                currField.QueueDeleteAllFieldAndRoomEntities();
+                                currField.UnlockAllViewSpawning();
+                                currField.ForgetVisitedViews();
+
+                                destField.QueueDeleteAllFieldAndRoomEntities();
+                                destField.UnlockAllViewSpawning();
+                                destField.ForgetVisitedViews();
+
+                                forceRespawnGlobals = true;
+
+                                if (currField.ID != destField.ID)
+                                    updateMusic = true;
+                            }
+                            Global.World.FieldTransitionImmediate(currView, destView, updateEntities, updateMusic, forceRespawnGlobals);
+
                             Global.Protag.SetPositionToTile(new Point(_relViewX, _relViewY));
                             Global.AudioManager.PlaySFX(SFX.WARP_TRIGGERED);
                         }

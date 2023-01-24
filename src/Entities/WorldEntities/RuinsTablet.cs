@@ -115,7 +115,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         {
                             Global.GameFlags.InGameFlags[_flagsToSet] = true;
 
-                            if (_burnAfterReading)
+                            if (_burnAfterReading || !HelperFunctions.EntityMaySpawn(StartFlags))
                                 State = Global.WEStates.UNSPAWNED;
                         }
                     }

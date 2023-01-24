@@ -298,5 +298,10 @@ namespace OpenLaMulana
             _destX[(int)direction + 4] = 0;
             _destY[(int)direction + 4] = 0;
         }
+
+        internal List<IGameEntity> GetEntityList()
+        {
+            return _myEntities;
+        }
     }
 }

@@ -45,12 +45,14 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         private TextManager _textManager;
         private List<IGameEntity> _fieldEntities = new List<IGameEntity>();
         private List<IGameEntity> _roomEntities = new List<IGameEntity>();
+        private List<IGameEntity> _fieldRememberedSameRoomEntities = new List<IGameEntity>();
         private World _world;
         View[] _bossViews = null;
         private int _bossID = -1;
         private bool _queueDeleteAllFieldAndRoomEntities = false;
         private bool _queueClearVisitedViews = false;
         private List<View> _queuedViewsToDelete = new List<View>();
+        private View _sameRoom = null;
 
         public Field(int mapIndex, int mapData, int eventGraphics, int musicNumber, EntityManager s_entityManager, TextManager textManager, World world, int mapGraphics = 65535, int id = 0, int worldID = 0)
         {
@@ -380,9 +382,26 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
             foreach (View view in _queuedViewsToDelete)
             {
+                if (view == _sameRoom)
+                {
+                    foreach (IGameEntity entity in _fieldRememberedSameRoomEntities)
+                    {
+                        _roomEntities.Remove(entity);
+                        Global.EntityManager.RemoveEntity(entity);
+                    }
+                    _fieldRememberedSameRoomEntities.Clear();
+                    continue;
+                }
+
                 view.DeleteEntities();
             }
             _queuedViewsToDelete.Clear();
+            if (_sameRoom!= null)
+            {
+                _queuedViewsToDelete.Add(_sameRoom);
+                _sameRoom = null;
+            }
+
             _queueDeleteAllFieldAndRoomEntities = false;
         }
 
@@ -395,13 +414,19 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         internal void SpawnEntities(View destView, Field destField, View prevView, Field prevField, Vector2 offsetVector, bool forceRespawnGlobals = false)
         {
             // Abort if the destination View is not allowed to spawn entities (true on initialization)
-            if (!destView.CanSpawnEntities)
+            View sameRoom = null;
+            if ((prevView.X == destView.X) && (prevView.Y == destView.Y) && (prevField == destField))
+            {
+                // Make an exception if the screen we are transitioning is the same exact screen as the previous:
+                // This is used in the Chamber of Birth for the Map Chest
+                sameRoom = prevView;
+            } else if (!destView.CanSpawnEntities)
                 return;
 
             // Check 
             foreach (View v in prevField._visitedViews)
             {
-                if (v.RoomNumber != destView.RoomNumber)
+                if (v.RoomNumber != destView.RoomNumber || v == sameRoom)
                 {
                     // We are entering a new region, so we should forget about all the previous rooms we've visited
                     v.GetParentField().QueueClearVisitedViews();
@@ -639,9 +664,22 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             }
         }
 
-        internal void QueueClearVisitedViews()
+        internal void QueueClearVisitedViews(bool isSameRoom = false, View sameRoom = null)
         {
             _queueClearVisitedViews = true;
+
+            // Coding this in for the Chamber of Birth Map Chest
+            if (isSameRoom)
+            {
+                _sameRoom = sameRoom;
+
+                List<IGameEntity> sameRoomEntityList = _sameRoom.GetEntityList();
+                foreach (IGameEntity entity in sameRoomEntityList)
+                {
+                    _fieldRememberedSameRoomEntities.Add(entity);
+                }
+                sameRoomEntityList.Clear();
+            }
 
             foreach (View view in _visitedViews)
             {
@@ -661,10 +699,25 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
             foreach (View v in _queuedViewsToDelete)
             {
+                if (v == _sameRoom)
+                {
+                    foreach(IGameEntity entity in _fieldRememberedSameRoomEntities)
+                    {
+                        _roomEntities.Remove(entity);
+                        Global.EntityManager.RemoveEntity(entity);
+                    }
+                    _fieldRememberedSameRoomEntities.Clear();
+                    continue;
+                }
                 v.DeleteEntities();
             }
             _queuedViewsToDelete.Clear();
 
+            if (_sameRoom != null)
+            {
+                _queuedViewsToDelete.Add(_sameRoom);
+                _sameRoom = null;
+            }
             _queueClearVisitedViews = false;
         }
 

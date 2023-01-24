@@ -884,11 +884,17 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 //nextField.ClearVisitedViews();
             }
             else
-            {// Otherwise, if moving to a new View within the same Field, delete all of the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
+            {
+                // Otherwise, if moving to a new View within the same Field, delete all of the older spawns, but only if they do not share the same RoomNumber/Region as the last View we were in
+                // We will also make an exception if the screen we are transitioning is the same exact screen as the previous: This is used in the Chamber of Birth for the Map Chest
                 if (thisView.RoomNumber != nextView.RoomNumber)
                 {
                     thisField.QueueClearVisitedViews();
                     thisField.UnlockAllViewSpawning();
+                }
+                else if ((thisView.X == nextView.X) && (thisView.Y == nextView.Y))
+                {
+                    thisField.QueueClearVisitedViews(true, nextView);
                 }
             }
 

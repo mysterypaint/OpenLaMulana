@@ -6,6 +6,7 @@ using OpenLaMulana.Entities;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -528,17 +529,16 @@ namespace OpenLaMulana
                     int destRoomX = viewDest[(int)VIEW_DEST.X];
                     int destRoomY = viewDest[(int)VIEW_DEST.Y];*/
 
-                    DrawHud(Global.SpriteBatch, gameTime);
-                    /*
-                     * 
-                    List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
-                    List<IGameEntity> roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
-                    int entityCount = Global.EntityManager.GetCount();
-                    Global.TextManager.DrawText(0, 0, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
-*/
 
-                    //Global.TextManager.DrawOwnString();
-
+                    if (Global.DevModeEnabled)
+                    {
+                        List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+                        List<IGameEntity> roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
+                        int entityCount = Global.EntityManager.GetCount();
+                        Global.TextManager.DrawText(Vector2.Zero, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
+                    } else
+                        DrawHud(Global.SpriteBatch, gameTime);
+                    
                     /*
                     
 
