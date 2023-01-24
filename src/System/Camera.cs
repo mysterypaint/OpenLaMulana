@@ -136,6 +136,7 @@ namespace OpenLaMulana.System
                         if (Position.X + _moveSpeedX > _moveToX)
                         {
                             posX += _moveSpeedX;
+                            MoveAllGlobalEntities(new Vector2(-_moveSpeedX, 0));
 
                             newPlayerX = HelperFunctions.Lerp(SCREEN_LEFT_EDGE, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)
                             );// Lerp(newPX, targetX, Math.Abs(Position.X) / Math.Abs(_moveToX));
@@ -159,6 +160,7 @@ namespace OpenLaMulana.System
                         if (Position.X + _moveSpeedX < _moveToX)
                         {
                             posX += _moveSpeedX;
+                            MoveAllGlobalEntities(new Vector2(-_moveSpeedX, 0));
                             _protag.SetPosition(new Point((int)HelperFunctions.Lerp(ROOM_PX_WIDTH + SCREEN_RIGHT_EDGE, ROOM_PX_WIDTH + targetX, Math.Abs(Position.X) / Math.Abs(_moveToX)), _protag.BBox.Y));
                         }
                         else
@@ -187,7 +189,7 @@ namespace OpenLaMulana.System
                         if (Position.Y + _moveSpeedY > _moveToY)
                         {
                             posY += _moveSpeedY;
-
+                            MoveAllGlobalEntities(new Vector2(0, -_moveSpeedY));
                             newPlayerY = HelperFunctions.Lerp(World.HUD_HEIGHT + Protag.SPRITE_HEIGHT, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY)
                             );// Lerp(newPX, targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY));
                             _protag.SetPosition(new Point(_protag.BBox.X, (int)Math.Round(newPlayerY)));
@@ -210,6 +212,7 @@ namespace OpenLaMulana.System
                         if (Position.Y + _moveSpeedY < _moveToY - World.HUD_HEIGHT)
                         {
                             posY += _moveSpeedY;
+                            MoveAllGlobalEntities(new Vector2(0, -_moveSpeedY));
                             _protag.SetPosition(new Point(_protag.BBox.X,
                                 (int)HelperFunctions.Lerp(ROOM_PX_HEIGHT, ROOM_PX_HEIGHT + targetY, Math.Abs(Position.Y) / Math.Abs(_moveToY))
                                 ));
@@ -232,25 +235,36 @@ namespace OpenLaMulana.System
             }
         }
 
+        private void MoveAllGlobalEntities(Vector2 offsetVector)
+        {
+            Field currField = Global.World.GetField(Global.World.CurrField);
+            List<IGameEntity> allFieldEntities = new List<IGameEntity>();
+            allFieldEntities.AddRange(currField.GetFieldEntities());
+
+            foreach (IGameEntity worldEntity in allFieldEntities)
+            {
+                if (worldEntity is IGlobalWorldEntity)
+                {
+                    IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
+                    gE.Position += offsetVector;
+                }
+            }
+        }
+
         private void MoveAllRoomEntities(Vector2 offsetVector)
         {
             Field currField = Global.World.GetField(Global.World.CurrField);
             List<IGameEntity> allFieldEntities = new List<IGameEntity>();
             allFieldEntities.AddRange(currField.GetRoomEntities());
-            allFieldEntities.AddRange(currField.GetFieldEntities());
 
             foreach (IGameEntity worldEntity in allFieldEntities)
             {
-                if (worldEntity is IRoomWorldEntity) {
+                if (worldEntity is IRoomWorldEntity)
+                {
                     IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
 
                     if (!rE.ManuallySpawned)
                         rE.Position += offsetVector;
-                }
-                if (worldEntity is IGlobalWorldEntity)
-                {
-                    IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
-                    //gE.RelativeViewPos += offsetVector;
                 }
             }
         }

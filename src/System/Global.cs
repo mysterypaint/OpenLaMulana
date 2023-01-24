@@ -12,6 +12,7 @@ namespace OpenLaMulana
     public static class Global
     {
         public static bool DevModeEnabled { get; internal set; } = true;
+        public static bool DevModeAllEntitiesGeneric { get; internal set; } = true;
 
         public enum DrawOrder : int
         {
@@ -493,8 +494,8 @@ namespace OpenLaMulana
             SOFTWARE_SELECTION,
             EMULATOR,
             CONFIG_SCREEN,
+            MAX,
             SCANNING,
-            MAX
         }
         public enum HardCodedText : int
         {

@@ -16,7 +16,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public List<ObjectStartFlag> StartFlags = null;
         internal Sprite _sprIndex;
         public Vector2 Position;
-        public Vector2 RelativeViewTilePos { get; }
+        public Point RelativeView { get; }
         public bool Visible { get; set; } = true;
         public bool ManuallySpawned = false;
 
@@ -24,7 +24,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public Global.WEStates State { get; set; } = Global.WEStates.UNSPAWNED;
         
         internal View _parentView = null;
-        internal Point viewCoords = new Point(-1, -1);
+        public Point ViewCoords = new Point(-1, -1);
         internal float _imgScaleX = 1f, _imgScaleY = 1f;
 
         public IGlobalWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags)
@@ -40,9 +40,13 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
                     State = Global.WEStates.IDLE;
             }
 
-            RelativeViewTilePos = new Vector2(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
-            viewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);
-            Position = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
+            RelativeView = new Point(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
+            ViewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);
+            Point spawnCoords = ViewCoords - new Point(Global.World.CurrViewX, Global.World.CurrViewY);
+            spawnCoords.X *= World.ROOM_WIDTH;
+            spawnCoords.Y *= World.ROOM_HEIGHT;
+            spawnCoords += new Point(RelativeView.X, RelativeView.Y);
+            Position = new Vector2(spawnCoords.X * World.CHIP_SIZE, spawnCoords.Y * World.CHIP_SIZE);
         }
 
         public abstract void Update(GameTime gameTime);

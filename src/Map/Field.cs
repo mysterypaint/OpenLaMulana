@@ -517,6 +517,22 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 return newObj;
             }*/
 
+            if (Global.DevModeEnabled)
+            {
+                if (Global.DevModeAllEntitiesGeneric)
+                {
+
+                    if (spawnIsGlobal)
+                        newObj = new GenericGlobalWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    else
+                        newObj = new GenericRoomWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+
+                    if (newObj != null)
+                        _s_entityManager.AddEntity(newObj);
+
+                    return newObj;
+                }
+            }
 
             switch ((EntityIDs)eventNumber)
             {
