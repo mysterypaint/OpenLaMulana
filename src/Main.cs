@@ -25,7 +25,7 @@ namespace OpenLaMulana
         public const int HUD_HEIGHT = 16;
         public float ZoomFactor => WindowDisplayMode == Global.DisplayMode.Default ? 1 : _displayZoomFactor;
 
-        public static float FPS { get; internal set; } = 30f;
+        public static float FPS { get; internal set; } = 60f;
 
         private const string SAVE_FILE_NAME = "Save.dat";
         private const string musPath = "Content/music/";
@@ -33,6 +33,7 @@ namespace OpenLaMulana
         private int _displayZoomFactor = 3;
         private int _displayZoomMax = 10;
         private int _pauseToggleTimer = 0;
+        private int _pauseToggleTimerReset = 60;
         private int _shaderMode = 0;
         private int _drawnCurrHp = 0;
         private int _drawnCurrExp = 0;
@@ -60,7 +61,7 @@ namespace OpenLaMulana
             Global.Main = this;
             Content.RootDirectory = "Content";
 
-            // 30fps game
+            // 60fps game
             IsFixedTimeStep = true;//false;
             TargetElapsedTime = TimeSpan.FromSeconds(1d / FPS); //60);
 
@@ -221,13 +222,41 @@ namespace OpenLaMulana
             Global.AudioManager.Update(gameTime);
             Global.AnimationTimer.Update(gameTime);
             base.Update(gameTime);
-
             bool isAltKeyDown = (InputManager.DirectKeyboardCheckDown(Keys.LeftAlt) || InputManager.DirectKeyboardCheckDown(Keys.RightAlt));
-            if (isAltKeyDown && InputManager.DirectKeyboardCheckPressed(Keys.Enter))
-            {
-                Global.GraphicsDeviceManager.ToggleFullScreen();
-                Global.GraphicsDeviceManager.ApplyChanges();
-            }
+
+                if (isAltKeyDown && InputManager.DirectKeyboardCheckPressed(Keys.Enter))
+                {
+                    Global.GraphicsDeviceManager.ToggleFullScreen();
+                    Global.GraphicsDeviceManager.ApplyChanges();
+                }
+
+                if (Global.DevModeEnabled)
+                {
+                    MouseState mouseState = Mouse.GetState();
+
+                    if (mouseState.RightButton == ButtonState.Pressed)
+                    {
+                        int centerX = _protag.BBox.Width / 2;
+                        _protag.BBox.X = (int)Math.Floor((float)mouseState.X / _displayZoomFactor) - centerX;
+                        _protag.BBox.Y = (int)Math.Floor((float)mouseState.Y / _displayZoomFactor) - World.HUD_HEIGHT - _protag.BBox.Height;
+                    }
+                    if (InputManager.DirectKeyboardCheckPressed(Keys.F6))
+                    {
+                        //ResetSaveState();
+                        _shaderMode++;
+                        if (_shaderMode >= (int)Global.Shaders.MAX)
+                            _shaderMode = 0;
+                    }
+                }
+
+                if (InputManager.DirectKeyboardCheckPressed(Keys.F7) && !Global.GraphicsDeviceManager.IsFullScreen)
+                {
+                    CalcDisplayZoomMax();
+                    _displayZoomFactor += 1;
+                    if (_displayZoomFactor > _displayZoomMax)
+                        _displayZoomFactor = 1;
+                    ToggleDisplayMode();
+                }
 
             switch (State)
             {
@@ -316,35 +345,6 @@ namespace OpenLaMulana
             {
                 if (_pauseToggleTimer > 0)
                     _pauseToggleTimer--;
-            }
-
-
-            if (Global.DevModeEnabled)
-            {
-                MouseState mouseState = Mouse.GetState();
-
-                if (mouseState.RightButton == ButtonState.Pressed)
-                {
-                    int centerX = _protag.BBox.Width / 2;
-                    _protag.BBox.X = (int)Math.Floor((float)mouseState.X / _displayZoomFactor) - centerX;
-                    _protag.BBox.Y = (int)Math.Floor((float)mouseState.Y / _displayZoomFactor) - World.HUD_HEIGHT - _protag.BBox.Height;
-                }
-                if (InputManager.DirectKeyboardCheckPressed(Keys.F6))
-                {
-                    //ResetSaveState();
-                    _shaderMode++;
-                    if (_shaderMode >= (int)Global.Shaders.MAX)
-                        _shaderMode = 0;
-                }
-            }
-
-            if (InputManager.DirectKeyboardCheckPressed(Keys.F7) && !Global.GraphicsDeviceManager.IsFullScreen)
-            {
-                CalcDisplayZoomMax();
-                _displayZoomFactor += 1;
-                if (_displayZoomFactor > _displayZoomMax)
-                    _displayZoomFactor = 1;
-                ToggleDisplayMode();
             }
         }
 
@@ -449,14 +449,14 @@ namespace OpenLaMulana
 
             if (State == Global.GameState.PLAYING)
             {
-                _pauseToggleTimer = 30;
+                _pauseToggleTimer = _pauseToggleTimerReset;
                 State = Global.GameState.PAUSED;
                 Global.AudioManager.PauseMusic();
             }
             else if (State == Global.GameState.PAUSED)
             {
                 State = Global.GameState.PLAYING;
-                _pauseToggleTimer = 30;
+                _pauseToggleTimer = _pauseToggleTimerReset;
                 Global.AudioManager.ResumeMusic();
             }
         }
@@ -532,16 +532,32 @@ namespace OpenLaMulana
 
                     if (Global.DevModeEnabled)
                     {
-                        List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
-                        List<IGameEntity> viewEntities = Global.World.GetField(Global.World.CurrField).GetViewEntities();
-
-                        int staticEntityCount = Global.EntityManager.GetStaticEntityCount();
-                        int entityCount = Global.EntityManager.GetCount();
-
                         Vector2 _camPos = Global.Camera.Position;
                         Rectangle rect = new Rectangle((int)_camPos.X, (int)_camPos.Y, World.ROOM_WIDTH * World.CHIP_SIZE, World.HUD_HEIGHT);
                         HelperFunctions.DrawRectangle(Global.SpriteBatch, rect, Color.Black);
-                        Global.TextManager.DrawText(_camPos, String.Format("View Entities: {0}   Static: {1}\\10Field Entities:{2}  Total: {3}", viewEntities.Count, staticEntityCount, fieldEntities.Count, entityCount));
+
+                        switch (Global.DebugStatsState)
+                        {
+                            case Global.DebugStats.GAME_HUD:
+                                DrawHud(Global.SpriteBatch, gameTime);
+                                break;
+                            case Global.DebugStats.ENTITY_COUNT:
+                                List<IGameEntity> fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();
+                                List<IGameEntity> viewEntities = Global.World.GetField(Global.World.CurrField).GetViewEntities();
+
+                                int staticEntityCount = Global.EntityManager.GetStaticEntityCount();
+                                int entityCount = Global.EntityManager.GetCount();
+
+                                Global.TextManager.DrawText(_camPos, String.Format("View Entities: {0}   Static: {1}\\10Field Entities:{2}  Total: {3}", viewEntities.Count, staticEntityCount, fieldEntities.Count, entityCount));
+                                break;
+                            case Global.DebugStats.ROOM_COORDS_INFO:
+                                ActiveView[] activeViews = Global.World.GetActiveViews();
+                                View currView = activeViews[(int)World.AViews.CURR].GetView();
+                                View destView = activeViews[(int)World.AViews.DEST].GetView();
+                                Global.TextManager.DrawText(_camPos, String.Format("CurrView: [{0},{1}]\\10DestView: [{2},{3}]", currView.X, currView.Y, destView.X, destView.Y));
+
+                                break;
+                        }
                     } else
                         DrawHud(Global.SpriteBatch, gameTime);
                     

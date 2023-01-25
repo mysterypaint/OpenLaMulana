@@ -10,6 +10,7 @@ namespace OpenLaMulana.Entities
         public Effect ActiveShader { get; set; } = null;
         private int _currentScreen;
         private TextManager _textManager;
+        public bool LockTo30FPS { get; set; } = false;
 
         public GameMenu(Global.ScreenOverlayState screen, TextManager textManager)
         {

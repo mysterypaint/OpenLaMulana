@@ -7,7 +7,7 @@ namespace OpenLaMulana
 {
     public class AnimationTimer
     {
-        private float _animationFrameTime = 1f / Main.FPS;
+        private float _animationFrameTime = 1f / (Main.FPS / 2);
         private float _timeUntilNextFrame = 1.0f;
         private bool _canStepFrame = false;
 
@@ -21,9 +21,10 @@ namespace OpenLaMulana
 
         public void Update(GameTime gameTime)
         {
+            Global.DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _canStepFrame = false;
-            var gameFrameTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _timeUntilNextFrame -= gameFrameTime;
+
+            _timeUntilNextFrame -= Global.DeltaTime;
 
             if (_timeUntilNextFrame <= 0)
             {
@@ -34,9 +35,9 @@ namespace OpenLaMulana
 
         internal bool OneFrameElapsed(bool disregardPauseState = false)
         {
-            if (Global.Main.State == Global.GameState.PAUSED && !disregardPauseState)
-                return false;
-            return _canStepFrame;
+            if (!disregardPauseState)
+                return _canStepFrame;
+            return true;
         }
     }
 }

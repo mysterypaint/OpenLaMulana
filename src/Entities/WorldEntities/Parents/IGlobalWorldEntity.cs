@@ -19,6 +19,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public Point RelativeView { get; }
         public bool Visible { get; set; } = true;
         public bool ManuallySpawned = false;
+        public bool LockTo30FPS { get; set; } = true;
 
         List<IGameEntity> _myEntities = new List<IGameEntity>();
         public Global.WEStates State { get; set; } = Global.WEStates.UNSPAWNED;
@@ -27,6 +28,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public Point ViewCoords = new Point(-1, -1);
         public Point TrueGlobalTilePosition { get; }
         public Point TrueSpawnCoord { get; }
+        public Vector2 OriginPosition { get; set; } = Vector2.Zero;
 
         internal float _imgScaleX = 1f, _imgScaleY = 1f;
 
@@ -62,7 +64,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + RelativeView;
             offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
 
-            Position = offsetCoords;
+            Position = Vector2.Zero;
+            OriginPosition = offsetCoords;
         }
 
         public abstract void Update(GameTime gameTime);

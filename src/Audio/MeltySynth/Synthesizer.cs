@@ -144,7 +144,7 @@ namespace MeltySynth
 
             blockRead = blockSize;
 
-            masterVolume = 0.5F;
+            masterVolume = 1.0F;
 
             if (enableReverbAndChorus)
             {

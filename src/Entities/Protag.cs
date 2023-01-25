@@ -36,6 +36,7 @@ namespace OpenLaMulana.Entities
 
         public int Depth { get; set; } = (int)Global.DrawOrder.Protag;
         public Effect ActiveShader { get; set; } = null;
+        public bool LockTo30FPS { get; set; } = true;
 
         private short _moveX = 0;
         private short _moveY = 0;
@@ -279,9 +280,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         public void Update(GameTime gameTime)
         {
             if (Global.Camera.GetState() != Camera.CamStates.NONE)
-                return;
-            
-            if (!Global.AnimationTimer.OneFrameElapsed())
                 return;
 
             View currRoom = Global.World.GetActiveViews()[(int)AViews.DEST].GetView();// (Global.World.CurrField).GetMapData()[Global.World.CurrViewX, Global.World.CurrViewY]; // TODO: Update this variable only whenever a map change occurs

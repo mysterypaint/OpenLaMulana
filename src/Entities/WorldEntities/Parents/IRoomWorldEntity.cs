@@ -20,9 +20,10 @@ namespace OpenLaMulana
         public bool Visible { get; set; } = true;
         public short BBoxOriginX { get; set; } = 0;
         public short BBoxOriginY { get; set; } = 0;
+        public bool LockTo30FPS { get; set; } = true;
 
         internal View _parentView = null;
-        internal Point viewCoords = new Point(-1, -1);
+        public Point ViewCoords = new Point(-1, -1);
 
         public Point TrueGlobalTilePosition { get; private set; }
         public Vector2 TrueSpawnCoord { get; private set; }
@@ -32,7 +33,10 @@ namespace OpenLaMulana
         public bool ManuallySpawned = false;
         public List<ObjectStartFlag> StartFlags = null;
         List<IGameEntity> _myEntities = new List<IGameEntity>();
+        internal Vector2 OriginPosition = Vector2.Zero;
+
         public Global.WEStates State { get; set; } = Global.WEStates.UNSPAWNED;
+        public Point RoomsTravelled { get; internal set; } = Point.Zero;
 
         public IRoomWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags)
         {
@@ -41,32 +45,34 @@ namespace OpenLaMulana
             _world = Global.World;
             StartFlags = startFlags;
 
+            if (destView == null)
+                destView = Global.World.GetCurrentView();
+            _parentView = destView;
+
             if (!spawnIsGlobal)
             {
                 RelativeViewTilePos = new Vector2(x, y);
                 Position = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
+                ViewCoords = new Point(_parentView.X, _parentView.Y);
             }
             else
             {
                 RelativeViewTilePos = new Vector2(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
-                viewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);
-                TrueGlobalTilePosition = new Point(viewCoords.X * World.ROOM_WIDTH, viewCoords.Y * World.ROOM_HEIGHT) + RelativeViewTilePos.ToPoint();
+                ViewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);
+                TrueGlobalTilePosition = new Point(x, y);
                 TrueSpawnCoord = new Vector2(TrueGlobalTilePosition.X * World.CHIP_SIZE, TrueGlobalTilePosition.Y * World.CHIP_SIZE);
                 IsGlobal = true;
 
                 Point tileOffset;
                 Vector2 offsetCoords;
-                Point roomOffset = new Point(viewCoords.X - Global.World.CurrViewX, viewCoords.Y - Global.World.CurrViewY);
+                Point roomOffset = new Point(ViewCoords.X - destView.X, ViewCoords.Y - destView.Y);
                 tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + RelativeViewTilePos.ToPoint();
                 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
-
-                Position = offsetCoords;
+                Position = Vector2.Zero;
+                OriginPosition = offsetCoords;
             }
 
-            if (destView == null)
-                destView = Global.World.GetCurrentView();
-            _parentView = destView;
-            viewCoords = new Point(_parentView.X, _parentView.Y);
+            
 
             if (startFlags != null)
             {

@@ -40,6 +40,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         }
 
+        public bool LockTo30FPS { get; set; } = false;
         public int Depth { get; set; } = (int)Global.DrawOrder.Tileset;
         public Effect ActiveShader { get; set; } = null;
         public const int CHIP_SIZE = 8;
@@ -688,9 +689,10 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
                             if (animeSpeed > 0)
                             {
-                                if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
+                                // Lock the animation to 30fps
+                                if (Global.AnimationTimer.OneFrameElapsed())
                                 {
-                                    thisChip.CurrFrame += dt;
+                                    thisChip.CurrFrame += 0.5f;
 
                                     // Play the animation once, then stop and turn off the shader
                                     if (thisChip.CurrFrame >= maxFrames)
@@ -896,6 +898,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 {
                     thisField.QueueClearVisitedViews(true, nextView);
                 }
+
+                thisField.MoveAllGlobalEntities(thisView, nextView, CurrViewX, CurrViewY, movingDirection);
             }
 
             // Old entities have been removed (if applicable). Now, our current (and next) Field+View are the destination Field+View

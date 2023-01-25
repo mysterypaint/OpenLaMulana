@@ -32,6 +32,7 @@ namespace OpenLaMulana.System
         */
 
 
+        public bool LockTo30FPS { get; set; } = true;
         public int Depth { get; set; } = (int)Global.DrawOrder.Text;
         public Effect ActiveShader { get; set; } = null;
 

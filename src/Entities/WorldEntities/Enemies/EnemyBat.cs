@@ -25,6 +25,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
         private View _currView = null;
         private int _hsp = 0;
         private int _vsp = 0;
+        private SubWeaponItemDrops _itemDrop = SubWeaponItemDrops.NONE;
+        private int _flagToSetWhenDefeated = -1;
 
 
         public EnemyBat(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
@@ -41,6 +43,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
 
             _sprIndex = new Sprite(_tex, (int)gfxOffset.X, (int)gfxOffset.Y, 16, 16);
             HP = 1;
+
+            _itemDrop = (Global.SubWeaponItemDrops)op2;
+            _flagToSetWhenDefeated = op3;
 
             _currView = Global.World.GetCurrentView();
 

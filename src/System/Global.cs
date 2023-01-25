@@ -14,6 +14,18 @@ namespace OpenLaMulana
         public static bool DevModeEnabled { get; internal set; } = true;
         public static bool DevModeAllEntitiesGeneric { get; internal set; } = false;
 
+        public enum DebugStats
+        {
+            DISABLED,
+            GAME_HUD,
+            ENTITY_COUNT,
+            ROOM_COORDS_INFO,
+        };
+
+        public static DebugStats DebugStatsState { get; internal set; } = DebugStats.ROOM_COORDS_INFO;
+
+
+
         public enum DrawOrder : int
         {
             Abstract = 0,
@@ -186,12 +198,12 @@ namespace OpenLaMulana
         public enum SpriteDefs : int
         {
             BOSS01,
+            BOSS02,
             BOSS03,
             BOSS04,
             BOSS05,
-            MAX
-        };
-
+            MAX,
+        }
         // Ordered by the asset values in Content/data/
         public enum BossIDs : int
         {
@@ -261,6 +273,20 @@ namespace OpenLaMulana
             ANGEL_SHIELD,
             PISTOL_AMMUNITION,
             MAX
+        };
+
+        public enum SubWeaponItemDrops
+        {
+            NONE = -1,
+            SHURIKEN,
+            THROWING_KNIFE,
+            SPEAR,
+            FLARE,
+            BOMB,
+            BULLET,
+            WEIGHT,
+            GOLD,
+            RANDOM
         };
 
         public enum ObtainableTreasures : int
@@ -557,7 +583,7 @@ namespace OpenLaMulana
             public int CurrExp { get; set; }
             public int ExpMax { get; set; }
             public int TrueHPMax { get; set; }
-        }
+        };
 
         public static InventoryStruct Inventory;
 
@@ -588,6 +614,7 @@ namespace OpenLaMulana
         public static PlatformingPhysics ProtagPhysics { get; internal set; } = PlatformingPhysics.REVAMPED;
         public static bool QoLChanges { get; internal set; } = false;
         public static NineSliceBox NineSliceBox { get; set; } = null;
+        public static float DeltaTime { get; internal set; } = 0.0f;
 
         public static Dictionary<MainWeapons, int> WeaponsDamageTable = new Dictionary<MainWeapons, int>();
         public static Dictionary<SubWeapons, int> SubWeaponsDamageTable = new Dictionary<SubWeapons, int>();

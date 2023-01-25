@@ -1273,6 +1273,9 @@
 #begin spritedefs/boss01.spritedef
 /copy:spritedefs/boss01.spritedef
 
+#begin spritedefs/boss02.spritedef
+/copy:spritedefs/boss02.spritedef
+
 #begin spritedefs/boss03.spritedef
 /copy:spritedefs/boss03.spritedef
 

@@ -64,7 +64,7 @@ namespace OpenLaMulana
             _animationTimer--;
 
             if (_animationTimer < 0) {
-                CurrFrame++;
+                CurrFrame += 0.5f;
                 if (CurrFrame >= _animeFrames.Length)
                     CurrFrame = 0;
 

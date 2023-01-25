@@ -8,6 +8,7 @@ using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using static OpenLaMulana.System.Camera;
 
 namespace OpenLaMulana
 {
@@ -32,6 +33,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         public int MapGraphics;
         public int EventGraphics;
         public int ID = 0;
+        public bool LockTo30FPS { get; set; } = false;
 
         private int _mapData = 0;
         private Dictionary<int, int> _hitList;   // Starting from ChipLine2 counting upward, this array defines the behavior of each tile in progressive order.
@@ -492,8 +494,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             IGameEntity newObj = null;
 
             var eventNumber = newObjData.EventNumber;
-            var x = newObjData.X + (int)Math.Sign(offsetVector.X) * World.ROOM_WIDTH;
-            var y = newObjData.Y + (int)Math.Sign(offsetVector.Y) * World.ROOM_HEIGHT;
+            var x = newObjData.X;
+            var y = newObjData.Y;
             var op1 = newObjData.OP1;
             var op2 = newObjData.OP2;
             var op3 = newObjData.OP3;
@@ -517,11 +519,17 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 return newObj;
             }*/
 
+
+            if (!spawnIsGlobal)
+            {
+                x += (int)Math.Sign(offsetVector.X) * World.ROOM_WIDTH;
+                y += (int)Math.Sign(offsetVector.Y) * World.ROOM_HEIGHT;
+            }
+
             if (Global.DevModeEnabled)
             {
                 if (Global.DevModeAllEntitiesGeneric)
                 {
-
                     if (spawnIsGlobal)
                         newObj = new GenericGlobalWorldEntity(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     else
@@ -844,6 +852,64 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             }
 
             return chip;
+        }
+
+        internal void MoveAllGlobalEntities(View prevView, View destView, int currViewX, int currViewY, World.VIEW_DIR movingDirection)
+        {
+            Vector2 movingVec = Vector2.Zero;
+            switch (movingDirection)
+            {
+                case World.VIEW_DIR.LEFT:
+                    movingVec = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    break;
+                case World.VIEW_DIR.DOWN:
+                    movingVec = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    break;
+                case World.VIEW_DIR.RIGHT:
+                    movingVec = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    break;
+                case World.VIEW_DIR.UP:
+                    movingVec = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    break;
+            }
+
+            foreach (IGameEntity entity in _fieldEntities)
+            {
+                if (entity is IGlobalWorldEntity)
+                {
+                    IGlobalWorldEntity gE = (IGlobalWorldEntity)entity;
+
+                    Point tileOffset;
+                    Vector2 offsetCoords;
+                    Point roomOffset = new Point(gE.ViewCoords.X - Global.World.CurrViewX, gE.ViewCoords.Y - Global.World.CurrViewY);
+                    tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + gE.RelativeView;
+                    offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                    gE.OriginPosition = offsetCoords;
+                } else if (entity is IRoomWorldEntity)
+                {
+                    IRoomWorldEntity rE = (IRoomWorldEntity)entity;
+
+                    Point tileOffset;
+                    Vector2 offsetCoords;
+
+                    if ((destView.X == rE.ViewCoords.X && destView.Y == rE.ViewCoords.Y) && destView.GetParentField() == rE._parentView.GetParentField())
+                    {
+                        // This Global object is about to scroll into view. Move it to its relative screen coordinate + the final location of the camera
+                        Vector2 relTileCoords = new Vector2(rE.RelativeViewTilePos.X * World.CHIP_SIZE, rE.RelativeViewTilePos.Y * World.CHIP_SIZE);
+                        rE.OriginPosition = movingVec + relTileCoords;// + rE.Position;
+                    }
+                    else if ((prevView.X != rE.ViewCoords.X && prevView.Y != rE.ViewCoords.Y) || prevView.GetParentField() != rE._parentView.GetParentField())
+                    {
+                        // Move all the other (non-same-room) Global entities to the general location they would be, in relation to where we are traveling
+                        Point roomOffset = new Point(rE.ViewCoords.X - destView.X, rE.ViewCoords.Y - destView.Y);
+                        tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + rE.RelativeViewTilePos.ToPoint();
+                        offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                        rE.OriginPosition = offsetCoords;// + movingVec;
+                    }
+                }
+            }
         }
     }
 }

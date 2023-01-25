@@ -37,7 +37,12 @@ namespace OpenLaMulana.Entities
                 if (_entitiesToRemove.Contains(entity))
                     continue;
 
-                entity.Update(gameTime);
+                if (entity.LockTo30FPS)
+                {
+                    if (Global.AnimationTimer.OneFrameElapsed())
+                        entity.Update(gameTime);
+                } else
+                    entity.Update(gameTime);
 
             }
 

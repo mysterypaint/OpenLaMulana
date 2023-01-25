@@ -58,7 +58,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
                 case AnkhStates.USABLE:
                     _sparklingParticles.Update(gameTime);
-                    if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY && _parentView.GetParentField().ID == Global.World.CurrField)
+                    if (ViewCoords.X == _world.CurrViewX && ViewCoords.Y == _world.CurrViewY && _parentView.GetParentField().ID == Global.World.CurrField)
                     {
                         if (Global.AudioManager.IsPlaying() != 20)
                             Global.AudioManager.ChangeSongs(20);
@@ -66,7 +66,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         if (Global.GlobalInput.GetPressedKeyState(Global.ControllerKeys.SUB_WEAPON))
                         {
                             _state = AnkhStates.ACTIVATED;
-                            _activationTimer = 35.0f;
+                            _activationTimer = 120;
 
                             if (Global.AudioManager.IsPlaying() >= 0)
                                 Global.AudioManager.StopMusic();
@@ -76,10 +76,8 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case AnkhStates.ACTIVATED:
-                    float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
                     if (_activationTimer > 0)
-                        _activationTimer -= 13 * dt;
+                        _activationTimer--;
                     else
                     {
                         _activationTimer = 0.0f;

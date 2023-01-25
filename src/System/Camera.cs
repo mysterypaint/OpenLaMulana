@@ -27,6 +27,7 @@ namespace OpenLaMulana.System
         private int _moveSpeedY = 0;
         private int _moveToX = 0;
         private int _moveToY = 0;
+        public bool LockTo30FPS { get; set; } = false;
 
         private Protag _protag;
 
@@ -124,6 +125,10 @@ namespace OpenLaMulana.System
                 case (int)CamStates.TRANSITION_CARDINAL:
                     if (Global.Main.State == Global.GameState.PAUSED)
                         break;
+
+                    // The screen transitions specifically should be 30fps
+                    if (Global.AnimationTimer.OneFrameElapsed())
+                        break;
                     float posX = Position.X;
                     _protag.SetHsp(0);
                     float newPlayerX = _protag.BBox.X;
@@ -132,7 +137,6 @@ namespace OpenLaMulana.System
 
                     View destView, currView;
                     int destRoomX, destRoomY, currRoomX, currRoomY;
-                    Vector2 globalOffsetVector;
 
                     if (_moveToX < 0)
                     {
@@ -155,8 +159,7 @@ namespace OpenLaMulana.System
                             currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
                             currRoomX = currView.X;
                             currRoomY = currView.Y;
-                            globalOffsetVector = new Vector2(-(destRoomX) * World.ROOM_WIDTH * World.CHIP_SIZE, -(destRoomY) * World.ROOM_HEIGHT * World.CHIP_SIZE);
-                            MoveAllEntities(new Vector2(ROOM_PX_WIDTH, 0), true, globalOffsetVector);
+                            MoveAllEntities(new Vector2(ROOM_PX_WIDTH, 0), true, destView);
                             
                             _moveSpeedX = 0;
                             _moveToX = 0;
@@ -184,8 +187,7 @@ namespace OpenLaMulana.System
                             currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
                             currRoomX = currView.X;
                             currRoomY = currView.Y;
-                            globalOffsetVector = new Vector2(-(destRoomX) * World.ROOM_WIDTH * World.CHIP_SIZE, -(destRoomY) * World.ROOM_HEIGHT * World.CHIP_SIZE);
-                            MoveAllEntities(new Vector2(-ROOM_PX_WIDTH, 0), true, globalOffsetVector);
+                            MoveAllEntities(new Vector2(-ROOM_PX_WIDTH, 0), true, destView);
                             
                             _moveSpeedX = 0;
                             _moveToX = 0;
@@ -223,8 +225,7 @@ namespace OpenLaMulana.System
                             currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
                             currRoomX = currView.X;
                             currRoomY = currView.Y;
-                            globalOffsetVector = new Vector2(-(destRoomX) * World.ROOM_WIDTH * World.CHIP_SIZE, -(destRoomY) * World.ROOM_HEIGHT * World.CHIP_SIZE);
-                            MoveAllEntities(new Vector2(0, ROOM_PX_HEIGHT), true, globalOffsetVector);
+                            MoveAllEntities(new Vector2(0, ROOM_PX_HEIGHT), true, destView);
                             
                             _moveSpeedY = 0;
                             _moveToY = 0;
@@ -254,8 +255,7 @@ namespace OpenLaMulana.System
                             currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
                             currRoomX = currView.X;
                             currRoomY = currView.Y;
-                            globalOffsetVector = new Vector2(-(destRoomX) * World.ROOM_WIDTH * World.CHIP_SIZE, -(destRoomY) * World.ROOM_HEIGHT * World.CHIP_SIZE);
-                            MoveAllEntities(new Vector2(0, -ROOM_PX_HEIGHT), true, globalOffsetVector);
+                            MoveAllEntities(new Vector2(0, -ROOM_PX_HEIGHT), true, destView);
                             _moveSpeedY = 0;
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
@@ -280,23 +280,25 @@ namespace OpenLaMulana.System
                 if (worldEntity is IGlobalWorldEntity)
                 {
                     IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
-                    gE.Position = gE.TrueSpawnCoord.ToVector2() + globalOffsetVector;
+                    gE.OriginPosition = gE.TrueSpawnCoord.ToVector2() + globalOffsetVector;
                 } else if (worldEntity is IRoomWorldEntity)
                 {
                     IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
                     if (rE.IsGlobal)
-                        rE.Position = rE.TrueSpawnCoord + globalOffsetVector;
+                        rE.OriginPosition = rE.TrueSpawnCoord + globalOffsetVector;
                 }
             }
         }
 
-        private void MoveAllEntities(Vector2 offsetVector, bool includeGlobals = false, Vector2 globalOffsetVector = default)
+        private void MoveAllEntities(Vector2 offsetVector, bool includeGlobals = false, View destView = null)
         {
             Field currField = Global.World.GetField(Global.World.CurrField);
             List<IGameEntity> allFieldEntities = new List<IGameEntity>();
             allFieldEntities.AddRange(currField.GetViewEntities());
             if (includeGlobals)
                 allFieldEntities.AddRange(currField.GetFieldEntities());
+
+            int ts = World.CHIP_SIZE;
 
             foreach (IGameEntity worldEntity in allFieldEntities)
             {
@@ -306,7 +308,27 @@ namespace OpenLaMulana.System
 
                     if (rE.IsGlobal)
                     {
-                        rE.Position = rE.TrueSpawnCoord + globalOffsetVector;
+                        // Calculate the Origin's Position for each Global Platform entity (This should hopefully not need any modification...)
+                        Point roomOffset = new Point(rE.ViewCoords.X - destView.X, rE.ViewCoords.Y - destView.Y);
+
+                        if (roomOffset.X < 0)
+                            roomOffset.X += World.FIELD_WIDTH;
+                        if (roomOffset.Y < 0)
+                            roomOffset.Y += World.FIELD_HEIGHT;
+
+                        Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + rE.RelativeViewTilePos.ToPoint();
+                        Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                        rE.OriginPosition = offsetCoords;
+
+
+
+                        /*
+                         * 
+
+*/
+
+                        //rE.OriginPosition = rE.TrueSpawnCoord + globalOffsetVector;
                     }
                     else if (!rE.ManuallySpawned)
                         rE.Position += offsetVector;
@@ -320,7 +342,25 @@ namespace OpenLaMulana.System
                             IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
 
                             if (!gE.ManuallySpawned)
-                                gE.Position = gE.TrueSpawnCoord.ToVector2() + globalOffsetVector;
+                            {
+                                /*
+                                 * 
+                                Point roomOffset = new Point(gE.ViewCoords.X - destView.X, gE.ViewCoords.Y - destView.Y);
+
+                                Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + gE.RelativeView;
+                                Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                                gE.OriginPosition = offsetCoords;
+                                */
+
+                                Point roomOffset = new Point(gE.ViewCoords.X - destView.X, gE.ViewCoords.Y - destView.Y);
+                                Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + gE.RelativeView;
+                                Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                                gE.OriginPosition = offsetCoords;
+
+                                //gE.OriginPosition = gE.TrueSpawnCoord.ToVector2() + globalOffsetVector;
+                            }
                         }
                     }
                 }

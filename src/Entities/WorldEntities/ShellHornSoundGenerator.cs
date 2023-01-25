@@ -18,7 +18,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         public ShellHornSoundGenerator(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             //_tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
-            _sprIndex = null;// new Sprite(_tex, 288, 128, 16, 8);
+            //_sprIndex = null;// new Sprite(_tex, 288, 128, 16, 8);
 
             _checkingFlags = new int[] { op1, op2, op3, op4 };
 
@@ -27,6 +27,11 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            /*
+            if (Global.DevModeEnabled)
+            {
+                _sprIndex.DrawScaled(spriteBatch, OriginPosition + new Vector2(0, World.HUD_HEIGHT), 0.5f, 0.5f);
+            }*/
         }
 
         public override void Update(GameTime gameTime)

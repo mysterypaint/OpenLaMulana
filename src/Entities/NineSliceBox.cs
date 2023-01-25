@@ -31,6 +31,7 @@ namespace OpenLaMulana.Entities
         int IGameEntity.Depth { get; set; } = (int)Global.DrawOrder.UI;
 
         Effect IGameEntity.ActiveShader => null;
+        public bool LockTo30FPS { get; set; } = true;
 
         Vector2 Position = Vector2.Zero;
         private Sprite _treasureIcon = null;

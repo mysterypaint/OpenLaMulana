@@ -15,6 +15,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         public Vector2 Position;
         internal View _parentView;
         internal Point viewCoords = new Point(-1, -1);
+        public bool LockTo30FPS { get; set; } = true;
 
         public FieldObject(int x, int y, int op1, int op2, int op3, int op4, Texture2D tex, World world, View destView)
         {

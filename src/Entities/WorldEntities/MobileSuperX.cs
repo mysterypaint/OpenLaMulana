@@ -19,6 +19,7 @@ namespace OpenLaMulana
         public int Depth { get; set; } = (int)Global.DrawOrder.Overlay;
 
         Effect IGameEntity.ActiveShader => null;
+        public bool LockTo30FPS { get; set; } = true;      // Locked to 30fps, but we should do it manually: It needs to ignore the pause state
 
         public enum MSXInventoryStates : int
         {
@@ -136,41 +137,12 @@ namespace OpenLaMulana
 
         internal void Update(GameTime gameTime)
         {
+
             // Abort if we're configuring anything in the Config menu
             if (_f5Menu.IsInputting())
             {
                 _f5Menu.Update(gameTime);
                 return;
-            }
-            if (_state != Global.MSXStates.INACTIVE)
-            {
-                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_MOVE_RIGHT])
-                {
-                    Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
-                    _state += 1;
-                    if (_state > Global.MSXStates.MAX - 1)
-                    {
-                        _state = (Global.MSXStates)1;
-                    }
-                    ResetMSXState();
-                }
-                else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_MOVE_LEFT])
-                {
-                    Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
-                    _state -= 1;
-                    if (_state <= Global.MSXStates.INACTIVE)
-                    {
-                        _state = Global.MSXStates.MAX - 1;
-                    }
-                    ResetMSXState();
-                }
-
-                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] && _state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.CONFIG_SCREEN)
-                {
-                    ResetMSXState();
-                    Global.Main.SetState(Global.GameState.PLAYING);
-                    Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
-                }
             }
 
             switch (_state)
@@ -397,8 +369,6 @@ namespace OpenLaMulana
                             break;
                     }
 
-
-
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
@@ -409,16 +379,19 @@ namespace OpenLaMulana
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                        ResetMSXState();
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                        ResetMSXState();
                     }
                     else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                        ResetMSXState();
                     }
                     break;
                 case Global.MSXStates.SOFTWARE_SELECTION:
@@ -513,10 +486,6 @@ namespace OpenLaMulana
                                 }
                             }
 
-
-
-
-
                             if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
                             {
                                 // Equip the software we're hovering over, but only if the other slot does not contain the software that we're trying to equip
@@ -559,7 +528,6 @@ namespace OpenLaMulana
                             }
                             break;
                     }
-
 
                     if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
                     {
@@ -661,9 +629,39 @@ namespace OpenLaMulana
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
-
                     _f5Menu.Update(gameTime);
                     break;
+            }
+
+            if (_state != Global.MSXStates.INACTIVE)
+            {
+                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_MOVE_RIGHT])
+                {
+                    Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                    _state += 1;
+                    if (_state > Global.MSXStates.MAX - 1)
+                    {
+                        _state = (Global.MSXStates)1;
+                    }
+                    ResetMSXState();
+                }
+                else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_MOVE_LEFT])
+                {
+                    Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
+                    _state -= 1;
+                    if (_state <= Global.MSXStates.INACTIVE)
+                    {
+                        _state = Global.MSXStates.MAX - 1;
+                    }
+                    ResetMSXState();
+                }
+
+                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] && _state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.CONFIG_SCREEN)
+                {
+                    ResetMSXState();
+                    Global.Main.SetState(Global.GameState.PLAYING);
+                    Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
+                }
             }
         }
 

@@ -24,7 +24,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         private Global.BossIDs _bossID = Global.BossIDs.MOTHER;
         private int _bossBGM = -1;
         private int _alwaysEight = 8;       // No idea what this does... The 8 seems hardcoded-yet-not-actually-hardcoded...?
-        private float _activationTimer = 0.0f;
+        private int _activationTimer = 0;
         private AnkhParticle _ankhActivatedParticle = null;
 
         public GreatAnkh(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
@@ -62,7 +62,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
                 case AnkhStates.USABLE:
                     _sparklingParticles.Update(gameTime);
-                    if (viewCoords.X == _world.CurrViewX && viewCoords.Y == _world.CurrViewY && _parentView.GetParentField().ID == Global.World.CurrField)
+                    if (ViewCoords.X == _world.CurrViewX && ViewCoords.Y == _world.CurrViewY && _parentView.GetParentField().ID == Global.World.CurrField)
                     {
                         if (Global.AudioManager.IsPlaying() != 20)
                             Global.AudioManager.ChangeSongs(20);
@@ -71,7 +71,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             if (Global.GlobalInput.GetPressedKeyState(Global.ControllerKeys.MAIN_WEAPON))
                             {
                                 _state = AnkhStates.ACTIVATED;
-                                _activationTimer = 35.0f;
+                                _activationTimer = 30;
 
                                 if (Global.AudioManager.IsPlaying() >= 0)
                                     Global.AudioManager.StopMusic();
@@ -82,13 +82,11 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case AnkhStates.ACTIVATED:
-                    float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
                     if (_activationTimer > 0)
-                        _activationTimer -= 13 * dt;
+                        _activationTimer--;
                     else
                     {
-                        _activationTimer = 0.0f;
+                        _activationTimer = 0;
 
                         View[] bossViews = Global.World.GetCurrField().GetBossViews();
                         //FieldTransitionCardinalBoss

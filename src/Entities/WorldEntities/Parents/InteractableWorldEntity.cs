@@ -14,6 +14,10 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public virtual int HitboxHeight { get; set; } = 8;
         public World.ChipTypes CollisionBehavior { get; internal set; } = World.ChipTypes.VOID;
         public View SourceDestView = null;
+        public new bool LockTo30FPS { get; set; } = true;
+        public virtual int Hsp { get; set; } = 0;
+        public virtual int Vsp { get; set; } = 0;
+        public virtual int MoveSpeed { get; set; } = 0;
 
         protected InteractableWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {

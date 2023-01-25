@@ -20,6 +20,7 @@ namespace OpenLaMulana
         private List<MidiFile> songs = new List<MidiFile>();
         private int _currSongID = -1;//17;
         private string[] _bgmFNames = new string[76];
+        public bool LockTo30FPS { get; set; } = false;
 
         public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
@@ -28,7 +29,7 @@ namespace OpenLaMulana
         private float _userBGMVolScale { get; set; } = 1.0f;
         private float _userSFXVolScale { get; set; } = 1.0f;
 
-        private float _internalBGMVolScale = 0.6f;
+        private float _internalBGMVolScale = 0.72f;//0.6f;
         private float _internalSFXVolScale = 1.0f;
 
         private static Dictionary<SFX, SoundEffect> _sfxBank = new Dictionary<SFX, SoundEffect>();
@@ -42,7 +43,7 @@ namespace OpenLaMulana
 
         public void LoadContent(string musPath, ContentManager content)
         {
-            int sampleRate = 44100;
+            int sampleRate = 44100;// 44100;
 
             SynthesizerSettings settings = new SynthesizerSettings(sampleRate);
             _midiPlayer = new MidiPlayer(musPath + "SanbikiScc.sf2", settings);

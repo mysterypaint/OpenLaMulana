@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 
@@ -10,26 +11,26 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class GuardianEllmac : IGlobalWorldEntity
     {
-        private int spritesMax = 7;
-        Sprite[] sprites = new Sprite[7];
+        private int spritesMax = 30;
+        Sprite[] sprites = new Sprite[30];
         private int _sprNum = 0;
-        private double timeBeforeDrop = 0.0f;
+        private int _framesBeforeDrop = 0;
         private Global.WEStates _state = Global.WEStates.INIT;
         private View _bossRoom = null;
-        private int speedUpTimer = 30;
+        private int _speedUpTimer = 30;
 
         public GuardianEllmac(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
-            _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS01);
+            _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS02);
             for (var i = 0; i < spritesMax; i++)
             {
-                sprites[i] = Global.SpriteDefManager.GetSprite(Global.SpriteDefs.BOSS01, i);
+                sprites[i] = Global.SpriteDefManager.GetSprite(Global.SpriteDefs.BOSS02, i);
             }
             _sprIndex = sprites[_sprNum];
             Position += new Vector2(200, -3);
-            Visible = false;
+            Visible = true;
 
-            timeBeforeDrop = 0.8f;
+            _framesBeforeDrop = 15;
             _state = Global.WEStates.INIT;
         }
 
@@ -50,13 +51,11 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case Global.WEStates.INIT:
                     if (Global.Camera.GetState() == System.Camera.CamStates.NONE)
                     {
-                        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                        if (timeBeforeDrop > 0.0f)
+                        if (_framesBeforeDrop > 0)
                         {
-                            timeBeforeDrop -= 1.0f * dt;
+                            _framesBeforeDrop--;
                         } else {
-                            timeBeforeDrop = 0.0f;
+                            _framesBeforeDrop = 0;
                             View srcView = Global.World.GetField(3).GetBossViews()[0];//new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, Global.World.GetField(3), 0, 0);
                             View destView = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, null, 0, 0);
                             destView.InitChipData(0, null);
@@ -88,25 +87,23 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case Global.WEStates.SPEEDING_UP:
-                    if (Global.AnimationTimer.OneFrameElapsed())
-                    {
-                        if (speedUpTimer > 0)
-                            speedUpTimer--;
-                    }
+                    if (_speedUpTimer > 0)
+                        _speedUpTimer--;
 
-                    if (speedUpTimer <= 0 || speedUpTimer == 2 || speedUpTimer == 5 || speedUpTimer == 7 || speedUpTimer == 9 || speedUpTimer == 15 || speedUpTimer == 23)
+                    if (_speedUpTimer >= 23)
+                        Position = Vector2.Zero;
+
+                    if (_speedUpTimer <= 0 || _speedUpTimer == 2 || _speedUpTimer == 5 || _speedUpTimer == 7 || _speedUpTimer == 9 || _speedUpTimer == 15 || _speedUpTimer == 23)
                         ShiftScreenLeft();
                     break;
             }
 
-            /*
-            int animeSpeed = 6;
-            if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
+            if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
             {
-                //_sprNum++;
+                _sprNum++;
                 if (_sprNum >= spritesMax)
                     _sprNum = 0;
-            }*/
+            }
             _sprIndex = sprites[_sprNum];
         }
 

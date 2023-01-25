@@ -22,6 +22,7 @@ namespace OpenLaMulana
         private Dictionary<Global.SpriteDefs, List<Sprite>> _globalSprites = new Dictionary<SpriteDefs, List<Sprite>>();
 
         private int _chipSize = OpenLaMulana.Entities.World.CHIP_SIZE;
+        public bool LockTo30FPS { get; set; } = false;
 
         public SpriteDefManager()
         {
@@ -56,6 +57,7 @@ namespace OpenLaMulana
         private void InitSpriteDef()
         {
             string[] allSpriteDefs = { "boss01",
+                "boss02",
                 "boss03",
                 "boss04",
                 "boss05"
@@ -161,6 +163,8 @@ namespace OpenLaMulana
                 default:
                 case Global.SpriteDefs.BOSS01:
                     return Global.TextureManager.GetTexture(Global.Textures.BOSS01);
+                case Global.SpriteDefs.BOSS02:
+                    return Global.TextureManager.GetTexture(Global.Textures.BOSS02);
                 case Global.SpriteDefs.BOSS03:
                     return Global.TextureManager.GetTexture(Global.Textures.BOSS03);
                 case Global.SpriteDefs.BOSS04:
