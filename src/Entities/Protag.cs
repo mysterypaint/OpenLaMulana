@@ -363,10 +363,10 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         }
 
                     }
-
+                    
                     if (TilePlaceMeeting(currRoom, BBox, BBox, BBox.X, BBox.Top + _vsp, ChipTypes.SOLID) != ChipTypes.SOLID && TilePlaceMeeting(currRoom, BBox, BBox, BBox.X, BBox.Y + _vsp, ChipTypes.SOLID) != ChipTypes.SOLID)
                     {
-                        if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
+                        if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP)
                         {
                             State = PlayerState.JUMPING;
                             Global.AudioManager.PlaySFX(SFX.P_JUMP);
@@ -376,7 +376,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                             _hsp = _moveX * _moveSpeed;
                         }
 
-                        if ((_vsp < 0) && !InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP])
+                        if ((_vsp < 0) && !InputManager.ButtonCheckHeld30FPS(Global.ControllerKeys.JUMP)
                         {
                             Math.Max(_vsp, -_jumpSpeed / 2);
                         }
@@ -1016,10 +1016,10 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             BBox.Y = (int)posY;
 
             // Step Y
-            if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
+            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP))
                 Global.AudioManager.PlaySFX(SFX.P_JUMP);
 
-            if (InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP] && dy <= 0 && _isGrounded)
+            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP) && dy <= 0 && _isGrounded)
             {
                 State = PlayerState.JUMPING;
             }

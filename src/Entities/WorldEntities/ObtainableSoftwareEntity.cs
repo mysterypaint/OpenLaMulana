@@ -66,7 +66,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case Global.WEStates.IDLE:
                     if (CollidesWithPlayer())
                     {
-                        if (InputManager.PressedKeys[(int)Global.ControllerKeys.SUB_WEAPON] && Global.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER)
+                        if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.SUB_WEAPON) && Global.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER)
                         {
                             HelperFunctions.UpdateInventory(Global.ItemTypes.SOFTWARE, _itemID, true, SFX.SOFTWARE_TAKEN, _softwareSprite);
                             if (_flagToSet >= 0)

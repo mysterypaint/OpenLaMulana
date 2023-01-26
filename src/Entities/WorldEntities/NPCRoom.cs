@@ -367,7 +367,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         case NPCStates.INACTIVE:
                             if (CollidesWithPlayer())
                             {
-                                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
+                                if (InputManager.ButtonCheckPressed30FPS(ControllerKeys.DOWN))
                                 {
                                     if (_myBGM >= 0)
                                         Global.AudioManager.ChangeSongs(_myBGM);
@@ -384,12 +384,12 @@ namespace OpenLaMulana.Entities.WorldEntities
                             if (_shopCursorValue < 0)
                                 _shopCursorValue = 2;
 
-                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.MENU_CONFIRM))
                             {
                                 _currText = _dialogueStr[(int)ShopDialogue.PRODUCT_1_HOVER + _shopCursorValue];
                             }
 
-                            if (InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL])
+                            if (InputManager.ButtonCheckPressed30FPS(ControllerKeys.MENU_CANCEL))
                             {
                                 Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
                                 State = NPCStates.INACTIVE;
@@ -404,7 +404,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         case NPCStates.INACTIVE:
                             if (CollidesWithPlayer())
                             {
-                                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
+                                if (InputManager.ButtonCheckPressed30FPS(ControllerKeys.DOWN))
                                 {
                                     if (_myBGM >= 0)
                                         Global.AudioManager.ChangeSongs(_myBGM);
@@ -414,7 +414,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             }
                             break;
                         case NPCStates.ACTIVE:
-                            if (InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL])
+                            if (InputManager.ButtonCheckPressed30FPS(ControllerKeys.MENU_CANCEL))
                             {
                                 Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
                                 State = NPCStates.INACTIVE;
@@ -429,7 +429,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         case NPCStates.INACTIVE:
                             if (CollidesWithPlayer())
                             {
-                                if (InputManager.PressedKeys[(int)ControllerKeys.DOWN])
+                                if (InputManager.ButtonCheckPressed30FPS(ControllerKeys.DOWN))
                                 {
                                     if (_myBGM >= 0)
                                         Global.AudioManager.ChangeSongs(_myBGM);
@@ -439,7 +439,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             }
                             break;
                         case NPCStates.ACTIVE:
-                            if (InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL])
+                            if (InputManager.ButtonCheckPressed30FPS(ControllerKeys.MENU_CANCEL))
                             {
                                 Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
                                 State = NPCStates.INACTIVE;

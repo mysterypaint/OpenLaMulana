@@ -98,7 +98,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
             }
 
-            if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP])
+            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP))
             {
                 _sprNum++;
                 if (_sprNum >= spritesMax)

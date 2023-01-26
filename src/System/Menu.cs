@@ -625,7 +625,7 @@ namespace OpenLaMulana.System
                 }
             }
 
-            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM] || inputModified)
+            if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM) || inputModified)
             {
                 switch (_currPage.MenuOptions[_currOptionPosition].ElementType)
                 {
@@ -669,7 +669,7 @@ namespace OpenLaMulana.System
                 }
             }
 
-            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] && ! _inputting && !inputModified)
+            if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CANCEL) && ! _inputting && !inputModified)
             {
                 if (_currPage == _menuPages[(int)OptionsMenuPages.FRONT_PAGE])
                 {

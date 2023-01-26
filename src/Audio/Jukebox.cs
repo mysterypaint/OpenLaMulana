@@ -43,9 +43,9 @@ namespace OpenLaMulana.Audio
             }
             var selectionMoveX = InputManager.DirPressedX;
             var selectionMoveY = InputManager.DirPressedY;
-            var keyCancelPressed = InputManager.PressedKeys[(int)ControllerKeys.MENU_CANCEL];
-            var keyConfirmPressed = InputManager.PressedKeys[(int)ControllerKeys.MENU_CONFIRM];
-            var keyMainWeaponPressed = InputManager.PressedKeys[(int)ControllerKeys.MAIN_WEAPON];
+            var keyCancelPressed = InputManager.ButtonCheckPressed60FPS(ControllerKeys.MENU_CANCEL);
+            var keyConfirmPressed = InputManager.ButtonCheckPressed60FPS(ControllerKeys.MENU_CONFIRM);
+            var keyMainWeaponPressed = InputManager.ButtonCheckPressed60FPS(ControllerKeys.MAIN_WEAPON);
 
             selectedSong += -selectionMoveY;
             if (selectedSong < 0)

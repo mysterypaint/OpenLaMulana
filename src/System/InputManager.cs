@@ -223,6 +223,20 @@ namespace OpenLaMulana.System
             }
         }
 
+        public static bool ButtonCheckPressed60FPS(ControllerKeys cK)
+        {
+            return PressedKeys[(int)cK];
+        }
+
+        public static bool ButtonCheckHeld60FPS(ControllerKeys cK)
+        {
+            return HeldKeys[(int)cK];
+        }
+
+        public static bool ButtonCheckReleased60FPS(ControllerKeys cK)
+        {
+            return ReleasedKeys[(int)cK];
+        }
 
         public static bool ButtonCheckPressed30FPS(ControllerKeys cK)
         {

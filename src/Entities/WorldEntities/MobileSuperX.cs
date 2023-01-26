@@ -150,7 +150,7 @@ namespace OpenLaMulana
                 case Global.MSXStates.INACTIVE:
                     break;
                 case Global.MSXStates.SCANNING: // For Handy Scanner
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                    if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
                     {
                         Global.AudioManager.PlaySFX(SFX.HANDY_SCANNER_DONE);
                     }
@@ -230,7 +230,7 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.DirPressedY > 0 || InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
+                            if (InputManager.DirPressedY > 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
                             {
                                 VerifyThatPlayerHasAtLeastOneSubweapon();
 
@@ -311,10 +311,10 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.DirPressedY < 0 || InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
+                            if (InputManager.DirPressedY < 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
                             {
                                 int originalPosition = _subWeaponSelectionPosition;
-                                if (_subWeaponSelectionPosition <= 4 || InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
+                                if (_subWeaponSelectionPosition <= 4 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
                                 {
                                     _inventoryState = MSXInventoryStates.MAIN_WEAPON_SELECTION;
                                     _inventoryCursorVisible = true;
@@ -369,25 +369,25 @@ namespace OpenLaMulana
                             break;
                     }
 
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
+                    if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_INVENTORY))
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                         ResetMSXState();
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR))
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                         ResetMSXState();
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                         ResetMSXState();
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_CONFIG))
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
@@ -428,12 +428,12 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
+                            if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
                             {
                                 Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] = Global.ObtainableSoftware.NONE;
                             }
 
-                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                            if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
                             {
                                 int result = PlayerHasAtLeastOneSoftware();
                                 if (result >= 0)
@@ -486,7 +486,7 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CONFIRM])
+                            if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
                             {
                                 // Equip the software we're hovering over, but only if the other slot does not contain the software that we're trying to equip
                                 int otherSlot = _softwareCartSlotCursorPosition + 1;
@@ -520,7 +520,7 @@ namespace OpenLaMulana
                                         Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
                                 }
                             }
-                            else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MAIN_WEAPON])
+                            else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
                             {
                                 _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
                                 _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
@@ -529,25 +529,25 @@ namespace OpenLaMulana
                             break;
                     }
 
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
+                    if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_INVENTORY))
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                         ResetMSXState();
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR))
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                         ResetMSXState();
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                         ResetMSXState();
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_CONFIG))
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
@@ -579,25 +579,25 @@ namespace OpenLaMulana
                             break;
                     }
 
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
+                    if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_INVENTORY))
                     {
                         ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR))
                     {
                         ResetMSXState();
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
                     {
                         ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_CONFIG))
                     {
                         ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.CONFIG_SCREEN);
@@ -605,25 +605,25 @@ namespace OpenLaMulana
                     }
                     break;
                 case Global.MSXStates.CONFIG_SCREEN:
-                    if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_INVENTORY])
+                    if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_INVENTORY))
                     {
                         ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.INVENTORY);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_EMULATOR))
                     {
                         ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
                     {
                         ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-                    else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_OPEN_CONFIG])
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_CONFIG))
                     {
                         ResetMSXState();
                         Global.Main.SetState(Global.GameState.PLAYING);
@@ -635,7 +635,7 @@ namespace OpenLaMulana
 
             if (_state != Global.MSXStates.INACTIVE)
             {
-                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_MOVE_RIGHT])
+                if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_MOVE_RIGHT))
                 {
                     Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     _state += 1;
@@ -645,7 +645,7 @@ namespace OpenLaMulana
                     }
                     ResetMSXState();
                 }
-                else if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_MOVE_LEFT])
+                else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_MOVE_LEFT))
                 {
                     Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     _state -= 1;
@@ -656,7 +656,7 @@ namespace OpenLaMulana
                     ResetMSXState();
                 }
 
-                if (InputManager.PressedKeys[(int)Global.ControllerKeys.MENU_CANCEL] && _state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.CONFIG_SCREEN)
+                if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CANCEL) && _state != Global.MSXStates.EMULATOR && _state != Global.MSXStates.CONFIG_SCREEN)
                 {
                     ResetMSXState();
                     Global.Main.SetState(Global.GameState.PLAYING);
