@@ -482,7 +482,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
 
 
-            if (InputManager.PressedKeys[(int)Global.ControllerKeys.JUMP] && _jumpCount > 0)
+            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP) && _jumpCount > 0)
             {
                 State = PlayerState.JUMPING;
                 _jumpCount--;
@@ -493,7 +493,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 Global.AudioManager.PlaySFX(SFX.P_JUMP);
             }
 
-            if ((_vsp < 0) && !InputManager.HeldKeys[(int)Global.ControllerKeys.JUMP])
+            if ((_vsp < 0) && !InputManager.ButtonCheckHeld30FPS(Global.ControllerKeys.JUMP))
             {
                 Math.Max(_vsp, -SPD_JUMP / 2);
             }

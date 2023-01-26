@@ -46,8 +46,12 @@ namespace OpenLaMulana.System
         public static bool[] PressedKeys = new bool[(int)ControllerKeys.MAX];
         public static bool[] HeldKeys = new bool[(int)ControllerKeys.MAX];
         public static bool[] ReleasedKeys = new bool[(int)ControllerKeys.MAX];
+        public static bool[] PressedKeysPrev = new bool[(int)ControllerKeys.MAX];
+        public static bool[] HeldKeysPrev = new bool[(int)ControllerKeys.MAX];
+        public static bool[] ReleasedKeysPrev = new bool[(int)ControllerKeys.MAX];
 
-        public static short DirHeldX, DirHeldY, DirPressedX, DirPressedY, DirConfPressedX, DirConfPressedY = 0;
+        public static short DirHeldX, DirHeldY, DirPressedX, DirPressedY, DirConfPressedX, DirConfPressedY,
+            DirHeldXPrev, DirHeldYPrev, DirPressedXPrev, DirPressedYPrev, DirConfPressedXPrev, DirConfPressedYPrev = 0;
         private static bool _joysticksEnabled = true;
         private static ControllerNames? _identifiedController = null;
         private static ControllerNames? _previouslyIdentifiedController = null;
@@ -158,6 +162,25 @@ namespace OpenLaMulana.System
                 _previouslyIdentifiedController = _identifiedController;
             }
 
+            UpdateAllDirectionalInputs();
+
+            if (Global.DevModeEnabled)
+            {
+                DebugControls();
+            }
+        }
+
+        private void UpdateAllDirectionalInputs()
+        {
+            DirHeldXPrev = DirHeldX;
+            DirHeldYPrev = DirHeldY;
+
+            DirPressedXPrev = DirPressedX;
+            DirPressedYPrev = DirPressedY;
+
+            DirConfPressedXPrev = DirConfPressedX;
+            DirConfPressedYPrev = DirConfPressedY;
+
             DirHeldX = (short)(Convert.ToInt16(HeldKeys[(int)ControllerKeys.RIGHT]) - Convert.ToInt16(HeldKeys[(int)ControllerKeys.LEFT]));
             DirHeldY = (short)(Convert.ToInt16(HeldKeys[(int)ControllerKeys.DOWN]) - Convert.ToInt16(HeldKeys[(int)ControllerKeys.UP]));
 
@@ -166,11 +189,6 @@ namespace OpenLaMulana.System
 
             DirConfPressedX = (short)(Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_RIGHT]) - Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_LEFT]));
             DirConfPressedY = (short)(Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_DOWN]) - Convert.ToInt16(PressedKeys[(int)ControllerKeys.CONFIG_MENU_UP]));
-
-            if (Global.DevModeEnabled)
-            {
-                DebugControls();
-            }
         }
 
         private void SwapABButtons()
@@ -196,10 +214,29 @@ namespace OpenLaMulana.System
                 GamePadDown(cK);
 
                 // Check if ANYTHING in our input arrays are true, then return true if we found anything (otherwise, return false)
+                PressedKeysPrev[(int)cK] = PressedKeys[(int)cK];
+                HeldKeysPrev[(int)cK] = HeldKeys[(int)cK];
+                ReleasedKeysPrev[(int)cK] = ReleasedKeys[(int)cK];
                 PressedKeys[(int)cK] = CheckAllInputControllers(_allPressedKeys, cK);
                 HeldKeys[(int)cK] = CheckAllInputControllers(_allHeldKeys, cK);
                 ReleasedKeys[(int)cK] = CheckAllInputControllers(_allReleasedKeys, cK);
             }
+        }
+
+
+        public static bool ButtonCheckPressed30FPS(ControllerKeys cK)
+        {
+            return PressedKeys[(int)cK] || PressedKeysPrev[(int)cK];
+        }
+
+        public static bool ButtonCheckHeld30FPS(ControllerKeys cK)
+        {
+            return HeldKeys[(int)cK] || HeldKeysPrev[(int)cK];
+        }
+
+        public static bool ButtonCheckReleased30FPS(ControllerKeys cK)
+        {
+            return ReleasedKeys[(int)cK] || ReleasedKeysPrev[(int)cK];
         }
 
         private bool CheckAllInputControllers(bool[,] allKeysOnController, ControllerKeys cK)
@@ -422,7 +459,8 @@ namespace OpenLaMulana.System
 
         private static void GamePadCheckPressed(ControllerKeys key)
         {
-            if (_isBlocked) {
+            if (_isBlocked)
+            {
                 _allPressedKeys[(int)ControllerTypes.Gamepad, (int)key] = false;
                 return;
             }
