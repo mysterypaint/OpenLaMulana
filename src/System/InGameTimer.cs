@@ -34,7 +34,6 @@ namespace OpenLaMulana.System
 
         public void Update(GameTime gameTime)
         {
-            return;
             if (_inGameTimer >= _limit)
                 return;
 
