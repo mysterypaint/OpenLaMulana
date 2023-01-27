@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Audio;
+using OpenLaMulana.Entities.WorldEntities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using System;
 using System.Collections.Generic;
@@ -37,12 +38,33 @@ namespace OpenLaMulana.Entities
                 if (_entitiesToRemove.Contains(entity))
                     continue;
 
-                if (entity.LockTo30FPS)
+
+                switch (Global.Main.State)
                 {
-                    if (Global.AnimationTimer.OneFrameElapsed())
-                        entity.Update(gameTime);
-                } else
-                    entity.Update(gameTime);
+                    case Global.GameState.PLAYING:
+                        if (entity.LockTo30FPS)
+                        {
+                            if (Global.AnimationTimer.OneFrameElapsed())
+                                entity.Update(gameTime);
+                        }
+                        else
+                            entity.Update(gameTime);
+                        break;
+                    case Global.GameState.CUTSCENE:
+                        switch (entity)
+                        {
+                            case World:
+                            case PoisonTimer:
+                                if (entity.LockTo30FPS)
+                                {
+                                    if (Global.AnimationTimer.OneFrameElapsed())
+                                        entity.Update(gameTime);
+                                } else
+                                    entity.Update(gameTime);
+                                break;
+                        }
+                        break;
+                }
 
             }
 

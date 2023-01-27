@@ -139,6 +139,16 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.RomDamageMultipliers[Global.SoftwareCombos.CASTLV_MAHJONGWIZ] = 2;       // Whip Attack Power +2
         }
 
+        public void ResetState()
+        {
+            State = PlayerState.IDLE;
+            _jumpCount = _jumpsMax;
+            _hsp = 0;
+            _vsp = 0;
+            FacingX = Protag.Facing.LEFT;
+            _isGrounded = false;
+        }
+
         public void Initialize()
         {
             State = PlayerState.IDLE;
@@ -1180,6 +1190,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     return "Whipping";
                 case PlayerState.NPC_DIALOGUE:
                     return "NPC Dialogue";
+                case PlayerState.DYING:
+                    return "Dying";
                 case PlayerState.MAX:
                     return "Max";
             }

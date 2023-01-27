@@ -656,6 +656,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.SINKING_RUINS_TABLET:
                     newObj = new SinkingRuinsTablet(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+                case EntityIDs.POISON_TIMER:
+                    newObj = new PoisonTimer(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
                 case EntityIDs.GREAT_ANKH:
                     newObj = new GreatAnkh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;

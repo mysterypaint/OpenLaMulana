@@ -79,6 +79,7 @@ namespace OpenLaMulana
             MSX_ROMS,
             MSX_LOADING_FILE,
             MSX_MANTRAS,
+            CUTSCENE,
             MAX,
         }
         public enum ScreenOverlayState : int

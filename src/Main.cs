@@ -317,6 +317,10 @@ namespace OpenLaMulana
                     Global.EntityManager.Update(gameTime);
                     UpdateExpAndHP();
                     break;
+                case Global.GameState.CUTSCENE:
+                    Global.EntityManager.Update(gameTime);
+                    UpdateExpAndHP();
+                    break;
                 case Global.GameState.ITEM_ACQUIRED:
                     Global.NineSliceBox.Update(gameTime);
                     UpdateExpAndHP();

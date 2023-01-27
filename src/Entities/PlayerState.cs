@@ -13,6 +13,7 @@
         CLIMBING,
         SCREEN_TRANSITION,
         NPC_DIALOGUE,
+        DYING,
         MAX,
     }
 }

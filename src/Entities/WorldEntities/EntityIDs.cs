@@ -37,6 +37,7 @@
         FIELD_TRANSITION = 135,
         OVERLAY_CHIP_REGION = 136,
         SINKING_RUINS_TABLET = 143,
+        POISON_TIMER = 162,
         GREAT_ANKH = 164,
         ENEMY_A_BAO_A_QU = 182,
     }
