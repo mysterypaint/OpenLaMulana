@@ -34,6 +34,7 @@ namespace OpenLaMulana.System
 
         public void Update(GameTime gameTime)
         {
+            return;
             if (_inGameTimer >= _limit)
                 return;
 
@@ -51,7 +52,7 @@ namespace OpenLaMulana.System
         {
             long currTime = Global.InGameTimer.GetTime();
             TimeSpan span = TimeSpan.FromSeconds(Math.Clamp(currTime, 0, _limit));
-            string hoursString = span.TotalHours.ToString("000000000");
+            string hoursString = Math.Floor(span.TotalHours).ToString("000000000");
             int shownDigits = 2;
             int shownDigitsIterator = shownDigits;
             int potentialShownDigits = 0;
