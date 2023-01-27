@@ -60,6 +60,7 @@ namespace OpenLaMulana.System
         private List<int> _queuedTextLengths = new List<int>();
         private List<Vector2> _queuedTextPadding = new List<Vector2>();
         private List<bool> _queuedTextPotentiallyLamulanese = new List<bool>();
+        private List<World.VIEW_DIR> _queuedTextAlignment = new List<World.VIEW_DIR>();
 
         public TextManager()
         {
@@ -139,7 +140,8 @@ namespace OpenLaMulana.System
                     Color color = _queuedTextColor[i];
                     Vector2 padding = _queuedTextPadding[i];
                     bool potentiallyLamulanese = _queuedTextPotentiallyLamulanese[i];
-                    DisplayString(spriteBatch, str, posX, posY, charLimit, color, padding, potentiallyLamulanese);
+                    World.VIEW_DIR alignment = _queuedTextAlignment[i];
+                    DisplayString(spriteBatch, str, posX, posY, charLimit, color, padding, potentiallyLamulanese, alignment);
                     i++;
                 }
                 _queuedText.Clear();
@@ -148,6 +150,7 @@ namespace OpenLaMulana.System
                 _queuedTextLengths.Clear();
                 _queuedTextPadding.Clear();
                 _queuedTextPotentiallyLamulanese.Clear();
+                _queuedTextAlignment.Clear();
             }
         }
 
@@ -170,7 +173,7 @@ namespace OpenLaMulana.System
             return s_charSet;
         }
 
-        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit, Color col = default, Vector2 padding = default, bool potentiallyLamulanese = false)
+        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit, Color col = default, Vector2 padding = default, bool potentiallyLamulanese = false, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT)
         {
             if (padding == default)
                 padding = Vector2.Zero;
@@ -179,6 +182,17 @@ namespace OpenLaMulana.System
             int posY = y;
 
             var xOff = 0;
+
+            switch (alignment)
+            {
+                default:
+                case World.VIEW_DIR.LEFT:
+                    break;
+                case World.VIEW_DIR.RIGHT:
+                    xOff = -str.Length * TEXT_WIDTH;
+                    break;
+            }
+
             var yOff = 0;
 
             //var yoff = 0;
@@ -264,9 +278,29 @@ namespace OpenLaMulana.System
 
 
                         if (textControlValue > 10 || c != ' ')
-                            xOff += TEXT_WIDTH + (int)shiftedVecAfterWriting.X;
+                        {
+
+                            switch (alignment)
+                            {
+                                default:
+                                case World.VIEW_DIR.LEFT:
+                                case World.VIEW_DIR.RIGHT:
+                                    xOff += TEXT_WIDTH + (int)shiftedVecAfterWriting.X;
+                                    break;
+                            }
+                        }
                     }
-                    xOff = 0;
+
+                    switch (alignment)
+                    {
+                        default:
+                        case World.VIEW_DIR.LEFT:
+                            xOff = 0;
+                            break;
+                        case World.VIEW_DIR.RIGHT:
+                            xOff = -str.Length * TEXT_WIDTH;
+                            break;
+                    }
                     yOff += TEXT_HEIGHT + (int)padding.Y;
                     j = 0;
 
@@ -411,7 +445,7 @@ namespace OpenLaMulana.System
             return new Vector2(_otx, dakutenHandakutenUsed);
         }
 
-        public void QueueText(int x, int y, string str, int charLimit = 32, Color col = default, int paddingX = 0, int paddingY = 0, bool potentiallyLamulanese = false)
+        public void QueueText(int x, int y, string str, int charLimit = 32, Color col = default, int paddingX = 0, int paddingY = 0, bool potentiallyLamulanese = false, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT)
         {
             if (str == null)
                 return;
@@ -424,6 +458,7 @@ namespace OpenLaMulana.System
             _queuedTextLengths.Add(charLimit);
             _queuedTextPadding.Add(new Vector2(paddingX, paddingY));
             _queuedTextPotentiallyLamulanese.Add(potentiallyLamulanese);
+            _queuedTextAlignment.Add(alignment);
         }
 
         public void DrawTextImmediate(int x, int y, string str, int charLimit = 32)
@@ -497,9 +532,9 @@ namespace OpenLaMulana.System
             _drawOff = drawOffset;
         }
 
-        internal void DrawText(Vector2 position, string str, int charLimit = 32, Color col = default)
+        internal void DrawText(Vector2 position, string str, int charLimit = 32, Color col = default, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT)
         {
-            QueueText((int)position.X, (int)position.Y, str, charLimit, col);
+            QueueText((int)position.X, (int)position.Y, str, charLimit, col, 0, 0, false, alignment);
         }
 
         internal void DrawTextImmediate(Vector2 position, string str, int charLimit = 32)

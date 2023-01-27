@@ -1185,6 +1185,7 @@ namespace OpenLaMulana
                 case Global.MSXStates.INVENTORY:
                     DrawMSXBackground(spriteBatch, gameTime);
                     DrawInventoryWindowBorders(spriteBatch, gameTime);
+                    DrawTimeClock();
 
                     int x = 0;
                     int y = 0;
@@ -1249,6 +1250,7 @@ namespace OpenLaMulana
                     break;
                 case Global.MSXStates.SCANNING:
                     DrawMSXBackground(spriteBatch, gameTime, true);
+                    DrawTimeClock();
                     Global.TextManager.QueueText(2 * 8, 4 * 8, _scannerText, 28, Color.White, 0, 8, _potentiallyLamulanese);
 
                     int leftTabletOffset = 12;
@@ -1266,6 +1268,7 @@ namespace OpenLaMulana
                 case Global.MSXStates.SOFTWARE_SELECTION:
                     DrawMSXBackground(spriteBatch, gameTime);
                     DrawSoftwareSelectionScreen(spriteBatch, gameTime);
+                    DrawTimeClock();
 
                     break;
                 case Global.MSXStates.EMULATOR:
@@ -1313,6 +1316,15 @@ namespace OpenLaMulana
                     mainWindowSprites[(int)WindowSprites.OPTIONS_CURSOR].Draw(spriteBatch, new Vector2(6 * 8, (4 + cursorPosition * 2) * 8));
                      */
                     break;
+            }
+        }
+
+        private void DrawTimeClock()
+        {
+            if (Global.QoLChanges)
+            {
+                string inGameTimeStr = Global.InGameTimer.ToString();
+                Global.TextManager.DrawText(new Vector2(31 * World.CHIP_SIZE, 2 * World.CHIP_SIZE), inGameTimeStr, 32, Color.White, World.VIEW_DIR.RIGHT);
             }
         }
 

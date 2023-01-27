@@ -20,9 +20,9 @@ namespace OpenLaMulana
             GAME_HUD,
             ENTITY_COUNT,
             ROOM_COORDS_INFO,
-        };
-
-        public static DebugStats DebugStatsState { get; internal set; } = DebugStats.ROOM_COORDS_INFO;
+            IN_GAME_TIMER_VIEWER,
+        }
+        public static DebugStats DebugStatsState { get; internal set; } = DebugStats.IN_GAME_TIMER_VIEWER;
 
 
 
@@ -594,6 +594,7 @@ namespace OpenLaMulana
         public static Camera Camera;
         public static InputManager GlobalInput;
         public static World World;
+        public static InGameTimer InGameTimer;
         public static EntityManager EntityManager;
         public static AudioManager AudioManager;
         public static TextManager TextManager;

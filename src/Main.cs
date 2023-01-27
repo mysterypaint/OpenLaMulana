@@ -70,7 +70,7 @@ namespace OpenLaMulana
 
             Global.GameRNG = new GameRNG();
             Global.GameFlags = new GameFlags();
-
+            Global.InGameTimer = new InGameTimer();
 
             //SaveData reencryptedSave = HelperFunctions.EncryptSaveFile(decryptedSave);
             //HelperFunctions.WriteSaveToFile(decryptedSave, "lamulana_dec.sa0", false);
@@ -262,12 +262,12 @@ namespace OpenLaMulana
             {
                 case Global.GameState.PLAYING:
                     Global.MobileSuperX.Update(gameTime);
-
                     if (Global.Camera.GetState() == Camera.CamStates.NONE)
                     {
                         switch (Global.MobileSuperX.GetState())
                         {
                             case Global.MSXStates.INACTIVE:
+                                Global.InGameTimer.Update(gameTime);
                                 if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_INVENTORY))
                                 {
                                     State = Global.GameState.MSX_OPEN;
@@ -300,6 +300,12 @@ namespace OpenLaMulana
                                     Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
                                 }
                                 break;
+                            case Global.MSXStates.INVENTORY:
+                            case Global.MSXStates.SOFTWARE_SELECTION:
+                            case Global.MSXStates.EMULATOR:
+                            case Global.MSXStates.SCANNING:
+                                Global.InGameTimer.Update(gameTime);
+                                break;
                         }
 
                         if (!isAltKeyDown && InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.PAUSE) && State == Global.GameState.PLAYING)
@@ -329,6 +335,7 @@ namespace OpenLaMulana
                     break;
                 case Global.GameState.MSX_OPEN:
                     Global.MobileSuperX.Update(gameTime);
+                    Global.InGameTimer.Update(gameTime);
                     break;
                 case Global.GameState.MSX_LOADING_FILE:
                     Global.MobileSuperX.Update(gameTime);
@@ -556,6 +563,10 @@ namespace OpenLaMulana
                                 View destView = activeViews[(int)World.AViews.DEST].GetView();
                                 Global.TextManager.DrawText(_camPos, String.Format("CurrView: [{0},{1}]\\10DestView: [{2},{3}]", currView.X, currView.Y, destView.X, destView.Y));
 
+                                break;
+                            case Global.DebugStats.IN_GAME_TIMER_VIEWER:
+                                string inGameTimeStr = Global.InGameTimer.ToString();
+                                Global.TextManager.DrawText(new Vector2(31 * World.CHIP_SIZE, 1 * World.CHIP_SIZE), inGameTimeStr, 32, Color.White, World.VIEW_DIR.RIGHT);
                                 break;
                         }
                     } else
