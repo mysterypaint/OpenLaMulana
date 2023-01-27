@@ -166,6 +166,9 @@ namespace OpenLaMulana.System
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
                             _protag.State = _protag.GetPrevState();
+
+                            // Reset the temporary flags in memory
+                            Global.GameFlags.ResetAllRFlags();
                         }
                     }
                     else if (_moveToX > 0)
