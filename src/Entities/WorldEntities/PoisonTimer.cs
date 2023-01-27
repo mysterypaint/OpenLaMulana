@@ -1,13 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Intrinsics.X86;
-using static OpenLaMulana.Entities.WorldEntities.NPCRoom;
 using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
