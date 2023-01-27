@@ -126,7 +126,7 @@ namespace OpenLaMulana
                         var animeSpeed = thisChip.AnimeSpeed;
                         var animeFrames = thisChip.GetAnimeFrames();//GetAnimeFramesAsRawData();
 
-                        if (animeSpeed > 0)
+                        if (animeSpeed >= 0)
                         {
                             if (Global.AnimationTimer.OneFrameElapsed(true))
                             {

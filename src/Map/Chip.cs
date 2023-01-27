@@ -15,7 +15,7 @@ namespace OpenLaMulana
         public int TileID = -1;
         public float CurrFrame = 0;
         public bool IsAnime = false;
-        public int AnimeSpeed = 0;
+        public int AnimeSpeed = -1;
         public World.ChipTypes SpecialChipBehavior = World.ChipTypes.UNDEFINED;
         public bool IsOverlay { get; set; } = false;
         private int _animationTimer = 0;

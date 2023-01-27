@@ -230,7 +230,7 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.DirPressedY > 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
+                            if (InputManager.DirPressedY > 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
                             {
                                 VerifyThatPlayerHasAtLeastOneSubweapon();
 
@@ -311,10 +311,10 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.DirPressedY < 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
+                            if (InputManager.DirPressedY < 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
                             {
                                 int originalPosition = _subWeaponSelectionPosition;
-                                if (_subWeaponSelectionPosition <= 4 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
+                                if (_subWeaponSelectionPosition <= 4 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
                                 {
                                     _inventoryState = MSXInventoryStates.MAIN_WEAPON_SELECTION;
                                     _inventoryCursorVisible = true;
@@ -361,6 +361,7 @@ namespace OpenLaMulana
 
                                 if (originalPosition != _subWeaponSelectionPosition)
                                 {
+                                    Global.Inventory.EquippedSubWeapon = Global.Inventory.ObtainedSubWeapons[_subWeaponSelectionPosition];
                                     Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
                                     _subWeaponInventoryCursorVisible = true;
                                     _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
