@@ -22,7 +22,7 @@ namespace OpenLaMulana
             ROOM_COORDS_INFO,
             IN_GAME_TIMER_VIEWER,
         }
-        public static DebugStats DebugStatsState { get; internal set; } = DebugStats.IN_GAME_TIMER_VIEWER;
+        public static DebugStats DebugStatsState { get; internal set; } = DebugStats.ENTITY_COUNT;
 
 
 

@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace OpenLaMulana.Entities.WorldEntities
+namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
     internal class GuardianBahamut : IGlobalWorldEntity
     {
@@ -124,7 +123,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             for (int y = 0; y < World.ROOM_HEIGHT; y++)
             {
-                rightMostColumn[y] = finalView.Chips[(World.ROOM_WIDTH - 1) - (_timesShifted % 2), y];
+                rightMostColumn[y] = finalView.Chips[World.ROOM_WIDTH - 1 - _timesShifted % 2, y];
             }
 
             // Shift every single tile in the room toward the left; The left-most column will be written on the far right of the room, effectively wrapping the screen

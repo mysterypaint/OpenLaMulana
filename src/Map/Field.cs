@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities;
 using OpenLaMulana.Entities.WorldEntities.Enemies;
@@ -276,7 +277,21 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
         internal ObjectSpawnData DefineObjectSpawnData(int eventNumber, int tileX, int tileY, int OP1, int OP2, int OP3, int OP4, View currView)
         {
-            ObjectSpawnData newObjData = new ObjectSpawnData(eventNumber, tileX / 2048, tileY / 2048, OP1, OP2, OP3, OP4);
+            bool xYAreCoords = true;
+            switch ((EntityIDs)eventNumber)
+            {
+                case EntityIDs.EVENT_CHECKER_V:
+                    xYAreCoords = false;
+                    break;
+            }
+
+            if (xYAreCoords)
+            {
+                tileX /= 2048;
+                tileY /= 2048;
+            }
+
+            ObjectSpawnData newObjData = new ObjectSpawnData(eventNumber, tileX, tileY, OP1, OP2, OP3, OP4, xYAreCoords);
 
             if (currView != null)
             {
@@ -502,6 +517,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             var op4 = newObjData.OP4;
             var startFlags = newObjData.StartFlags;
             var isHardModeChange = newObjData.IsHardModeChange;
+            var xYAreCoords = newObjData.XYAreCoords;
             //var spawnIsGlobal = newObjData.SpawnIsGlobal; // No longer needed! Keeping it here just in case, though...
 
             /*
@@ -519,8 +535,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 return newObj;
             }*/
 
-
-            if (!spawnIsGlobal)
+            if (!spawnIsGlobal && xYAreCoords)
             {
                 x += (int)Math.Sign(offsetVector.X) * World.ROOM_WIDTH;
                 y += (int)Math.Sign(offsetVector.Y) * World.ROOM_HEIGHT;
@@ -565,6 +580,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.MOVING_PLATFORM:
                     newObj = new MovingPlatform(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.EVENT_CHECKER_V:
+                    newObj = new EventCheckerV(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.PUSHABLE_BLOCK:
                     newObj = new PushableBlock(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
@@ -620,8 +638,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.AKNH:
                     newObj = new Ankh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
-                case EntityIDs.KAKOUJUU:
-                    newObj = new Kakoujuu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                case EntityIDs.ENEMY_KAKOUJUU:
+                    newObj = new EnemyKakoujuu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.GRAPHIC_DISPLAY:
                     newObj = new GraphicDisplay(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
@@ -661,6 +679,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.GREAT_ANKH:
                     newObj = new GreatAnkh(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.SUBBOSS_OXHEAD_AND_HORSE_FACE:
+                    newObj = new SubBossOxHeadAndHorseFaceGenerator(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.ENEMY_A_BAO_A_QU:
                     newObj = new EnemyABaoAQu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);

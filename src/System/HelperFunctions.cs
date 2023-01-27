@@ -465,7 +465,7 @@ namespace OpenLaMulana.System
             return new Vector2(xVal, yVal);
         }
 
-        internal static bool EntityMaySpawn(List<ObjectStartFlag> startFlags)
+        public static bool EntityMaySpawn(List<ObjectStartFlag> startFlags)
         {
             foreach (ObjectStartFlag flag in startFlags)
             {
@@ -489,6 +489,22 @@ namespace OpenLaMulana.System
             return true;
         }
 
+        public static bool CheckFlags(int[] checkingFlags)
+        {
+            foreach (int flagIndex in checkingFlags)
+            {
+                if (flagIndex == -1 || flagIndex >= (int)GameFlags.Flags.MAX)
+                    continue;
+
+                bool currFlagValue = Global.GameFlags.InGameFlags[flagIndex];
+
+                if (!currFlagValue)
+                    return false;
+
+            }
+
+            return true;
+        }
 
         #region SaveDataFunctions
         public static SaveData LoadSaveFromFile(string fileName)

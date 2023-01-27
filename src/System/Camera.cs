@@ -194,6 +194,9 @@ namespace OpenLaMulana.System
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
                             _protag.State = _protag.GetPrevState();
+
+                            // Reset the temporary flags in memory
+                            Global.GameFlags.ResetAllRFlags();
                         }
                     }
 
@@ -232,6 +235,9 @@ namespace OpenLaMulana.System
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
                             _protag.State = _protag.GetPrevState();
+
+                            // Reset the temporary flags in memory
+                            Global.GameFlags.ResetAllRFlags();
                         }
                     }
                     else if (_moveToY > 0)
@@ -261,6 +267,9 @@ namespace OpenLaMulana.System
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
                             _protag.State = _protag.GetPrevState();
+
+                            // Reset the temporary flags in memory
+                            Global.GameFlags.ResetAllRFlags();
                         }
                     }
 
@@ -299,6 +308,7 @@ namespace OpenLaMulana.System
                 allFieldEntities.AddRange(currField.GetFieldEntities());
 
             int ts = World.CHIP_SIZE;
+            View currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
 
             foreach (IGameEntity worldEntity in allFieldEntities)
             {
@@ -309,22 +319,80 @@ namespace OpenLaMulana.System
                     if (rE.IsGlobal)
                     {
                         // Calculate the Origin's Position for each Global Platform entity (This should hopefully not need any modification...)
-                        Point roomOffset = new Point(rE.ViewCoords.X - destView.X, rE.ViewCoords.Y - destView.Y);
 
-                        if (roomOffset.X < 0)
-                            roomOffset.X += World.FIELD_WIDTH;
-                        if (roomOffset.Y < 0)
-                            roomOffset.Y += World.FIELD_HEIGHT;
+                        Point movingDirection = new Point(-Math.Sign(offsetVector.X), -Math.Sign(offsetVector.Y));
+                        bool screenWrapOccurred = false;
 
+                        Vector2 currPosition = rE.OriginPosition + rE.Position;
+                        Vector2 currTileCoords = new Vector2(currPosition.X / ts, currPosition.Y / ts);
+                        Point currRoomPos = new Point((int)Math.Floor(currTileCoords.X / World.ROOM_WIDTH), (int)Math.Floor(currTileCoords.Y / World.ROOM_HEIGHT));
+                        Point resultingRoom = new Point(currRoomPos.X + movingDirection.X, currRoomPos.Y + movingDirection.Y);
+
+                        if (resultingRoom.X <= 0)
+                        {
+                            rE.OriginPosition.X += World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE;
+                            screenWrapOccurred = true;
+                        }
+                        else if (resultingRoom.X >= World.FIELD_WIDTH)
+                        {
+                            rE.OriginPosition.X -= World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE;
+                            screenWrapOccurred = true;
+                        }
+                        if (resultingRoom.Y <= 0)
+                        {
+                            rE.OriginPosition.Y += World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE;
+                            screenWrapOccurred = true;
+                        }
+                        else if (resultingRoom.Y >= World.FIELD_HEIGHT)
+                        {
+                            rE.OriginPosition.Y -= World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE;
+                            screenWrapOccurred = true;
+                        }
+
+                        if (!screenWrapOccurred)
+                        {
+                            Vector2 initialOffsetCoords = rE.OriginPosition;
+                            Point roomOffset = new Point(rE.ViewCoords.X - destView.X, rE.ViewCoords.Y - destView.Y);
+
+
+                            Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + rE.RelativeViewTilePos.ToPoint();
+                            Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                            rE.OriginPosition = offsetCoords;
+
+                        }
+
+
+
+
+
+
+
+
+
+                        /* 
                         Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + rE.RelativeViewTilePos.ToPoint();
                         Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
 
-                        rE.OriginPosition = offsetCoords;
-
+                        rE.OriginPosition = offsetCoords;*/
 
 
                         /*
                          * 
+                        Vector2 currPosition = rE.Position;
+                        Vector2 currTileCoords = new Vector2(currPosition.X / ts, currPosition.Y / ts) + rE.RelativeViewTilePos;
+                        Point viewDisplacement = new Point((int)currTileCoords.X / World.ROOM_WIDTH, (int)currTileCoords.Y / World.ROOM_HEIGHT);
+
+                        if (rE.ViewCoords.X + viewDisplacement.X < 0)
+                            Position.X += (World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE);
+                        else if (rE.ViewCoords.X + viewDisplacement.X >= World.FIELD_WIDTH)
+                            Position.X -= (World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE);
+                        if (rE.ViewCoords.Y + viewDisplacement.Y < 0)
+                            Position.Y += (World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE);
+                        else if (rE.ViewCoords.Y + viewDisplacement.Y >= World.FIELD_HEIGHT)
+                            Position.Y -= (World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE);
+
+
 
 */
 

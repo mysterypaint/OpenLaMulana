@@ -85,7 +85,10 @@ namespace OpenLaMulana.Entities.WorldEntities
                     {
                         if (_flagToSet > -1)
                         {
-                            Global.GameFlags.InGameFlags[_flagToSet] = _flagValueToSet;
+                            if (!Global.GameFlags.InGameFlags[_flagToSet])
+                            {
+                                Global.GameFlags.InGameFlags[_flagToSet] = _flagValueToSet;
+                            }
                         }
                     }
                     break;

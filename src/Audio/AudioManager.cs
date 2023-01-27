@@ -25,11 +25,11 @@ namespace OpenLaMulana
         public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;
 
-        private float _userMasterVolScale { get; set; } = 1.0f;
-        private float _userBGMVolScale { get; set; } = 1.0f;
-        private float _userSFXVolScale { get; set; } = 1.0f;
+        private float _userMasterVolScale { get; set; } = 0.8f;
+        private float _userBGMVolScale { get; set; } = 0.8f;
+        private float _userSFXVolScale { get; set; } = 0.8f;
 
-        private float _internalBGMVolScale = 0.72f;//0.6f;
+        private float _internalBGMVolScale = 0.55f;//0.6f;
         private float _internalSFXVolScale = 1.0f;
 
         private static Dictionary<SFX, SoundEffect> _sfxBank = new Dictionary<SFX, SoundEffect>();

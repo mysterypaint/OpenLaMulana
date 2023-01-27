@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace OpenLaMulana.Entities.WorldEntities
+namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
     internal class GuardianSakit : IGlobalWorldEntity
     {
@@ -58,13 +57,16 @@ namespace OpenLaMulana.Entities.WorldEntities
                 default:
                     break;
                 case Global.WEStates.INIT:
-                    if (Global.AnimationTimer.OneFrameElapsed()) {
-                        if (_initTimer <= 0) {
+                    if (Global.AnimationTimer.OneFrameElapsed())
+                    {
+                        if (_initTimer <= 0)
+                        {
                             _initTimer = 10;
                             _state = Global.WEStates.ACTIVATING;
                             Visible = true;
                             Global.World.FieldTransitionImmediate(_bossViews[0], _bossViews[1], false, false);
-                        } else
+                        }
+                        else
                         {
                             _initTimer--;
                         }

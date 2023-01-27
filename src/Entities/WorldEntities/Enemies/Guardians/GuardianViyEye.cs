@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace OpenLaMulana.Entities.WorldEntities
+namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
     internal class GuardianViyEye : IGlobalWorldEntity
     {

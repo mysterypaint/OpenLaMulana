@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
@@ -8,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using static OpenLaMulana.Entities.World;
 
-namespace OpenLaMulana.Entities.WorldEntities
+namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
     internal class GuardianViy : IGlobalWorldEntity
     {
@@ -20,10 +19,10 @@ namespace OpenLaMulana.Entities.WorldEntities
         private View _currActiveView = null;
         private int _moveTimerMax = 20;
         private int _moveTimer = 0;
-        private int _shiftYSides = World.ROOM_HEIGHT - 1;
-        private int _shiftYMiddle = World.ROOM_HEIGHT;
+        private int _shiftYSides = ROOM_HEIGHT - 1;
+        private int _shiftYMiddle = ROOM_HEIGHT;
         private Protag _protag = null;
-        private int _ts = World.CHIP_SIZE;
+        private int _ts = CHIP_SIZE;
         private SpriteAnimation anim;
 
         enum ViySprites
@@ -90,9 +89,9 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 _tentacles[i] = (GuardianViyTentacle)InstanceCreatePersistent(new GuardianViyTentacle(x, y, -1, -1, -1, -1, true, null, null));
 
-                Sprite[] tentSprites = new Sprite[] { _sprites[(int)ViySprites.Tentacle1_1 + (i * 3)],
-                _sprites[(int)ViySprites.Tentacle1_2 + (i * 3)],
-                _sprites[(int)ViySprites.Tentacle1_3 + (i * 3)]
+                Sprite[] tentSprites = new Sprite[] { _sprites[(int)ViySprites.Tentacle1_1 + i * 3],
+                _sprites[(int)ViySprites.Tentacle1_2 + i * 3],
+                _sprites[(int)ViySprites.Tentacle1_3 + i * 3]
                 };
 
                 anim = SpriteAnimation.CreateSimpleAnimation(tentSprites, 0.25f);
@@ -136,7 +135,8 @@ namespace OpenLaMulana.Entities.WorldEntities
             }
             _sprIndex = _sprites[_sprNum];
 
-            if (Global.Camera.GetState() == System.Camera.CamStates.NONE) {
+            if (Global.Camera.GetState() == Camera.CamStates.NONE)
+            {
                 if (Global.AnimationTimer.OneFrameElapsed())
                 {
                     if (_moveTimer <= 0)
@@ -155,10 +155,10 @@ namespace OpenLaMulana.Entities.WorldEntities
         private void ShiftScreenDown()
         {
             // Grab the bottom-most column of the boss arena
-            Chip[] bottomMostRow = new Chip[World.ROOM_WIDTH];
-            for (int x = 1; x < World.ROOM_WIDTH - 1; x++)
+            Chip[] bottomMostRow = new Chip[ROOM_WIDTH];
+            for (int x = 1; x < ROOM_WIDTH - 1; x++)
             {
-                if (_shiftYMiddle < World.ROOM_HEIGHT)
+                if (_shiftYMiddle < ROOM_HEIGHT)
                     bottomMostRow[x] = _bossRoomUnmodified.Chips[x, _shiftYMiddle];
                 else // Grab the top-most row if we just finished looping through the whole room
                     bottomMostRow[x] = _bossRoomUnmodified.Chips[x, 0];
@@ -166,22 +166,23 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             }
             bottomMostRow[0] = _bossRoomUnmodified.Chips[0, _shiftYSides];
-            bottomMostRow[World.ROOM_WIDTH - 1] = _bossRoomUnmodified.Chips[World.ROOM_WIDTH - 1, _shiftYSides];
+            bottomMostRow[ROOM_WIDTH - 1] = _bossRoomUnmodified.Chips[ROOM_WIDTH - 1, _shiftYSides];
 
             // Shift every single tile in the room toward the top; The bottom-most column will be written at the top of the room, effectively wrapping the screen
-            _bossRoom.ShiftTiles(World.VIEW_DIR.DOWN, bottomMostRow);
-            
+            _bossRoom.ShiftTiles(VIEW_DIR.DOWN, bottomMostRow);
+
             // Update the current room's collision tiles to reflect the updated visual tiles
             _currActiveView.Chips = _bossRoom.Chips;
 
             _shiftYSides--;
             _shiftYMiddle--;
             if (_shiftYSides < 0)
-                _shiftYSides = World.ROOM_HEIGHT - 1;
+                _shiftYSides = ROOM_HEIGHT - 1;
             if (_shiftYMiddle < 0)
-                _shiftYMiddle = World.ROOM_HEIGHT;
+                _shiftYMiddle = ROOM_HEIGHT;
 
-            if (_protag.IsGrounded()) {
+            if (_protag.IsGrounded())
+            {
                 _protag.ApplyVector(new Vector2(0, 8));
             }
         }

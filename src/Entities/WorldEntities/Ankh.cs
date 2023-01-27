@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
-using OpenLaMulana.Entities.WorldEntities.Parents;
+using OpenLaMulana.Entities.WorldEntities.Enemies.Guardians;
 using OpenLaMulana.Graphics;
-using System;
 using System.Collections.Generic;
-using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {

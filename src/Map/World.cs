@@ -646,6 +646,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 _outputRenderTarget = null;
                 _disposedRenderTargetsFlag = true;
                 shaderState = ShaderDrawingState.NO_SHADER;
+
+                // Reset the temporary flags in memory
+                Global.GameFlags.ResetAllRFlags();
                 return;
             }
 
@@ -792,9 +795,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // Camera is busy; Do not transition.
             if (Global.Camera.GetState() != CamStates.NONE)
                 return;
-
-            // Reset the temporary flags in memory
-            Global.GameFlags.ResetAllRFlags();
 
             // Grab the View we are transitioning to
             Field thisField = _fields[CurrField];
@@ -950,9 +950,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             if (Global.Camera.GetState() != CamStates.NONE)
                 return;
 
-            // Reset the temporary flags in memory
-            Global.GameFlags.ResetAllRFlags();
-
             // Grab the View we are transitioning to
             Field srcField = srcView.GetParentField();
             Global.Textures correctedTexID = Global.TextureManager.GetMappedWorldTexID(srcField.MapGraphics);
@@ -1055,9 +1052,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Camera.CamStates camState = Global.Camera.GetState();
             if (camState != CamStates.NONE && camState != CamStates.STANDBY)
                 return;
-
-            // Reset the temporary flags in memory
-            Global.GameFlags.ResetAllRFlags();
 
             ActiveShader = Global.ShdTransition;
 

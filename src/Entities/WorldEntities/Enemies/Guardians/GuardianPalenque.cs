@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace OpenLaMulana.Entities.WorldEntities
+namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
     internal class GuardianPalenque : IGlobalWorldEntity
     {
@@ -16,7 +15,8 @@ namespace OpenLaMulana.Entities.WorldEntities
         private int _ts = World.CHIP_SIZE;
         private GenericGlobalWorldEntity _upperBody, _lowerBody = null;
 
-        enum PalenqueSprites { 
+        enum PalenqueSprites
+        {
             PalenqueWhole,
             PalenqueHitbox,
             SmallLightning_Yellow,
@@ -99,10 +99,10 @@ namespace OpenLaMulana.Entities.WorldEntities
 
             _upperBody = (GenericGlobalWorldEntity)InstanceCreatePersistent(new GenericGlobalWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
             _upperBody.SetSprite(_sprites[(int)PalenqueSprites.PreBattleUpperBody]);
-            _upperBody.Position = new Vector2(Position.X, Position.Y - (6 * _ts));
+            _upperBody.Position = new Vector2(Position.X, Position.Y - 6 * _ts);
             _lowerBody = (GenericGlobalWorldEntity)InstanceCreatePersistent(new GenericGlobalWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
             _lowerBody.SetSprite(_sprites[(int)PalenqueSprites.PreBattleLowerBody]);
-            _lowerBody.Position = new Vector2(Position.X, Position.Y + (6 * _ts));
+            _lowerBody.Position = new Vector2(Position.X, Position.Y + 6 * _ts);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

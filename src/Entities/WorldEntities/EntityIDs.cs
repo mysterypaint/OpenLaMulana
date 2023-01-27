@@ -7,6 +7,7 @@
         ENEMY_BAT = 4,
         BREAKABLE_POT = 7,
         MOVING_PLATFORM = 8,
+        EVENT_CHECKER_V = 11,
         PUSHABLE_BLOCK = 12,
         OBTAINABLE_SUBWEAPON = 13,
         NPC_ROOM = 14,
@@ -25,7 +26,7 @@
         MEMO = 37,
         AKNH = 38,
         BACKGROUND_SIGIL = 47,
-        KAKOUJUU = 54,
+        ENEMY_KAKOUJUU = 54,
         GRAPHIC_DISPLAY = 59,
         SHELL_HORN_SOUND_GENERATOR = 68,
         SHOP_DETECTOR_SOUND_GENERATOR = 69,
@@ -39,6 +40,7 @@
         SINKING_RUINS_TABLET = 143,
         POISON_TIMER = 162,
         GREAT_ANKH = 164,
+        SUBBOSS_OXHEAD_AND_HORSE_FACE = 174,
         ENEMY_A_BAO_A_QU = 182,
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 
-namespace OpenLaMulana.Entities.WorldEntities
+namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
     internal class GuardianEllmac : IGlobalWorldEntity
     {
@@ -49,12 +48,14 @@ namespace OpenLaMulana.Entities.WorldEntities
                 default:
                     break;
                 case Global.WEStates.INIT:
-                    if (Global.Camera.GetState() == System.Camera.CamStates.NONE)
+                    if (Global.Camera.GetState() == Camera.CamStates.NONE)
                     {
                         if (_framesBeforeDrop > 0)
                         {
                             _framesBeforeDrop--;
-                        } else {
+                        }
+                        else
+                        {
                             _framesBeforeDrop = 0;
                             View srcView = Global.World.GetField(3).GetBossViews()[0];//new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, Global.World.GetField(3), 0, 0);
                             View destView = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, null, 0, 0);
@@ -64,12 +65,12 @@ namespace OpenLaMulana.Entities.WorldEntities
                             {
                                 for (int x = 0; x < World.ROOM_WIDTH; x++)
                                 {
-                                    destView.Chips[x, y].TileID = 36 + (x % 4) + (y * 40);
+                                    destView.Chips[x, y].TileID = 36 + x % 4 + y * 40;
                                 }
                             }
                             for (int x = 0; x < World.ROOM_WIDTH; x++)
                             {
-                                destView.Chips[x, World.ROOM_HEIGHT - 1].TileID = 26 + (x % 2);
+                                destView.Chips[x, World.ROOM_HEIGHT - 1].TileID = 26 + x % 2;
                             }
 
                             _bossRoom = destView;
@@ -81,7 +82,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case Global.WEStates.ACTIVATING:
-                    if (Global.Camera.GetState() == System.Camera.CamStates.NONE)
+                    if (Global.Camera.GetState() == Camera.CamStates.NONE)
                     {
                         _state = Global.WEStates.SPEEDING_UP;
                     }

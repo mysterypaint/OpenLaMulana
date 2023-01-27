@@ -34,7 +34,7 @@
         BAT_FLUTTER,
         BAT_CRY,
         PUZZLE_SOLVED,
-        SE1F,
+        ROOM_LOCKDOWN,
         SE20,
         MSX_OPEN,
         P_DEATH,

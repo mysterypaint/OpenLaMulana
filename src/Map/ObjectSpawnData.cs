@@ -16,8 +16,9 @@ namespace OpenLaMulana
         public List<ObjectStartFlag> StartFlags;
         public bool SpawnIsGlobal = true; // Sanity checking
         public bool IsHardModeChange { get; set; } = false; // For quick researching
+        public bool XYAreCoords { get; set; } = true;
 
-        public ObjectSpawnData(int eventNumber, int x, int y, int OP1, int OP2, int OP3, int OP4)
+        public ObjectSpawnData(int eventNumber, int x, int y, int OP1, int OP2, int OP3, int OP4, bool xYAreCoords)
         {
             EventNumber = eventNumber;
             X = x;
@@ -26,6 +27,7 @@ namespace OpenLaMulana
             this.OP2 = OP2;
             this.OP3 = OP3;
             this.OP4 = OP4;
+            this.XYAreCoords = xYAreCoords;
 
             StartFlags = new List<ObjectStartFlag>();
         }
@@ -39,8 +41,11 @@ namespace OpenLaMulana
 
         internal void CoordsAreRelativeToView(int roomWidth, int roomHeight)
         {
-            X %= roomWidth;
-            Y %= roomHeight;
+            if (XYAreCoords)
+            {
+                X %= roomWidth;
+                Y %= roomHeight;
+            }
             SpawnIsGlobal = false;
         }
 

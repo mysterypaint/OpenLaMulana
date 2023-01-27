@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class Kakoujuu : InteractableWorldEntity
+    internal class EnemyKakoujuu : InteractableWorldEntity
     {
         private SpriteAnimation _walkingLeftAnim = null;
         private double _hsp = 0;
@@ -16,7 +16,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
         private int _facingDirection = -1;
         private View _currRoom = null;
 
-        public Kakoujuu(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        public EnemyKakoujuu(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
 

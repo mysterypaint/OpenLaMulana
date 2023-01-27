@@ -223,7 +223,16 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
 
-            MoveToWorldSpawnPoint();
+            if (Global.DevModeEnabled)
+            {
+                View destView = Global.World.GetField(6).GetView(2, 0);
+                Global.World.FieldTransitionImmediate(Global.World.GetCurrentView(), destView);
+
+                SetBBoxToTile(6, 6);
+                //MoveToWorldSpawnPoint();
+            }
+            else
+                MoveToWorldSpawnPoint();
         }
 
         private void GetDebugEquipment()
