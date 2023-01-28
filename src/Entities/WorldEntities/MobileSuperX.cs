@@ -1457,7 +1457,7 @@ namespace OpenLaMulana
 
         private void DrawMSXBackground(SpriteBatch spriteBatch, GameTime gameTime, bool drawBlue = false)
         {
-            HelperFunctions.DrawBlackSplashscreen(spriteBatch, true);
+            HelperFunctions.DrawSplashscreen(spriteBatch, true, Color.Black);
 
             if (drawBlue)
                 HelperFunctions.DrawSkyBlueSplashscreen(spriteBatch, false);

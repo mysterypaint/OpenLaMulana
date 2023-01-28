@@ -66,14 +66,17 @@ namespace OpenLaMulana.Entities.WorldEntities
                 case Global.WEStates.IDLE:
                     if (CollidesWithPlayer())
                     {
-                        if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.SUB_WEAPON) && Global.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER)
+                        if (Global.Camera.GetState() == Camera.CamStates.NONE)
                         {
-                            HelperFunctions.UpdateInventory(Global.ItemTypes.SOFTWARE, _itemID, true, SFX.SOFTWARE_TAKEN, _softwareSprite);
-                            if (_flagToSet >= 0)
+                            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.SUB_WEAPON) && Global.Inventory.EquippedSubWeapon == Global.SubWeapons.HANDY_SCANNER)
                             {
-                                Global.GameFlags.InGameFlags[_flagToSet] = true;
+                                HelperFunctions.UpdateInventory(Global.ItemTypes.SOFTWARE, _itemID, true, SFX.SOFTWARE_TAKEN, _softwareSprite);
+                                if (_flagToSet >= 0)
+                                {
+                                    Global.GameFlags.InGameFlags[_flagToSet] = true;
+                                }
+                                State = Global.WEStates.DYING;
                             }
-                            State = Global.WEStates.DYING;
                         }
                     }
                     break;

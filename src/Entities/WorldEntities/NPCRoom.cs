@@ -318,7 +318,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         private void DrawNPCRoom(SpriteBatch spriteBatch, GameTime gameTime, int dBoxHeight = 18)
         {
-            HelperFunctions.DrawBlackSplashscreen(spriteBatch, false);
+            HelperFunctions.DrawSplashscreen(spriteBatch, false, Color.Black);
             _NPCGraphic.Draw(spriteBatch, new Vector2(15 * 8, Main.HUD_HEIGHT + 2 * 8));
             for (var x = 0; x < 11; x++)
             {

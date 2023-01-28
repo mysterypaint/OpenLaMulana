@@ -45,10 +45,10 @@ namespace OpenLaMulana.System
                     SpriteEffects.None, 0f);
         }
 
-        internal static void DrawBlackSplashscreen(SpriteBatch spriteBatch, bool wholeScreen = true)
+        internal static void DrawSplashscreen(SpriteBatch spriteBatch, bool wholeScreen = true, Color color = default)
         {
             if (wholeScreen)
-                DrawRectangle(spriteBatch, new Rectangle(0, 0, Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT), Color.Black);
+                DrawRectangle(spriteBatch, new Rectangle(0, 0, Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT), color);
             else
                 DrawRectangle(spriteBatch, new Rectangle(0, Main.HUD_HEIGHT, Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT - Main.HUD_HEIGHT), Color.Black);
         }

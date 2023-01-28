@@ -132,7 +132,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.SubWeaponsDamageTable[Global.SubWeapons.THROWING_KNIFE] = 3;
             Global.SubWeaponsDamageTable[Global.SubWeapons.FLARES] = 4;
             Global.SubWeaponsDamageTable[Global.SubWeapons.SPEAR] = 3;
-            Global.SubWeaponsDamageTable[Global.SubWeapons.BOMB] = 2*4;
+            Global.SubWeaponsDamageTable[Global.SubWeapons.BOMB] = 2 * 4;
             Global.SubWeaponsDamageTable[Global.SubWeapons.PISTOL] = 20;
 
             Global.RomDamageMultipliers[Global.SoftwareCombos.VID_HUST_BREAKSHOT] = 2;      // Knife and Keyblade Attack Power +2
@@ -415,325 +415,342 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         {
 
             _moveX = InputManager.DirHeldX;
-            //_moveY = InputManager.DirHeldY;
 
-            double bboxSide;
-
-            //_vsp = _moveY * SPD_WALK;
-            if (_vsp < SPD_GRAV_MAX)
-                _vsp += SPD_GRAVITY;// _moveY * _moveSpeed;
-            else
+            bool debugPhysics = false;
+            if (Global.DevModeEnabled)
             {
-                _vsp = SPD_GRAV_MAX;
-                _vsp_fract = 0;
+                debugPhysics = Global.DevModeDebugPhysics;
             }
 
-            // Is my middle center touching the floor at the start of this frame?
-            _isGrounded = (InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1) >= 0);
-
-            // Jump
-            if ((_isGrounded || InFloor(currRoom, BBox.Left, BBox.Bottom + 1) >= 0) ||
-                (_isGrounded || InFloor(currRoom, BBox.Right, BBox.Bottom + 1) >= 0) ||
-                (_isGrounded || InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1) >= 0)
-                )
+            if (debugPhysics)
             {
-                if (_jumpCount < _jumpsMax || _fellOffLedge)
-                    Global.AudioManager.PlaySFX(SFX.P_GROUNDED);
-                _jumpCount = _jumpsMax;
-                _fellOffLedge = false;
-                //_vsp = 0;
-                //_vsp_fract = 0;
-                State = PlayerState.IDLE;
+                _moveY = InputManager.DirHeldY;
+                _vsp = _moveY * _spdWalk;
+                _hsp = _moveX * _spdWalk;
+                BBox.X += (int)_hsp;
+                BBox.Y += (int)_vsp;
+            }
+            else
+            {
 
+                double bboxSide;
 
-                if (_onIce)
-                {
-                    if (_moveX != 0)
-                    {
-                        if (_moveX > 0)
-                            FacingX = Facing.RIGHT;
-                        else
-                            FacingX = Facing.LEFT;
-
-                        _hsp += _acc * _moveX;
-                    }
-                    _hsp = HelperFunctions.Lerp((float)_hsp, 0, (float)_drag);
-                }
+                if (_vsp < SPD_GRAV_MAX)
+                    _vsp += SPD_GRAVITY;// _moveY * _moveSpeed;
                 else
                 {
-                    _hsp = _moveX * _spdWalk;
-                }
-            }
-            else
-            {
-                if (!_inLiquid)
-                {
-                    /*
-                    if (_jumpCount == _jumpsMax)
-                        _jumpCount--;
-                    */
+                    _vsp = SPD_GRAV_MAX;
+                    _vsp_fract = 0;
 
-                    if (_wasOnIce)
+                }
+
+                // Is my middle center touching the floor at the start of this frame?
+                _isGrounded = (InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1) >= 0);
+
+                // Jump
+                if ((_isGrounded || InFloor(currRoom, BBox.Left, BBox.Bottom + 1) >= 0) ||
+                    (_isGrounded || InFloor(currRoom, BBox.Right, BBox.Bottom + 1) >= 0) ||
+                    (_isGrounded || InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1) >= 0)
+                    )
+                {
+                    if (_jumpCount < _jumpsMax || _fellOffLedge)
+                        Global.AudioManager.PlaySFX(SFX.P_GROUNDED);
+                    _jumpCount = _jumpsMax;
+                    _fellOffLedge = false;
+                    //_vsp = 0;
+                    //_vsp_fract = 0;
+                    State = PlayerState.IDLE;
+
+
+                    if (_onIce)
                     {
-                        _wasOnIce = false;
+                        if (_moveX != 0)
+                        {
+                            if (_moveX > 0)
+                                FacingX = Facing.RIGHT;
+                            else
+                                FacingX = Facing.LEFT;
+
+                            _hsp += _acc * _moveX;
+                        }
+                        _hsp = HelperFunctions.Lerp((float)_hsp, 0, (float)_drag);
                     }
                     else
                     {
-                        if (_vsp >= 0)
-                        {
-                            if (_jumpCount < _jumpsMax && !_fellOffLedge)
-                                _hsp = _moveX * _spdWalk; // Allow horizontal movement if we're falling
-                            else
-                            {
-                                // We walked off an edge: Instead, we should fall straight down until we touch ground
-                                _hsp = 0;
-                                _jumpCount = 0;
-                                _fellOffLedge = true;
-                            }
-                        }
+                        _hsp = _moveX * _spdWalk;
                     }
                 }
                 else
                 {
-                    if (_vsp < 0)
-                        _hsp = _moveX * _spdWalk;
-                }
-            }
-
-
-
-            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP) && _jumpCount > 0)
-            {
-                State = PlayerState.JUMPING;
-                _jumpCount--;
-                _vsp = -SPD_JUMP;
-                _vsp_fract = 0;
-                _isGrounded = false;
-                _hsp = _moveX * _spdWalk;
-                Global.AudioManager.PlaySFX(SFX.P_JUMP);
-            }
-
-            if ((_vsp < 0) && !InputManager.ButtonCheckHeld30FPS(Global.ControllerKeys.JUMP))
-            {
-                Math.Max(_vsp, -SPD_JUMP / 2);
-            }
-
-
-
-            // Reapply fractional movement
-            _hsp += _hsp_fract;
-            _vsp += _vsp_fract;
-
-            // Store and Remove fractions
-            _hsp_fract = _hsp - (Math.Floor(Math.Abs(_hsp)) * Math.Sign(_hsp));
-            _hsp -= _hsp_fract;
-            _vsp_fract = _vsp - (Math.Floor(Math.Abs(_vsp)) * Math.Sign(_vsp));
-            _vsp -= _vsp_fract;
-
-
-            // Entity Collisions
-            _enemyGrounded = false;
-
-            foreach (IGameEntity entity in Global.EntityManager.Entities)
-            {
-                if (entity != null)
-                {
-                    switch (entity)
+                    if (!_inLiquid)
                     {
-                        case InteractableWorldEntity:
-                            InteractableWorldEntity interactiveEntity = (InteractableWorldEntity)entity;
+                        /*
+                        if (_jumpCount == _jumpsMax)
+                            _jumpCount--;
+                        */
 
-                            if (interactiveEntity.CollisionBehavior != ChipTypes.VOID)
+                        if (_wasOnIce)
+                        {
+                            _wasOnIce = false;
+                        }
+                        else
+                        {
+                            if (_vsp >= 0)
                             {
-                                switch (interactiveEntity.CollisionBehavior)
+                                if (_jumpCount < _jumpsMax && !_fellOffLedge)
+                                    _hsp = _moveX * _spdWalk; // Allow horizontal movement if we're falling
+                                else
                                 {
-                                    case ChipTypes.SOLID:
-                                    case ChipTypes.CLINGABLE_WALL:
-                                    case ChipTypes.UNCLINGABLE_WALL:
-                                    case ChipTypes.ICE:
-                                        int xOff = 0;
-                                        if (_hsp > 0)
-                                        {
-                                            xOff = 1;
-                                        }
-                                        if (HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp + xOff, 0))
-                                        {
-                                            while (!HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, Math.Sign(_hsp) + xOff, 0))
-                                            {
-                                                BBox.X += Math.Sign(_hsp);
-                                            }
-                                            _hsp = 0;
-                                            _hsp_fract = 0;
-                                        }
+                                    // We walked off an edge: Instead, we should fall straight down until we touch ground
+                                    _hsp = 0;
+                                    _jumpCount = 0;
+                                    _fellOffLedge = true;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (_vsp < 0)
+                            _hsp = _moveX * _spdWalk;
+                    }
+                }
 
-                                        if (HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp, (int)_vsp))
-                                        {
-                                            while (!HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp, Math.Sign(_vsp)))
+
+
+                if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP) && _jumpCount > 0)
+                {
+                    State = PlayerState.JUMPING;
+                    _jumpCount--;
+                    _vsp = -SPD_JUMP;
+                    _vsp_fract = 0;
+                    _isGrounded = false;
+                    _hsp = _moveX * _spdWalk;
+                    Global.AudioManager.PlaySFX(SFX.P_JUMP);
+                }
+
+                if ((_vsp < 0) && !InputManager.ButtonCheckHeld30FPS(Global.ControllerKeys.JUMP))
+                {
+                    Math.Max(_vsp, -SPD_JUMP / 2);
+                }
+
+
+
+                // Reapply fractional movement
+                _hsp += _hsp_fract;
+                _vsp += _vsp_fract;
+
+                // Store and Remove fractions
+                _hsp_fract = _hsp - (Math.Floor(Math.Abs(_hsp)) * Math.Sign(_hsp));
+                _hsp -= _hsp_fract;
+                _vsp_fract = _vsp - (Math.Floor(Math.Abs(_vsp)) * Math.Sign(_vsp));
+                _vsp -= _vsp_fract;
+
+
+                // Entity Collisions
+                _enemyGrounded = false;
+
+                foreach (IGameEntity entity in Global.EntityManager.Entities)
+                {
+                    if (entity != null)
+                    {
+                        switch (entity)
+                        {
+                            case InteractableWorldEntity:
+                                InteractableWorldEntity interactiveEntity = (InteractableWorldEntity)entity;
+
+                                if (interactiveEntity.CollisionBehavior != ChipTypes.VOID)
+                                {
+                                    switch (interactiveEntity.CollisionBehavior)
+                                    {
+                                        case ChipTypes.SOLID:
+                                        case ChipTypes.CLINGABLE_WALL:
+                                        case ChipTypes.UNCLINGABLE_WALL:
+                                        case ChipTypes.ICE:
+                                            int xOff = 0;
+                                            if (_hsp > 0)
                                             {
-                                                BBox.Y += Math.Sign(_vsp);
+                                                xOff = 1;
                                             }
-                                            _vsp = 0;
-                                            _vsp_fract = 0;
-                                            _enemyGrounded = true;
-                                        }
+                                            if (HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp + xOff, 0))
+                                            {
+                                                while (!HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, Math.Sign(_hsp) + xOff, 0))
+                                                {
+                                                    BBox.X += Math.Sign(_hsp);
+                                                }
+                                                _hsp = 0;
+                                                _hsp_fract = 0;
+                                            }
+
+                                            if (HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp, (int)_vsp))
+                                            {
+                                                while (!HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp, Math.Sign(_vsp)))
+                                                {
+                                                    BBox.Y += Math.Sign(_vsp);
+                                                }
+                                                _vsp = 0;
+                                                _vsp_fract = 0;
+                                                _enemyGrounded = true;
+                                            }
+                                            break;
+                                    }
+                                }
+
+                                break;
+                        }
+                    }
+                }
+
+                _isGrounded |= _enemyGrounded;
+
+                bboxSide = 0;
+
+                // Horizontal Collision
+
+                if (_hsp > 0)
+                {
+                    bboxSide = BBox.Right;
+                }
+                else
+                    bboxSide = BBox.Left;
+
+                int pxT = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Top));
+                int pxB = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Bottom));
+                int pxSC = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Center.Y));
+                ChipTypes tileBC = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom);
+                if (TileIsASlope(tileBC))
+                {                               // Did we find a slope tile at the bottom-center of the player's hitbox?
+                    pxB = 0;                    // If we did, pretend that we didn't find any solid tiles on the bottom-left/bottom-right and top-left/top-right edges of our hitbox, even if we did
+                }
+
+                if (pxT > 0 || pxSC > 0 || pxB > 0)
+                {
+                    if (_hsp > 0)
+                    {
+                        BBox.X = BBox.Center.X - (BBox.Center.X % CHIP_SIZE) + CHIP_SIZE - 1 - (BBox.Right - BBox.X);
+                    }
+                    else
+                        BBox.X = BBox.Center.X - (BBox.Center.X % CHIP_SIZE) - (BBox.Left - BBox.X);
+
+                    _hsp = 0;
+                }
+
+                BBox.X += (int)_hsp;
+
+
+
+                // Vertical Collision
+                if (_vsp > 0)
+                {
+                    bboxSide = BBox.Bottom;
+                }
+                else
+                    bboxSide = BBox.Top;
+
+                // First, consider if we are on a slope or not, using the bottom center pixel + vsp
+                ChipTypes tilePXC = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom + _vsp);
+
+                if (!TileIsASlope(tilePXC))
+                {
+                    int pxL = TileIsSolid(TileGetAtPixel(currRoom, BBox.Left, bboxSide + _vsp));
+                    int pxR = TileIsSolid(TileGetAtPixel(currRoom, BBox.Right, bboxSide + _vsp));
+                    pxSC = TileIsSolid(TileGetAtPixel(currRoom, BBox.Center.X, bboxSide + _vsp));
+                    if (pxL > 0 || pxSC > 0 || pxR > 0)
+                    {
+                        if (_vsp > 0)
+                        {
+                            BBox.Y = BBox.Bottom - (BBox.Bottom % CHIP_SIZE) + CHIP_SIZE + 1 - (BBox.Bottom - BBox.Y);
+                        }
+                        else
+                            BBox.Y = BBox.Bottom - (BBox.Bottom % CHIP_SIZE) - CHIP_SIZE - (BBox.Top - BBox.Y);
+
+                        _vsp = 0;
+                    }
+                }
+
+                // Regardless we hit a slope or not, correct our position, juuust in case we might still have any remaining vertical speed
+                int floorDist = InFloor(currRoom, BBox.Center.X, BBox.Bottom + _vsp);
+                if (floorDist >= 0)
+                {
+                    // We are inside the floor. Correct the Y position so we are exactly one pixel above the ground
+                    BBox.Y += (int)_vsp;
+                    BBox.Y -= (floorDist + 1);
+
+                    _vsp = 0;
+                    //_vsp_final = 0;
+                    _vsp_fract = 0;
+                    floorDist = -1;
+                }
+
+
+
+
+                // Walk down slopes
+                if (_isGrounded)
+                {
+                    BBox.Y += Math.Abs(floorDist) - 1;
+
+                    if (Global.AnimationTimer.OneFrameElapsed())
+                    {
+                        switch (tilePXC)
+                        {
+                            case ChipTypes.ASCENDING_SLOPE_LEFT:
+                                // Drag the player along the slope if they're standing on it
+                                BBox.X += 1;
+                                BBox.Y += 1;
+                                break;
+                            case ChipTypes.ASCENDING_SLOPE_RIGHT:
+                                // Drag the player along the slope if they're standing on it
+                                BBox.X -= 1;
+                                BBox.Y -= 1;
+                                break;
+                            case ChipTypes.ICE_SLOPE_RIGHT:
+                            case ChipTypes.ICE_SLOPE_LEFT:          // Enable slippery physics, because we've landed on ice
+                                _onIce = true;
+                                break;
+                        }
+                    }
+
+                    var yDiff = (int)(BBox.Bottom - Math.Floor((double)BBox.Bottom / CHIP_SIZE) * CHIP_SIZE);
+                    if (yDiff == CHIP_SIZE - 1)
+                    {
+                        // If the slope continues
+                        ChipTypes secondCheckingTile = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom + 1);
+                        if (TileIsASlope(secondCheckingTile))
+                        {
+                            // Move there
+                            BBox.Y += Math.Abs(InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1));
+
+
+                            // If applicable, drag the player along the slope if they're standing on it
+                            if (Global.AnimationTimer.OneFrameElapsed())
+                            {
+                                switch (secondCheckingTile)
+                                {
+                                    case ChipTypes.ASCENDING_SLOPE_LEFT:
+                                        BBox.X += 1;
+                                        //BBox.Y += 1;
+                                        break;
+                                    case ChipTypes.ASCENDING_SLOPE_RIGHT:
+                                        BBox.X -= 1;
+                                        //BBox.Y -= 1;
                                         break;
                                 }
                             }
 
-                            break;
-                    }
-                }
-            }
-
-            _isGrounded |= _enemyGrounded;
-
-            bboxSide = 0;
-
-            // Horizontal Collision
-
-            if (_hsp > 0)
-            {
-                bboxSide = BBox.Right;
-            }
-            else
-                bboxSide = BBox.Left;
-
-            int pxT = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Top));
-            int pxB = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Bottom));
-            int pxSC = TileIsSolid(TileGetAtPixel(currRoom, bboxSide + _hsp, BBox.Center.Y));
-            ChipTypes tileBC = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom);
-            if (TileIsASlope(tileBC))
-            {                               // Did we find a slope tile at the bottom-center of the player's hitbox?
-                pxB = 0;                    // If we did, pretend that we didn't find any solid tiles on the bottom-left/bottom-right and top-left/top-right edges of our hitbox, even if we did
-            }
-
-            if (pxT > 0 || pxSC > 0 || pxB > 0)
-            {
-                if (_hsp > 0)
-                {
-                    BBox.X = BBox.Center.X - (BBox.Center.X % CHIP_SIZE) + CHIP_SIZE - 1 - (BBox.Right - BBox.X);
-                }
-                else
-                    BBox.X = BBox.Center.X - (BBox.Center.X % CHIP_SIZE) - (BBox.Left - BBox.X);
-
-                _hsp = 0;
-            }
-
-            BBox.X += (int)_hsp;
-
-
-
-            // Vertical Collision
-            if (_vsp > 0)
-            {
-                bboxSide = BBox.Bottom;
-            }
-            else
-                bboxSide = BBox.Top;
-
-            // First, consider if we are on a slope or not, using the bottom center pixel + vsp
-            ChipTypes tilePXC = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom + _vsp);
-
-            if (!TileIsASlope(tilePXC))
-            {
-                int pxL = TileIsSolid(TileGetAtPixel(currRoom, BBox.Left, bboxSide + _vsp));
-                int pxR = TileIsSolid(TileGetAtPixel(currRoom, BBox.Right, bboxSide + _vsp));
-                pxSC = TileIsSolid(TileGetAtPixel(currRoom, BBox.Center.X, bboxSide + _vsp));
-                if (pxL > 0 || pxSC > 0 || pxR > 0)
-                {
-                    if (_vsp > 0)
-                    {
-                        BBox.Y = BBox.Bottom - (BBox.Bottom % CHIP_SIZE) + CHIP_SIZE + 1 - (BBox.Bottom - BBox.Y);
-                    }
-                    else
-                        BBox.Y = BBox.Bottom - (BBox.Bottom % CHIP_SIZE) - CHIP_SIZE - (BBox.Top - BBox.Y);
-
-                    _vsp = 0;
-                }
-            }
-
-            // Regardless we hit a slope or not, correct our position, juuust in case we might still have any remaining vertical speed
-            int floorDist = InFloor(currRoom, BBox.Center.X, BBox.Bottom + _vsp);
-            if (floorDist >= 0)
-            {
-                // We are inside the floor. Correct the Y position so we are exactly one pixel above the ground
-                BBox.Y += (int)_vsp;
-                BBox.Y -= (floorDist + 1);
-
-                _vsp = 0;
-                //_vsp_final = 0;
-                _vsp_fract = 0;
-                floorDist = -1;
-            }
-
-
-
-
-            // Walk down slopes
-            if (_isGrounded)
-            {
-                BBox.Y += Math.Abs(floorDist) - 1;
-
-                if (Global.AnimationTimer.OneFrameElapsed())
-                {
-                    switch (tilePXC)
-                    {
-                        case ChipTypes.ASCENDING_SLOPE_LEFT:
-                            // Drag the player along the slope if they're standing on it
-                            BBox.X += 1;
-                            BBox.Y += 1;
-                            break;
-                        case ChipTypes.ASCENDING_SLOPE_RIGHT:
-                            // Drag the player along the slope if they're standing on it
-                            BBox.X -= 1;
-                            BBox.Y -= 1;
-                            break;
-                        case ChipTypes.ICE_SLOPE_RIGHT:
-                        case ChipTypes.ICE_SLOPE_LEFT:          // Enable slippery physics, because we've landed on ice
-                            _onIce = true;
-                            break;
-                    }
-                }
-
-                var yDiff = (int)(BBox.Bottom - Math.Floor((double)BBox.Bottom / CHIP_SIZE) * CHIP_SIZE);
-                if (yDiff == CHIP_SIZE - 1)
-                {
-                    // If the slope continues
-                    ChipTypes secondCheckingTile = TileGetAtPixel(currRoom, BBox.Center.X, BBox.Bottom + 1);
-                    if (TileIsASlope(secondCheckingTile))
-                    {
-                        // Move there
-                        BBox.Y += Math.Abs(InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1));
-
-
-                        // If applicable, drag the player along the slope if they're standing on it
-                        if (Global.AnimationTimer.OneFrameElapsed())
-                        {
-                            switch (secondCheckingTile)
-                            {
-                                case ChipTypes.ASCENDING_SLOPE_LEFT:
-                                    BBox.X += 1;
-                                    //BBox.Y += 1;
-                                    break;
-                                case ChipTypes.ASCENDING_SLOPE_RIGHT:
-                                    BBox.X -= 1;
-                                    //BBox.Y -= 1;
-                                    break;
-                            }
                         }
 
                     }
-
                 }
+
+
+
+
+                BBox.Y += (int)_vsp;
+
+                if (BBox.Y < -8)
+                    BBox.Y = -8;
             }
-
-
-
-
-            BBox.Y += (int)_vsp;
-
-            if (BBox.Y < -8)
-                BBox.Y = -8;
         }
 
         private void HandleScreenTransitions(View currRoom)
@@ -866,12 +883,12 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Otherwise, the order shouldn’t matter much. Then, for each axis:
             */
 
-                                    // Step X
+            // Step X
 
-                                    // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
-                                    //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
+            // Get the coordinate of the forward-facing edge, e.g. : If walking left, the x coordinate of left of bounding box.
+            //  If walking right, x coordinate of right side.If up, y coordinate of top, etc.
 
-                                    _moveX = InputManager.DirHeldX;
+            _moveX = InputManager.DirHeldX;
             if (_moveX == 1)
                 FacingX = Facing.RIGHT;
             else if (_moveX == -1)

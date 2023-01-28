@@ -11,7 +11,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
     internal class GuardianEllmac : IGlobalWorldEntity
     {
         private int spritesMax = 30;
-        Sprite[] sprites = new Sprite[30];
+        Sprite[] _sprites = new Sprite[30];
         private int _sprNum = 0;
         private int _framesBeforeDrop = 0;
         private Global.WEStates _state = Global.WEStates.INIT;
@@ -23,9 +23,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
             _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS02);
             for (var i = 0; i < spritesMax; i++)
             {
-                sprites[i] = Global.SpriteDefManager.GetSprite(Global.SpriteDefs.BOSS02, i);
+                _sprites[i] = Global.SpriteDefManager.GetSprite(Global.SpriteDefs.BOSS02, i);
             }
-            _sprIndex = sprites[_sprNum];
+            _sprIndex = _sprites[_sprNum];
             Position += new Vector2(200, -3);
             Visible = true;
 
@@ -105,7 +105,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
                 if (_sprNum >= spritesMax)
                     _sprNum = 0;
             }
-            _sprIndex = sprites[_sprNum];
+            _sprIndex = _sprites[_sprNum];
         }
 
         private void ShiftScreenLeft()

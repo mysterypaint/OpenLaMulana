@@ -192,9 +192,9 @@ namespace OpenLaMulana.System
             }
         }
 
-        public bool CheckChantedMantra(string checkingString)
+        public bool CheckChantedMantra(string checkingString, bool ignoreKeystroke = false)
         {
-            if (_lastKeyStroke.Length > 0)
+            if (_lastKeyStroke.Length > 0 || ignoreKeystroke)
             {
                 string chant = String.Empty;
                 for (var i = 7; i >= 0; i--)
