@@ -11,11 +11,12 @@ namespace OpenLaMulana.Entities.WorldEntities
 {
     internal class FieldTransition : InteractableWorldEntity
     {
+        private Sprite _maskingSprite = null;
+
         public FieldTransition(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             int direction = op1;
-            int maskX = op2;    // Specifies the graphics that are overwritten in front of Lemeza when he passes through the gate
-            int maskY = op3;
+
             int unused = op4;
 
             switch (direction) {
@@ -42,6 +43,13 @@ namespace OpenLaMulana.Entities.WorldEntities
                     break;
             }
 
+            // Specify the graphics that are overwritten in front of Lemeza when he passes through the gate
+            _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
+            _maskingSprite = new Sprite(_tex, new Vector2(op2, op3), new Vector2(HitboxWidth, HitboxHeight));
+
+            _sprIndex = _maskingSprite;
+            Depth = (int)Global.DrawOrder.Foreground;
+
             if (HelperFunctions.EntityMaySpawn(StartFlags))
             {
                 State = Global.WEStates.IDLE;
@@ -53,6 +61,13 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 Rectangle rect = new Rectangle((int)Position.X, (int)Position.Y + Main.HUD_HEIGHT, HitboxWidth, HitboxHeight);//(int)(0.5f * (HitboxWidth / World.CHIP_SIZE)), (int)(0.5f * (HitboxWidth / World.CHIP_SIZE)));
                 HelperFunctions.DrawRectangle(spriteBatch, rect, new Color(0, 80, 200, 25));
+            }
+
+            switch (State)
+            {
+                case Global.WEStates.ACTIVATING:
+                    _sprIndex.Draw(spriteBatch, Position + new Vector2(0, World.HUD_HEIGHT));
+                    break;
             }
         }
 
@@ -67,6 +82,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case Global.WEStates.IDLE:
+                    State = Global.WEStates.ACTIVATING;
                     break;
             }
         }

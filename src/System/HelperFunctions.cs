@@ -969,7 +969,10 @@ namespace OpenLaMulana.System
                 case Global.ObtainableTreasures.SHELL_HORN:
                     if (forciblySetGameFlag)
                         Global.GameFlags.InGameFlags[(int)GameFlags.Flags.SHELL_HORN_TAKEN] = true;
-
+                    break;
+                case Global.ObtainableTreasures.MAGATAMA_JEWEL:
+                    if (forciblySetGameFlag)
+                        Global.GameFlags.InGameFlags[(int)GameFlags.Flags.MAGATAMA_TAKEN] = true;
                     break;
                 case Global.ObtainableTreasures.GRAIL:
                     if (forciblySetGameFlag)
@@ -1399,6 +1402,12 @@ namespace OpenLaMulana.System
             }
 
             return result;
+        }
+
+        internal static bool PlayerInTheSameView(View checkingView)
+        {
+            Field checkingField = checkingView.GetParentField();
+            return checkingView.X == Global.World.CurrViewX && checkingView.Y == Global.World.CurrViewY && checkingField.ID == Global.World.CurrField;
         }
     }
 }

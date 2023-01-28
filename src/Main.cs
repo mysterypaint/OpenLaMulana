@@ -183,8 +183,8 @@ namespace OpenLaMulana
             _protag.Depth = (int)Global.DrawOrder.Protag;
             Global.Camera.SetProtag(_protag);
 
-            Global.GlobalInput = new InputManager();
-            Global.GlobalInput.Init();
+            Global.Input = new InputManager();
+            Global.Input.Init();
 
             Global.MobileSuperX = new MobileSuperX();
 
@@ -197,6 +197,7 @@ namespace OpenLaMulana
             
             Global.GameMenu = new GameMenu(Global.ScreenOverlayState.INVISIBLE, Global.TextManager);
             Global.EntityManager.AddEntity(Global.GameMenu);
+            Global.InitMantras();
             InitHUDSprites();
             LoadSaveState();
         }
@@ -213,7 +214,7 @@ namespace OpenLaMulana
 
         protected override void Update(GameTime gameTime)
         {
-            Global.GlobalInput.Update(gameTime);
+            Global.Input.Update(gameTime);
 
             if (InputManager.DirectKeyboardCheckPressed(Keys.Escape))
                 Exit();

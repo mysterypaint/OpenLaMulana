@@ -56,6 +56,9 @@ namespace OpenLaMulana.System
         private static ControllerNames? _identifiedController = null;
         private static ControllerNames? _previouslyIdentifiedController = null;
         private Keys[] _lastKeyStroke = null;
+        private static Keys[] _lastEightKeyStrokes;
+        private int _keystrokeCooldownTimer = 0;
+        private int _keystrokeCooldownTimerReset = 8;
 
         public void Init()
         {
@@ -137,6 +140,8 @@ namespace OpenLaMulana.System
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MAIN_WEAPON_SHIFT_RIGHT] = (int)Buttons.RightTrigger;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_MOVE_LEFT] = (int)Buttons.LeftTrigger;
             ConfigKeys[(int)ControllerTypes.Gamepad, (int)ControllerKeys.MENU_MOVE_RIGHT] = (int)Buttons.RightTrigger;
+
+            _lastEightKeyStrokes = new Keys[8];
         }
 
         public void Update(GameTime gameTime)
@@ -144,6 +149,23 @@ namespace OpenLaMulana.System
             GetKeyboardState();
             _lastKeyStroke = t_keyboardState.GetPressedKeys();
 
+            if (_keystrokeCooldownTimer <= 0)
+            {
+                if (_lastKeyStroke.Length > 0)
+                {
+                    for (var i = 7; i > 0; i--)
+                    {
+                        _lastEightKeyStrokes[i] = _lastEightKeyStrokes[i - 1];
+                    }
+                    _lastEightKeyStrokes[0] = _lastKeyStroke[0];
+                    _keystrokeCooldownTimer = _keystrokeCooldownTimerReset;
+
+                }
+            }
+            else
+            {
+                _keystrokeCooldownTimer--;
+            }
 
             if (_identifiedController != null) {
                 _previouslyIdentifiedController = _identifiedController;
@@ -168,6 +190,27 @@ namespace OpenLaMulana.System
             {
                 DebugControls();
             }
+        }
+
+        public bool CheckChantedMantra(string checkingString)
+        {
+            if (_lastKeyStroke.Length > 0)
+            {
+                string chant = String.Empty;
+                for (var i = 7; i >= 0; i--)
+                {
+                    if (_lastEightKeyStrokes[i] != Keys.None)
+                        chant += _lastEightKeyStrokes[i].ToString();
+                }
+
+                int startPos = chant.Length - checkingString.Length;
+
+                if (startPos >= 0)
+                {
+                    return chant.Substring(startPos, checkingString.Length).Equals(checkingString);
+                }
+            }
+            return false;
         }
 
         private void UpdateAllDirectionalInputs()
@@ -371,7 +414,7 @@ namespace OpenLaMulana.System
                 Field destField = Global.World.GetField(newVal);
                 Global.World.FieldTransitionImmediate(currField.GetView(mX, mY), destField.GetView(mX, mY));
             }
-            else if (DirectKeyboardCheckPressed(Keys.T))
+            else if (DirectKeyboardCheckPressed(Keys.Q))
             {
                 //Global.Camera.SetState((int)CamStates.TRANSITION_PIXELATE_1);
                 Camera.CamStates camState = Global.Camera.GetState();

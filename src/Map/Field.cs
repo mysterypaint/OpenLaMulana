@@ -683,6 +683,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.SUBBOSS_OXHEAD_AND_HORSE_FACE:
                     newObj = new SubBossOxHeadAndHorseFaceGenerator(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+                case EntityIDs.MANTRA_LISTENER:
+                    newObj = new MantraListener(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
                 case EntityIDs.ENEMY_A_BAO_A_QU:
                     newObj = new EnemyABaoAQu(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;

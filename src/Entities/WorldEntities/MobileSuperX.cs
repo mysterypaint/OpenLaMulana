@@ -751,7 +751,7 @@ namespace OpenLaMulana
 
             int grailChanted = -1;
 
-            Keys[] pressedKeys = Global.GlobalInput.GetPressedKeys();
+            Keys[] pressedKeys = Global.Input.GetPressedKeys();
 
             if (pressedKeys.Length > 0)
             {

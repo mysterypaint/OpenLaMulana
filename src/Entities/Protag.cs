@@ -258,6 +258,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.FEATHER, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.MSX2, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.GRAIL, true);
+            HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.MAGATAMA_JEWEL, true);
             HelperFunctions.UpdateInventorySilent(Global.SubWeapons.SHURIKEN, true);
             HelperFunctions.UpdateInventorySilent(Global.SubWeapons.HANDY_SCANNER, true);
 

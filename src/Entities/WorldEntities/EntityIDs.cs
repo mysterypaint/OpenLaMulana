@@ -41,6 +41,7 @@
         POISON_TIMER = 162,
         GREAT_ANKH = 164,
         SUBBOSS_OXHEAD_AND_HORSE_FACE = 174,
+        MANTRA_LISTENER = 176,
         ENEMY_A_BAO_A_QU = 182,
     }
 }

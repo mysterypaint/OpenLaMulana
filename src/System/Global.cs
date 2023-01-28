@@ -526,6 +526,7 @@ namespace OpenLaMulana
             MAX,
             SCANNING,
         }
+        
         public enum HardCodedText : int
         {
             SOFTWARE_NAMES_BEGIN = 0,
@@ -544,6 +545,8 @@ namespace OpenLaMulana
             MAIN_WEAPON_NAMES_END = 644,
             SUB_WEAPON_NAMES_BEGIN = 645,
             SUB_WEAPON_NAMES_END = 657,
+            MANTRAS_BEGIN = 785,
+            MANTRAS_END = 794,
         }
 
         public enum PlatformingPhysics : int
@@ -593,7 +596,7 @@ namespace OpenLaMulana
         public static GraphicsDevice GraphicsDevice;
         public static GraphicsDeviceManager GraphicsDeviceManager;
         public static Camera Camera;
-        public static InputManager GlobalInput;
+        public static InputManager Input;
         public static World World;
         public static InGameTimer InGameTimer;
         public static EntityManager EntityManager;
@@ -606,6 +609,7 @@ namespace OpenLaMulana
         public static Protag Protag;
         public static Jukebox Jukebox;
         public static GameFlags GameFlags;
+        public static Dictionary<Languages, string[]> MantraLanguageBank = new Dictionary<Languages, string[]>();
 
         public static Languages CurrLang = Languages.English;
 
@@ -621,5 +625,22 @@ namespace OpenLaMulana
         public static Dictionary<MainWeapons, int> WeaponsDamageTable = new Dictionary<MainWeapons, int>();
         public static Dictionary<SubWeapons, int> SubWeaponsDamageTable = new Dictionary<SubWeapons, int>();
         public static Dictionary<SoftwareCombos, int> RomDamageMultipliers = new Dictionary<SoftwareCombos, int>();
+
+        public static void InitMantras()
+        {
+            int mantraCount = (int)HardCodedText.MANTRAS_END - (int)HardCodedText.MANTRAS_BEGIN + 1;
+
+            for (Languages lang = (Languages)0; lang < Languages.Max; lang++)
+            {
+                string[] Mantras = new string[mantraCount];
+
+                for (var i = 0; i < mantraCount; i++)
+                {
+                    Mantras[i] = Global.TextManager.GetText((int)HardCodedText.MANTRAS_BEGIN + i, CurrLang);
+
+                }
+                MantraLanguageBank.Add(lang, Mantras);
+            }
+        }
     }
 }

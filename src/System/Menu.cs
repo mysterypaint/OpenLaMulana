@@ -522,7 +522,7 @@ namespace OpenLaMulana.System
                         break;
                     case MenuTypes.INPUT_KB:
                         if (_inputCooldownTimer <= 0) {
-                            Keys[] pressedKeys = Global.GlobalInput.GetPressedKeys();
+                            Keys[] pressedKeys = Global.Input.GetPressedKeys();
 
                             if (pressedKeys.Length > 0)
                             {
@@ -552,7 +552,7 @@ namespace OpenLaMulana.System
                     case MenuTypes.INPUT_GP:
                         if (_inputCooldownTimer <= 0)
                         {
-                            List<Buttons> pressedButtons = Global.GlobalInput.GetPressedButtons();
+                            List<Buttons> pressedButtons = Global.Input.GetPressedButtons();
 
                             if (pressedButtons.Count > 0)
                             {

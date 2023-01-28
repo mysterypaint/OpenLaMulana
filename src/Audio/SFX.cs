@@ -35,7 +35,7 @@
         BAT_CRY,
         PUZZLE_SOLVED,
         ROOM_LOCKDOWN,
-        SE20,
+        WEDGE_ACTIVATED,
         MSX_OPEN,
         P_DEATH,
         ENEMY_SKELETON_COLLAPSE,

@@ -68,7 +68,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             Global.AudioManager.ChangeSongs(20);
 
                         if (CollidesWithPlayer()) {
-                            if (Global.GlobalInput.GetPressedKeyState(Global.ControllerKeys.MAIN_WEAPON))
+                            if (Global.Input.GetPressedKeyState(Global.ControllerKeys.MAIN_WEAPON))
                             {
                                 _state = AnkhStates.ACTIVATED;
                                 _activationTimer = 30;
