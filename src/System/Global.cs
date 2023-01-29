@@ -14,6 +14,7 @@ namespace OpenLaMulana
         public static bool DevModeEnabled { get; internal set; } = true;
         public static bool DevModeAllEntitiesGeneric { get; internal set; } = false;
         public static bool DevModeDebugPhysics { get; set; } = true;
+        public static bool DevModeDisableAutoScreenTransitions { get; set; } = true;
 
         public enum DebugStats
         {

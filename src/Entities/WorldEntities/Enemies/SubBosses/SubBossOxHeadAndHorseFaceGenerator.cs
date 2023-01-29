@@ -15,6 +15,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
     {
         private View _currView = null;
         private int _flagToSetWhenDefeated = -1;
+        private bool _offsetPosition = false;
 
         public SubBossOxHeadAndHorseFaceGenerator(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, Global.SpriteDefs sprSheetIndex) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
@@ -49,12 +50,23 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                     if (!Visible)
                         return;
                     HelperFunctions.DrawSplashscreen(spriteBatch, true, Color.Gray);
-                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                    _sprIndex.TintColor = Color.White;
-                    if (CollidesWithPlayer(Position))
+
+                    if (Global.DevModeEnabled)
                     {
-                        _sprIndex.TintColor = Color.Red;
+                        if (CollidesWithPlayer(Position))
+                        {
+                            if (_sprIndex.TintColor != Color.Red)
+                                Global.AudioManager.PlaySFX(SFX.SHIELD_BLOCK);
+                            _sprIndex.TintColor = Color.Red;
+                        }
+                        else
+                        {
+                            _sprIndex.TintColor = Color.White;
+                        }
                     }
+
+                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+
                     break;
             }
         }
@@ -70,10 +82,24 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                         State = WEStates.IDLE;
                         //Global.AudioManager.PlaySFX(SFX.ROOM_LOCKDOWN);
                         Position = Vector2.Zero;
-                        //Position += new Vector2(64, 75);
                     }
                     break;
                 case WEStates.IDLE:
+                    if (Global.DevModeEnabled)
+                    {
+                        if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.MAIN_WEAPON))
+                        {
+                            _offsetPosition = !_offsetPosition;
+                        }
+                        if (_offsetPosition)
+                        {
+                            Position = new Vector2(32, 45);
+                        }
+                        else
+                        {
+                            Position = new Vector2(128, 45);
+                        }
+                    }
 
                     if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP))
                     {

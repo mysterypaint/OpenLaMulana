@@ -78,7 +78,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public Rectangle BBox;
 
-        private bool _debugDisableAutoScreenTransitions = false;
         public int ContactWarpCooldownTimer { get; set; } = 0;
 
         public const int SPRITE_WIDTH = 16;
@@ -196,7 +195,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             if (Global.DevModeEnabled)
             {
                 GetDebugEquipment();
-                //_debugDisableAutoScreenTransitions = true;
                 SaveData encryptedSave = null;// HelperFunctions.LoadSaveFromFile("lamulana.sa0");
 
                 if (encryptedSave != null)
@@ -749,7 +747,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         private void HandleScreenTransitions(View currRoom)
         {
-            if (_debugDisableAutoScreenTransitions)
+            if (Global.DevModeDisableAutoScreenTransitions)
                 return;
             if (Global.Camera.GetState() == Camera.CamStates.NONE)
             {
