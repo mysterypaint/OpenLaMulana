@@ -2,16 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianBahamut : IGlobalWorldEntity
+    internal class GuardianBahamut : ParentAssembledInteractiveWorldEntity
     {
-        private int spritesMax = 18;
-        Sprite[] sprites = new Sprite[18];
-        private int _sprNum = 0;
         private Global.WEStates _state = Global.WEStates.INIT;
         private View _bossRoom = null;
         private int _beginningWaitTimer = 0;
@@ -22,14 +20,10 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         private View[] backupView = new View[3];
         private int _timesShifted = 0;
 
-        public GuardianBahamut(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        public GuardianBahamut(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, Global.SpriteDefs sprSheetIndex) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
-            _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS03);
-            for (var i = 0; i < spritesMax; i++)
-            {
-                sprites[i] = Global.SpriteDefManager.GetSprite(Global.SpriteDefs.BOSS03, i);
-            }
-            _sprIndex = sprites[_sprNum];
+            InitAssembly(sprSheetIndex);
+
             Position += new Vector2(200, -3);
             Visible = false;
 
@@ -55,7 +49,20 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         {
             if (!Visible)
                 return;
-
+            if (Global.DevModeEnabled)
+            {
+                HelperFunctions.DrawSplashscreen(spriteBatch, true, Color.Gray);
+                if (CollidesWithPlayer(Position))
+                {
+                    if (_sprIndex.TintColor != Color.Red)
+                        Global.AudioManager.PlaySFX(SFX.SHIELD_BLOCK);
+                    _sprIndex.TintColor = Color.Red;
+                }
+                else
+                {
+                    _sprIndex.TintColor = Color.White;
+                }
+            }
             _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
@@ -102,15 +109,15 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
                     break;
             }
 
-            /*
-            int animeSpeed = 6;
-            if (gameTime.TotalGameTime.Ticks % (animeSpeed * 6) == 0)
+            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP))
             {
-                //_sprNum++;
-                if (_sprNum >= spritesMax)
-                    _sprNum = 0;
-            }*/
-            _sprIndex = sprites[_sprNum];
+                _sprDefIndex++;
+                if (_sprDefIndex >= _spritesMax)
+                    _sprDefIndex = 0;
+
+                UpdateSpriteIndex();
+                UpdateMaskIndex();
+            }
         }
 
         private void ShiftScreenRight()

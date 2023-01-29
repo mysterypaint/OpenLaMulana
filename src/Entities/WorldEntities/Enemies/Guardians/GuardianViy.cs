@@ -9,11 +9,8 @@ using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianViy : IGlobalWorldEntity
+    internal class GuardianViy : ParentAssembledInteractiveWorldEntity
     {
-        private int spritesMax = 24;
-        private Sprite[] _sprites = new Sprite[24];
-        private int _sprNum = 0;
         private View _bossRoom = null;
         private View _bossRoomUnmodified = null;
         private View _currActiveView = null;
@@ -21,55 +18,49 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         private int _moveTimer = 0;
         private int _shiftYSides = ROOM_HEIGHT - 1;
         private int _shiftYMiddle = ROOM_HEIGHT;
-        private Protag _protag = null;
         private int _ts = CHIP_SIZE;
         private SpriteAnimation anim;
 
         enum ViySprites
         {
-            MainBody,
-            Tentacle1_1,
-            Tentacle1_2,
-            Tentacle1_3,
+            MAIN_BODY,
+            TENTACLE1_1,
+            TENTACLE1_2,
+            TENTACLE1_3,
 
-            Tentacle2_1,
-            Tentacle2_2,
-            Tentacle2_3,
+            TENTACLE2_1,
+            TENTACLE2_2,
+            TENTACLE2_3,
 
-            Tentacle3_1,
-            Tentacle3_2,
-            Tentacle3_3,
+            TENTACLE3_1,
+            TENTACLE3_2,
+            TENTACLE3_3,
 
-            Tentacle4_1,
-            Tentacle4_2,
-            Tentacle4_3,
+            TENTACLE4_1,
+            TENTACLE4_2,
+            TENTACLE4_3,
 
-            TentacleBullet,
+            TENTACLE_BULLET,
 
-            EyeBullet,
+            EYE_BULLET,
 
-            ClosingEye,
-            ClosedEye,
-            OpenEye,
-            GiantLaser,
-            ExtendedEye,
-            ImpRight,
-            ImpRight_2,
-            ImpLeft
+            CLOSING_EYE,
+            CLOSED_EYE,
+            OPEN_EYE,
+            GIANT_LASER,
+            EXTENDED_EYE,
+            IMP_RIGHT,
+            IMP_RIGHT_2,
+            IMP_LEFT
         };
 
         private GuardianViyTentacle[] _tentacles = new GuardianViyTentacle[4];
         private GuardianViyEye _eye = null;
 
 
-        public GuardianViy(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        public GuardianViy(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, Global.SpriteDefs sprSheetIndex) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
-            _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS04);
-            for (var i = 0; i < spritesMax; i++)
-            {
-                _sprites[i] = Global.SpriteDefManager.GetSprite(Global.SpriteDefs.BOSS04, i);
-            }
-            _sprIndex = _sprites[_sprNum];
+            InitAssembly(sprSheetIndex);
 
             _bossRoom = Global.World.GetField(Global.World.CurrField).GetBossViews()[1].CloneView();
             _bossRoomUnmodified = _bossRoom.CloneView();
@@ -89,9 +80,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
             {
                 _tentacles[i] = (GuardianViyTentacle)InstanceCreatePersistent(new GuardianViyTentacle(x, y, -1, -1, -1, -1, true, null, null));
 
-                Sprite[] tentSprites = new Sprite[] { _sprites[(int)ViySprites.Tentacle1_1 + i * 3],
-                _sprites[(int)ViySprites.Tentacle1_2 + i * 3],
-                _sprites[(int)ViySprites.Tentacle1_3 + i * 3]
+                Sprite[] tentSprites = new Sprite[] { _mySprites[(int)ViySprites.TENTACLE1_1 + i * 3],
+                _mySprites[(int)ViySprites.TENTACLE1_2 + i * 3],
+                _mySprites[(int)ViySprites.TENTACLE1_3 + i * 3]
                 };
 
                 anim = SpriteAnimation.CreateSimpleAnimation(tentSprites, 0.25f);
@@ -101,15 +92,14 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
                     ));
             }
 
-            Sprite[] eyeSprites = new Sprite[] { _sprites[(int)ViySprites.ClosedEye],
-            _sprites[(int)ViySprites.ClosingEye],
-            _sprites[(int)ViySprites.OpenEye],
-            _sprites[(int)ViySprites.ExtendedEye]};
+            Sprite[] eyeSprites = new Sprite[] { _mySprites[(int)ViySprites.CLOSED_EYE],
+            _mySprites[(int)ViySprites.CLOSING_EYE],
+            _mySprites[(int)ViySprites.OPEN_EYE],
+            _mySprites[(int)ViySprites.EXTENDED_EYE]};
             _eye = (GuardianViyEye)InstanceCreatePersistent(new GuardianViyEye(x, y, -1, -1, -1, -1, true, null, null));
             _eye.Init(eyeSprites, new Vector2(11 * _ts, 18 * _ts), this);
 
             Position = new Vector2(_ts, 16 * _ts);
-            _protag = Global.World.GetProtag();
         }
 
         ~GuardianViy()
@@ -122,18 +112,33 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            if (Global.DevModeEnabled)
+            {
+                if (CollidesWithPlayer(Position))
+                {
+                    if (_sprIndex.TintColor != Color.Red)
+                        Global.AudioManager.PlaySFX(SFX.SHIELD_BLOCK);
+                    _sprIndex.TintColor = Color.Red;
+                }
+                else
+                {
+                    _sprIndex.TintColor = Color.White;
+                }
+            }
             _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.MAIN_WEAPON))
+            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP))
             {
-                _sprNum++;
-                if (_sprNum >= spritesMax)
-                    _sprNum = 0;
+                _sprDefIndex++;
+                if (_sprDefIndex >= _spritesMax)
+                    _sprDefIndex = 0;
+
+                UpdateSpriteIndex();
+                UpdateMaskIndex();
             }
-            _sprIndex = _sprites[_sprNum];
 
             if (Global.Camera.GetState() == Camera.CamStates.NONE)
             {

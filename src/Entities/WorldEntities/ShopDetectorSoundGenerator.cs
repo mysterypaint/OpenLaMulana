@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class ShopDetectorSoundGenerator : IGlobalWorldEntity
+    internal class ShopDetectorSoundGenerator : ParentWorldEntity
     {
         private Protag _protag = Global.Protag;
         private bool _switchActivated = false;

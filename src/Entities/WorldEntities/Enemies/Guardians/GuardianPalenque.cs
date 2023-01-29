@@ -2,106 +2,102 @@
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianPalenque : IGlobalWorldEntity
+    internal class GuardianPalenque : ParentAssembledInteractiveWorldEntity
     {
-        private int spritesMax = 65;
-        private Sprite[] _sprites = new Sprite[65];
         private View _bossRoom, _bossDefeatedRoom = null;
         private int _ts = World.CHIP_SIZE;
-        private GenericGlobalWorldEntity _upperBody, _lowerBody = null;
+        private TemplateWorldEntity _upperBody, _lowerBody = null;
 
         enum PalenqueSprites
         {
-            PalenqueWhole,
-            PalenqueHitbox,
-            SmallLightning_Yellow,
-            BigLightning_Yellow,
-            SmallLightning_Blue,
-            BigLightning_Blue,
-            SmallBladeParticle_White_Left,
-            SmallBladeParticle_White_Up,
-            SmallBladeParticle_White_Right,
-            SmallBladeParticle_White_Down,
-            BigBladeParticle_White_Left,
-            BigBladeParticle_White_Up,
-            BigBladeParticle_White_Right,
-            BigBladeParticle_White_Down,
-            SmallBladeParticle_Red_Left,
-            SmallBladeParticle_Red_Up,
-            SmallBladeParticle_Red_Right,
-            SmallBladeParticle_Red_Down,
-            BigBladeParticle_Red_Left,
-            BigBladeParticle_Red_Up,
-            BigBladeParticle_Red_Right,
-            BigBladeParticle_Red_Down,
-            LightBlueBullet_1,
-            LightBlueBullet_2,
-            DarkBlueBullet_1,
-            DarkBlueBullet_2,
-            Torpedo,
-            TorpedoExplosion_1,
-            TorpedoExplosion_2,
-            BottomLeftPixel_1,
-            BottomLeftPixel_2,
-            SmallExplosion_1,
-            SmallExplosion_2,
-            ElectricSpray,
-            GroundSkid_1,
-            GroundSkid_2,
-            GroundSkid_3,
-            GroundSkid_4,
-            PlaneModel,
-            MidairSkid_1,
-            MidairSkidAlt_1,
-            MidairSkid_2,
-            MidairSkidAlt_2,
-            MidairSkid_3,
-            MidairSkidAlt_3,
-            MidairSkid_4,
-            MidairSkidAlt_4,
-            RockParticleTL,
-            RockParticleTR,
-            RockParticleBL,
-            RockParticleBR,
-            PillarSad,
-            PillarSadistic,
-            BrokenPillarTop,
-            BrokenPillarBottom,
-            BossExplosion_1,
-            BossExplosion_2,
-            BossExplosion_3,
-            BossExplosion_4,
-            GroundSkidAlt_1,
-            GroundSkidAlt_2,
-            GroundSkidAlt_3,
-            GroundSkidAlt_4,
-            PreBattleUpperBody,
-            PreBattleLowerBody,
+            PALENQUE_WHOLE,
+            PALENQUE_HITBOX,
+            SMALL_LIGHTNING_YELLOW,
+            BIG_LIGHTNING_YELLOW,
+            SMALL_LIGHTNING_BLUE,
+            BIG_LIGHTNING_BLUE,
+            SMALL_BLADE_PARTICLE_WHITE_LEFT,
+            SMALL_BLADE_PARTICLE_WHITE_UP,
+            SMALL_BLADE_PARTICLE_WHITE_RIGHT,
+            SMALL_BLADE_PARTICLE_WHITE_DOWN,
+            BIG_BLADE_PARTICLE_WHITE_LEFT,
+            BIG_BLADE_PARTICLE_WHITE_UP,
+            BIG_BLADE_PARTICLE_WHITE_RIGHT,
+            BIG_BLADE_PARTICLE_WHITE_DOWN,
+            SMALL_BLADE_PARTICLE_RED_LEFT,
+            SMALL_BLADE_PARTICLE_RED_UP,
+            SMALL_BLADE_PARTICLE_RED_RIGHT,
+            SMALL_BLADE_PARTICLE_RED_DOWN,
+            BIG_BLADE_PARTICLE_RED_LEFT,
+            BIG_BLADE_PARTICLE_RED_UP,
+            BIG_BLADE_PARTICLE_RED_RIGHT,
+            BIG_BLADE_PARTICLE_RED_DOWN,
+            LIGHT_BLUE_BULLET_1,
+            LIGHT_BLUE_BULLET_2,
+            DARK_BLUE_BULLET_1,
+            DARK_BLUE_BULLET_2,
+            TORPEDO,
+            TORPEDO_EXPLOSION_1,
+            TORPEDO_EXPLOSION_2,
+            BOTTOM_LEFT_PIXEL_1,
+            BOTTOM_LEFT_PIXEL_2,
+            SMALL_EXPLOSION_1,
+            SMALL_EXPLOSION_2,
+            ELECTRIC_SPRAY,
+            GROUND_SKID_1,
+            GROUND_SKID_2,
+            GROUND_SKID_3,
+            GROUND_SKID_4,
+            PLANE_MODEL,
+            MIDAIR_SKID_1,
+            MIDAIR_SKID_ALT_1,
+            MIDAIR_SKID_2,
+            MIDAIR_SKID_ALT_2,
+            MIDAIR_SKID_3,
+            MIDAIR_SKID_ALT_3,
+            MIDAIR_SKID_4,
+            MIDAIR_SKID_ALT_4,
+            ROCK_PARTICLE_TL,
+            ROCK_PARTICLE_TR,
+            ROCK_PARTICLE_BL,
+            ROCK_PARTICLE_BR,
+            PILLAR_SAD,
+            PILLAR_SADISTIC,
+            BROKEN_PILLAR_TOP,
+            BROKEN_PILLAR_BOTTOM,
+            BOSS_EXPLOSION_1,
+            BOSS_EXPLOSION_2,
+            BOSS_EXPLOSION_3,
+            BOSS_EXPLOSION_4,
+            GROUND_SKID_ALT_1,
+            GROUND_SKID_ALT_2,
+            GROUND_SKID_ALT_3,
+            GROUND_SKID_ALT_4,
+            PRE_BATTLE_UPPER_BODY,
+            PRE_BATTLE_LOWER_BODY,
             MAX
         };
 
-        public GuardianPalenque(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        public GuardianPalenque(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, Global.SpriteDefs sprSheetIndex) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
-            _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS05);
-            for (var i = 0; i < spritesMax; i++)
-            {
-                _sprites[i] = Global.SpriteDefManager.GetSprite(Global.SpriteDefs.BOSS05, i);
-            }
-            _sprIndex = _sprites[(int)PalenqueSprites.PalenqueWhole];
+            InitAssembly(sprSheetIndex);
+            _sprIndex = _mySprites[(int)PalenqueSprites.PALENQUE_WHOLE];
+
             Position = new Vector2(7 * _ts, 4 * _ts);
             _bossRoom = Global.World.GetField(Global.World.CurrField).GetBossViews()[0];
             _bossDefeatedRoom = Global.World.GetField(Global.World.CurrField).GetBossViews()[1];
 
-            _upperBody = (GenericGlobalWorldEntity)InstanceCreatePersistent(new GenericGlobalWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
-            _upperBody.SetSprite(_sprites[(int)PalenqueSprites.PreBattleUpperBody]);
+            _upperBody = (TemplateWorldEntity)InstanceCreatePersistent(new TemplateWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
+            _upperBody.SetSprite(_mySprites[(int)PalenqueSprites.PRE_BATTLE_UPPER_BODY]);
             _upperBody.Position = new Vector2(Position.X, Position.Y - 6 * _ts);
-            _lowerBody = (GenericGlobalWorldEntity)InstanceCreatePersistent(new GenericGlobalWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
-            _lowerBody.SetSprite(_sprites[(int)PalenqueSprites.PreBattleLowerBody]);
+            _lowerBody = (TemplateWorldEntity)InstanceCreatePersistent(new TemplateWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
+            _lowerBody.SetSprite(_mySprites[(int)PalenqueSprites.PRE_BATTLE_LOWER_BODY]);
             _lowerBody.Position = new Vector2(Position.X, Position.Y + 6 * _ts);
         }
 
@@ -109,8 +105,23 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         {
             // Snap the actual drawing position to the closest 8x8 tile
             float posX = (float)Math.Round(Position.X % World.CHIP_SIZE) * World.CHIP_SIZE;
-            float posY = Main.HUD_HEIGHT + (float)Math.Round(Position.Y / World.CHIP_SIZE) * World.CHIP_SIZE;
-            _sprIndex.DrawScaled(spriteBatch, new Vector2(posX, posY), _imgScaleX, _imgScaleY);
+            float posY = (float)Math.Round(Position.Y / World.CHIP_SIZE) * World.CHIP_SIZE;
+
+            if (Global.DevModeEnabled)
+            {
+                if (CollidesWithPlayer(new Vector2(posX, posY), false))
+                {
+                    if (_sprIndex.TintColor != Color.Red)
+                        Global.AudioManager.PlaySFX(SFX.SHIELD_BLOCK);
+                    _sprIndex.TintColor = Color.Red;
+                }
+                else
+                {
+                    _sprIndex.TintColor = Color.White;
+                }
+            }
+
+            _sprIndex.DrawScaled(spriteBatch, new Vector2(posX, posY + Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
         public override void Update(GameTime gameTime)
@@ -122,6 +133,17 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
             }
 
             Position += new Vector2(0.01f, 0);
+
+
+            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP))
+            {
+                _sprDefIndex++;
+                if (_sprDefIndex >= _spritesMax)
+                    _sprDefIndex = 0;
+
+                UpdateSpriteIndex();
+                UpdateMaskIndex();
+            }
         }
 
         private void ShiftScreenLeft()

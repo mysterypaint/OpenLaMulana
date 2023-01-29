@@ -9,7 +9,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class GreatAnkh : InteractableWorldEntity
+    internal class GreatAnkh : ParentInteractableWorldEntity
     {
         enum AnkhStates : int
         {

@@ -10,7 +10,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class ContactWarp : InteractableWorldEntity
+    internal class ContactWarp : ParentInteractableWorldEntity
     {
         private int _fieldID = -1;
         private int _viewNumber = -1;    // Specifies the graphics that are overwritten in front of Lemeza when he passes through the gate

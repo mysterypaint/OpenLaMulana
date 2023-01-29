@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class WeaponsSafe : InteractableWorldEntity
+    internal class WeaponsSafe : ParentInteractableWorldEntity
     {
         private int _checkFlag = -1;
         private Sprite _displayedGraphic;

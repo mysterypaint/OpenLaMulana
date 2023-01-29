@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class MantraListener : IRoomWorldEntity
+    internal class MantraListener : ParentWorldEntity
     {
         private int _flagToSet = -1;
         private View _myView = null;

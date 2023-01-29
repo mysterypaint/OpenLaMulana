@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class EnemySoul : IRoomWorldEntity
+    internal class EnemySoul : ParentWorldEntity
     {
         SpriteAnimation _sprAnimBlueSpinning, _sprAnimRedSpinning, _sprAnimBlueMoveDiagonal, _sprAnimBlueMoveCardinal, _sprAnimRedMoveDiagonal, _sprAnimRedMoveCardinal;
         private bool _isBlue = true;

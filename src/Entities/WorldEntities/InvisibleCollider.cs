@@ -11,7 +11,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class InvisibleCollider : InteractableWorldEntity
+    internal class InvisibleCollider : ParentInteractableWorldEntity
     {
         private Protag _protag = Global.Protag;
         public override int HitboxWidth { get; set; } = 16;

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class DestinationViewChanger : InteractableWorldEntity
+    internal class DestinationViewChanger : ParentInteractableWorldEntity
     {
         private Protag _protag = Global.Protag;
         private View _destView = null;

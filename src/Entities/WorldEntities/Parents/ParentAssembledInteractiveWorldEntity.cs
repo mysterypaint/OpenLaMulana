@@ -8,7 +8,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities.Parents
 {
-    abstract class AssembledInteractiveWorldEntity : InteractableWorldEntity
+    abstract class ParentAssembledInteractiveWorldEntity : ParentInteractableWorldEntity
     {
         public new virtual int HP { get; set; } = 2;
         internal Protag _protag = Global.Protag;
@@ -28,14 +28,14 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         internal List<Rectangle> _collisionAssemblyData = null;
         private int _ts = World.CHIP_SIZE;
 
-        protected AssembledInteractiveWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        protected ParentAssembledInteractiveWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             SourceDestView = destView;
         }
 
         internal void InitAssembly(SpriteDefs sprSheetIndex)
         {
-            int spritesMax = Global.SpriteDefManager.GetDefSheetSize(Global.SpriteDefs.BOSS02);
+            int spritesMax = Global.SpriteDefManager.GetDefSheetSize(sprSheetIndex);
             _tex = Global.SpriteDefManager.GetTexture(sprSheetIndex);
             _mySprites = new Sprite[spritesMax];
             _spritesMax = spritesMax;
@@ -62,21 +62,6 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             _collisionAssemblyData = _maskIndex.GetAssemblyData();
         }
 
-        public virtual Rectangle BBox
-        {
-            get
-            {
-                Rectangle box = new Rectangle(
-                    (int)Math.Round(Position.X - BBoxOriginX),
-                    (int)Math.Round(Position.Y - BBoxOriginY),
-                    HitboxWidth,
-                    HitboxHeight
-                );
-                //box.Inflate(-COLLISION_BOX_INSET, -COLLISION_BOX_INSET);
-                return box;
-            }
-        }
-
         public bool CollidesWithPlayer(Vector2 offset = default, bool wholeRectangle = false)
         {
             if (wholeRectangle)
@@ -92,7 +77,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
                 foreach(Rectangle rect in _collisionAssemblyData)
                 {
                     Rectangle checkingRect = new Rectangle(rect.X * _ts, rect.Y * _ts, rect.Width * _ts, rect.Height * _ts);
+
                     checkingRect.Offset(offset);
+                        
                     if (HelperFunctions.CollisionRectangle(checkingRect, _protag.BBox))
                         return true;
                 }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class AnkhParticle : IRoomWorldEntity
+    internal class AnkhParticle : ParentWorldEntity
     {
         SpriteAnimation _myAnimation;
         public AnkhParticle(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class PushableBlock : InteractableWorldEntity
+    internal class PushableBlock : ParentInteractableWorldEntity
     {
         enum PushableBlockTypes {
             Gray = -1,

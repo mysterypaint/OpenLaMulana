@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class EnemyKakoujuu : InteractableWorldEntity
+    internal class EnemyKakoujuu : ParentInteractableWorldEntity
     {
         private SpriteAnimation _walkingLeftAnim = null;
         private double _hsp = 0;

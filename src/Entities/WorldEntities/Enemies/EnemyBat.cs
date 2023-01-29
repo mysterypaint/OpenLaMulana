@@ -9,7 +9,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class EnemyBat : InteractableWorldEntity
+    internal class EnemyBat : ParentInteractableWorldEntity
     {
 
         enum BatStates

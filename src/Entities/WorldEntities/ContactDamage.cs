@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class ContactDamage : InteractableWorldEntity
+    internal class ContactDamage : ParentInteractableWorldEntity
     {
         private int _damageValue = 0;
         private int _contactSFX = -1;

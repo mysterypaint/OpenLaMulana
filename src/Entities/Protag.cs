@@ -548,8 +548,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         switch (entity)
                         {
-                            case InteractableWorldEntity:
-                                InteractableWorldEntity interactiveEntity = (InteractableWorldEntity)entity;
+                            case ParentInteractableWorldEntity:
+                                ParentInteractableWorldEntity interactiveEntity = (ParentInteractableWorldEntity)entity;
 
                                 if (interactiveEntity.CollisionBehavior != ChipTypes.VOID)
                                 {

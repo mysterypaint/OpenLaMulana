@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class ShellHornSoundGenerator : IGlobalWorldEntity
+    internal class ShellHornSoundGenerator : ParentWorldEntity
     {
         private Protag _protag = Global.Protag;
         private bool _switchActivated = false;

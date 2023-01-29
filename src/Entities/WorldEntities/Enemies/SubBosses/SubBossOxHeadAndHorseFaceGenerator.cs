@@ -11,7 +11,7 @@ using static OpenLaMulana.System.Camera;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class SubBossOxHeadAndHorseFaceGenerator : AssembledInteractiveWorldEntity
+    internal class SubBossOxHeadAndHorseFaceGenerator : ParentAssembledInteractiveWorldEntity
     {
         private View _currView = null;
         private int _flagToSetWhenDefeated = -1;
@@ -49,10 +49,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                 case WEStates.IDLE:
                     if (!Visible)
                         return;
-                    HelperFunctions.DrawSplashscreen(spriteBatch, true, Color.Gray);
-
                     if (Global.DevModeEnabled)
                     {
+                        HelperFunctions.DrawSplashscreen(spriteBatch, true, Color.Gray);
                         if (CollidesWithPlayer(Position))
                         {
                             if (_sprIndex.TintColor != Color.Red)
@@ -109,7 +108,6 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
 
                         UpdateSpriteIndex();
                         UpdateMaskIndex();
-
                     }
                     break;
             }

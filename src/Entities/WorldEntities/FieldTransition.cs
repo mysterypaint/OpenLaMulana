@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class FieldTransition : InteractableWorldEntity
+    internal class FieldTransition : ParentInteractableWorldEntity
     {
         private Sprite _maskingSprite = null;
 

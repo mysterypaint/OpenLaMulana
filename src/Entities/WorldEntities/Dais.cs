@@ -11,7 +11,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class Dais : InteractableWorldEntity
+    internal class Dais : ParentInteractableWorldEntity
     {
         private bool _daisPlaced = false;
         private Sprite _weightSprite = null;

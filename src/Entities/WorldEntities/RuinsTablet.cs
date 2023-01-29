@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class RuinsTablet : InteractableWorldEntity
+    internal class RuinsTablet : ParentInteractableWorldEntity
     {
         Protag _protag = Global.Protag;
         Sprite _tabletLeftImage = null;

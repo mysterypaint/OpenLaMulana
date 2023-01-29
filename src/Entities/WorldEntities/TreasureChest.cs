@@ -9,7 +9,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class TreasureChest : InteractableWorldEntity
+    internal class TreasureChest : ParentInteractableWorldEntity
     {
         private Sprite _sprOpen, _sprClosed, _sprItem = null;
         private int _openConditionFlag = -1;

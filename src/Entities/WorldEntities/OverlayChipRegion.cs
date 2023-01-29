@@ -11,7 +11,7 @@ using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class OverlayChipRegion : InteractableWorldEntity
+    internal class OverlayChipRegion : ParentInteractableWorldEntity
     {
         private ChipTypes _rewritingTileType;
         private View _previousDestView = null;

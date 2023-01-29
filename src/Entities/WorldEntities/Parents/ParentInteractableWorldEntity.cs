@@ -6,7 +6,7 @@ using OpenLaMulana.System;
 
 namespace OpenLaMulana.Entities.WorldEntities.Parents
 {
-    abstract class InteractableWorldEntity : IRoomWorldEntity
+    abstract class ParentInteractableWorldEntity : ParentWorldEntity
     {
         public virtual int HP { get; set; } = 2;
         private Protag _protag = Global.Protag;
@@ -19,7 +19,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public virtual int Vsp { get; set; } = 0;
         public virtual int MoveSpeed { get; set; } = 0;
 
-        protected InteractableWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        protected ParentInteractableWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             SourceDestView = destView;
         }

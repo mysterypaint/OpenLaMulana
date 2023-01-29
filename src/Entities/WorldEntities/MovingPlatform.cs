@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class MovingPlatform : InteractableWorldEntity
+    internal class MovingPlatform : ParentInteractableWorldEntity
     {
         private int _moveTimer = 0;
         private int _moveTimerReset = 180;

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianViyEye : IGlobalWorldEntity
+    internal class GuardianViyEye : ParentWorldEntity
     {
         private GuardianViy _parent;
 

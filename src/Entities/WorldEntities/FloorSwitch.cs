@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class FloorSwitch : InteractableWorldEntity
+    internal class FloorSwitch : ParentInteractableWorldEntity
     {
         private Protag _protag = Global.Protag;
         private bool _switchActivated = false;

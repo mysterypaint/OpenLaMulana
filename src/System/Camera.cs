@@ -289,15 +289,15 @@ namespace OpenLaMulana.System
 
             foreach (IGameEntity worldEntity in allFieldEntities)
             {
-                if (worldEntity is IGlobalWorldEntity)
+                if (worldEntity is ParentWorldEntity)
                 {
-                    IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
-                    gE.OriginPosition = gE.TrueSpawnCoord.ToVector2() + globalOffsetVector;
-                } else if (worldEntity is IRoomWorldEntity)
-                {
-                    IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
-                    if (rE.IsGlobal)
-                        rE.OriginPosition = rE.TrueSpawnCoord + globalOffsetVector;
+                    ParentWorldEntity wE = (ParentWorldEntity)worldEntity;
+                    if (wE.IsGlobal)
+                    {
+                        wE.OriginPosition = wE.TrueSpawnCoord + globalOffsetVector;
+                    }
+                    if (wE.IsGlobal)
+                        wE.OriginPosition = wE.TrueSpawnCoord + globalOffsetVector;
                 }
             }
         }
@@ -315,125 +315,91 @@ namespace OpenLaMulana.System
 
             foreach (IGameEntity worldEntity in allFieldEntities)
             {
-                if (worldEntity is IRoomWorldEntity)
+                if (worldEntity is ParentWorldEntity)
                 {
-                    IRoomWorldEntity rE = (IRoomWorldEntity)worldEntity;
+                    ParentWorldEntity wE = (ParentWorldEntity)worldEntity;
 
-                    if (rE.IsGlobal)
+                    if (wE.IsGlobal)
                     {
                         // Calculate the Origin's Position for each Global Platform entity (This should hopefully not need any modification...)
 
                         Point movingDirection = new Point(-Math.Sign(offsetVector.X), -Math.Sign(offsetVector.Y));
                         bool screenWrapOccurred = false;
 
-                        Vector2 currPosition = rE.OriginPosition + rE.Position;
+                        Vector2 currPosition = wE.OriginPosition + wE.Position;
                         Vector2 currTileCoords = new Vector2(currPosition.X / ts, currPosition.Y / ts);
                         Point currRoomPos = new Point((int)Math.Floor(currTileCoords.X / World.ROOM_WIDTH), (int)Math.Floor(currTileCoords.Y / World.ROOM_HEIGHT));
                         Point resultingRoom = new Point(currRoomPos.X + movingDirection.X, currRoomPos.Y + movingDirection.Y);
 
                         if (resultingRoom.X <= 0)
                         {
-                            rE.OriginPosition.X += World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE;
+                            wE.OriginPosition.X += World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE;
                             screenWrapOccurred = true;
                         }
                         else if (resultingRoom.X >= World.FIELD_WIDTH)
                         {
-                            rE.OriginPosition.X -= World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE;
+                            wE.OriginPosition.X -= World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE;
                             screenWrapOccurred = true;
                         }
                         if (resultingRoom.Y <= 0)
                         {
-                            rE.OriginPosition.Y += World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE;
+                            wE.OriginPosition.Y += World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE;
                             screenWrapOccurred = true;
                         }
                         else if (resultingRoom.Y >= World.FIELD_HEIGHT)
                         {
-                            rE.OriginPosition.Y -= World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE;
+                            wE.OriginPosition.Y -= World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE;
                             screenWrapOccurred = true;
                         }
 
                         if (!screenWrapOccurred)
                         {
-                            Vector2 initialOffsetCoords = rE.OriginPosition;
-                            Point roomOffset = new Point(rE.ViewCoords.X - destView.X, rE.ViewCoords.Y - destView.Y);
+                            Vector2 initialOffsetCoords = wE.OriginPosition;
+                            Point roomOffset = new Point(wE.ViewCoords.X - destView.X, wE.ViewCoords.Y - destView.Y);
 
 
-                            Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + rE.RelativeViewTilePos.ToPoint();
+                            Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + wE.RelativeViewTilePos.ToPoint();
                             Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
 
-                            rE.OriginPosition = offsetCoords;
+                            wE.OriginPosition = offsetCoords;
 
                         }
 
-
-
-
-
-
-
-
-
-                        /* 
-                        Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + rE.RelativeViewTilePos.ToPoint();
-                        Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
-
-                        rE.OriginPosition = offsetCoords;*/
 
 
                         /*
-                         * 
-                        Vector2 currPosition = rE.Position;
-                        Vector2 currTileCoords = new Vector2(currPosition.X / ts, currPosition.Y / ts) + rE.RelativeViewTilePos;
+                        Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + wE.RelativeViewTilePos.ToPoint();
+                        Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
+
+                        wE.OriginPosition = offsetCoords;
+                        */
+
+
+
+
+                        /*
+                        Vector2 currPosition = wE.Position;
+                        Vector2 currTileCoords = new Vector2(currPosition.X / ts, currPosition.Y / ts) + wE.RelativeViewTilePos;
                         Point viewDisplacement = new Point((int)currTileCoords.X / World.ROOM_WIDTH, (int)currTileCoords.Y / World.ROOM_HEIGHT);
 
-                        if (rE.ViewCoords.X + viewDisplacement.X < 0)
+                        if (wE.ViewCoords.X + viewDisplacement.X < 0)
                             Position.X += (World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE);
-                        else if (rE.ViewCoords.X + viewDisplacement.X >= World.FIELD_WIDTH)
+                        else if (wE.ViewCoords.X + viewDisplacement.X >= World.FIELD_WIDTH)
                             Position.X -= (World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE);
-                        if (rE.ViewCoords.Y + viewDisplacement.Y < 0)
+                        if (wE.ViewCoords.Y + viewDisplacement.Y < 0)
                             Position.Y += (World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE);
-                        else if (rE.ViewCoords.Y + viewDisplacement.Y >= World.FIELD_HEIGHT)
+                        else if (wE.ViewCoords.Y + viewDisplacement.Y >= World.FIELD_HEIGHT)
                             Position.Y -= (World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE);
+                        */
 
 
 
-*/
 
-                        //rE.OriginPosition = rE.TrueSpawnCoord + globalOffsetVector;
+
+                        //wE.OriginPosition = wE.TrueSpawnCoord + globalOffsetVector;
                     }
-                    else if (!rE.ManuallySpawned)
-                        rE.Position += offsetVector;
-                }
-                else
-                {
-                    if (includeGlobals)
-                    {
-                        if (worldEntity is IGlobalWorldEntity)
-                        {
-                            IGlobalWorldEntity gE = (IGlobalWorldEntity)worldEntity;
-
-                            if (!gE.ManuallySpawned)
-                            {
-                                /*
-                                 * 
-                                Point roomOffset = new Point(gE.ViewCoords.X - destView.X, gE.ViewCoords.Y - destView.Y);
-
-                                Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + gE.RelativeView;
-                                Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
-
-                                gE.OriginPosition = offsetCoords;
-                                */
-
-                                Point roomOffset = new Point(gE.ViewCoords.X - destView.X, gE.ViewCoords.Y - destView.Y);
-                                Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + gE.RelativeView;
-                                Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
-
-                                gE.OriginPosition = offsetCoords;
-
-                                //gE.OriginPosition = gE.TrueSpawnCoord.ToVector2() + globalOffsetVector;
-                            }
-                        }
-                    }
+                    else if (!wE.ManuallySpawned)
+                        wE.Position += offsetVector;
                 }
             }
         }

@@ -10,7 +10,7 @@ using static OpenLaMulana.System.Camera;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class EventCheckerV : IRoomWorldEntity
+    internal class EventCheckerV : ParentWorldEntity
     {
         private int _flagToSetWhenConditionsMet = -1;
         private SFX? _playingSFX = null;

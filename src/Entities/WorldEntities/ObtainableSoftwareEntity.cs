@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class ObtainableSoftwareEntity : InteractableWorldEntity
+    internal class ObtainableSoftwareEntity : ParentInteractableWorldEntity
     {
         private Protag _protag = Global.Protag;
         private int _flagToSet = -1;

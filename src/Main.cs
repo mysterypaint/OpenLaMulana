@@ -566,8 +566,15 @@ namespace OpenLaMulana
                                 ActiveView[] activeViews = Global.World.GetActiveViews();
                                 View currView = activeViews[(int)World.AViews.CURR].GetView();
                                 View destView = activeViews[(int)World.AViews.DEST].GetView();
-                                Global.TextManager.DrawText(_camPos, String.Format("CurrView: [{0},{1}]\\10DestView: [{2},{3}]", currView.X, currView.Y, destView.X, destView.Y));
 
+
+                                string playerCoordsStr = "\\10bboxLeft: " + Math.Floor(_protag.BBox.Left / (float)World.CHIP_SIZE).ToString()
+                                                            + "\\10bboxBottom: " + Math.Floor(_protag.BBox.Bottom / (float)World.CHIP_SIZE).ToString()
+                                                            + "\\10bboxRight: " + Math.Floor(_protag.BBox.Right / (float)World.CHIP_SIZE).ToString()
+                                                            + "\\10bboxTop: " + Math.Floor(_protag.BBox.Top / (float)World.CHIP_SIZE).ToString();
+
+                                Global.TextManager.DrawText(_camPos, String.Format("CurrView: [{0},{1}]\\10DestView: [{2},{3}]", currView.X, currView.Y, destView.X, destView.Y));
+                                Global.TextManager.DrawText(_camPos + new Vector2(15*8), playerCoordsStr);
                                 break;
                             case Global.DebugStats.IN_GAME_TIMER_VIEWER:
                                 string inGameTimeStr = Global.InGameTimer.ToString();
@@ -576,16 +583,6 @@ namespace OpenLaMulana
                         }
                     } else
                         DrawHud(Global.SpriteBatch, gameTime);
-                    
-                    /*
-                    
-
-                    /*"\\10bboxLeft: " + Math.Floor(_protag.CollisionBox.Left / (float)World.tileHeight).ToString()
-                    + "\\10bboxBottom: " + Math.Floor(_protag.CollisionBox.Bottom / (float)World.tileHeight).ToString()
-                + "\\10bboxRight: " + Math.Floor(_protag.CollisionBox.Right / (float)World.tileHeight).ToString()
-                + "\\10bboxTop: " + Math.Floor(_protag.CollisionBox.Top / (float)World.tileHeight).ToString());
-                    (/
-                    */
                     break;
 
             }
@@ -600,16 +597,6 @@ namespace OpenLaMulana
         {
             HelperFunctions.DrawRectangle(spriteBatch, new Rectangle((int)Global.Camera.Position.X, (int)Global.Camera.Position.Y, HUD_WIDTH, HUD_HEIGHT), new Color(0, 0, 0, 255));
 
-            /*
-             * 
-            List<IGameEntity> fieldEntities, roomEntities;
-            int entityCount;
-            fieldEntities = Global.World.GetField(Global.World.CurrField).GetFieldEntities();//Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView().GetParentField().GetFieldEntities();
-            roomEntities = Global.World.GetField(Global.World.CurrField).GetRoomEntities();
-            entityCount = Global.EntityManager.GetCount();
-            Global.TextManager.DrawText(Global.Camera.Position, String.Format("RoomEntities: {0}    Static: {1}\\10FieldEntities:{2}   Total: {3}", roomEntities.Count, 4, fieldEntities.Count, entityCount));
-            
-             */
             Vector2 _camPos = Global.Camera.Position;
 
             _hudSprites[(int)HudSprites.COINS].Draw(spriteBatch, _camPos + new Vector2(27 * 8, 0 * 8));

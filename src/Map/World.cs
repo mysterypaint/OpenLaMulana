@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OpenLaMulana.Entities.WorldEntities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
@@ -619,10 +620,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         public void DrawPixelate(SpriteBatch spriteBatch, GameTime gameTime, ShaderDrawingState shaderState)
         {
-            float dt = 1.0f;
-            if (Global.Main.State == Global.GameState.PAUSED)
-                dt = 0.0f;
-
             if (_abortDrawing)
             {
                 // Make sure we draw normally for this frame
@@ -867,12 +864,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             View nextView = nextFieldMapData[destViewX, destViewY];
             nextAV.SetView(nextView);
 
-            DebugPlaySFXIfHardModeInRoom(nextView);
-
+            if (Global.DevModeEnabled)
+                DebugPlaySFXIfHardModeInRoom(nextView);
 
             // Slide the camera toward the new field
             Global.Camera.UpdateMoveTarget(movingDirection);
-
 
             // If we're moving to a new Field, get rid of all the entities from the previous Field
             if (CurrField != destField)
@@ -938,9 +934,13 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 }
             }
 
+            if (hardModeFound)
+            {
+                Global.AudioManager.PlaySFX(SFX.DETECTOR_SHOP_NEARBY);
+            }
         }
 
-        public void FieldTransitionCardinalBoss(VIEW_DIR movingDirection, View srcView, View destView, Texture2D bossTexture = null, IGlobalWorldEntity guardian = null)
+        public void FieldTransitionCardinalBoss(VIEW_DIR movingDirection, View srcView, View destView, Texture2D bossTexture = null, ParentWorldEntity guardian = null)
         {
             // Game is busy; Do not transition.
             if (Global.Main.State != Global.GameState.PLAYING)
@@ -1294,11 +1294,6 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         internal Field GetCurrField()
         {
             return _fields[CurrField];
-        }
-
-        internal Protag GetProtag()
-        {
-            return _protag;
         }
 
         internal void FieldTransitionImmediate(View currView, View destView, bool updateEntities = true, bool updateMusic = true, bool forceRespawnGlobals = false)

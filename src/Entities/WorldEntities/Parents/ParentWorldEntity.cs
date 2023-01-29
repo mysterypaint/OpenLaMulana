@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana
 {
-    abstract class IRoomWorldEntity : IGameEntity
+    public abstract class ParentWorldEntity : IGameEntity
     {
         public int Depth { get; set; } = (int)Global.DrawOrder.Entities;
         public Effect ActiveShader { get; set; } = null;
@@ -38,12 +38,13 @@ namespace OpenLaMulana
         public Global.WEStates State { get; set; } = Global.WEStates.UNSPAWNED;
         public Point RoomsTravelled { get; internal set; } = Point.Zero;
 
-        public IRoomWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags)
+        public ParentWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.Textures.DEBUG_ENTITY_TEMPLATE);
             _sprIndex = new Sprite(_tex, 0, 0, 16, 16);
             _world = Global.World;
             StartFlags = startFlags;
+            IsGlobal = spawnIsGlobal;
 
             if (destView == null)
                 destView = Global.World.GetCurrentView();
@@ -72,8 +73,6 @@ namespace OpenLaMulana
                 OriginPosition = offsetCoords;
             }
 
-            
-
             if (startFlags != null)
             {
                 if (HelperFunctions.EntityMaySpawn(StartFlags))
@@ -81,7 +80,7 @@ namespace OpenLaMulana
             }
         }
 
-        ~IRoomWorldEntity()
+        ~ParentWorldEntity()
         {
             foreach (IGameEntity entity in _myEntities)
             {
@@ -102,7 +101,7 @@ namespace OpenLaMulana
 
         public IGameEntity InstanceCreate(IGameEntity entity)
         {
-            IRoomWorldEntity rE = (IRoomWorldEntity)entity;
+            ParentWorldEntity rE = (ParentWorldEntity)entity;
             rE.ManuallySpawned = true;
 
             Global.EntityManager.AddEntity(rE);
@@ -113,13 +112,14 @@ namespace OpenLaMulana
 
         public IGameEntity InstanceCreatePersistent(IGameEntity entity)
         {
-            IGlobalWorldEntity gE = (IGlobalWorldEntity)entity;
-            gE.ManuallySpawned = true;
+            ParentWorldEntity wE = (ParentWorldEntity)entity;
+            wE.ManuallySpawned = true;
+            wE.IsGlobal = true;
 
-            Global.EntityManager.AddEntity(gE);
-            Global.World.GetCurrField().GetFieldEntities().Add(gE);
+            Global.EntityManager.AddEntity(wE);
+            Global.World.GetCurrField().GetFieldEntities().Add(wE);
 
-            return gE;
+            return wE;
         }
 
         public IGameEntity InstanceDestroy(IGameEntity entity)

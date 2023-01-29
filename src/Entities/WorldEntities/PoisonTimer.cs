@@ -9,7 +9,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class PoisonTimer : InteractableWorldEntity
+    internal class PoisonTimer : ParentInteractableWorldEntity
     {
         private Protag _protag = Global.Protag;
         public override int HitboxWidth { get; set; } = 16;

@@ -11,7 +11,7 @@ using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class GraphicDisplay : InteractableWorldEntity
+    internal class GraphicDisplay : ParentInteractableWorldEntity
     {
         private int _checkFlag = -1;
         private bool _revertMapCollisionAfterDestroyed = false;

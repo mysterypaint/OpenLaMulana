@@ -11,7 +11,7 @@ using static OpenLaMulana.Global;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class NPCRoom : InteractableWorldEntity // Enemy, so that it has a hitbox
+    internal class NPCRoom : ParentInteractableWorldEntity // Enemy, so that it has a hitbox
     {
         enum NPCTypes : int
         {

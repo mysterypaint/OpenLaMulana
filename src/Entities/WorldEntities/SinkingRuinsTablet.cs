@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class SinkingRuinsTablet : InteractableWorldEntity
+    internal class SinkingRuinsTablet : ParentInteractableWorldEntity
     {
         private int _triggerFlag = -1;
         private int _dyingTimer = -1;
