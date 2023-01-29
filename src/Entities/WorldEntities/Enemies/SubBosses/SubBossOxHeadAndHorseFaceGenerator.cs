@@ -5,28 +5,20 @@ using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using static OpenLaMulana.Global;
 using static OpenLaMulana.System.Camera;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
-    internal class SubBossOxHeadAndHorseFaceGenerator : IRoomWorldEntity
+    internal class SubBossOxHeadAndHorseFaceGenerator : AssembledInteractiveWorldEntity
     {
-        private int spritesMax = 30;
-        Sprite[] _sprites = new Sprite[30];
-        private int _sprNum = 0;
         private View _currView = null;
         private int _flagToSetWhenDefeated = -1;
 
-        public SubBossOxHeadAndHorseFaceGenerator(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
+        public SubBossOxHeadAndHorseFaceGenerator(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags, Global.SpriteDefs sprSheetIndex) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
-            _tex = Global.SpriteDefManager.GetTexture(Global.SpriteDefs.BOSS02);
-            for (var i = 0; i < spritesMax; i++)
-            {
-                _sprites[i] = Global.SpriteDefManager.GetSprite(Global.SpriteDefs.BOSS02, i);
-            }
-            _sprIndex = _sprites[_sprNum];
-            Position += new Vector2(200, -3);
+            InitAssembly(sprSheetIndex);
 
 
             /*
@@ -56,8 +48,13 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                 case WEStates.IDLE:
                     if (!Visible)
                         return;
-                    //HelperFunctions.DrawSplashscreen(spriteBatch, true, Color.Gray);
-                    //_sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+                    HelperFunctions.DrawSplashscreen(spriteBatch, true, Color.Gray);
+                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+                    _sprIndex.TintColor = Color.White;
+                    if (CollidesWithPlayer(Position))
+                    {
+                        _sprIndex.TintColor = Color.Red;
+                    }
                     break;
             }
         }
@@ -73,17 +70,21 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                         State = WEStates.IDLE;
                         //Global.AudioManager.PlaySFX(SFX.ROOM_LOCKDOWN);
                         Position = Vector2.Zero;
+                        //Position += new Vector2(64, 75);
                     }
                     break;
                 case WEStates.IDLE:
 
                     if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP))
                     {
-                        _sprNum++;
-                        if (_sprNum >= spritesMax)
-                            _sprNum = 0;
+                        _sprDefIndex++;
+                        if (_sprDefIndex >= _spritesMax)
+                            _sprDefIndex = 0;
+
+                        UpdateSpriteIndex();
+                        UpdateMaskIndex();
+
                     }
-                    _sprIndex = _sprites[_sprNum];
                     break;
             }
         }

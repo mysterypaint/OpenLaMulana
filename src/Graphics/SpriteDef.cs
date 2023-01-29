@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana
 {
-    internal class SpriteDef
+    public class SpriteDef
     {
         private Vector2 _origin = Vector2.Zero;
         private List<Rectangle> _assemblyData = new List<Rectangle>();

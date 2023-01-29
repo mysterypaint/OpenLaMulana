@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using static OpenLaMulana.Global;
@@ -151,7 +152,7 @@ namespace OpenLaMulana
             }
         }
 
-        List<SpriteDef> GetDefSheet(Global.SpriteDefs sheetID)
+        public List<SpriteDef> GetDefSheet(Global.SpriteDefs sheetID)
         {
             return _sprDefSheets[sheetID];
         }
@@ -267,6 +268,11 @@ namespace OpenLaMulana
 
         public void Update(GameTime gameTime)
         {
+        }
+
+        internal int GetDefSheetSize(SpriteDefs defIndex)
+        {
+            return _sprDefSheets[defIndex].Count;
         }
     }
 }

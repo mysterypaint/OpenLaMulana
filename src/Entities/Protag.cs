@@ -416,13 +416,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             _moveX = InputManager.DirHeldX;
 
-            bool debugPhysics = false;
-            if (Global.DevModeEnabled)
-            {
-                debugPhysics = Global.DevModeDebugPhysics;
-            }
-
-            if (debugPhysics)
+            if (Global.DevModeEnabled && Global.DevModeDebugPhysics)
             {
                 _moveY = InputManager.DirHeldY;
                 _vsp = _moveY * _spdWalk;
