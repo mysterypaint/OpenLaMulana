@@ -1401,5 +1401,10 @@ namespace OpenLaMulana.System
             Field checkingField = checkingView.GetParentField();
             return checkingView.X == Global.World.CurrViewX && checkingView.Y == Global.World.CurrViewY && checkingField.ID == Global.World.CurrField;
         }
+
+        internal static bool CollisionPointInRectangle(Rectangle rect, Point point)
+        {
+            return rect.Contains(point);
+        }
     }
 }

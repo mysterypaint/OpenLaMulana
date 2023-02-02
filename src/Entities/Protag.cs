@@ -46,6 +46,8 @@ namespace OpenLaMulana.Entities
         private double _gravInc = 0.5f;
         private double _hsp = 0;
         private double _vsp = 0;
+        private double _hspCarry = 0;
+        private double _vspCarry = 0;
         private double _hsp_final = 0;
         private double _hsp_fract = 0;
         private double _vsp_final = 0;
@@ -86,6 +88,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         private const double SPD_GRAVITY = 0.4;
         private double _spdWalk = 1;
         private bool _enemyGrounded;
+        private ParentInteractableWorldEntity _myGroundedEntity;
         private const double SPD_JUMP = 7.0;
         private const double SPD_GRAV_MAX = 8f;
 
@@ -436,8 +439,25 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
                 }
 
-                // Is my middle center touching the floor at the start of this frame?
+                // Check if the player's middle center is touching the floor at the start of this frame
                 _isGrounded = (InFloor(currRoom, BBox.Center.X, BBox.Bottom + 1) >= 0);
+
+                // Check if the player's middle center is touching any solid entities at the start of this frame
+
+                ParentInteractableWorldEntity entGroundCheckBL = Global.EntityManager.InstanceCollisionAtPosition(new Point(BBox.Left, BBox.Bottom + 1));
+                ParentInteractableWorldEntity entGroundCheckBM = Global.EntityManager.InstanceCollisionAtPosition(new Point(BBox.Center.X, BBox.Bottom + 1));
+                ParentInteractableWorldEntity entGroundCheckBR = Global.EntityManager.InstanceCollisionAtPosition(new Point(BBox.Right, BBox.Bottom + 1));
+
+                _myGroundedEntity = null;
+
+                if (entGroundCheckBL != null)
+                    _myGroundedEntity = entGroundCheckBL;
+                if (entGroundCheckBR != null)
+                    _myGroundedEntity = entGroundCheckBR;
+                if (entGroundCheckBM != null)
+                    _myGroundedEntity = entGroundCheckBM;
+
+                _isGrounded |= (_myGroundedEntity != null);
 
                 // Jump
                 if ((_isGrounded || InFloor(currRoom, BBox.Left, BBox.Bottom + 1) >= 0) ||
@@ -470,6 +490,12 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     else
                     {
                         _hsp = _moveX * _spdWalk;
+                    }
+
+                    if (_myGroundedEntity != null)
+                    {
+                        _hsp += _myGroundedEntity.Hsp;
+                        _vsp = _myGroundedEntity.Vsp;
                     }
                 }
                 else
@@ -508,8 +534,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     }
                 }
 
-
-
                 if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP) && _jumpCount > 0)
                 {
                     State = PlayerState.JUMPING;
@@ -525,8 +549,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 {
                     Math.Max(_vsp, -SPD_JUMP / 2);
                 }
-
-
 
                 // Reapply fractional movement
                 _hsp += _hsp_fract;
@@ -570,11 +592,10 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     _hsp = 0;
                 }
 
-
                 /// Horizontal Entity Collision
                 
                 // Grab all of the entities that are marked as Solid, and collide at the point in question
-                List<ParentInteractableWorldEntity> collidedEntities = Global.EntityManager.GetInstancesAtPosition(new Point((int)(BBox.X + _hsp), BBox.Y));
+                List<ParentInteractableWorldEntity> collidedEntities = Global.EntityManager.GetInstancesAtPosition(BBox, new Point((int)(_hsp), 0));
                 
                 // Iterate through all of those entities, and snap the player next to their X edge
                 var entityCount = collidedEntities.Count;
@@ -587,23 +608,25 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         // Moving left; Snap the player one pixel to the right of the checkingEntity's right collision edge
                         _snapX = checkingEntity.BBox.Right;
+                        BBox.X = _snapX;
                     }
                     else
                     {
                         // Moving Right; Snap the player one pixel to the left of the checkingEntity's left collision edge
-                        _snapX = checkingEntity.BBox.Left - 1;
+                        _snapX = checkingEntity.BBox.Left - (BBox.Right - BBox.X) - 1;
+                        BBox.X = _snapX;
                     }
-                    BBox.X = _snapX;
 
                     _hsp = 0;
                     _hsp_fract = 0;
+                    _hspCarry = checkingEntity.Hsp;
                     //_collision = true;
                     break;
                 }
 
                 // Commit Horizontal Movement Adjustments
                 BBox.X += (int)_hsp;
-
+                _hspCarry = 0;
 
 
                 // Vertical Collision
@@ -710,11 +733,41 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     }
                 }
 
+                /// Vertical Entity Collision
 
+                // Grab all of the entities that are marked as Solid, and collide at the point in question
+                collidedEntities = Global.EntityManager.GetInstancesAtPosition(BBox, new Point(0, (int)(_vsp)));
+
+                // Iterate through all of those entities, and snap the player next to their X edge
+                entityCount = collidedEntities.Count;
+                int _snapY;
+
+                foreach (ParentInteractableWorldEntity checkingEntity in collidedEntities)
+                {
+                    // Move as close as we can to the checkingEntity
+                    if (Math.Sign(_vsp) < 0)
+                    {
+                        // Moving left; Snap the player one pixel to the bottom of the checkingEntity's bottom collision edge
+                        _snapY = checkingEntity.BBox.Bottom;
+                        BBox.Y = _snapY;
+                    }
+                    else
+                    {
+                        // Moving Right; Snap the player one pixel to the top of the checkingEntity's top collision edge
+                        _snapY = checkingEntity.BBox.Top - (BBox.Bottom - BBox.Y) - 1;
+                        BBox.Y = _snapY;
+                    }
+
+                    _vsp = 0;
+                    _vsp_fract = 0;
+                    _vspCarry = checkingEntity.Vsp;
+                    //_collision = true;
+                    break;
+                }
 
                 // Commit Vertical Movement Adjustments
                 BBox.Y += (int)_vsp;
-
+                _vspCarry = 0;
 
                 if (BBox.Y < -8)
                     BBox.Y = -8;

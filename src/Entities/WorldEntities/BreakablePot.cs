@@ -7,13 +7,16 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class BreakablePot : ParentWorldEntity
+    internal class BreakablePot : ParentInteractableWorldEntity
     {
         public BreakablePot(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
             _sprIndex = new Sprite(_tex, 288, 0, 16, 16);
             Depth = (int)Global.DrawOrder.Tileset;
+            HitboxWidth = 16;
+            HitboxHeight = 16;
+            IsCollidable = true;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {

@@ -53,6 +53,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
             {
                 _state = BatStates.Hanging;
             }
+
+            HitboxWidth = 16;
+            HitboxHeight = 16;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

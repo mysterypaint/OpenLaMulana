@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Audio;
 using OpenLaMulana.Entities.WorldEntities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -237,18 +238,19 @@ namespace OpenLaMulana.Entities
             */
         }
 
-        internal List<ParentInteractableWorldEntity> GetInstancesAtPosition(Point checkingCoords)
+        internal List<ParentInteractableWorldEntity> GetInstancesAtPosition(Rectangle instanceBBox, Point checkingCoords)
         {
             List<ParentInteractableWorldEntity> _collidedEntities = new List<ParentInteractableWorldEntity>();
+            instanceBBox.Offset(checkingCoords);
 
-            foreach(IGameEntity entity in _entities)
+            foreach (IGameEntity entity in _entities)
             {
                 if (entity is ParentInteractableWorldEntity)
                 {
                     ParentInteractableWorldEntity intEnt = (ParentInteractableWorldEntity)entity;
                     if (intEnt.IsCollidable)
                     {
-                        if (intEnt.BBox.Contains(checkingCoords))
+                        if (HelperFunctions.CollisionRectangle(intEnt.BBox, instanceBBox))
                         {
                             _collidedEntities.Add(intEnt);
                         }
@@ -256,6 +258,26 @@ namespace OpenLaMulana.Entities
                 }
             }
             return _collidedEntities;
+        }
+
+        internal ParentInteractableWorldEntity InstanceCollisionAtPosition(Point position)
+        {
+            foreach (IGameEntity entity in _entities)
+            {
+                if (entity is ParentInteractableWorldEntity)
+                {
+                    ParentInteractableWorldEntity intEnt = (ParentInteractableWorldEntity)entity;
+                    if (intEnt.IsCollidable)
+                    {
+                        if (HelperFunctions.CollisionPointInRectangle(intEnt.BBox, position))
+                        {
+                            return intEnt;
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

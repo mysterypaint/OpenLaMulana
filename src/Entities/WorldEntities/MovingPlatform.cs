@@ -12,14 +12,14 @@ namespace OpenLaMulana.Entities.WorldEntities
     {
         private int _moveTimer = 0;
         private int _moveTimerReset = 180;
+        public int HspDir { get; private set; } = 1;
+        public int VspDir { get; private set; } = 0;
 
         public MovingPlatform(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
             _sprIndex = new Sprite(_tex, 272, 160, 32, 16);
 
-            Hsp = 0;
-            Vsp = 1;
             MoveSpeed = 2;
 
             /*
@@ -35,7 +35,14 @@ Turns around when Top-left tile bumps into the bottom coord (Coord#1) in View #1
             */
 
 
+            HitboxWidth = 32;
+            HitboxHeight = 16;
+            IsCollidable = true;
+
+            Hsp = HspDir * MoveSpeed;
+            Vsp = VspDir * MoveSpeed;
         }
+
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (IsGlobal)
@@ -52,12 +59,15 @@ Turns around when Top-left tile bumps into the bottom coord (Coord#1) in View #1
             if (_moveTimer <= 0)
             {
                 _moveTimer = _moveTimerReset;
-                Vsp *= -1;
+                HspDir *= -1;
+                VspDir *= -1;
+                Hsp = HspDir * MoveSpeed;
+                Vsp = VspDir * MoveSpeed;
             }
             else
                 _moveTimer--;
 
-            Position += new Vector2(0, Vsp * MoveSpeed);
+            Position += new Vector2(Hsp, Vsp);
 
         }
     }

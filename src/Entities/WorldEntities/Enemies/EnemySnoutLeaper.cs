@@ -14,7 +14,6 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
             _sprIndex = new Sprite(_tex, 0, 32, 16, 16);
             HitboxWidth = 16;
             HitboxHeight = 16;
-            IsCollidable = true;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
