@@ -4,16 +4,11 @@ using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Graphics;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static OpenLaMulana.Entities.World;
 using static OpenLaMulana.System.InputManager;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenLaMulana.System
 {
@@ -65,9 +60,6 @@ namespace OpenLaMulana.System
                 DrawRectangle(spriteBatch, new Rectangle(13, 16, 230, 157), new Color(51, 102, 255, 255));
             }
         }
-
-
-
 
 
 

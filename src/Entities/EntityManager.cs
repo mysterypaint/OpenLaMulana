@@ -236,5 +236,26 @@ namespace OpenLaMulana.Entities
                 f.DeleteAllFieldAndRoomEntities();
             */
         }
+
+        internal List<ParentInteractableWorldEntity> GetInstancesAtPosition(Point checkingCoords)
+        {
+            List<ParentInteractableWorldEntity> _collidedEntities = new List<ParentInteractableWorldEntity>();
+
+            foreach(IGameEntity entity in _entities)
+            {
+                if (entity is ParentInteractableWorldEntity)
+                {
+                    ParentInteractableWorldEntity intEnt = (ParentInteractableWorldEntity)entity;
+                    if (intEnt.IsCollidable)
+                    {
+                        if (intEnt.BBox.Contains(checkingCoords))
+                        {
+                            _collidedEntities.Add(intEnt);
+                        }
+                    }
+                }
+            }
+            return _collidedEntities;
+        }
     }
 }

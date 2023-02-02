@@ -18,6 +18,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
         public virtual int Hsp { get; set; } = 0;
         public virtual int Vsp { get; set; } = 0;
         public virtual int MoveSpeed { get; set; } = 0;
+        public virtual bool IsCollidable { get; set; } = false;
 
         protected ParentInteractableWorldEntity(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {

@@ -538,63 +538,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 _vsp_fract = _vsp - (Math.Floor(Math.Abs(_vsp)) * Math.Sign(_vsp));
                 _vsp -= _vsp_fract;
 
-
-                // Entity Collisions
-                _enemyGrounded = false;
-
-                foreach (IGameEntity entity in Global.EntityManager.Entities)
-                {
-                    if (entity != null)
-                    {
-                        switch (entity)
-                        {
-                            case ParentInteractableWorldEntity:
-                                ParentInteractableWorldEntity interactiveEntity = (ParentInteractableWorldEntity)entity;
-
-                                if (interactiveEntity.CollisionBehavior != ChipTypes.VOID)
-                                {
-                                    switch (interactiveEntity.CollisionBehavior)
-                                    {
-                                        case ChipTypes.SOLID:
-                                        case ChipTypes.CLINGABLE_WALL:
-                                        case ChipTypes.UNCLINGABLE_WALL:
-                                        case ChipTypes.ICE:
-                                            int xOff = 0;
-                                            if (_hsp > 0)
-                                            {
-                                                xOff = 1;
-                                            }
-                                            if (HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp + xOff, 0))
-                                            {
-                                                while (!HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, Math.Sign(_hsp) + xOff, 0))
-                                                {
-                                                    BBox.X += Math.Sign(_hsp);
-                                                }
-                                                _hsp = 0;
-                                                _hsp_fract = 0;
-                                            }
-
-                                            if (HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp, (int)_vsp))
-                                            {
-                                                while (!HelperFunctions.CollisionRectangle(BBox, interactiveEntity.BBox, (int)_hsp, Math.Sign(_vsp)))
-                                                {
-                                                    BBox.Y += Math.Sign(_vsp);
-                                                }
-                                                _vsp = 0;
-                                                _vsp_fract = 0;
-                                                _enemyGrounded = true;
-                                            }
-                                            break;
-                                    }
-                                }
-
-                                break;
-                        }
-                    }
-                }
-
-                _isGrounded |= _enemyGrounded;
-
                 bboxSide = 0;
 
                 // Horizontal Collision
@@ -627,6 +570,38 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     _hsp = 0;
                 }
 
+
+                /// Horizontal Entity Collision
+                
+                // Grab all of the entities that are marked as Solid, and collide at the point in question
+                List<ParentInteractableWorldEntity> collidedEntities = Global.EntityManager.GetInstancesAtPosition(new Point((int)(BBox.X + _hsp), BBox.Y));
+                
+                // Iterate through all of those entities, and snap the player next to their X edge
+                var entityCount = collidedEntities.Count;
+                int _snapX;
+
+                foreach(ParentInteractableWorldEntity checkingEntity in collidedEntities)
+                {
+                    // Move as close as we can to the checkingEntity
+                    if (Math.Sign(_hsp) < 0)
+                    {
+                        // Moving left; Snap the player one pixel to the right of the checkingEntity's right collision edge
+                        _snapX = checkingEntity.BBox.Right;
+                    }
+                    else
+                    {
+                        // Moving Right; Snap the player one pixel to the left of the checkingEntity's left collision edge
+                        _snapX = checkingEntity.BBox.Left - 1;
+                    }
+                    BBox.X = _snapX;
+
+                    _hsp = 0;
+                    _hsp_fract = 0;
+                    //_collision = true;
+                    break;
+                }
+
+                // Commit Horizontal Movement Adjustments
                 BBox.X += (int)_hsp;
 
 
@@ -737,8 +712,9 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
 
 
-
+                // Commit Vertical Movement Adjustments
                 BBox.Y += (int)_vsp;
+
 
                 if (BBox.Y < -8)
                     BBox.Y = -8;
