@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianEllmac : ParentAssembledInteractiveWorldEntity
+    internal class GuardianEllmac : ParentGuardianEntity
     {
         private int _framesBeforeDrop = 0;
         private Global.WEStates _state = Global.WEStates.INIT;
@@ -19,8 +19,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         {
             InitAssembly(sprSheetIndex);
 
-            Position += new Vector2(200, -3);
-            Visible = true;
+            Position = new Vector2(-9999, -9999);
+            Visible = false;
 
             _framesBeforeDrop = 15;
             _state = Global.WEStates.INIT;
@@ -82,6 +82,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 
                             Global.World.FieldTransitionCardinalBoss(World.VIEW_DIR.DOWN, srcView, destView, Global.TextureManager.GetTexture(Global.Textures.BOSS02), this);
 
+                            Visible = true;
+                            Position = new Vector2(-32, World.ROOM_HEIGHT * 2 * World.CHIP_SIZE - (1 * World.CHIP_SIZE));
                             _state = Global.WEStates.ACTIVATING;
                         }
                     }
@@ -90,6 +92,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
                     if (Global.Camera.GetState() == Camera.CamStates.NONE)
                     {
                         _state = Global.WEStates.SPEEDING_UP;
+                        Global.Main.SetState(Global.GameState.PLAYING);
                     }
                     break;
                 case Global.WEStates.SPEEDING_UP:

@@ -14,7 +14,7 @@ namespace OpenLaMulana
         public static bool DevModeEnabled { get; internal set; } = true;
         public static bool DevModeAllEntitiesGeneric { get; internal set; } = false;
         public static bool DevModeDebugPhysics { get; set; } = false;
-        public static bool DevModeDisableAutoScreenTransitions { get; set; } = true;
+        public static bool DevModeDisableAutoScreenTransitions { get; set; } = false;
         public static bool DevModeHijackSaveFile { get; set; } = false;
 
         public enum DebugStats
@@ -24,10 +24,10 @@ namespace OpenLaMulana
             ENTITY_COUNT,
             ROOM_COORDS_INFO,
             IN_GAME_TIMER_VIEWER,
+            FPS_VIEWER,
+            MAX
         }
-        public static DebugStats DebugStatsState { get; internal set; } = DebugStats.ENTITY_COUNT;
-
-
+        public static DebugStats DebugStatsState { get; internal set; } = DebugStats.FPS_VIEWER;
 
         public enum DrawOrder : int
         {
@@ -64,8 +64,8 @@ namespace OpenLaMulana
         public enum Shaders : int
         {
             NONE,
-            TRANSITION,
             HUE_SHIFT,
+            TRANSITION,
             BINARY,
             MAX
         };

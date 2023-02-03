@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianViyTentacle : ParentWorldEntity
+    internal class GuardianViyTentacle : ParentGuardianEntity
     {
         private SpriteAnimation _sprAnim = null;
 

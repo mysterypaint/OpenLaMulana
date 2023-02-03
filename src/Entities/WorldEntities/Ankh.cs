@@ -13,8 +13,10 @@ namespace OpenLaMulana.Entities.WorldEntities
             VISIBLE,
             USABLE,
             ACTIVATED,
+            DYING,
             MAX
-        }
+        };
+
         private SpriteAnimation _sparklingParticles = new SpriteAnimation();
         private AnkhStates _state = AnkhStates.VISIBLE;
         private IGameEntity _activatedGuardian = null;
@@ -64,6 +66,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         {
                             _state = AnkhStates.ACTIVATED;
                             _activationTimer = 120;
+                            Global.Main.SetState(Global.GameState.CUTSCENE);
 
                             if (Global.AudioManager.IsPlaying() >= 0)
                                 Global.AudioManager.StopMusic();
@@ -130,7 +133,10 @@ namespace OpenLaMulana.Entities.WorldEntities
                                 Global.World.FieldTransitionPixelate(1, -1, 0, 0);
                                 break;
                         }
+                        _state = AnkhStates.DYING;
                     }
+                    break;
+                case AnkhStates.DYING:
                     break;
             }
         }
@@ -148,6 +154,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     if (_sparklingParticles.IsPlaying)
                         _sparklingParticles.Draw(spriteBatch, Position + new Vector2(0, World.CHIP_SIZE));
                     break;
+                case AnkhStates.DYING:
                 case AnkhStates.ACTIVATED:
                     break;
             }

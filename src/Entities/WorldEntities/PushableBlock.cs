@@ -10,7 +10,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
 {
     internal class PushableBlock : ParentInteractableWorldEntity
     {
-        enum PushableBlockTypes {
+        enum PushableBlockTypes
+        {
             Gray = -1,
             Red = 0,
             Green,
@@ -24,12 +25,13 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
         private int _solutionChipYCoord;
         private PushableBlockTypes _blockType;
         private bool _updatedPositions = true;
+        private Sprite _blockSpr;
 
         public PushableBlock(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
-            _sprIndex = new Sprite(_tex, 288, 64, 16, 16);
-
+            _blockSpr = new Sprite(_tex, 288, 64, 16, 16);
+            _sprIndex = null;
             /*
              A block that can be pushed. If you put it on the OBJECT36 block place, you will not be able to push it.
             If you specify the same flag as the set flag of the block storage in OP1, you can move the block to the
@@ -63,33 +65,39 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
             _solutionChipYCoord = op3;
             _blockType = (PushableBlockTypes)op4;
 
+            HitboxWidth = 16;
+            HitboxHeight = 16;
+            IsCollidable = false;
+
             if (_flagToSet < 0 || _flagToSet >= Global.GameFlags.InGameFlags.Length)
             {
                 if (HelperFunctions.EntityMaySpawn(StartFlags))
+                {
                     State = Global.WEStates.IDLE;
+                    _sprIndex = _blockSpr;
+                    IsCollidable = true;
+                }
             }
             else if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
             {
                 State = Global.WEStates.IDLE;
-            } else if (Global.GameFlags.InGameFlags[_flagToSet])
+                _sprIndex = _blockSpr;
+                IsCollidable = true;
+
+            }
+            else if (Global.GameFlags.InGameFlags[_flagToSet])
             {
                 State = Global.WEStates.DYING;
-
+                _sprIndex = _blockSpr;
+                IsCollidable = true;
                 _updatedPositions = false;
                 //Position = new Vector2(_solutionChipXCoord * World.CHIP_SIZE, _solutionChipYCoord * World.CHIP_SIZE);
             }
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            switch (State)
-            {
-                case Global.WEStates.UNSPAWNED:
-                    break;
-                case Global.WEStates.IDLE:
-                case Global.WEStates.DYING:
-                    _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-                    break;
-            }
+            if (_sprIndex != null)
+                _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
         public override void Update(GameTime gameTime)
@@ -103,17 +111,25 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                     if (_flagToSet < 0 || _flagToSet >= Global.GameFlags.InGameFlags.Length)
                     {
                         if (HelperFunctions.EntityMaySpawn(StartFlags))
+                        {
+                            IsCollidable = true;
                             State = Global.WEStates.IDLE;
+                            _sprIndex = _blockSpr;
+                        }
                     }
                     else if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_flagToSet])
                     {
+                        IsCollidable = true;
                         State = Global.WEStates.IDLE;
+                        _sprIndex = _blockSpr;
                     }
                     else if (Global.GameFlags.InGameFlags[_flagToSet])
                     {
                         roomWidthPx = (World.ROOM_WIDTH * World.CHIP_SIZE);
                         roomHeightPx = (World.ROOM_HEIGHT * World.CHIP_SIZE);
                         State = Global.WEStates.DYING;
+                        _sprIndex = _blockSpr;
+                        IsCollidable = true;
                         relativeRoomCoords = new Vector2((float)Math.Floor(Position.X / roomWidthPx) * roomWidthPx, (float)Math.Floor(Position.Y / roomHeightPx) * roomHeightPx);
                         Position = relativeRoomCoords + new Vector2(_solutionChipXCoord * World.CHIP_SIZE, _solutionChipYCoord * World.CHIP_SIZE);
                     }

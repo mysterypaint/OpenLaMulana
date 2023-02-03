@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianPalenque : ParentAssembledInteractiveWorldEntity
+    internal class GuardianPalenque : ParentGuardianEntity
     {
         private View _bossRoom, _bossDefeatedRoom = null;
         private int _ts = World.CHIP_SIZE;

@@ -13,7 +13,6 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
         private float _blinkTimerReset = 6f;
         private float _blinkTimer;
 
-
         enum SoulFrames
         {
             DOWN_LEFT,

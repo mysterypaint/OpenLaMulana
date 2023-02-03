@@ -580,6 +580,12 @@ namespace OpenLaMulana
                                 string inGameTimeStr = Global.InGameTimer.ToString();
                                 Global.TextManager.DrawText(new Vector2(31 * World.CHIP_SIZE, 1 * World.CHIP_SIZE), inGameTimeStr, 32, Color.White, World.VIEW_DIR.RIGHT);
                                 break;
+                            case Global.DebugStats.FPS_VIEWER:
+                                double frameRate = (1 / gameTime.ElapsedGameTime.TotalSeconds);
+                                string fmt = "00.00";
+                                string fpsStr = String.Format("FPS: {0}",frameRate.ToString(fmt));
+                                Global.TextManager.DrawText(_camPos + new Vector2(31 * World.CHIP_SIZE, 0), fpsStr, 32, Color.White, World.VIEW_DIR.RIGHT);
+                                break;
                         }
                     } else
                         DrawHud(Global.SpriteBatch, gameTime);

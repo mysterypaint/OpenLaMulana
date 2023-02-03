@@ -9,7 +9,7 @@ using static OpenLaMulana.Entities.World;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianViy : ParentAssembledInteractiveWorldEntity
+    internal class GuardianViy : ParentGuardianEntity
     {
         private View _bossRoom = null;
         private View _bossRoomUnmodified = null;

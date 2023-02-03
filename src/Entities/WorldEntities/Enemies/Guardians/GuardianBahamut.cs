@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianBahamut : ParentAssembledInteractiveWorldEntity
+    internal class GuardianBahamut : ParentGuardianEntity
     {
         private Global.WEStates _state = Global.WEStates.INIT;
         private View _bossRoom = null;

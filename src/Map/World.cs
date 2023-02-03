@@ -943,7 +943,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public void FieldTransitionCardinalBoss(VIEW_DIR movingDirection, View srcView, View destView, Texture2D bossTexture = null, ParentWorldEntity guardian = null)
         {
             // Game is busy; Do not transition.
-            if (Global.Main.State != Global.GameState.PLAYING)
+            if (Global.Main.State != Global.GameState.PLAYING && Global.Main.State != Global.GameState.CUTSCENE)
                 return;
 
             // Camera is busy; Do not transition.
@@ -1045,7 +1045,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             _drawBossRoom = false;
 
             // Game is busy; Do not transition.
-            if (Global.Main.State != Global.GameState.PLAYING)
+            if (Global.Main.State != Global.GameState.PLAYING && Global.Main.State != Global.GameState.CUTSCENE)
                 return;
 
             // Camera is busy; Do not transition.

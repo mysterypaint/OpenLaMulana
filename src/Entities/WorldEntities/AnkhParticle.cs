@@ -29,7 +29,7 @@ namespace OpenLaMulana.Entities.WorldEntities
         {
             _myAnimation.Update(gameTime);
             _sprIndex = _myAnimation.CurrentFrame.Sprite;
-            Position += new Vector2(0, -2);
+            Position += new Vector2(0, -4);
         }
     }
 }

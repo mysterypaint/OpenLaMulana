@@ -12,6 +12,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
         {
             _tex = Global.TextureManager.GetTexture(Global.World.GetCurrEveTexture());
             _sprIndex = new Sprite(_tex, 208, 136, 8, 24);
+            HitboxWidth = 8;
+            HitboxHeight = 24;
+            IsCollidable = true;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {

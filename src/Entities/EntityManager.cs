@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Audio;
 using OpenLaMulana.Entities.WorldEntities;
+using OpenLaMulana.Entities.WorldEntities.Enemies.Guardians;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.System;
 using System;
@@ -54,6 +55,10 @@ namespace OpenLaMulana.Entities
                     case Global.GameState.CUTSCENE:
                         switch (entity)
                         {
+                            case Ankh:
+                            case AnkhParticle:
+                            case ParentGuardianEntity:
+                            case Camera:
                             case World:
                             case PoisonTimer:
                                 if (entity.LockTo30FPS)

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 {
-    internal class GuardianSakit : ParentAssembledInteractiveWorldEntity
+    internal class GuardianSakit : ParentGuardianEntity
     {
         private int _ts = World.CHIP_SIZE;
         private int _initTimer = 0;
