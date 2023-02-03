@@ -111,7 +111,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     State = Global.WEStates.IDLE;
                     if (_flagsToSet >= 0)
                     {
-                        if (Global.Inventory.EquippedRoms[0] == Global.ObtainableSoftware.GLYPH_READER || Global.Inventory.EquippedRoms[1] == Global.ObtainableSoftware.GLYPH_READER)
+                        if (Global.Inventory.EquippedSoftware[0] == Global.ObtainableSoftware.GLYPH_READER || Global.Inventory.EquippedSoftware[1] == Global.ObtainableSoftware.GLYPH_READER)
                         {
                             Global.GameFlags.InGameFlags[_flagsToSet] = true;
 

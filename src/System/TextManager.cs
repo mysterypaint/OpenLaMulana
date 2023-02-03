@@ -419,9 +419,9 @@ namespace OpenLaMulana.System
             if (potentiallyLamulanese) {
                 if (Global.Protag != null)
                 {
-                    if (Global.Inventory.EquippedRoms != null)
+                    if (Global.Inventory.EquippedSoftware != null)
                     {
-                        Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedRoms;
+                        Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedSoftware;
                         if ((equippedRoms[0] != Global.ObtainableSoftware.GLYPH_READER) && (equippedRoms[1] != Global.ObtainableSoftware.GLYPH_READER))
                             _dx -= 16;
                     }

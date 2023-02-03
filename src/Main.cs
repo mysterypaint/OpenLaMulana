@@ -285,7 +285,7 @@ namespace OpenLaMulana
                                     Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
                                 }
 
-                                if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
+                                if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_SOFTWARE_SELECTION))
                                 {
                                     State = Global.GameState.MSX_OPEN;
                                     Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);

@@ -175,7 +175,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.ObtainedMainWeapons = new Global.MainWeapons[5];
             Array.Fill((Global.MainWeapons[])Global.Inventory.ObtainedMainWeapons, (Global.MainWeapons)Global.MainWeapons.NONE);
 
-            Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.NONE, Global.ObtainableSoftware.NONE };
+            Global.Inventory.EquippedSoftware = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.NONE, Global.ObtainableSoftware.NONE };
             Global.Inventory.ObtainedMainWeapons[0] = Global.MainWeapons.WHIP;
             Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX] = true;
             Global.Inventory.TreasureIcons[(int)Global.ObtainableTreasures.MSX] = Global.ObtainableTreasures.MSX;
@@ -198,7 +198,10 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             if (Global.DevModeEnabled)
             {
                 GetDebugEquipment();
-                SaveData encryptedSave = null;// HelperFunctions.LoadSaveFromFile("lamulana.sa0");
+                SaveData encryptedSave = null;
+                
+                if (!Global.DevModeHijackSaveFile)
+                    encryptedSave = HelperFunctions.LoadSaveFromFile("lamulana.sa0");
 
                 if (encryptedSave != null)
                 {
@@ -264,7 +267,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             HelperFunctions.UpdateInventorySilent(Global.SubWeapons.HANDY_SCANNER, true);
 
             Global.Inventory.ObtainedMainWeapons[4] = Global.MainWeapons.KATANA;
-            Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
+            Global.Inventory.EquippedSoftware = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
         }
 
         private void MoveToWorldSpawnPoint()

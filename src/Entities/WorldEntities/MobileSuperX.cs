@@ -106,7 +106,7 @@ namespace OpenLaMulana
         private List<Sprite> _treasureSprites = new List<Sprite>();
         private List<Sprite> _weaponSprites = new List<Sprite>();
         private List<Sprite> _subWeaponSprites = new List<Sprite>();
-        private Sprite[] _romSprites = new Sprite[12];
+        private Sprite[] _softwareSprites = new Sprite[12];
         private Sprite _softwareSelectionCursor = null;
         private Sprite _subWeaponSelectionCursor = null;
         private Sprite _mainWeaponSelectionCursor = null;
@@ -382,7 +382,7 @@ namespace OpenLaMulana
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                         ResetMSXState();
                     }
-                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_SOFTWARE_SELECTION))
                     {
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
@@ -431,7 +431,7 @@ namespace OpenLaMulana
 
                             if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MAIN_WEAPON))
                             {
-                                Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] = Global.ObtainableSoftware.NONE;
+                                Global.Inventory.EquippedSoftware[_softwareCartSlotCursorPosition] = Global.ObtainableSoftware.NONE;
                             }
 
                             if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
@@ -442,9 +442,9 @@ namespace OpenLaMulana
                                     _softwareSelectionState = SoftwareSelectionStates.SELECTING_SOFTWARE;
                                     _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
                                     _inventoryCursorVisible = true;
-                                    if (Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] != Global.ObtainableSoftware.NONE)
+                                    if (Global.Inventory.EquippedSoftware[_softwareCartSlotCursorPosition] != Global.ObtainableSoftware.NONE)
                                     {
-                                        _softwareSelectionCursorPosition = (int)Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition];
+                                        _softwareSelectionCursorPosition = (int)Global.Inventory.EquippedSoftware[_softwareCartSlotCursorPosition];
                                     }
                                     else
                                     {
@@ -494,13 +494,13 @@ namespace OpenLaMulana
                                 if (otherSlot > 1)
                                     otherSlot = 0;
 
-                                if (Global.Inventory.EquippedRoms[otherSlot] != (Global.ObtainableSoftware)_softwareSelectionCursorPosition)
+                                if (Global.Inventory.EquippedSoftware[otherSlot] != (Global.ObtainableSoftware)_softwareSelectionCursorPosition)
                                 {
                                     _softwareSelectionState = SoftwareSelectionStates.SELECTING_CART_SLOT;
                                     _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
                                     _inventoryCursorVisible = true;
 
-                                    Global.Inventory.EquippedRoms[_softwareCartSlotCursorPosition] = (Global.ObtainableSoftware)_softwareSelectionCursorPosition;
+                                    Global.Inventory.EquippedSoftware[_softwareCartSlotCursorPosition] = (Global.ObtainableSoftware)_softwareSelectionCursorPosition;
 
                                     bool softwareComboDetected = false;
                                     _equippedSoftwareCombo = Global.SoftwareCombos.NONE;
@@ -542,7 +542,7 @@ namespace OpenLaMulana
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                         ResetMSXState();
                     }
-                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_SOFTWARE_SELECTION))
                     {
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
@@ -592,7 +592,7 @@ namespace OpenLaMulana
                         Global.Main.SetState(Global.GameState.PLAYING);
                         Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     }
-                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_SOFTWARE_SELECTION))
                     {
                         ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
@@ -618,7 +618,7 @@ namespace OpenLaMulana
                         Global.MobileSuperX.SetState(Global.MSXStates.EMULATOR);
                         Global.AudioManager.PlaySFX(SFX.MSX_OPEN);
                     }
-                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_ROM_SELECTION))
+                    else if (InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_OPEN_MSX_SOFTWARE_SELECTION))
                     {
                         ResetMSXState();
                         Global.MobileSuperX.SetState(Global.MSXStates.SOFTWARE_SELECTION);
@@ -1027,10 +1027,10 @@ namespace OpenLaMulana
             Global.World.FieldTransitionImmediate(currView, destView, updateEntities, updateMusic, forceRespawnGlobals);
         }
 
-        private int FindSoftware(Vector2 movingDirection, int initialRomPosition)
+        private int FindSoftware(Vector2 movingDirection, int initialSoftwarePosition)
         {
-            int romPosX = initialRomPosition % 14;
-            int romPosY = initialRomPosition / 14;
+            int softwarePosX = initialSoftwarePosition % 14;
+            int softwarePosY = initialSoftwarePosition / 14;
 
             if (movingDirection.Y != 0)
             {
@@ -1052,72 +1052,72 @@ namespace OpenLaMulana
                 bool stopSearchingLeft = false;
                 bool stopSearchingRight = false;
 
-                if (romPosY + (movingDirection.Y * checkingRow) >= 0 && romPosY + (movingDirection.Y * checkingRow) < (int)Global.ObtainableSoftware.MAX)
+                if (softwarePosY + (movingDirection.Y * checkingRow) >= 0 && softwarePosY + (movingDirection.Y * checkingRow) < (int)Global.ObtainableSoftware.MAX)
                 {
-                    romPosY += (int)movingDirection.Y;
+                    softwarePosY += (int)movingDirection.Y;
 
-                    int currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+                    int currCheckingSoftware = (softwarePosY * 14) + softwarePosX;
 
-                    if (currCheckingRom >= (int)Global.ObtainableSoftware.MAX || currCheckingRom < 0)
+                    if (currCheckingSoftware >= (int)Global.ObtainableSoftware.MAX || currCheckingSoftware < 0)
                         return -1;
 
-                    while (!Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingRom])
+                    while (!Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingSoftware])
                     {
                         checkingColumn *= -1;
 
-                        if (stopSearchingLeft && romPosX + checkingColumn < 0)
+                        if (stopSearchingLeft && softwarePosX + checkingColumn < 0)
                             checkingColumn *= -1;
-                        else if (stopSearchingRight && romPosX + checkingColumn >= 14)
+                        else if (stopSearchingRight && softwarePosX + checkingColumn >= 14)
                             checkingColumn *= -1;
 
-                        currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
-                        if (romPosX + checkingColumn < 0 || romPosX + checkingColumn >= 14)
+                        currCheckingSoftware = (softwarePosY * 14) + softwarePosX + checkingColumn;
+                        if (softwarePosX + checkingColumn < 0 || softwarePosX + checkingColumn >= 14)
                         {
-                            if (romPosX + checkingColumn < 0)
+                            if (softwarePosX + checkingColumn < 0)
                             {
                                 stopSearchingLeft = true;
                                 checkingColumn *= -1;
 
                                 if (!stopSearchingRight)
                                 {
-                                    currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+                                    currCheckingSoftware = (softwarePosY * 14) + softwarePosX + checkingColumn;
 
                                     checkingColumn *= -1;
                                     continue;
                                 }
                             }
-                            else if (romPosX + checkingColumn > 14)
+                            else if (softwarePosX + checkingColumn > 14)
                             {
                                 stopSearchingRight = true;
                                 checkingColumn++;
 
                                 if (stopSearchingLeft && stopSearchingRight)
                                 {
-                                    romPosY += (int)movingDirection.Y;
+                                    softwarePosY += (int)movingDirection.Y;
                                     stopSearchingLeft = false;
                                     stopSearchingRight = false;
                                     checkingColumn = 1;
                                 }
-                                if (romPosY < 0 || (romPosY > 5 && romPosX + checkingColumn > 14))
+                                if (softwarePosY < 0 || (softwarePosY > 5 && softwarePosX + checkingColumn > 14))
                                     break;
                                 continue;
                             }
 
                             if (stopSearchingLeft && stopSearchingRight)
                             {
-                                romPosY += (int)movingDirection.Y;
+                                softwarePosY += (int)movingDirection.Y;
                                 stopSearchingLeft = false;
                                 stopSearchingRight = false;
                                 checkingColumn = 1;
                             }
 
-                            if (romPosY < 0)
+                            if (softwarePosY < 0)
                                 break;
 
-                            currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
-                            if ((romPosY >= 5 && romPosX + checkingColumn >= 14))
+                            currCheckingSoftware = (softwarePosY * 14) + softwarePosX + checkingColumn;
+                            if ((softwarePosY >= 5 && softwarePosX + checkingColumn >= 14))
                             {
-                                currCheckingRom = (int)Global.ObtainableSoftware.MAX - 1;
+                                currCheckingSoftware = (int)Global.ObtainableSoftware.MAX - 1;
                                 break;
                             }
 
@@ -1129,11 +1129,11 @@ namespace OpenLaMulana
                             checkingColumn--;
                     }
 
-                    if (currCheckingRom > (int)Global.ObtainableSoftware.MAX || currCheckingRom < 0)
+                    if (currCheckingSoftware > (int)Global.ObtainableSoftware.MAX || currCheckingSoftware < 0)
                         return -1;
 
-                    if (Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingRom])
-                        return currCheckingRom;
+                    if (Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingSoftware])
+                        return currCheckingSoftware;
                 }
                 else
                 {
@@ -1146,23 +1146,23 @@ namespace OpenLaMulana
             {
                 // Horizontal checking
                 int checkingColumn = (int)movingDirection.X;
-                int currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+                int currCheckingSoftware = (softwarePosY * 14) + softwarePosX + checkingColumn;
 
-                if ((romPosX >= 13 && movingDirection.X > 0) || romPosX <= 0 && movingDirection.X < 0)
+                if ((softwarePosX >= 13 && movingDirection.X > 0) || softwarePosX <= 0 && movingDirection.X < 0)
                     return -1;
 
-                if (currCheckingRom >= (int)Global.ObtainableSoftware.MAX || currCheckingRom < 0)
+                if (currCheckingSoftware >= (int)Global.ObtainableSoftware.MAX || currCheckingSoftware < 0)
                     return -1;
 
-                while (!Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingRom])
+                while (!Global.Inventory.ObtainedSoftware[(Global.ObtainableSoftware)currCheckingSoftware])
                 {
                     checkingColumn += (int)movingDirection.X;
-                    currCheckingRom = (romPosY * 14) + romPosX + checkingColumn;
+                    currCheckingSoftware = (softwarePosY * 14) + softwarePosX + checkingColumn;
 
-                    if (romPosX + checkingColumn < 0 || romPosX + checkingColumn > 14)
+                    if (softwarePosX + checkingColumn < 0 || softwarePosX + checkingColumn >= 14 || currCheckingSoftware >= (int)Global.ObtainableSoftware.MAX)
                         return -1;
                 }
-                return currCheckingRom;
+                return currCheckingSoftware;
             }
 
             return -1;
@@ -1338,13 +1338,13 @@ namespace OpenLaMulana
             Global.TextManager.QueueText(1 * 8, 2 * 8, msxStr);
             Global.TextManager.QueueText(2 * 8, 5 * 8, "SLOT1");
             // Grab and draw the player's equipped roms
-            int eqRom1 = (int)Global.Inventory.EquippedRoms[0];
-            int equippedRomSprID1 = Global.World.SoftwareGetGraphicID(eqRom1);
+            int eqSoftware1 = (int)Global.Inventory.EquippedSoftware[0];
+            int equippedSoftwareSprID1 = Global.World.SoftwareGetGraphicID(eqSoftware1);
 
-            if (equippedRomSprID1 >= 0)
-                _romSprites[equippedRomSprID1].Draw(spriteBatch, new Vector2(8 * 8, 4 * 8));
+            if (equippedSoftwareSprID1 >= 0)
+                _softwareSprites[equippedSoftwareSprID1].Draw(spriteBatch, new Vector2(8 * 8, 4 * 8));
 
-            Global.TextManager.QueueText(11 * 8, 5 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom1, Global.CurrLang));
+            Global.TextManager.QueueText(11 * 8, 5 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqSoftware1, Global.CurrLang));
 
             mainWindowSprites[(int)WindowSprites.INV_TL].Draw(spriteBatch, new Vector2(7 * 8, 3 * 8));
             mainWindowSprites[(int)WindowSprites.INV_TR].Draw(spriteBatch, new Vector2(10 * 8, 3 * 8));
@@ -1353,11 +1353,11 @@ namespace OpenLaMulana
             if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX2])
             {
                 Global.TextManager.QueueText(2 * 8, 8 * 8, "SLOT2");
-                int eqRom2 = (int)Global.Inventory.EquippedRoms[1];
-                int equippedRomSprID2 = Global.World.SoftwareGetGraphicID(eqRom2);
-                if (equippedRomSprID2 >= 0)
-                    _romSprites[equippedRomSprID2].Draw(spriteBatch, new Vector2(8 * 8, 7 * 8));
-                Global.TextManager.QueueText(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqRom2, Global.CurrLang));
+                int eqSoftware2 = (int)Global.Inventory.EquippedSoftware[1];
+                int equippedSoftwareSprID2 = Global.World.SoftwareGetGraphicID(eqSoftware2);
+                if (equippedSoftwareSprID2 >= 0)
+                    _softwareSprites[equippedSoftwareSprID2].Draw(spriteBatch, new Vector2(8 * 8, 7 * 8));
+                Global.TextManager.QueueText(11 * 8, 8 * 8, Global.TextManager.GetText((int)Global.HardCodedText.SOFTWARE_NAMES_BEGIN + eqSoftware2, Global.CurrLang));
 
                 mainWindowSprites[(int)WindowSprites.INV_BLTL].Draw(spriteBatch, new Vector2(7 * 8, 6 * 8));
                 mainWindowSprites[(int)WindowSprites.INV_BRTR].Draw(spriteBatch, new Vector2(10 * 8, 6 * 8));
@@ -1400,12 +1400,12 @@ namespace OpenLaMulana
             }
 
             // Draw all the obtained software
-            for (Global.ObtainableSoftware romID = (Global.ObtainableSoftware)0; romID < Global.ObtainableSoftware.MAX; romID++)
+            for (Global.ObtainableSoftware softwareID = (Global.ObtainableSoftware)0; softwareID < Global.ObtainableSoftware.MAX; softwareID++)
             {
-                if (Global.Inventory.ObtainedSoftware[romID])
+                if (Global.Inventory.ObtainedSoftware[softwareID])
                 {
-                    int softwareSpriteID = Global.World.SoftwareGetGraphicID((int)romID);
-                    _romSprites[softwareSpriteID].Draw(spriteBatch, new Vector2(2 * 8 + ((int)romID % 14) * 16, 10 * 8 + ((int)romID / 14) * 16));
+                    int softwareSpriteID = Global.World.SoftwareGetGraphicID((int)softwareID);
+                    _softwareSprites[softwareSpriteID].Draw(spriteBatch, new Vector2(2 * 8 + ((int)softwareID % 14) * 16, 10 * 8 + ((int)softwareID / 14) * 16));
                 }
             }
 
@@ -1574,7 +1574,7 @@ namespace OpenLaMulana
 
             for (var i = 1; i <= 12; i++)
             {
-                _romSprites[i - 1] = new Sprite(_tex, 256 + (i) % 4 * 16, 144 + (i) / 4 * 16, 16, 16);
+                _softwareSprites[i - 1] = new Sprite(_tex, 256 + (i) % 4 * 16, 144 + (i) / 4 * 16, 16, 16);
             }
         }
 

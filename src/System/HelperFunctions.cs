@@ -702,7 +702,7 @@ namespace OpenLaMulana.System
             Global.Inventory.HP = maxHP32[0] * 32;
             Global.Inventory.CoinCount = GetWordAsInt(coins);
             Global.Inventory.WeightCount = GetWordAsInt(weights);
-            Global.Inventory.EquippedRoms = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.NONE, Global.ObtainableSoftware.NONE };
+            Global.Inventory.EquippedSoftware = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.NONE, Global.ObtainableSoftware.NONE };
             Global.Inventory.EquippedMainWeapon = Global.MainWeapons.NONE;
             Global.Inventory.EquippedSubWeapon = Global.SubWeapons.NONE;
             foreach (var treasure in Global.Inventory.ObtainedTreasures.Keys.ToList())
@@ -1207,7 +1207,7 @@ namespace OpenLaMulana.System
 
         internal static bool CheckSoftwareCombo(Global.SoftwareCombos combo, bool executeTheCombo)
         {
-            Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedRoms;
+            Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedSoftware;
 
             bool result = false;
             Global.MobileSuperX.SetEmulatorState(MobileSuperX.EmulatorStates.NONE);
@@ -1378,7 +1378,7 @@ namespace OpenLaMulana.System
         private static bool CheckSoftwareSlots(Global.ObtainableSoftware software1, Global.ObtainableSoftware software2, bool interchangeable)
         {
             bool result = false;
-            Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedRoms;
+            Global.ObtainableSoftware[] equippedRoms = Global.Inventory.EquippedSoftware;
 
             if (equippedRoms[0] == software1 && equippedRoms[1] == software2)
             {

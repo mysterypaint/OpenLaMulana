@@ -15,6 +15,7 @@ namespace OpenLaMulana
         public static bool DevModeAllEntitiesGeneric { get; internal set; } = false;
         public static bool DevModeDebugPhysics { get; set; } = false;
         public static bool DevModeDisableAutoScreenTransitions { get; set; } = true;
+        public static bool DevModeHijackSaveFile { get; set; } = false;
 
         public enum DebugStats
         {
@@ -512,7 +513,7 @@ namespace OpenLaMulana
             MENU_CANCEL,
             MENU_MOVE_LEFT,
             MENU_MOVE_RIGHT,
-            MENU_OPEN_MSX_ROM_SELECTION,
+            MENU_OPEN_MSX_SOFTWARE_SELECTION,
             MENU_OPEN_MSX_EMULATOR,
             MENU_OPEN_CONFIG,
             MAX
@@ -562,7 +563,7 @@ namespace OpenLaMulana
         {
             public Global.MainWeapons EquippedMainWeapon { get; set; }
             public Global.SubWeapons EquippedSubWeapon { get; set; }
-            public Global.ObtainableSoftware[] EquippedRoms { get; set; }
+            public Global.ObtainableSoftware[] EquippedSoftware { get; set; }
             public Dictionary<Global.ObtainableTreasures, bool> ObtainedTreasures { get; set; }
             public Dictionary<Global.ObtainableSoftware, bool> ObtainedSoftware { get; set; }
             public Global.MainWeapons[] ObtainedMainWeapons { get; set; }
