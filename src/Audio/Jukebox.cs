@@ -41,8 +41,8 @@ namespace OpenLaMulana.Audio
                 _actualGameBGM = Global.AudioManager.IsPlaying();
                 Global.AudioManager.StopMusic();
             }
-            var selectionMoveX = InputManager.DirPressedX;
-            var selectionMoveY = InputManager.DirPressedY;
+            var selectionMoveX = InputManager.DirectionCheckPressed60FPS(true);
+            var selectionMoveY = InputManager.DirectionCheckPressed60FPS(false);
             var keyCancelPressed = InputManager.ButtonCheckPressed60FPS(ControllerKeys.MENU_CANCEL);
             var keyConfirmPressed = InputManager.ButtonCheckPressed60FPS(ControllerKeys.MENU_CONFIRM);
             var keyMainWeaponPressed = InputManager.ButtonCheckPressed60FPS(ControllerKeys.MAIN_WEAPON);

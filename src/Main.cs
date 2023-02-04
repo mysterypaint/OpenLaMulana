@@ -566,15 +566,14 @@ namespace OpenLaMulana
                                 ActiveView[] activeViews = Global.World.GetActiveViews();
                                 View currView = activeViews[(int)World.AViews.CURR].GetView();
                                 View destView = activeViews[(int)World.AViews.DEST].GetView();
-
-
+                                Global.TextManager.DrawText(_camPos, String.Format("CurrView: [{0},{1}]\\10DestView: [{2},{3}]", currView.X, currView.Y, destView.X, destView.Y));
+                                break;
+                            case Global.DebugStats.PLAYER_HITBOX_INFO:
                                 string playerCoordsStr = "\\10bboxLeft: " + Math.Floor(_protag.BBox.Left / (float)World.CHIP_SIZE).ToString()
                                                             + "\\10bboxBottom: " + Math.Floor(_protag.BBox.Bottom / (float)World.CHIP_SIZE).ToString()
                                                             + "\\10bboxRight: " + Math.Floor(_protag.BBox.Right / (float)World.CHIP_SIZE).ToString()
                                                             + "\\10bboxTop: " + Math.Floor(_protag.BBox.Top / (float)World.CHIP_SIZE).ToString();
-
-                                Global.TextManager.DrawText(_camPos, String.Format("CurrView: [{0},{1}]\\10DestView: [{2},{3}]", currView.X, currView.Y, destView.X, destView.Y));
-                                Global.TextManager.DrawText(_camPos + new Vector2(15*8), playerCoordsStr);
+                                Global.TextManager.DrawText(_camPos + new Vector2(0 * 8), playerCoordsStr);
                                 break;
                             case Global.DebugStats.IN_GAME_TIMER_VIEWER:
                                 string inGameTimeStr = Global.InGameTimer.ToString();

@@ -377,7 +377,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             }
                             break;
                         case NPCStates.ACTIVE:
-                            _shopCursorValue += InputManager.DirPressedX;
+                            _shopCursorValue += InputManager.DirectionCheckPressed30FPS(true);
 
                             if (_shopCursorValue > 2)
                                 _shopCursorValue = 0;

@@ -266,6 +266,73 @@ namespace OpenLaMulana.System
             }
         }
 
+        public static int DirectionCheckPressed30FPS(bool getX)
+        {
+            if (getX)
+            {
+                if (DirPressedXPrev != 0)
+                    return DirPressedXPrev;
+                if (DirPressedX != 0)
+                    return DirPressedX;
+            }
+            else
+            {
+                if (DirPressedYPrev != 0)
+                    return DirPressedYPrev;
+                if (DirPressedY != 0)
+                    return DirPressedY;
+            }
+            return 0;
+        }
+
+        public static int DirectionConfigCheckPressed30FPS(bool getX)
+        {
+            if (getX)
+            {
+                if (DirConfPressedXPrev != 0)
+                    return DirConfPressedXPrev;
+                if (DirConfPressedX != 0)
+                    return DirConfPressedX;
+            }
+            else
+            {
+                if (DirConfPressedYPrev != 0)
+                    return DirConfPressedYPrev;
+                if (DirConfPressedY != 0)
+                    return DirConfPressedY;
+            }
+            return 0;
+        }
+        public static int DirectionCheckPressed60FPS(bool getX)
+        {
+            if (getX)
+            {
+                if (DirPressedX != 0)
+                    return DirPressedX;
+            }
+            else
+            {
+                if (DirPressedY != 0)
+                    return DirPressedY;
+            }
+            return 0;
+        }
+
+        public static int DirectionConfigCheckPressed60FPS(bool getX)
+        {
+            if (getX)
+            {
+                if (DirConfPressedX != 0)
+                    return DirConfPressedX;
+            }
+            else
+            {
+                if (DirConfPressedY != 0)
+                    return DirConfPressedY;
+            }
+            return 0;
+        }
+
         public static bool ButtonCheckPressed60FPS(ControllerKeys cK)
         {
             return PressedKeys[(int)cK];

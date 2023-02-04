@@ -11,11 +11,16 @@ namespace OpenLaMulana
 {
     public static class Global
     {
-        public static bool DevModeEnabled { get; internal set; } = true;
-        public static bool DevModeAllEntitiesGeneric { get; internal set; } = false;
-        public static bool DevModeDebugPhysics { get; set; } = false;
-        public static bool DevModeDisableAutoScreenTransitions { get; set; } = false;
-        public static bool DevModeHijackSaveFile { get; set; } = false;
+        public static bool DevModeEnabled { get; set; } = true;
+        public static bool DevModeMuteBGM { get; set; } = true;
+        public static bool DevModeAllEntitiesGeneric { get; set; } = false;
+        public static bool DevModeDebugPhysics { get; set; } = true;
+        public static bool DevModeDisableAutoScreenTransitions { get; set; } = true;
+        public static bool DevModeHijackSaveFile { get; set; } = true;
+        public static bool DevModeOverrideSpawnPoint { get; set; } = true;
+        public static int DevModeSpawnFieldID { get; set; } = 4;
+        public static Point DevModeSpawnView { get; set; } = new Point(3, 1);
+        public static Point DevModeSpawnViewPos { get; set; } = new Point(5, 5);
 
         public enum DebugStats
         {
@@ -24,10 +29,11 @@ namespace OpenLaMulana
             ENTITY_COUNT,
             ROOM_COORDS_INFO,
             IN_GAME_TIMER_VIEWER,
+            PLAYER_HITBOX_INFO,
             FPS_VIEWER,
             MAX
         }
-        public static DebugStats DebugStatsState { get; internal set; } = DebugStats.FPS_VIEWER;
+        public static DebugStats DebugStatsState { get; set; } = DebugStats.ROOM_COORDS_INFO;
 
         public enum DrawOrder : int
         {

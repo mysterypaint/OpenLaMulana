@@ -227,16 +227,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             Global.MobileSuperX.VerifyThatPlayerHasAtLeastOneSubweapon();
 
-            if (Global.DevModeEnabled)
-            {
-                View destView = Global.World.GetField(6).GetView(2, 0);
-                Global.World.FieldTransitionImmediate(Global.World.GetCurrentView(), destView);
-
-                SetBBoxToTile(6, 6);
-                //MoveToWorldSpawnPoint();
-            }
-            else
-                MoveToWorldSpawnPoint();
+            MoveToWorldSpawnPoint();
         }
 
         private void GetDebugEquipment()
@@ -277,6 +268,13 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             View destView = Global.World.GetField(destFieldID).GetView(spawnParams[1]);
             int spawnX = spawnParams[2];
             int spawnY = spawnParams[3];
+
+            if (Global.DevModeOverrideSpawnPoint && Global.DevModeEnabled)
+            {
+                destView = Global.World.GetField(Global.DevModeSpawnFieldID).GetView(Global.DevModeSpawnView.X, Global.DevModeSpawnView.Y);
+                spawnX = Global.DevModeSpawnViewPos.X;
+                spawnY = Global.DevModeSpawnViewPos.Y;
+            }
 
             Global.World.FieldTransitionImmediate(Global.World.GetCurrentView(), destView);
 
@@ -779,7 +777,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         private void HandleScreenTransitions(View currRoom)
         {
-            if (Global.DevModeDisableAutoScreenTransitions)
+            if (Global.DevModeDisableAutoScreenTransitions && Global.DevModeEnabled)
                 return;
             if (Global.Camera.GetState() == Camera.CamStates.NONE)
             {

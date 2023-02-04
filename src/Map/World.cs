@@ -92,7 +92,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         //public int CurrViewX = 3, CurrViewY = 1, FieldCount = 0;
         //        public int CurrField { get; set; } = 2;
         //        public int CurrViewX = 2, CurrViewY = 4, FieldCount = 0;
-        public int CurrField { get; set; } = 5;
+        public int CurrField { get; set; } = 1;
         public int CurrViewX = 0, CurrViewY = 0, FieldCount = 0;
         private int[] _currChipLine;
         public const int SPECIAL_TILES_BEGIN = 1120;
@@ -1425,6 +1425,11 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         internal View GetView(int fieldID, int roomX, int roomY)
         {
             return _fields[fieldID].GetView(roomX, roomY);
+        }
+
+        internal object GetField(object devModeSpawnFieldID)
+        {
+            throw new NotImplementedException();
         }
     }
 }

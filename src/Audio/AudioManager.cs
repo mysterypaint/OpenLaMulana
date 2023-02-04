@@ -39,6 +39,11 @@ namespace OpenLaMulana
 
         public AudioManager()
         {
+            if (Global.DevModeEnabled)
+            {
+                if (Global.DevModeMuteBGM)
+                    _internalBGMVolScale = 0f;
+            }
         }
 
         public void LoadContent(string musPath, ContentManager content)

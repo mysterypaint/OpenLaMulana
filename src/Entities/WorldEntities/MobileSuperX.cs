@@ -163,7 +163,7 @@ namespace OpenLaMulana
                     switch (_inventoryState)
                     {
                         case MSXInventoryStates.MAIN_WEAPON_SELECTION:
-                            if (InputManager.DirPressedX > 0)
+                            if (InputManager.DirectionCheckPressed60FPS(true) > 0)
                             {
                                 int originalPosition = _weaponSelectionPosition;
                                 _weaponSelectionPosition++;
@@ -189,7 +189,7 @@ namespace OpenLaMulana
                                     _inventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
                                 }
                             }
-                            else if (InputManager.DirPressedX < 0)
+                            else if (InputManager.DirectionCheckPressed60FPS(true) < 0)
                             {
                                 int originalPosition = _weaponSelectionPosition;
                                 _weaponSelectionPosition--;
@@ -230,7 +230,7 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.DirPressedY > 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
+                            if (InputManager.DirectionCheckPressed60FPS(false) > 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
                             {
                                 VerifyThatPlayerHasAtLeastOneSubweapon();
 
@@ -245,7 +245,7 @@ namespace OpenLaMulana
                             break;
 
                         case MSXInventoryStates.SUB_WEAPON_SELECTION:
-                            if (InputManager.DirPressedX > 0)
+                            if (InputManager.DirectionCheckPressed60FPS(true) > 0)
                             {
                                 int originalPosition = _subWeaponSelectionPosition;
                                 _subWeaponSelectionPosition++;
@@ -271,7 +271,7 @@ namespace OpenLaMulana
                                     _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
                                 }
                             }
-                            else if (InputManager.DirPressedX < 0)
+                            else if (InputManager.DirectionCheckPressed60FPS(true) < 0)
                             {
                                 int originalPosition = _subWeaponSelectionPosition;
                                 _subWeaponSelectionPosition--;
@@ -311,7 +311,7 @@ namespace OpenLaMulana
                                 }
                             }
 
-                            if (InputManager.DirPressedY < 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
+                            if (InputManager.DirectionCheckPressed60FPS(false) < 0 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
                             {
                                 int originalPosition = _subWeaponSelectionPosition;
                                 if (_subWeaponSelectionPosition <= 4 || InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.MENU_CONFIRM))
@@ -343,7 +343,7 @@ namespace OpenLaMulana
                                     _subWeaponInventoryCursorBlinkTimer = _inventoryCursorBlinkTimerReset;
                                 }
                             }
-                            else if (InputManager.DirPressedY > 0)
+                            else if (InputManager.DirectionCheckPressed60FPS(false) > 0)
                             {
                                 int originalPosition = _subWeaponSelectionPosition;
                                 if (_subWeaponSelectionPosition <= 4)
@@ -415,9 +415,9 @@ namespace OpenLaMulana
                         case SoftwareSelectionStates.SELECTING_CART_SLOT:
                             if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.MSX2])
                             {
-                                if (InputManager.DirPressedY != 0)
+                                if (InputManager.DirectionCheckPressed60FPS(false) != 0)
                                 {
-                                    _softwareCartSlotCursorPosition += InputManager.DirPressedY;
+                                    _softwareCartSlotCursorPosition += InputManager.DirectionCheckPressed60FPS(false);
                                     if (_softwareCartSlotCursorPosition > 1)
                                         _softwareCartSlotCursorPosition = 0;
                                     else if (_softwareCartSlotCursorPosition < 0)
@@ -455,9 +455,9 @@ namespace OpenLaMulana
                             }
                             break;
                         case SoftwareSelectionStates.SELECTING_SOFTWARE:
-                            if (InputManager.DirPressedY != 0)
+                            if (InputManager.DirectionCheckPressed60FPS(false) != 0)
                             {
-                                var searchingDirectionY = InputManager.DirPressedY;
+                                var searchingDirectionY = InputManager.DirectionCheckPressed60FPS(false);
                                 int _foundSoftware = FindSoftware(new Vector2(0, searchingDirectionY), _softwareSelectionCursorPosition);
 
                                 if (_foundSoftware >= 0)
@@ -468,14 +468,14 @@ namespace OpenLaMulana
                                     Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
                                 }
                             }
-                            else if (InputManager.DirPressedX != 0)
+                            else if (InputManager.DirectionCheckPressed60FPS(true) != 0)
                             {
                                 /*
                                 if moving horizontally:
                                 - keep looking toward the direction we are moving until we exhaust the possibilities
                                 - stop and do nothing, if we find nothing*/
 
-                                var searchingDirectionX = InputManager.DirPressedX;
+                                var searchingDirectionX = InputManager.DirectionCheckPressed60FPS(true);
                                 int _foundSoftware = FindSoftware(new Vector2(searchingDirectionX, 0), _softwareSelectionCursorPosition);
 
                                 if (_foundSoftware >= 0)
