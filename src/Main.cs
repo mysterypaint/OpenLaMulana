@@ -221,6 +221,7 @@ namespace OpenLaMulana
 
             Global.Camera.Update(gameTime);
             Global.AudioManager.Update(gameTime);
+
             Global.AnimationTimer.Update(gameTime);
             base.Update(gameTime);
             bool isAltKeyDown = (InputManager.DirectKeyboardCheckDown(Keys.LeftAlt) || InputManager.DirectKeyboardCheckDown(Keys.RightAlt));
@@ -309,7 +310,7 @@ namespace OpenLaMulana
                                 break;
                         }
 
-                        if (!isAltKeyDown && InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.PAUSE) && State == Global.GameState.PLAYING)
+                        if ((!isAltKeyDown && InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.PAUSE) && State == Global.GameState.PLAYING) || !IsActive)
                         {
                             ToggleGamePause();
                         }

@@ -12,9 +12,9 @@ namespace OpenLaMulana
     public static class Global
     {
         public static bool DevModeEnabled { get; set; } = true;
-        public static bool DevModeMuteBGM { get; set; } = true;
+        public static bool DevModeMuteBGM { get; set; } = false;
         public static bool DevModeAllEntitiesGeneric { get; set; } = false;
-        public static bool DevModeDebugPhysics { get; set; } = true;
+        public static bool DevModeDebugPhysics { get; set; } = false;
         public static bool DevModeDisableAutoScreenTransitions { get; set; } = true;
         public static bool DevModeHijackSaveFile { get; set; } = true;
         public static bool DevModeOverrideSpawnPoint { get; set; } = true;
