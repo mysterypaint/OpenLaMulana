@@ -60,6 +60,8 @@ namespace OpenLaMulana.System
         private int _inputTimerReset = 8;
         private int _stickInputCooldownTimer = 0;
         private int _stickInputCooldownTimerReset = 8;
+        private int _sliderTimerReset = 15;
+        private int _sliderTimer;
 
         private int LoadFile(int[] args)
         {
@@ -276,6 +278,8 @@ namespace OpenLaMulana.System
             Texture2D _tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
             _menuCursor = Global.TextureManager.Get8x8Tile(_tex, 0, 1, Vector2.Zero);
             _currPage = _menuPages[_currOptionPosition];
+
+            _sliderTimer = _sliderTimerReset;
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -513,23 +517,55 @@ namespace OpenLaMulana.System
                         }
                         break;
                     case MenuTypes.SLIDER:
+                        if (_sliderTimer > 0)
+                        {
+                            if (InputManager.DirectionCheckPressed60FPS(true) != 0)
+                            {
+                                _currPage.MenuOptions[_currOptionPosition].Value += InputManager.DirHeldX * 0.01f;
+                                if (_currPage.MenuOptions[_currOptionPosition].Value < _currPage.MenuOptions[_currOptionPosition].Args[0])
+                                {
+                                    _currPage.MenuOptions[_currOptionPosition].Value = _currPage.MenuOptions[_currOptionPosition].Args[0];
+                                }
+                                else if (_currPage.MenuOptions[_currOptionPosition].Value > _currPage.MenuOptions[_currOptionPosition].Args[1])
+                                {
+                                    _currPage.MenuOptions[_currOptionPosition].Value = _currPage.MenuOptions[_currOptionPosition].Args[1];
+                                }
+                                else
+                                {
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    Func<int[], int> script = _currPage.MenuOptions[_currOptionPosition].Function;
+                                    int[] args = _currPage.MenuOptions[_currOptionPosition].Args;
+                                    script(args);
+                                }
+                            }
+                        }
+
                         if (InputManager.DirHeldX != 0)
                         {
-                            _currPage.MenuOptions[_currOptionPosition].Value += InputManager.DirHeldX * 0.01f;
-                            if (_currPage.MenuOptions[_currOptionPosition].Value < _currPage.MenuOptions[_currOptionPosition].Args[0])
+                            if (_sliderTimer <= 0)
                             {
-                                _currPage.MenuOptions[_currOptionPosition].Value = _currPage.MenuOptions[_currOptionPosition].Args[0];
+                                _currPage.MenuOptions[_currOptionPosition].Value += InputManager.DirHeldX * 0.01f;
+                                if (_currPage.MenuOptions[_currOptionPosition].Value < _currPage.MenuOptions[_currOptionPosition].Args[0])
+                                {
+                                    _currPage.MenuOptions[_currOptionPosition].Value = _currPage.MenuOptions[_currOptionPosition].Args[0];
+                                }
+                                else if (_currPage.MenuOptions[_currOptionPosition].Value > _currPage.MenuOptions[_currOptionPosition].Args[1])
+                                {
+                                    _currPage.MenuOptions[_currOptionPosition].Value = _currPage.MenuOptions[_currOptionPosition].Args[1];
+                                }
+                                else
+                                {
+                                    Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
+                                    Func<int[], int> script = _currPage.MenuOptions[_currOptionPosition].Function;
+                                    int[] args = _currPage.MenuOptions[_currOptionPosition].Args;
+                                    script(args);
+                                }
                             }
-                            else if (_currPage.MenuOptions[_currOptionPosition].Value > _currPage.MenuOptions[_currOptionPosition].Args[1])
-                            {
-                                _currPage.MenuOptions[_currOptionPosition].Value = _currPage.MenuOptions[_currOptionPosition].Args[1];
-                            } else
-                            {
-                                Global.AudioManager.PlaySFX(SFX.MSX_NAVIGATE);
-                                Func<int[], int> script = _currPage.MenuOptions[_currOptionPosition].Function;
-                                int[] args = _currPage.MenuOptions[_currOptionPosition].Args;
-                                script(args);
-                            }
+                            else
+                                _sliderTimer--;
+                        } else
+                        {
+                            _sliderTimer = _sliderTimerReset;
                         }
                         break;
                     case MenuTypes.TOGGLE:
@@ -621,6 +657,7 @@ namespace OpenLaMulana.System
             }
             else
             {
+                _sliderTimer = _sliderTimerReset;
                 if (InputManager.DirConfPressedY != 0 && _stickInputCooldownTimer <= 0)
                 {
                     _currOptionPosition += InputManager.DirConfPressedY;
