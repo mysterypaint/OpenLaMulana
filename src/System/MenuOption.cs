@@ -11,6 +11,8 @@ namespace OpenLaMulana.System
             public Func<int[], int> Function;
             public OptionsMenuPages Page;
             public float Value;
+            public float CommittedValue;
+            public float DefaultValue;
             public int[] Args;
             public string[] Strings;
 
@@ -21,6 +23,8 @@ namespace OpenLaMulana.System
                 Function = function;
                 Page = page;
                 Value = sliderDefaultValue;
+                CommittedValue = sliderDefaultValue;
+                DefaultValue = sliderDefaultValue;
                 Args = sliderRange;
                 Strings = strings;
             }

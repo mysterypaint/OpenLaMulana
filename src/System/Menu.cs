@@ -69,16 +69,20 @@ namespace OpenLaMulana.System
 
         private int ResetAllControls(int[] args)
         {
-            switch (args[0])
+            foreach (MenuOption option in _currPage.MenuOptions)
             {
-                default:
-                case 0: // Reset all keyboard controls
-                    // TODO: Reset all keyboard controls
-                    break;
-                case 1: // Reset all gamepad controls
-                    // TODO: Reset all gamepad controls
-                    break;
+                option.Value = option.DefaultValue;
+                option.CommittedValue = option.DefaultValue;
             }
+
+            if (args[0] == 4)
+            {
+                AdjustVolume(new int[] { 0, 1, 0 });
+                AdjustVolume(new int[] { 0, 1, 1 });
+                AdjustVolume(new int[] { 0, 1, 2 });
+            }
+            else
+                ApplyControls(args);
             return 0;
         }
 
@@ -92,6 +96,9 @@ namespace OpenLaMulana.System
                         int key = _menuPages[(int)OptionsMenuPages.CONFIGURE_KEYBOARD].MenuOptions[i].Args[0];
                         int value = (int)_menuPages[(int)OptionsMenuPages.CONFIGURE_KEYBOARD].MenuOptions[i].Value;
                         InputManager.ConfigKeys[(int)Global.ControllerTypes.Keyboard, (int)key] = value;
+
+
+                        _menuPages[(int)OptionsMenuPages.CONFIGURE_KEYBOARD].MenuOptions[i].CommittedValue = _menuPages[(int)OptionsMenuPages.CONFIGURE_KEYBOARD].MenuOptions[i].Value;
                     }
                     break;
                 case 1:     // Apply all Gamepad controls
@@ -102,16 +109,15 @@ namespace OpenLaMulana.System
                         Global.ControllerKeys key = (Global.ControllerKeys) _menuPages[(int)OptionsMenuPages.CONFIGURE_GAMEPAD].MenuOptions[i].Args[0];
                         Buttons value = (Buttons)_menuPages[(int)OptionsMenuPages.CONFIGURE_GAMEPAD].MenuOptions[i].Value;
                         InputManager.ConfigKeys[(int)Global.ControllerTypes.Gamepad, (int)key] = (int)value;
+                        _menuPages[(int)OptionsMenuPages.CONFIGURE_GAMEPAD].MenuOptions[i].CommittedValue = _menuPages[(int)OptionsMenuPages.CONFIGURE_GAMEPAD].MenuOptions[i].Value;
                     }
                     break;
                 case 2:     // Apply all Graphics settings
-
                     int newZoomFactor = (int)_menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions[1].Value + 1;
                     Global.Camera.UpdateWindowSize(Main.WINDOW_WIDTH * newZoomFactor, Main.WINDOW_HEIGHT * newZoomFactor, newZoomFactor);
                     Global.Main.SetDisplayZoomFactor(newZoomFactor);
                     Global.Main.ToggleDisplayMode();
                     //Global.Main.GetDisplayZoomFactor()
-
 
                     bool setFullscreen = Convert.ToBoolean(_menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions[0].Value);
                     bool currFullscreen = Global.GraphicsDeviceManager.IsFullScreen;
@@ -120,12 +126,17 @@ namespace OpenLaMulana.System
                         Global.GraphicsDeviceManager.ToggleFullScreen();
                         Global.GraphicsDeviceManager.ApplyChanges();
                     }
+                    _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions[0].CommittedValue = _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions[0].Value;
+                    _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions[1].CommittedValue = _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions[1].Value;
                     break;
                 case 3:     // Apply General settings
                     Global.CurrLang = (Global.Languages)_menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[0].Value;
                     Global.ProtagPhysics = (Global.PlatformingPhysics)_menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[1].Value;
                     Global.QoLChanges = Convert.ToBoolean(_menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[2].Value);
 
+                    _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[0].CommittedValue = _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[0].Value;
+                    _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[1].CommittedValue = _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[1].Value;
+                    _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[2].CommittedValue = _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions[2].Value;
 
                     if (Global.QoLChanges)
                     {
@@ -182,6 +193,7 @@ namespace OpenLaMulana.System
             _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions.Add(new MenuOption("Language", MenuTypes.SHIFT, null, OptionsMenuPages.NOTHING, (int)Global.CurrLang, new int[] { -1 }, new string[] { "English", "Japanese" }));
             _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions.Add(new MenuOption("Player Physics", MenuTypes.SHIFT, null, OptionsMenuPages.NOTHING, 0, new int[] { -1 }, new string[] { "Classic", "Revamped" }));
             _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions.Add(new MenuOption("QoL Changes", MenuTypes.SHIFT, null, OptionsMenuPages.NOTHING, 0, new int[] { -1 }, new string[] { "OFF", "ON" }));
+            _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions.Add(new MenuOption("Reset to Default", MenuTypes.SCRIPT_RUNNER, ResetAllControls, OptionsMenuPages.NOTHING, 3, new int[] { 3 }, new string[] { "" }));
             _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions.Add(new MenuOption("Apply Settings", MenuTypes.SCRIPT_RUNNER, ApplyControls, OptionsMenuPages.NOTHING, 3, new int[] { 3 }, new string[] { "" }));
             _menuPages[(int)OptionsMenuPages.GENERAL_SETTINGS].MenuOptions.Add(new MenuOption("Back", MenuTypes.PAGE_TRANSFER, null, OptionsMenuPages.FRONT_PAGE, -1, new int[] { -1 }, new string[] { "" }));
 
@@ -250,12 +262,14 @@ namespace OpenLaMulana.System
             _menuPages[(int)OptionsMenuPages.AUDIO_SETTINGS].MenuOptions.Add(new MenuOption("Master", MenuTypes.SLIDER, AdjustVolume, OptionsMenuPages.NOTHING, Global.AudioManager.GetUserMasterVolume(), new int[] { 0, 1,0 }, new string[] { "" }));
             _menuPages[(int)OptionsMenuPages.AUDIO_SETTINGS].MenuOptions.Add(new MenuOption("BGM", MenuTypes.SLIDER, AdjustVolume, OptionsMenuPages.NOTHING, Global.AudioManager.GetUserBGMVolume(), new int[] { 0, 1,1 }, new string[] { "" }));
             _menuPages[(int)OptionsMenuPages.AUDIO_SETTINGS].MenuOptions.Add(new MenuOption("SFX", MenuTypes.SLIDER, AdjustVolume, OptionsMenuPages.NOTHING, Global.AudioManager.GetUserSFXVolume(), new int[] { 0, 1,2 }, new string[] { "" }));
+            _menuPages[(int)OptionsMenuPages.AUDIO_SETTINGS].MenuOptions.Add(new MenuOption("Reset to Default", MenuTypes.SCRIPT_RUNNER, ResetAllControls, OptionsMenuPages.NOTHING, 4, new int[] { 4 }, new string[] { "" }));
             _menuPages[(int)OptionsMenuPages.AUDIO_SETTINGS].MenuOptions.Add(new MenuOption("Back", MenuTypes.PAGE_TRANSFER, null, OptionsMenuPages.FRONT_PAGE, -1, new int[] { -1 }, new string[] { "" }));
             
             _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS] = new MenuPage();
             _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions = new List<MenuOption>();
             _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions.Add(new MenuOption("Fullscreen", MenuTypes.SHIFT, null, OptionsMenuPages.NOTHING, Convert.ToSingle(Global.GraphicsDeviceManager.IsFullScreen), new int[] { -1 }, new string[] { "Off", "On" }));
             _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions.Add(new MenuOption("Window Size", MenuTypes.SHIFT, null, OptionsMenuPages.NOTHING, Global.Main.GetDisplayZoomFactor(), new int[] { -1 }, new string[] { "WindowSize" }));
+            _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions.Add(new MenuOption("Reset to Default", MenuTypes.SCRIPT_RUNNER, ResetAllControls, OptionsMenuPages.NOTHING, 2, new int[] { 2 }, new string[] { "" }));
             _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions.Add(new MenuOption("Apply Settings", MenuTypes.SCRIPT_RUNNER, ApplyControls, OptionsMenuPages.NOTHING, 2, new int[] { 2 }, new string[] { "" }));
             _menuPages[(int)OptionsMenuPages.VIDEO_SETTINGS].MenuOptions.Add(new MenuOption("Back", MenuTypes.PAGE_TRANSFER, null, OptionsMenuPages.FRONT_PAGE, -1, new int[] { -1 }, new string[] { "" }));
 
@@ -679,6 +693,11 @@ namespace OpenLaMulana.System
                     _currOptionPosition = 0;
                 } else
                 {
+                    foreach(MenuOption option in _currPage.MenuOptions)
+                    {
+                        option.Value = option.CommittedValue;
+                    }
+
                     _currPage = _menuPages[(int)_currPage.MenuOptions[_currPage.MenuOptions.Count - 1].Page]; // The last element is always "Back": Grab the page that it leads to, and make that the current page
                     _currOptionPosition = 0;
                 }
