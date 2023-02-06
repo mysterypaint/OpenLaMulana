@@ -310,7 +310,12 @@ namespace OpenLaMulana
                                 break;
                         }
 
-                        if ((!isAltKeyDown && InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.PAUSE) && State == Global.GameState.PLAYING) || !IsActive)
+                        if (Global.DevModeEnabled && Global.DevModeRunWhileInactive)
+                        {
+                            if (!isAltKeyDown && InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.PAUSE) && State == Global.GameState.PLAYING)
+                                ToggleGamePause();
+                        }
+                        else if ((!isAltKeyDown && InputManager.ButtonCheckPressed60FPS(Global.ControllerKeys.PAUSE) && State == Global.GameState.PLAYING) || !IsActive)
                         {
                             ToggleGamePause();
                         }

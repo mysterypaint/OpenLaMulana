@@ -12,15 +12,17 @@ namespace OpenLaMulana
     public static class Global
     {
         public static bool DevModeEnabled { get; set; } = true;
-        public static bool DevModeMuteBGM { get; set; } = true;
-        public static bool DevModeAllEntitiesGeneric { get; set; } = false;
-        public static bool DevModeDebugPhysics { get; set; } = false;
-        public static bool DevModeDisableAutoScreenTransitions { get; set; } = true;
-        public static bool DevModeHijackSaveFile { get; set; } = true;
         public static bool DevModeOverrideSpawnPoint { get; set; } = true;
         public static int DevModeSpawnFieldID { get; set; } = 4;
         public static Point DevModeSpawnView { get; set; } = new Point(3, 1);
         public static Point DevModeSpawnViewPos { get; set; } = new Point(5, 5);
+
+        public static bool DevModeMuteBGM { get; set; } = true;
+        public static bool DevModeRunWhileInactive { get; set; } = true;
+        public static bool DevModeAllEntitiesGeneric { get; set; } = false;
+        public static bool DevModeDebugPhysics { get; set; } = false;
+        public static bool DevModeDisableAutoScreenTransitions { get; set; } = false;
+        public static bool DevModeHijackSaveFile { get; set; } = true;
 
         public enum DebugStats
         {
@@ -33,7 +35,7 @@ namespace OpenLaMulana
             FPS_VIEWER,
             MAX
         }
-        public static DebugStats DebugStatsState { get; set; } = DebugStats.ROOM_COORDS_INFO;
+        public static DebugStats DebugStatsState { get; set; } = DebugStats.GAME_HUD;
 
         public enum DrawOrder : int
         {

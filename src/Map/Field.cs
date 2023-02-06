@@ -962,8 +962,6 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                             wE.OriginDisplacement += new Vector2(0, -(World.FIELD_HEIGHT * viewHeightPx));
                         else if (currEntityRoom.Y < 0)
                             wE.OriginDisplacement += new Vector2(0, (World.FIELD_HEIGHT * viewHeightPx));
-
-
                     }
                 }
             }

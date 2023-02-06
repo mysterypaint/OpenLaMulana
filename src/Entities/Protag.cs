@@ -183,7 +183,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             Global.Inventory.EquippedMainWeapon = Global.MainWeapons.WHIP;
             Global.Inventory.EquippedSubWeapon = Global.SubWeapons.HANDY_SCANNER;
             Global.Inventory.CoinCount = 0;
-            Global.Inventory.WeightCount = 500;
+            Global.Inventory.WeightCount = 0;
             Global.Inventory.HP = 32;
             Global.Inventory.HPMax = 32; // A life orb will increase this value by 32. True max is 352.
             Global.Inventory.TrueHPMax = 352;
@@ -259,6 +259,8 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             Global.Inventory.ObtainedMainWeapons[4] = Global.MainWeapons.KATANA;
             Global.Inventory.EquippedSoftware = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
+            Global.Inventory.CoinCount = 999;
+            Global.Inventory.WeightCount = 999;
         }
 
         private void MoveToWorldSpawnPoint()
