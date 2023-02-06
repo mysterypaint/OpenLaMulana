@@ -149,8 +149,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         private void ShiftScreenLeft()
         {
             // Grab the left-most column of the boss arena
-            Chip[] leftMostColumn = new Chip[World.ROOM_HEIGHT];
-            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+            Chip[] leftMostColumn = new Chip[World.VIEW_HEIGHT];
+            for (int y = 0; y < World.VIEW_HEIGHT; y++)
             {
                 leftMostColumn[y] = _bossRoom.Chips[0, y];
             }

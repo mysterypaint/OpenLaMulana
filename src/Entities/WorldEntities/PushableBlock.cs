@@ -50,13 +50,13 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
             _unsolvedYPos = y;
 
             if (_unsolvedXPos < 0)
-                _unsolvedXPos += World.ROOM_WIDTH;
-            else if (_unsolvedXPos > World.ROOM_WIDTH)
-                _unsolvedXPos -= World.ROOM_WIDTH;
+                _unsolvedXPos += World.VIEW_WIDTH;
+            else if (_unsolvedXPos > World.VIEW_WIDTH)
+                _unsolvedXPos -= World.VIEW_WIDTH;
             if (_unsolvedYPos < 0)
-                _unsolvedYPos += World.ROOM_HEIGHT;
-            else if (_unsolvedYPos > World.ROOM_HEIGHT)
-                _unsolvedYPos -= World.ROOM_HEIGHT;
+                _unsolvedYPos += World.VIEW_HEIGHT;
+            else if (_unsolvedYPos > World.VIEW_HEIGHT)
+                _unsolvedYPos -= World.VIEW_HEIGHT;
 
             _unsolvedXPos *= World.CHIP_SIZE;
             _unsolvedYPos *= World.CHIP_SIZE;
@@ -125,8 +125,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                     }
                     else if (Global.GameFlags.InGameFlags[_flagToSet])
                     {
-                        roomWidthPx = (World.ROOM_WIDTH * World.CHIP_SIZE);
-                        roomHeightPx = (World.ROOM_HEIGHT * World.CHIP_SIZE);
+                        roomWidthPx = (World.VIEW_WIDTH * World.CHIP_SIZE);
+                        roomHeightPx = (World.VIEW_HEIGHT * World.CHIP_SIZE);
                         State = Global.WEStates.DYING;
                         _sprIndex = _blockSpr;
                         IsCollidable = true;
@@ -147,8 +147,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                     if ((SourceDestView.X != Global.World.CurrViewX || SourceDestView.Y != Global.World.CurrViewY) && Global.Camera.GetState() == Camera.CamStates.NONE && !_updatedPositions)
                     {
                         //ActiveView destView = Global.World.GetActiveViews()[(int)World.AViews.DEST];
-                        roomWidthPx = (World.ROOM_WIDTH * World.CHIP_SIZE);
-                        roomHeightPx = (World.ROOM_HEIGHT * World.CHIP_SIZE);
+                        roomWidthPx = (World.VIEW_WIDTH * World.CHIP_SIZE);
+                        roomHeightPx = (World.VIEW_HEIGHT * World.CHIP_SIZE);
                         relativeRoomCoords = new Vector2((float)Math.Floor(Position.X / roomWidthPx) * roomWidthPx, (float)Math.Floor(Position.Y / roomHeightPx) * roomHeightPx);
                         if (_flagToSet < 0 || _flagToSet >= Global.GameFlags.InGameFlags.Length)
                         {
@@ -172,8 +172,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies
                     if (Global.Camera.GetState() == Camera.CamStates.TRANSITION_CARDINAL || !_updatedPositions)
                     {
                         //ActiveView destView = Global.World.GetActiveViews()[(int)World.AViews.DEST];
-                        roomWidthPx = (World.ROOM_WIDTH * World.CHIP_SIZE);
-                        roomHeightPx = (World.ROOM_HEIGHT * World.CHIP_SIZE);
+                        roomWidthPx = (World.VIEW_WIDTH * World.CHIP_SIZE);
+                        roomHeightPx = (World.VIEW_HEIGHT * World.CHIP_SIZE);
                         relativeRoomCoords = new Vector2((float)Math.Floor(Position.X / roomWidthPx) * roomWidthPx, (float)Math.Floor(Position.Y / roomHeightPx) * roomHeightPx);
                         if (_flagToSet < 0 || _flagToSet >= Global.GameFlags.InGameFlags.Length)
                         {

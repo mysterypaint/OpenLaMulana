@@ -16,7 +16,7 @@ namespace OpenLaMulana
         internal World _world;
         internal Sprite _sprIndex;
         public Vector2 Position;
-        public Vector2 RelativeViewTilePos { get; }
+        public Vector2 RelativeViewChipPos { get; }
         public bool Visible { get; set; } = true;
         public short BBoxOriginX { get; set; } = 0;
         public short BBoxOriginY { get; set; } = 0;
@@ -34,6 +34,7 @@ namespace OpenLaMulana
         public List<ObjectStartFlag> StartFlags = null;
         List<IGameEntity> _myEntities = new List<IGameEntity>();
         internal Vector2 OriginPosition = Vector2.Zero;
+        internal Vector2 OriginDisplacement = Vector2.Zero;
 
         public Global.WEStates State { get; set; } = Global.WEStates.UNSPAWNED;
         public Point RoomsTravelled { get; internal set; } = Point.Zero;
@@ -52,14 +53,14 @@ namespace OpenLaMulana
 
             if (!spawnIsGlobal)
             {
-                RelativeViewTilePos = new Vector2(x, y);
-                Position = new Vector2(RelativeViewTilePos.X * World.CHIP_SIZE, RelativeViewTilePos.Y * World.CHIP_SIZE);
+                RelativeViewChipPos = new Vector2(x, y);
+                Position = new Vector2(RelativeViewChipPos.X * World.CHIP_SIZE, RelativeViewChipPos.Y * World.CHIP_SIZE);
                 ViewCoords = new Point(_parentView.X, _parentView.Y);
             }
             else
             {
-                RelativeViewTilePos = new Vector2(x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT);
-                ViewCoords = new Point(x / World.ROOM_WIDTH, y / World.ROOM_HEIGHT);
+                RelativeViewChipPos = new Vector2(x % World.VIEW_WIDTH, y % World.VIEW_HEIGHT);
+                ViewCoords = new Point(x / World.VIEW_WIDTH, y / World.VIEW_HEIGHT);
                 TrueGlobalTilePosition = new Point(x, y);
                 TrueSpawnCoord = new Vector2(TrueGlobalTilePosition.X * World.CHIP_SIZE, TrueGlobalTilePosition.Y * World.CHIP_SIZE);
                 IsGlobal = true;
@@ -67,7 +68,7 @@ namespace OpenLaMulana
                 Point tileOffset;
                 Vector2 offsetCoords;
                 Point roomOffset = new Point(ViewCoords.X - destView.X, ViewCoords.Y - destView.Y);
-                tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + RelativeViewTilePos.ToPoint();
+                tileOffset = new Point(roomOffset.X * World.VIEW_WIDTH, roomOffset.Y * World.VIEW_HEIGHT) + RelativeViewChipPos.ToPoint();
                 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
                 Position = Vector2.Zero;
                 OriginPosition = offsetCoords;

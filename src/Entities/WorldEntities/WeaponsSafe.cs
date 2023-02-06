@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
-using System;
 using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
@@ -24,10 +22,12 @@ namespace OpenLaMulana.Entities.WorldEntities
             _displayedGraphic = new Sprite(_tex, 128, 112, 6 * World.CHIP_SIZE, 3 * World.CHIP_SIZE);
             HitboxWidth = 6 * World.CHIP_SIZE;
             HitboxHeight = 3 * World.CHIP_SIZE;
+            IsCollidable = false;
 
             if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
             {
                 State = Global.WEStates.IDLE;
+                IsCollidable = true;
                 _sprIndex = _displayedGraphic;
                 CollisionBehavior = World.ChipTypes.SOLID;
             }
@@ -53,6 +53,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     if (HelperFunctions.EntityMaySpawn(StartFlags) && !Global.GameFlags.InGameFlags[_checkFlag])
                     {
                         State = Global.WEStates.IDLE;
+                        IsCollidable = true;
                         _sprIndex = _displayedGraphic;
                     }
                     break;
@@ -60,6 +61,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                     if (Global.GameFlags.InGameFlags[_checkFlag])
                     {
                         State = Global.WEStates.DYING;
+                        IsCollidable = false;
                         _sprIndex = null;
                         CollisionBehavior = World.ChipTypes.VOID;
                     }

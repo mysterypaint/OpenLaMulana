@@ -83,8 +83,8 @@ namespace OpenLaMulana.System
 
         private int _state = (int)CamStates.NONE;
 
-        private const int ROOM_PX_WIDTH = (World.ROOM_WIDTH * World.CHIP_SIZE);
-        private const int ROOM_PX_HEIGHT = (World.ROOM_HEIGHT * World.CHIP_SIZE);
+        private const int ROOM_PX_WIDTH = (World.VIEW_WIDTH * World.CHIP_SIZE);
+        private const int ROOM_PX_HEIGHT = (World.VIEW_HEIGHT * World.CHIP_SIZE);
 
         private const int SCREEN_LEFT_EDGE = (Protag.SPRITE_WIDTH / 2);
         private const int SCREEN_RIGHT_EDGE = -(Protag.SPRITE_WIDTH / 2);
@@ -281,27 +281,6 @@ namespace OpenLaMulana.System
             }
         }
 
-        private void MoveAllGlobalEntities(Vector2 globalOffsetVector)
-        {
-            Field currField = Global.World.GetField(Global.World.CurrField);
-            List<IGameEntity> allFieldEntities = new List<IGameEntity>();
-            allFieldEntities.AddRange(currField.GetFieldEntities());
-
-            foreach (IGameEntity worldEntity in allFieldEntities)
-            {
-                if (worldEntity is ParentWorldEntity)
-                {
-                    ParentWorldEntity wE = (ParentWorldEntity)worldEntity;
-                    if (wE.IsGlobal)
-                    {
-                        wE.OriginPosition = wE.TrueSpawnCoord + globalOffsetVector;
-                    }
-                    if (wE.IsGlobal)
-                        wE.OriginPosition = wE.TrueSpawnCoord + globalOffsetVector;
-                }
-            }
-        }
-
         private void MoveAllEntities(Vector2 offsetVector, bool includeGlobals = false, View destView = null)
         {
             Field currField = Global.World.GetField(Global.World.CurrField);
@@ -313,6 +292,9 @@ namespace OpenLaMulana.System
             int ts = World.CHIP_SIZE;
             View currView = Global.World.GetActiveViews()[(int)World.AViews.CURR].GetView();
 
+            int viewWidthPx = World.VIEW_WIDTH * ts;
+            int viewHeightPx = World.VIEW_HEIGHT * ts;
+
             foreach (IGameEntity worldEntity in allFieldEntities)
             {
                 if (worldEntity is ParentWorldEntity)
@@ -321,82 +303,28 @@ namespace OpenLaMulana.System
 
                     if (wE.IsGlobal)
                     {
-                        // Calculate the Origin's Position for each Global Platform entity (This should hopefully not need any modification...)
+                        Point roomOffset = new Point(wE.ViewCoords.X - destView.X, wE.ViewCoords.Y - destView.Y);
 
-                        Point movingDirection = new Point(-Math.Sign(offsetVector.X), -Math.Sign(offsetVector.Y));
-                        bool screenWrapOccurred = false;
-
-                        Vector2 currPosition = wE.OriginPosition + wE.Position;
-                        Vector2 currTileCoords = new Vector2(currPosition.X / ts, currPosition.Y / ts);
-                        Point currRoomPos = new Point((int)Math.Floor(currTileCoords.X / World.ROOM_WIDTH), (int)Math.Floor(currTileCoords.Y / World.ROOM_HEIGHT));
-                        Point resultingRoom = new Point(currRoomPos.X + movingDirection.X, currRoomPos.Y + movingDirection.Y);
-
-                        if (resultingRoom.X <= 0)
-                        {
-                            wE.OriginPosition.X += World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE;
-                            screenWrapOccurred = true;
-                        }
-                        else if (resultingRoom.X >= World.FIELD_WIDTH)
-                        {
-                            wE.OriginPosition.X -= World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE;
-                            screenWrapOccurred = true;
-                        }
-                        if (resultingRoom.Y <= 0)
-                        {
-                            wE.OriginPosition.Y += World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE;
-                            screenWrapOccurred = true;
-                        }
-                        else if (resultingRoom.Y >= World.FIELD_HEIGHT)
-                        {
-                            wE.OriginPosition.Y -= World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE;
-                            screenWrapOccurred = true;
-                        }
-
-                        if (!screenWrapOccurred)
-                        {
-                            Vector2 initialOffsetCoords = wE.OriginPosition;
-                            Point roomOffset = new Point(wE.ViewCoords.X - destView.X, wE.ViewCoords.Y - destView.Y);
-
-
-                            Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + wE.RelativeViewTilePos.ToPoint();
-                            Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
-
-                            wE.OriginPosition = offsetCoords;
-
-                        }
-
-
-
-                        /*
-                        Point tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + wE.RelativeViewTilePos.ToPoint();
+                        Point tileOffset = new Point(roomOffset.X * World.VIEW_WIDTH, roomOffset.Y * World.VIEW_HEIGHT) + wE.RelativeViewChipPos.ToPoint();
                         Vector2 offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
 
                         wE.OriginPosition = offsetCoords;
-                        */
+                        wE.OriginDisplacement = Vector2.Zero;
 
+                        // If the player wrapped around the map, wrap the global entities around the map, too
 
+                        Vector2 currEntityPos = wE.OriginPosition + wE.Position;
+                        Point currEntityRoom = new Point((int)(currEntityPos.X / viewWidthPx), (int)(currEntityPos.Y / viewHeightPx));
 
+                        if (currEntityRoom.X >= World.FIELD_WIDTH)
+                            wE.OriginDisplacement += new Vector2(0, -(World.FIELD_WIDTH * viewWidthPx));
+                        else if (currEntityRoom.X < 0)
+                            wE.OriginDisplacement += new Vector2(0, (World.FIELD_WIDTH * viewWidthPx));
 
-                        /*
-                        Vector2 currPosition = wE.Position;
-                        Vector2 currTileCoords = new Vector2(currPosition.X / ts, currPosition.Y / ts) + wE.RelativeViewTilePos;
-                        Point viewDisplacement = new Point((int)currTileCoords.X / World.ROOM_WIDTH, (int)currTileCoords.Y / World.ROOM_HEIGHT);
-
-                        if (wE.ViewCoords.X + viewDisplacement.X < 0)
-                            Position.X += (World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE);
-                        else if (wE.ViewCoords.X + viewDisplacement.X >= World.FIELD_WIDTH)
-                            Position.X -= (World.FIELD_WIDTH * World.ROOM_WIDTH * World.CHIP_SIZE);
-                        if (wE.ViewCoords.Y + viewDisplacement.Y < 0)
-                            Position.Y += (World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE);
-                        else if (wE.ViewCoords.Y + viewDisplacement.Y >= World.FIELD_HEIGHT)
-                            Position.Y -= (World.FIELD_HEIGHT * World.ROOM_HEIGHT * World.CHIP_SIZE);
-                        */
-
-
-
-
-
-                        //wE.OriginPosition = wE.TrueSpawnCoord + globalOffsetVector;
+                        if (currEntityRoom.Y >= World.FIELD_HEIGHT)
+                            wE.OriginDisplacement += new Vector2(0, -(World.FIELD_HEIGHT * viewHeightPx));
+                        else if (currEntityRoom.Y < 0)
+                            wE.OriginDisplacement += new Vector2(0, (World.FIELD_HEIGHT * viewHeightPx));
                     }
                     else if (!wE.ManuallySpawned)
                         wE.Position += offsetVector;
@@ -417,7 +345,7 @@ namespace OpenLaMulana.System
                 case World.VIEW_DIR.LEFT:
                     _moveSpeedX = -8;
                     _moveSpeedY = 0;
-                    _moveToX = -(World.ROOM_WIDTH * World.CHIP_SIZE);
+                    _moveToX = -(World.VIEW_WIDTH * World.CHIP_SIZE);
                     _moveToY = 0;
                     _state = (int)CamStates.TRANSITION_CARDINAL;
                     break;
@@ -425,13 +353,13 @@ namespace OpenLaMulana.System
                     _moveSpeedX = 0;
                     _moveSpeedY = 8;
                     _moveToX = 0;
-                    _moveToY = ((World.ROOM_HEIGHT * World.CHIP_SIZE) * 1) + (World.HUD_HEIGHT);
+                    _moveToY = ((World.VIEW_HEIGHT * World.CHIP_SIZE) * 1) + (World.HUD_HEIGHT);
                     _state = (int)CamStates.TRANSITION_CARDINAL;
                     break;
                 case World.VIEW_DIR.RIGHT:
                     _moveSpeedX = 8;
                     _moveSpeedY = 0;
-                    _moveToX = (World.ROOM_WIDTH * World.CHIP_SIZE);
+                    _moveToX = (World.VIEW_WIDTH * World.CHIP_SIZE);
                     _moveToY = 0;
                     _state = (int)CamStates.TRANSITION_CARDINAL;
                     break;
@@ -439,7 +367,7 @@ namespace OpenLaMulana.System
                     _moveSpeedX = 0;
                     _moveSpeedY = -8;
                     _moveToX = 0;
-                    _moveToY = -(World.ROOM_HEIGHT * World.CHIP_SIZE);
+                    _moveToY = -(World.VIEW_HEIGHT * World.CHIP_SIZE);
                     _state = (int)CamStates.TRANSITION_CARDINAL;
                     break;
             }

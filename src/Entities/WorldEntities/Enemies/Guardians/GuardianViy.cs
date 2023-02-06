@@ -16,8 +16,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         private View _currActiveView = null;
         private int _moveTimerMax = 20;
         private int _moveTimer = 0;
-        private int _shiftYSides = ROOM_HEIGHT - 1;
-        private int _shiftYMiddle = ROOM_HEIGHT;
+        private int _shiftYSides = VIEW_HEIGHT - 1;
+        private int _shiftYMiddle = VIEW_HEIGHT;
         private int _ts = CHIP_SIZE;
         private SpriteAnimation anim;
 
@@ -160,10 +160,10 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         private void ShiftScreenDown()
         {
             // Grab the bottom-most column of the boss arena
-            Chip[] bottomMostRow = new Chip[ROOM_WIDTH];
-            for (int x = 1; x < ROOM_WIDTH - 1; x++)
+            Chip[] bottomMostRow = new Chip[VIEW_WIDTH];
+            for (int x = 1; x < VIEW_WIDTH - 1; x++)
             {
-                if (_shiftYMiddle < ROOM_HEIGHT)
+                if (_shiftYMiddle < VIEW_HEIGHT)
                     bottomMostRow[x] = _bossRoomUnmodified.Chips[x, _shiftYMiddle];
                 else // Grab the top-most row if we just finished looping through the whole room
                     bottomMostRow[x] = _bossRoomUnmodified.Chips[x, 0];
@@ -171,7 +171,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 
             }
             bottomMostRow[0] = _bossRoomUnmodified.Chips[0, _shiftYSides];
-            bottomMostRow[ROOM_WIDTH - 1] = _bossRoomUnmodified.Chips[ROOM_WIDTH - 1, _shiftYSides];
+            bottomMostRow[VIEW_WIDTH - 1] = _bossRoomUnmodified.Chips[VIEW_WIDTH - 1, _shiftYSides];
 
             // Shift every single tile in the room toward the top; The bottom-most column will be written at the top of the room, effectively wrapping the screen
             _bossRoom.ShiftTiles(VIEW_DIR.DOWN, bottomMostRow);
@@ -182,9 +182,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
             _shiftYSides--;
             _shiftYMiddle--;
             if (_shiftYSides < 0)
-                _shiftYSides = ROOM_HEIGHT - 1;
+                _shiftYSides = VIEW_HEIGHT - 1;
             if (_shiftYMiddle < 0)
-                _shiftYMiddle = ROOM_HEIGHT;
+                _shiftYMiddle = VIEW_HEIGHT;
 
             if (_protag.IsGrounded())
             {

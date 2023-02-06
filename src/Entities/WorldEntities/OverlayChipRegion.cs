@@ -45,15 +45,15 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         private void RewriteMapRegion(World.ChipTypes tileType)
         {
-            int tX = (int)(Position.X / World.CHIP_SIZE) % World.ROOM_WIDTH;
-            int tY = (int)((Position.Y / World.CHIP_SIZE) % World.ROOM_HEIGHT);
+            int tX = (int)(Position.X / World.CHIP_SIZE) % World.VIEW_WIDTH;
+            int tY = (int)((Position.Y / World.CHIP_SIZE) % World.VIEW_HEIGHT);
             int tilesWide = HitboxWidth / World.CHIP_SIZE;
             int tilesHigh = HitboxHeight / World.CHIP_SIZE;
 
             if (tX < 0)
-                tX += World.ROOM_WIDTH;
+                tX += World.VIEW_WIDTH;
             if (tY < 0)
-                tY += World.ROOM_HEIGHT;
+                tY += World.VIEW_HEIGHT;
 
             View activeOverlayView = Global.World.GetActiveViews()[(int)AViews.OVERLAY].GetView();
 
@@ -62,7 +62,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                 for (var x = 0; x < tilesWide; x++)
                 {
                     //_overwrittenChips[x - tX, y - tY] = _activeDestView.Chips[x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT];
-                    if ((tX + x > ROOM_WIDTH - 1) || (tY + y > ROOM_HEIGHT - 1))
+                    if ((tX + x > VIEW_WIDTH - 1) || (tY + y > VIEW_HEIGHT - 1))
                         continue;
 
                     Chip thisDestViewChip = SourceDestView.Chips[(tX + x), (tY + y)];

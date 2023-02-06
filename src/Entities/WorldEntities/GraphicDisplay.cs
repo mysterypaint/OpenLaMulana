@@ -148,15 +148,15 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         private void RestoreMapRegion()
         {
-            int tX = (int)(Position.X / World.CHIP_SIZE) % World.ROOM_WIDTH;
-            int tY = (int)((Position.Y / World.CHIP_SIZE) % World.ROOM_HEIGHT);
+            int tX = (int)(Position.X / World.CHIP_SIZE) % World.VIEW_WIDTH;
+            int tY = (int)((Position.Y / World.CHIP_SIZE) % World.VIEW_HEIGHT);
             int tilesWide = HitboxWidth / World.CHIP_SIZE;
             int tilesHigh = HitboxHeight / World.CHIP_SIZE;
 
             if (tX < 0)
-                tX = World.ROOM_WIDTH + tX;
+                tX = World.VIEW_WIDTH + tX;
             if (tY < 0)
-                tY = World.ROOM_HEIGHT + tY;
+                tY = World.VIEW_HEIGHT + tY;
 
             View activeCurrView = Global.World.GetBackupView();
             View sourceView = Global.World.GetCurrentView();
@@ -164,23 +164,23 @@ namespace OpenLaMulana.Entities.WorldEntities
             {
                 for (var x = tX; x < tX + tilesWide; x++)
                 {
-                    _activeDestView.Chips[x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT] = sourceView.Chips[x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT]; //_overwrittenChips[x - tX, y - tY];
-                    activeCurrView.Chips[x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT] = sourceView.Chips[x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT];//_overwrittenChips[x - tX, y - tY];
+                    _activeDestView.Chips[x % World.VIEW_WIDTH, y % World.VIEW_HEIGHT] = sourceView.Chips[x % World.VIEW_WIDTH, y % World.VIEW_HEIGHT]; //_overwrittenChips[x - tX, y - tY];
+                    activeCurrView.Chips[x % World.VIEW_WIDTH, y % World.VIEW_HEIGHT] = sourceView.Chips[x % World.VIEW_WIDTH, y % World.VIEW_HEIGHT];//_overwrittenChips[x - tX, y - tY];
                 }
             }
         }
 
         private void RewriteMapRegion(World.ChipTypes tileType)
         {
-            int tX = (int)(Position.X / World.CHIP_SIZE) % World.ROOM_WIDTH;
-            int tY = (int)((Position.Y / World.CHIP_SIZE) % World.ROOM_HEIGHT);
+            int tX = (int)(Position.X / World.CHIP_SIZE) % World.VIEW_WIDTH;
+            int tY = (int)((Position.Y / World.CHIP_SIZE) % World.VIEW_HEIGHT);
             int tilesWide = HitboxWidth / World.CHIP_SIZE;
             int tilesHigh = HitboxHeight / World.CHIP_SIZE;
 
             if (tX < 0)
-                tX += World.ROOM_WIDTH;
+                tX += World.VIEW_WIDTH;
             if (tY < 0)
-                tY += World.ROOM_HEIGHT;
+                tY += World.VIEW_HEIGHT;
 
             Chip replacingTile = _currField.CreateTileOfType(tileType);
 
@@ -191,7 +191,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                 for (var x = 0; x < tilesWide; x++)
                 {
                     //_overwrittenChips[x - tX, y - tY] = _activeDestView.Chips[x % World.ROOM_WIDTH, y % World.ROOM_HEIGHT];
-                    if ((tX + x > ROOM_WIDTH - 1) || (tY + y > ROOM_HEIGHT - 1))
+                    if ((tX + x > VIEW_WIDTH - 1) || (tY + y > VIEW_HEIGHT - 1))
                         continue;
                     activeDestView.Chips[(tX + x), (tY + y)] = replacingTile;
                 }

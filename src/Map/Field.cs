@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities;
 using OpenLaMulana.Entities.WorldEntities.Enemies;
-using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static OpenLaMulana.System.Camera;
 
 namespace OpenLaMulana
 {
@@ -75,7 +72,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             {
                 for (var x = 0; x < World.FIELD_WIDTH; x++)
                 {
-                    this._viewsJPN[x, y] = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, this, x, y);
+                    this._viewsJPN[x, y] = new View(World.VIEW_WIDTH, World.VIEW_HEIGHT, this, x, y);
                 }
             }
 
@@ -91,7 +88,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     {
                         for (var x = 0; x < World.FIELD_WIDTH; x++)
                         {
-                            this._viewsENG[x, y] = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, this, x, y);
+                            this._viewsENG[x, y] = new View(World.VIEW_WIDTH, World.VIEW_HEIGHT, this, x, y);
                         }
                     }
                     break;
@@ -139,7 +136,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     {
                         for (var x = 0; x < World.FIELD_WIDTH; x++)
                         {
-                            bossViewsTemp[x, y] = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, this, x, y);
+                            bossViewsTemp[x, y] = new View(World.VIEW_WIDTH, World.VIEW_HEIGHT, this, x, y);
                         }
                     }
                 }
@@ -154,7 +151,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     {
                         Int16 tileID = reader.ReadInt16();
 
-                        if (i % World.ROOM_WIDTH == 0 && i > 0)
+                        if (i % World.VIEW_WIDTH == 0 && i > 0)
                         { // Besides the first tile, for every <World.RoomWidth> tiles, increment roomX (make sure it never goes beyond the bounds of the map)
                             roomX++;
                         }
@@ -163,12 +160,12 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                         {
                             roomX = 0;
 
-                            if (i % (World.ROOM_WIDTH * World.ROOM_HEIGHT * World.FIELD_WIDTH) == 0)
+                            if (i % (World.VIEW_WIDTH * World.VIEW_HEIGHT * World.FIELD_WIDTH) == 0)
                                 roomY++;
                         }
 
-                        int rtx = i % World.ROOM_WIDTH; // Relative Room Tile X
-                        int rty = (i / (World.ROOM_WIDTH * World.FIELD_WIDTH)) % World.ROOM_HEIGHT; // Relative Room Tile Y
+                        int rtx = i % World.VIEW_WIDTH; // Relative Room Tile X
+                        int rty = (i / (World.VIEW_WIDTH * World.FIELD_WIDTH)) % World.VIEW_HEIGHT; // Relative Room Tile Y
 
                         int[] animatedTileInfo = null;
 
@@ -295,7 +292,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
             if (currView != null)
             {
-                newObjData.CoordsAreRelativeToView(World.ROOM_WIDTH, World.ROOM_HEIGHT);
+                newObjData.CoordsAreRelativeToView(World.VIEW_WIDTH, World.VIEW_HEIGHT);
                 currView.AddSpawnData(newObjData);
             }
             else
@@ -537,8 +534,8 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
 
             if (!spawnIsGlobal && xYAreCoords)
             {
-                x += (int)Math.Sign(offsetVector.X) * World.ROOM_WIDTH;
-                y += (int)Math.Sign(offsetVector.Y) * World.ROOM_HEIGHT;
+                x += (int)Math.Sign(offsetVector.X) * World.VIEW_WIDTH;
+                y += (int)Math.Sign(offsetVector.Y) * World.VIEW_HEIGHT;
             }
 
             if (Global.DevModeEnabled)
@@ -881,16 +878,16 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
             switch (movingDirection)
             {
                 case World.VIEW_DIR.LEFT:
-                    movingVec = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    movingVec = new Vector2(-(World.VIEW_WIDTH * World.CHIP_SIZE), 0);
                     break;
                 case World.VIEW_DIR.DOWN:
-                    movingVec = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    movingVec = new Vector2(0, (World.VIEW_HEIGHT * World.CHIP_SIZE));
                     break;
                 case World.VIEW_DIR.RIGHT:
-                    movingVec = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    movingVec = new Vector2((World.VIEW_WIDTH * World.CHIP_SIZE), 0);
                     break;
                 case World.VIEW_DIR.UP:
-                    movingVec = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    movingVec = new Vector2(0, -(World.VIEW_HEIGHT * World.CHIP_SIZE));
                     break;
             }
 
@@ -903,20 +900,70 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     Point tileOffset;
                     Vector2 offsetCoords;
 
+                    int ts = World.CHIP_SIZE;
+                    int viewWidthPx = World.VIEW_WIDTH * ts;
+                    int viewHeightPx = World.VIEW_HEIGHT * ts;
+
+                    Vector2 currPosition = wE.TrueSpawnCoord + wE.OriginDisplacement + wE.Position;
+                    Point currViewCoords = new Point((int)(currPosition.X / ts / World.VIEW_WIDTH) % World.FIELD_WIDTH, ((int)(currPosition.Y / ts / World.VIEW_HEIGHT)) % World.FIELD_HEIGHT);
+
+                    if (currViewCoords.X == prevView.X && currViewCoords.Y == prevView.Y)
+                        continue;
+
                     if ((destView.X == wE.ViewCoords.X && destView.Y == wE.ViewCoords.Y) && destView.GetParentField() == wE._parentView.GetParentField())
                     {
                         // This Global object is about to scroll into view. Move it to its relative screen coordinate + the final location of the camera
-                        Vector2 relTileCoords = new Vector2(wE.RelativeViewTilePos.X * World.CHIP_SIZE, wE.RelativeViewTilePos.Y * World.CHIP_SIZE);
+                        Vector2 relTileCoords = new Vector2(wE.RelativeViewChipPos.X * ts, wE.RelativeViewChipPos.Y * ts);
                         wE.OriginPosition = movingVec + relTileCoords;// + rE.Position;
+                        
+                    } else if ((destView.X == currViewCoords.X && destView.Y == currViewCoords.Y) && destView.GetParentField() == wE._parentView.GetParentField()){
+                        
+                        // This Global object is about to scroll into view. Move it to its relative screen coordinate + the final location of the camera
+                        Vector2 relTileCoords = new Vector2(wE.RelativeViewChipPos.X * ts, wE.RelativeViewChipPos.Y * ts);
+                        Vector2 roomsTravelled = new Vector2((float)Math.Floor((relTileCoords.X + wE.Position.X) / ts / World.VIEW_WIDTH), (float)Math.Floor((relTileCoords.Y + wE.Position.Y) / ts / World.VIEW_HEIGHT));
+                        Vector2 roomsTravelledPx = new Vector2(roomsTravelled.X * ts * World.VIEW_WIDTH, roomsTravelled.Y * ts * World.VIEW_HEIGHT);
+                        
+                        wE.OriginPosition = movingVec + relTileCoords - roomsTravelledPx;
+                        
                     }
-                    else if ((prevView.X != wE.ViewCoords.X && prevView.Y != wE.ViewCoords.Y) || prevView.GetParentField() != wE._parentView.GetParentField())
+                    else if ((prevView.X != wE.ViewCoords.X || prevView.Y != wE.ViewCoords.Y) || prevView.GetParentField() != wE._parentView.GetParentField())
                     {
+
                         // Move all the other (non-same-room) Global entities to the general location they would be, in relation to where we are traveling
                         Point roomOffset = new Point(wE.ViewCoords.X - destView.X, wE.ViewCoords.Y - destView.Y);
-                        tileOffset = new Point(roomOffset.X * World.ROOM_WIDTH, roomOffset.Y * World.ROOM_HEIGHT) + wE.RelativeViewTilePos.ToPoint();
-                        offsetCoords = new Vector2(tileOffset.X * World.CHIP_SIZE, tileOffset.Y * World.CHIP_SIZE);
 
-                        wE.OriginPosition = offsetCoords;// + movingVec;
+                        if (roomOffset.X < 0)
+                            roomOffset.X += World.FIELD_WIDTH;
+                        else if (roomOffset.X >= World.FIELD_WIDTH)
+                            roomOffset.X -= World.FIELD_WIDTH;
+                        if (roomOffset.Y < 0)
+                            roomOffset.Y += World.FIELD_HEIGHT;
+                        else if (roomOffset.Y >= World.FIELD_HEIGHT)
+                            roomOffset.Y -= World.FIELD_HEIGHT;
+
+                        tileOffset = new Point(roomOffset.X * World.VIEW_WIDTH, roomOffset.Y * World.VIEW_HEIGHT) + wE.RelativeViewChipPos.ToPoint();
+                        offsetCoords = new Vector2(tileOffset.X * ts, tileOffset.Y * ts);
+
+                        wE.OriginPosition = offsetCoords + movingVec;
+
+                        wE.OriginDisplacement = Vector2.Zero;
+
+                        // If the player wrapped around the map, wrap the global entities around the map, too
+
+                        Vector2 currEntityPos = wE.OriginPosition + wE.Position;
+                        Point currEntityRoom = new Point((int)(currEntityPos.X / viewWidthPx), (int)(currEntityPos.Y / viewHeightPx));
+
+                        if (currEntityRoom.X >= World.FIELD_WIDTH)
+                            wE.OriginDisplacement += new Vector2(0, -(World.FIELD_WIDTH * viewWidthPx));
+                        else if (currEntityRoom.X < 0)
+                            wE.OriginDisplacement += new Vector2(0, (World.FIELD_WIDTH * viewWidthPx));
+
+                        if (currEntityRoom.Y >= World.FIELD_HEIGHT)
+                            wE.OriginDisplacement += new Vector2(0, -(World.FIELD_HEIGHT * viewHeightPx));
+                        else if (currEntityRoom.Y < 0)
+                            wE.OriginDisplacement += new Vector2(0, (World.FIELD_HEIGHT * viewHeightPx));
+
+
                     }
                 }
             }

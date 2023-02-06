@@ -47,8 +47,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
         public const int CHIP_SIZE = 8;
         public const int FIELD_WIDTH = 4;
         public const int FIELD_HEIGHT = 5;
-        public const int ROOM_WIDTH = 32;  // How many 8x8 tiles a room is wide
-        public const int ROOM_HEIGHT = 22; // How many 8x8 tiles a room is tall
+        public const int VIEW_WIDTH = 32;  // How many 8x8 tiles a room is wide
+        public const int VIEW_HEIGHT = 22; // How many 8x8 tiles a room is tall
         public const int HUD_HEIGHT = CHIP_SIZE * 2;
         public const int ANIME_TILES_BEGIN = 1160;
         private int[] _softwareGFXIDs = new int[]{
@@ -58,7 +58,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             5,5,9,5,5,6,6,5,6,6,5,6,5,5,
             6,5,6,6,5,5,6,6,6,5,6,6,6,6,
             6,7,9,7,7,7,7,7,7,7,7,8,5,5};
-        private View _transitionView = new View(ROOM_WIDTH, ROOM_HEIGHT, null, 0, 0);
+        private View _transitionView = new View(VIEW_WIDTH, VIEW_HEIGHT, null, 0, 0);
 
         private Protag _protag = null;
 
@@ -206,7 +206,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             Field thisField = _fields[CurrField];
             var thisFieldMapData = thisField.GetMapData();
             View thisView = thisFieldMapData[CurrViewX, CurrViewY];
-            View dummyView = new View(ROOM_WIDTH, ROOM_HEIGHT, null, -1, -1, true);
+            View dummyView = new View(VIEW_WIDTH, VIEW_HEIGHT, null, -1, -1, true);
             _activeViews[(int)AViews.DEST].SetView(thisView);
             _activeViews[(int)AViews.DEST].SetField(thisField);
             _activeViews[(int)AViews.OVERLAY].SetView(dummyView);
@@ -238,8 +238,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             int rTY = (int)Math.Floor(pY / World.CHIP_SIZE);
 
             bool returnAnEmptyTile = false;
-            if (rTX >= World.ROOM_WIDTH || rTX < 0) { returnAnEmptyTile = true; }
-            if (rTY >= World.ROOM_HEIGHT || rTY < 0) { returnAnEmptyTile = true; }
+            if (rTX >= World.VIEW_WIDTH || rTX < 0) { returnAnEmptyTile = true; }
+            if (rTY >= World.VIEW_HEIGHT || rTY < 0) { returnAnEmptyTile = true; }
 
             World.ChipTypes returningTile = World.ChipTypes.VOID;
 
@@ -338,7 +338,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             {
                 for (int _y = _y1; _y <= _y2; _y++)
                 {
-                    if (_x >= World.ROOM_WIDTH || _y >= World.ROOM_HEIGHT || _x < 0 || _y < 0)
+                    if (_x >= World.VIEW_WIDTH || _y >= World.VIEW_HEIGHT || _x < 0 || _y < 0)
                         continue;
 
                     Chip thisChip = currRoom.Chips[_x, _y];
@@ -675,9 +675,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                     // Loop through every single Room[_x][_y] Chip to draw every single Chip in a given room
                     Texture2D tex = Global.TextureManager.GetTexture(Global.Textures.ITEM);
 
-                    for (int y = 0; y < World.ROOM_HEIGHT; y++)
+                    for (int y = 0; y < World.VIEW_HEIGHT; y++)
                     {
-                        for (int x = 0; x < World.ROOM_WIDTH; x++)
+                        for (int x = 0; x < World.VIEW_WIDTH; x++)
                         {
                             // Grab the current Chip (tile) we're looking at
                             Chip thisChip = _transitionView.Chips[x, y];
@@ -838,19 +838,19 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             switch (movingDirection)
             {
                 case World.VIEW_DIR.LEFT:
-                    nextAV.Position = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    nextAV.Position = new Vector2(-(World.VIEW_WIDTH * World.CHIP_SIZE), 0);
                     nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.DOWN:
-                    nextAV.Position = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE) * 1);
+                    nextAV.Position = new Vector2(0, (World.VIEW_HEIGHT * World.CHIP_SIZE) * 1);
                     nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.RIGHT:
-                    nextAV.Position = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    nextAV.Position = new Vector2((World.VIEW_WIDTH * World.CHIP_SIZE), 0);
                     nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.UP:
-                    nextAV.Position = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    nextAV.Position = new Vector2(0, -(World.VIEW_HEIGHT * World.CHIP_SIZE));
                     nextOverlayAV.Position = nextAV.Position;
                     break;
             }
@@ -979,19 +979,19 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             switch (movingDirection)
             {
                 case World.VIEW_DIR.LEFT:
-                    nextAV.Position = new Vector2(-(World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    nextAV.Position = new Vector2(-(World.VIEW_WIDTH * World.CHIP_SIZE), 0);
                     nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.DOWN:
-                    nextAV.Position = new Vector2(0, (World.ROOM_HEIGHT * World.CHIP_SIZE) * 1);
+                    nextAV.Position = new Vector2(0, (World.VIEW_HEIGHT * World.CHIP_SIZE) * 1);
                     nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.RIGHT:
-                    nextAV.Position = new Vector2((World.ROOM_WIDTH * World.CHIP_SIZE), 0);
+                    nextAV.Position = new Vector2((World.VIEW_WIDTH * World.CHIP_SIZE), 0);
                     nextOverlayAV.Position = nextAV.Position;
                     break;
                 case World.VIEW_DIR.UP:
-                    nextAV.Position = new Vector2(0, -(World.ROOM_HEIGHT * World.CHIP_SIZE));
+                    nextAV.Position = new Vector2(0, -(World.VIEW_HEIGHT * World.CHIP_SIZE));
                     nextOverlayAV.Position = nextAV.Position;
                     break;
             }
@@ -1120,9 +1120,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                             animatedTileInfo[1 + i] = frame0 + ANIME_TILES_BEGIN + i;
                         }
 
-                        for (var y = 0; y < ROOM_HEIGHT; y += 2)
+                        for (var y = 0; y < VIEW_HEIGHT; y += 2)
                         {
-                            for (var x = 0; x < ROOM_WIDTH; x++)
+                            for (var x = 0; x < VIEW_WIDTH; x++)
                             {
                                 _transitionView.Chips[x, y] = new Chip((short)drawingTileID, animatedTileInfo);
                                 _transitionView.Chips[x, y + 1] = new Chip((short)(drawingTileID + 40), animatedTileInfo);
@@ -1199,9 +1199,9 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                 animatedTileInfo[1 + i] = frame0 + ANIME_TILES_BEGIN + i;
             }
 
-            for (var y = 0; y < ROOM_HEIGHT; y++)
+            for (var y = 0; y < VIEW_HEIGHT; y++)
             {
-                for (var x = 0; x < ROOM_WIDTH; x++)
+                for (var x = 0; x < VIEW_WIDTH; x++)
                 {
                     _transitionView.Chips[x, y] = new Chip((short)drawingTileID, animatedTileInfo);
                 }

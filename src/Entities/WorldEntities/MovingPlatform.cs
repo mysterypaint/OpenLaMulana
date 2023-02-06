@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 
@@ -12,8 +13,8 @@ namespace OpenLaMulana.Entities.WorldEntities
     {
         private int _moveTimer = 0;
         private int _moveTimerReset = 180;
-        public int HspDir { get; private set; } = 1;
-        public int VspDir { get; private set; } = 0;
+        public int HspDir { get; private set; } = 0;
+        public int VspDir { get; private set; } = -1;
 
         public MovingPlatform(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
@@ -47,8 +48,16 @@ Turns around when Top-left tile bumps into the bottom coord (Coord#1) in View #1
         {
             if (IsGlobal)
             {
+                Vector2 finalVec = OriginPosition + OriginDisplacement + Position;
+                Vector2 finalPos = new Vector2(finalVec.X % (World.FIELD_WIDTH * World.VIEW_WIDTH * World.CHIP_SIZE), finalVec.Y % (World.FIELD_HEIGHT * World.VIEW_HEIGHT * World.CHIP_SIZE));
+
+                _sprIndex.DrawScaled(spriteBatch, finalPos + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
+
+                // Visually, draw a second copy on the opposite side of the map, in case the camera is wrapping around the bounds of the map.
+                // This prevents the object from visually disappearing for a moment while the camera is busy wrapping around
                 _sprIndex.DrawScaled(spriteBatch, OriginPosition + Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
-            } else
+            }
+            else
                 _sprIndex.DrawScaled(spriteBatch, Position + new Vector2(0, Main.HUD_HEIGHT), _imgScaleX, _imgScaleY);
         }
 
@@ -56,6 +65,30 @@ Turns around when Top-left tile bumps into the bottom coord (Coord#1) in View #1
         {
             if (Global.Camera.GetState() != System.Camera.CamStates.NONE)
                 return;
+
+            int ts = World.CHIP_SIZE;
+            int viewWidthPx = World.VIEW_WIDTH * ts;
+            int viewHeightPx = World.VIEW_HEIGHT * ts;
+
+            OriginDisplacement = Vector2.Zero;
+
+            // If the player wrapped around the map, wrap the global entities around the map, too
+
+            Vector2 currEntityPos = OriginPosition + Position;
+            Point currEntityRoom = new Point((int)(currEntityPos.X / viewWidthPx), (int)(currEntityPos.Y / viewHeightPx));
+
+            if (currEntityRoom.X >= World.FIELD_WIDTH)
+                OriginDisplacement += new Vector2(0, -(World.FIELD_WIDTH * viewWidthPx));
+            else if (currEntityRoom.X < 0)
+                OriginDisplacement += new Vector2(0, (World.FIELD_WIDTH * viewWidthPx));
+
+            if (currEntityRoom.Y >= World.FIELD_HEIGHT)
+                OriginDisplacement += new Vector2(0, -(World.FIELD_HEIGHT * viewHeightPx));
+            else if (currEntityRoom.Y < 0)
+                OriginDisplacement += new Vector2(0, (World.FIELD_HEIGHT * viewHeightPx));
+
+
+
             if (_moveTimer <= 0)
             {
                 _moveTimer = _moveTimerReset;
@@ -68,7 +101,6 @@ Turns around when Top-left tile bumps into the bottom coord (Coord#1) in View #1
                 _moveTimer--;
 
             Position += new Vector2(Hsp, Vsp);
-
         }
     }
 }

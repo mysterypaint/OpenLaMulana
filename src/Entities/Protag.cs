@@ -782,17 +782,17 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             if (Global.Camera.GetState() == Camera.CamStates.NONE)
             {
                 // Handle screen transitions when the player touches the border of the screen
-                if (BBox.Right + _hsp > ROOM_WIDTH * World.CHIP_SIZE)
+                if (BBox.Right + _hsp > VIEW_WIDTH * World.CHIP_SIZE)
                 {
                     Global.World.FieldTransitionCardinal(VIEW_DIR.RIGHT);
-                    BBox.X = ROOM_WIDTH * World.CHIP_SIZE - (BBox.Width / 2);
+                    BBox.X = VIEW_WIDTH * World.CHIP_SIZE - (BBox.Width / 2);
                 }
                 else if (BBox.Left + _hsp < 0)
                 {
                     Global.World.FieldTransitionCardinal(VIEW_DIR.LEFT);
                     BBox.X = BBox.Width / 2;
                 }
-                else if (HUD_HEIGHT + BBox.Bottom + _vsp > (ROOM_HEIGHT * World.CHIP_SIZE) + HUD_HEIGHT)
+                else if (HUD_HEIGHT + BBox.Bottom + _vsp > (VIEW_HEIGHT * World.CHIP_SIZE) + HUD_HEIGHT)
                 {
                     Global.World.FieldTransitionCardinal(VIEW_DIR.DOWN);
                 }
@@ -976,7 +976,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         for (var x = bboxTileXMax; x >= bboxTileXMin; x--)
                         {
-                            if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
+                            if (x >= 0 && y >= 0 && x < World.VIEW_WIDTH && y < World.VIEW_HEIGHT)
                             {
                                 if (currRoom.Chips[x, y].TileID >= chipline[0] && currRoom.Chips[x, y].TileID < chipline[1])
                                 {
@@ -1033,7 +1033,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         for (var x = bboxTileXMax; x <= bboxTileXMin; x++)
                         {
-                            if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
+                            if (x >= 0 && y >= 0 && x < World.VIEW_WIDTH && y < World.VIEW_HEIGHT)
                             {
                                 if (currRoom.Chips[x, y].TileID >= chipline[0] && currRoom.Chips[x, y].TileID < chipline[1])
                                 {
@@ -1109,7 +1109,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         for (var y = bboxTileYMin; y <= bboxTileYMax; y++)
                         {
-                            if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
+                            if (x >= 0 && y >= 0 && x < World.VIEW_WIDTH && y < World.VIEW_HEIGHT)
                             {
                                 if (currRoom.Chips[x, y].TileID >= chipline[0] && currRoom.Chips[x, y].TileID < chipline[1])
                                 {
@@ -1155,7 +1155,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         for (var y = bboxTileYMax; y < bboxTileYMin; y++)
                         {
-                            if (x >= 0 && y >= 0 && x < World.ROOM_WIDTH && y < World.ROOM_HEIGHT)
+                            if (x >= 0 && y >= 0 && x < World.VIEW_WIDTH && y < World.VIEW_HEIGHT)
                             {
                                 if (currRoom.Chips[x, y].TileID >= chipline[0] && currRoom.Chips[x, y].TileID < chipline[1])
                                 {

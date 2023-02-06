@@ -265,6 +265,7 @@ namespace OpenLaMulana
                             if (!Global.GameFlags.InGameFlags[(int)GameFlags.Flags.ENTERED_LAMULANA_FOR_THE_FIRST_TIME])
                             {
                                 musicNumber = 39;
+                                Global.GameFlags.InGameFlags[(int)GameFlags.Flags.ENTERED_LAMULANA_FOR_THE_FIRST_TIME] = true;
                             }
                             break;
                     }
@@ -359,8 +360,22 @@ namespace OpenLaMulana
         {
             if (_noAudioHardware)
                 return;
-            _activeSoundEffects[(int)sfxId].Stop();
-            _activeSoundEffects[(int)sfxId].Play();
+
+            switch (sfxId)
+            {
+                default:
+                    _activeSoundEffects[(int)sfxId].Stop();
+                    _activeSoundEffects[(int)sfxId].Play();
+                    break;
+                case SFX.PUZZLE_SOLVED:
+                case SFX.TRAP_ACTIVATED:
+                    if (Global.Inventory.ObtainedTreasures[Global.ObtainableTreasures.SHELL_HORN])
+                    {
+                        _activeSoundEffects[(int)sfxId].Stop();
+                        _activeSoundEffects[(int)sfxId].Play();
+                    }
+                    break;
+            }
         }
 
         internal void SetEnabledChannels(UInt32 value)

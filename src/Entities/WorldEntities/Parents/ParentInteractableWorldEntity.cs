@@ -30,8 +30,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Parents
             get
             {
                 Rectangle box = new Rectangle(
-                    (int)Math.Round(OriginPosition.X + Position.X - BBoxOriginX),
-                    (int)Math.Round(OriginPosition.Y + Position.Y - BBoxOriginY),
+                    (int)Math.Round(OriginPosition.X + OriginDisplacement.X + Position.X - BBoxOriginX),
+                    (int)Math.Round(OriginPosition.Y + OriginDisplacement.Y + Position.Y - BBoxOriginY),
                     HitboxWidth,
                     HitboxHeight
                 );

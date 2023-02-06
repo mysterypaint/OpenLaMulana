@@ -99,9 +99,9 @@ namespace OpenLaMulana
         internal void Draw(Texture2D texture, SpriteBatch spriteBatch, GameTime gameTime, Vector2 offsetVec)
         {
             // Loop through every single Room[_x][_y] Chip to draw every single Chip in a given room
-            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+            for (int y = 0; y < World.VIEW_HEIGHT; y++)
             {
-                for (int x = 0; x < World.ROOM_WIDTH; x++)
+                for (int x = 0; x < World.VIEW_WIDTH; x++)
                 {
                     // Grab the current Chip (tile) we're looking at
                     Chip thisChip = Chips[x, y];
@@ -162,9 +162,9 @@ namespace OpenLaMulana
 
         internal void InitChipData(int tileID, int[] animatedTileInfo = null)
         {
-            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+            for (int y = 0; y < World.VIEW_HEIGHT; y++)
             {
-                for (int x = 0; x < World.ROOM_WIDTH; x++)
+                for (int x = 0; x < World.VIEW_WIDTH; x++)
                 {
                     Chips[x, y] = new Chip((short)tileID, animatedTileInfo);
                 }
@@ -177,53 +177,53 @@ namespace OpenLaMulana
             {
                 default:
                 case VIEW_DIR.LEFT:
-                    for (int y = 0; y < World.ROOM_HEIGHT; y++)
+                    for (int y = 0; y < World.VIEW_HEIGHT; y++)
                     {
-                        for (int x = 1; x < World.ROOM_WIDTH; x++)
+                        for (int x = 1; x < World.VIEW_WIDTH; x++)
                         {
                             Chips[x - 1, y] = Chips[x, y];//new Chip((short)tileID, animatedTileInfo);
                         }
                     }
-                    for (int y = 0; y < World.ROOM_HEIGHT; y++)
+                    for (int y = 0; y < World.VIEW_HEIGHT; y++)
                     {
-                        Chips[World.ROOM_WIDTH - 1, y] = newTiles[y];
+                        Chips[World.VIEW_WIDTH - 1, y] = newTiles[y];
                     }
                     break;
                 case VIEW_DIR.RIGHT:
-                    for (int y = 0; y < World.ROOM_HEIGHT; y++)
+                    for (int y = 0; y < World.VIEW_HEIGHT; y++)
                     {
-                        for (int x = World.ROOM_WIDTH - 2; x >= 0; x--)
+                        for (int x = World.VIEW_WIDTH - 2; x >= 0; x--)
                         {
                             Chips[x + 1, y] = Chips[x, y];//new Chip((short)tileID, animatedTileInfo);
                         }
                     }
-                    for (int y = 0; y < World.ROOM_HEIGHT; y++)
+                    for (int y = 0; y < World.VIEW_HEIGHT; y++)
                     {
                         Chips[0, y] = newTiles[y];
                     }
                     break;
                 case VIEW_DIR.UP:
-                    for (int y = 0; y < World.ROOM_HEIGHT - 1; y++)
+                    for (int y = 0; y < World.VIEW_HEIGHT - 1; y++)
                     {
-                        for (int x = 0; x < World.ROOM_WIDTH; x++)
+                        for (int x = 0; x < World.VIEW_WIDTH; x++)
                         {
                             Chips[x, y] = Chips[x, y + 1];//new Chip((short)tileID, animatedTileInfo);
                         }
                     }
-                    for (int x = 0; x < World.ROOM_WIDTH; x++)
+                    for (int x = 0; x < World.VIEW_WIDTH; x++)
                     {
-                        Chips[x, World.ROOM_HEIGHT - 1] = newTiles[x];
+                        Chips[x, World.VIEW_HEIGHT - 1] = newTiles[x];
                     }
                     break;
                 case VIEW_DIR.DOWN:
-                    for (int y = World.ROOM_HEIGHT - 1; y > 0; y--)
+                    for (int y = World.VIEW_HEIGHT - 1; y > 0; y--)
                     {
-                        for (int x = 0; x < World.ROOM_WIDTH; x++)
+                        for (int x = 0; x < World.VIEW_WIDTH; x++)
                         {
                             Chips[x, y] = Chips[x, y - 1];//new Chip((short)tileID, animatedTileInfo);
                         }
                     }
-                    for (int x = 0; x < World.ROOM_WIDTH; x++)
+                    for (int x = 0; x < World.VIEW_WIDTH; x++)
                     {
                         Chips[x, 0] = newTiles[x];
                     }
@@ -233,11 +233,11 @@ namespace OpenLaMulana
 
         internal View CloneView()
         {
-            View clonedView = new View(ROOM_WIDTH, ROOM_HEIGHT, _parentField, X, Y);
+            View clonedView = new View(VIEW_WIDTH, VIEW_HEIGHT, _parentField, X, Y);
 
-            for (var y = 0; y < ROOM_HEIGHT; y++)
+            for (var y = 0; y < VIEW_HEIGHT; y++)
             {
-                for (var x = 0; x < ROOM_WIDTH; x++)
+                for (var x = 0; x < VIEW_WIDTH; x++)
                 {
                     clonedView.Chips[x, y] = new Chip((short)this.Chips[x, y].TileID, this.Chips[x, y].GetAnimeFramesAsRawData());
                 }

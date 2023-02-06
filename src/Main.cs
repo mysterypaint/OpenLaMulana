@@ -546,7 +546,7 @@ namespace OpenLaMulana
                     if (Global.DevModeEnabled)
                     {
                         Vector2 _camPos = Global.Camera.Position;
-                        Rectangle rect = new Rectangle((int)_camPos.X, (int)_camPos.Y, World.ROOM_WIDTH * World.CHIP_SIZE, World.HUD_HEIGHT);
+                        Rectangle rect = new Rectangle((int)_camPos.X, (int)_camPos.Y, World.VIEW_WIDTH * World.CHIP_SIZE, World.HUD_HEIGHT);
                         HelperFunctions.DrawRectangle(Global.SpriteBatch, rect, Color.Black);
 
                         switch (Global.DebugStatsState)

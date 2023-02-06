@@ -33,9 +33,9 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
             //_currActiveView = Global.World.GetCurrentView();
 
             //finalView.InitChipData(0, null);
-            for (int ty = World.ROOM_HEIGHT - 1 - 3; ty < World.ROOM_HEIGHT; ty++)
+            for (int ty = World.VIEW_HEIGHT - 1 - 3; ty < World.VIEW_HEIGHT; ty++)
             {
-                for (int tx = 0; tx < World.ROOM_WIDTH; tx++)
+                for (int tx = 0; tx < World.VIEW_WIDTH; tx++)
                 {
                     Chip destChip = srcView.Chips[tx % 4, ty];
                     finalView.Chips[tx, ty].CloneTile(destChip);
@@ -124,13 +124,13 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         {
             // Grab the left-most column of the boss arena
 
-            Chip[] rightMostColumn = new Chip[World.ROOM_HEIGHT];
+            Chip[] rightMostColumn = new Chip[World.VIEW_HEIGHT];
 
             // Check if we've already shifted out of the first room
 
-            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+            for (int y = 0; y < World.VIEW_HEIGHT; y++)
             {
-                rightMostColumn[y] = finalView.Chips[World.ROOM_WIDTH - 1 - _timesShifted % 2, y];
+                rightMostColumn[y] = finalView.Chips[World.VIEW_WIDTH - 1 - _timesShifted % 2, y];
             }
 
             // Shift every single tile in the room toward the left; The left-most column will be written on the far right of the room, effectively wrapping the screen

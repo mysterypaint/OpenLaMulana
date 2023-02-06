@@ -63,19 +63,19 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
                         {
                             _framesBeforeDrop = 0;
                             View srcView = Global.World.GetField(3).GetBossViews()[0];//new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, Global.World.GetField(3), 0, 0);
-                            View destView = new View(World.ROOM_WIDTH, World.ROOM_HEIGHT, null, 0, 0);
+                            View destView = new View(World.VIEW_WIDTH, World.VIEW_HEIGHT, null, 0, 0);
                             destView.InitChipData(0, null);
 
                             for (int y = 0; y < 4; y++)
                             {
-                                for (int x = 0; x < World.ROOM_WIDTH; x++)
+                                for (int x = 0; x < World.VIEW_WIDTH; x++)
                                 {
                                     destView.Chips[x, y].TileID = 36 + x % 4 + y * 40;
                                 }
                             }
-                            for (int x = 0; x < World.ROOM_WIDTH; x++)
+                            for (int x = 0; x < World.VIEW_WIDTH; x++)
                             {
-                                destView.Chips[x, World.ROOM_HEIGHT - 1].TileID = 26 + x % 2;
+                                destView.Chips[x, World.VIEW_HEIGHT - 1].TileID = 26 + x % 2;
                             }
 
                             _bossRoom = destView;
@@ -83,7 +83,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
                             Global.World.FieldTransitionCardinalBoss(World.VIEW_DIR.DOWN, srcView, destView, Global.TextureManager.GetTexture(Global.Textures.BOSS02), this);
 
                             Visible = true;
-                            Position = new Vector2(-32, World.ROOM_HEIGHT * 2 * World.CHIP_SIZE - (1 * World.CHIP_SIZE));
+                            Position = new Vector2(-32, World.VIEW_HEIGHT * 2 * World.CHIP_SIZE - (1 * World.CHIP_SIZE));
                             _state = Global.WEStates.ACTIVATING;
                         }
                     }
@@ -121,8 +121,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
         private void ShiftScreenLeft()
         {
             // Grab the left-most column of the boss arena
-            Chip[] leftMostColumn = new Chip[World.ROOM_HEIGHT];
-            for (int y = 0; y < World.ROOM_HEIGHT; y++)
+            Chip[] leftMostColumn = new Chip[World.VIEW_HEIGHT];
+            for (int y = 0; y < World.VIEW_HEIGHT; y++)
             {
                 leftMostColumn[y] = _bossRoom.Chips[0, y];
             }
