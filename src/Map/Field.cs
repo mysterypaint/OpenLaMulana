@@ -653,6 +653,9 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                 case EntityIDs.CONTACT_WARP:
                     newObj = new ContactWarp(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
+                case EntityIDs.RANGE_FLAG_LISTENER:
+                    newObj = new RangeFlagListener(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
                 case EntityIDs.ENEMY_SOUL:
                     newObj = new EnemySoul(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
@@ -664,6 +667,18 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
                     break;
                 case EntityIDs.SINKING_RUINS_TABLET:
                     newObj = new SinkingRuinsTablet(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.PITFALL:
+                    newObj = new Pitfall(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.DIVINE_PUNISHMENT_REGION:
+                    newObj = new DivinePunishmentRegion(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.DIVINE_PUNISHMENT_LISTENER:
+                    newObj = new DivinePunishmentListener(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
+                    break;
+                case EntityIDs.ASTRONOMICAL_PILLAR_GENERATOR:
+                    newObj = new AstronomicalPillarGenerator(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);
                     break;
                 case EntityIDs.POISON_TIMER:
                     newObj = new PoisonTimer(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags);

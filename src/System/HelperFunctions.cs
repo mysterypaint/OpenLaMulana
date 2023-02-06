@@ -1052,7 +1052,10 @@ namespace OpenLaMulana.System
                     {
                         default:
                             Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = (Global.SubWeapons)itemID;
-
+                            break;
+                        case Global.SubWeapons.ANKH_JEWEL:
+                            Global.Inventory.ObtainedSubWeapons[subWeaponsSlot] = (Global.SubWeapons)itemID;
+                            Global.Inventory.AnkhJewelCount++;
                             break;
                         case Global.SubWeapons.BUCKLER:
                         case Global.SubWeapons.SILVER_SHIELD:

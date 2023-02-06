@@ -666,6 +666,13 @@ namespace OpenLaMulana
             }
         }
 
+        public void RemoveSubweaponSlot(Global.SubWeapons subWeapon)
+        {
+            _subWeaponSelectionPosition = 0;
+            Global.Inventory.EquippedSubWeapon = Global.SubWeapons.NONE;
+            Global.Inventory.ObtainedSubWeapons[(int)subWeapon] = Global.SubWeapons.NONE;
+        }
+
         public void VerifyThatPlayerHasAtLeastOneSubweapon()
         {
             if (_playerHasAtLeastOneSubweapon)

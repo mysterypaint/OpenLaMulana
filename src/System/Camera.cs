@@ -326,7 +326,7 @@ namespace OpenLaMulana.System
                         else if (currEntityRoom.Y < 0)
                             wE.OriginDisplacement += new Vector2(0, (World.FIELD_HEIGHT * viewHeightPx));
                     }
-                    else if (!wE.ManuallySpawned)
+                    else if (!wE.LockToCamera)//if (!wE.ManuallySpawned)
                         wE.Position += offsetVector;
                 }
             }

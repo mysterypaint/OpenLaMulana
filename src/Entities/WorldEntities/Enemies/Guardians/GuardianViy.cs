@@ -100,6 +100,8 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
             _eye.Init(eyeSprites, new Vector2(11 * _ts, 18 * _ts), this);
 
             Position = new Vector2(_ts, 16 * _ts);
+            Global.Main.SetState(Global.GameState.PLAYING);
+            Global.Protag.State = PlayerState.CUTSCENE;
         }
 
         ~GuardianViy()

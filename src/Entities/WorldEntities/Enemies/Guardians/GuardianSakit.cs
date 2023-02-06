@@ -36,6 +36,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 
             _bossViews = Global.World.GetCurrField().GetBossViews();
             _initTimer = 50;
+            Global.Main.SetState(Global.GameState.PLAYING);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

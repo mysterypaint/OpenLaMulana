@@ -186,7 +186,14 @@ namespace OpenLaMulana.Entities
         public void RemoveEntity(IGameEntity entity)
         {
             if (entity is null)
-                throw new ArgumentNullException(nameof(entity), "Null is not a valid entity.");
+                return;
+
+            if (entity is ParentWorldEntity)
+            {
+                ParentWorldEntity wE = (ParentWorldEntity)entity;
+                wE.State = Global.WEStates.DELETED;
+                wE.Update(Global.GameTime);
+            }
 
             _entitiesToRemove.Add(entity);
 

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities.WorldEntities.Enemies.Guardians;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
@@ -62,7 +63,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         if (Global.AudioManager.IsPlaying() != 20)
                             Global.AudioManager.ChangeSongs(20);
 
-                        if (Global.Input.GetPressedKeyState(Global.ControllerKeys.SUB_WEAPON))
+                        if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.SUB_WEAPON))
                         {
                             _state = AnkhStates.ACTIVATED;
                             _activationTimer = 120;
@@ -71,6 +72,15 @@ namespace OpenLaMulana.Entities.WorldEntities
                             if (Global.AudioManager.IsPlaying() >= 0)
                                 Global.AudioManager.StopMusic();
                             Global.AudioManager.PlaySFX(SFX.ANKH_ACTIVATED);
+
+
+                            Global.Inventory.AnkhJewelCount--;
+                            if (Global.Inventory.AnkhJewelCount <= 0)
+                            {
+                                Global.Inventory.AnkhJewelCount = 0;
+                                Global.MobileSuperX.RemoveSubweaponSlot(Global.SubWeapons.ANKH_JEWEL);
+                            }
+
                             _ankhActivatedParticle = (AnkhParticle)InstanceCreate(new AnkhParticle((int)Position.X, (int)Position.Y - 16, 0, 0, 0, 0, true, null, null));
                         }
                     }
@@ -87,6 +97,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                         _bossID = (Global.BossIDs)Global.World.GetCurrField().GetBossID();
 
                         Global.Camera.SetState((int)System.Camera.CamStates.STANDBY);
+                        _state = AnkhStates.DYING;
                         switch (_bossID)
                         {
                             default:
@@ -133,7 +144,6 @@ namespace OpenLaMulana.Entities.WorldEntities
                                 Global.World.FieldTransitionPixelate(1, -1, 0, 0);
                                 break;
                         }
-                        _state = AnkhStates.DYING;
                     }
                     break;
                 case AnkhStates.DYING:

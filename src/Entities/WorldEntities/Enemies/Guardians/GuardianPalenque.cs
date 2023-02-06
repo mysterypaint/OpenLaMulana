@@ -99,6 +99,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
             _lowerBody = (TemplateWorldEntity)InstanceCreatePersistent(new TemplateWorldEntity((int)Position.X, (int)Position.Y, 0, 0, 0, 0, true, null, null));
             _lowerBody.SetSprite(_mySprites[(int)PalenqueSprites.PRE_BATTLE_LOWER_BODY]);
             _lowerBody.Position = new Vector2(Position.X, Position.Y + 6 * _ts);
+            Global.Main.SetState(Global.GameState.PLAYING);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

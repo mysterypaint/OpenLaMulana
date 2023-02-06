@@ -61,6 +61,7 @@ namespace OpenLaMulana.System
         private List<Vector2> _queuedTextPadding = new List<Vector2>();
         private List<bool> _queuedTextPotentiallyLamulanese = new List<bool>();
         private List<World.VIEW_DIR> _queuedTextAlignment = new List<World.VIEW_DIR>();
+        private List<bool> _queuedTextFollowCamera = new List<bool>();
 
         public TextManager()
         {
@@ -141,7 +142,8 @@ namespace OpenLaMulana.System
                     Vector2 padding = _queuedTextPadding[i];
                     bool potentiallyLamulanese = _queuedTextPotentiallyLamulanese[i];
                     World.VIEW_DIR alignment = _queuedTextAlignment[i];
-                    DisplayString(spriteBatch, str, posX, posY, charLimit, color, padding, potentiallyLamulanese, alignment);
+                    bool followCamera = _queuedTextFollowCamera[i];
+                    DisplayString(spriteBatch, str, posX, posY, charLimit, color, padding, potentiallyLamulanese, alignment, followCamera);
                     i++;
                 }
                 _queuedText.Clear();
@@ -151,6 +153,7 @@ namespace OpenLaMulana.System
                 _queuedTextPadding.Clear();
                 _queuedTextPotentiallyLamulanese.Clear();
                 _queuedTextAlignment.Clear();
+                _queuedTextFollowCamera.Clear();
             }
         }
 
@@ -173,13 +176,18 @@ namespace OpenLaMulana.System
             return s_charSet;
         }
 
-        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit, Color col = default, Vector2 padding = default, bool potentiallyLamulanese = false, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT)
+        private void DisplayString(SpriteBatch spriteBatch, string str, int x, int y, int charLimit, Color col = default, Vector2 padding = default, bool potentiallyLamulanese = false, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT, bool followCamera = false)
         {
             if (padding == default)
                 padding = Vector2.Zero;
 
             int posX = x + (int)padding.X;
             int posY = y;
+            if (followCamera)
+            {
+                posX += (int)Global.Camera.Position.X;
+                posY += (int)Global.Camera.Position.Y;
+            }
 
             var xOff = 0;
 
@@ -445,7 +453,7 @@ namespace OpenLaMulana.System
             return new Vector2(_otx, dakutenHandakutenUsed);
         }
 
-        public void QueueText(int x, int y, string str, int charLimit = 32, Color col = default, int paddingX = 0, int paddingY = 0, bool potentiallyLamulanese = false, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT)
+        public void QueueText(int x, int y, string str, int charLimit = 32, Color col = default, int paddingX = 0, int paddingY = 0, bool potentiallyLamulanese = false, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT, bool followCamera = false)
         {
             if (str == null)
                 return;
@@ -459,6 +467,7 @@ namespace OpenLaMulana.System
             _queuedTextPadding.Add(new Vector2(paddingX, paddingY));
             _queuedTextPotentiallyLamulanese.Add(potentiallyLamulanese);
             _queuedTextAlignment.Add(alignment);
+            _queuedTextFollowCamera.Add(followCamera);
         }
 
         public void DrawTextImmediate(int x, int y, string str, int charLimit = 32)
@@ -532,9 +541,9 @@ namespace OpenLaMulana.System
             _drawOff = drawOffset;
         }
 
-        internal void DrawText(Vector2 position, string str, int charLimit = 32, Color col = default, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT)
+        internal void DrawText(Vector2 position, string str, int charLimit = 32, Color col = default, World.VIEW_DIR alignment = World.VIEW_DIR.LEFT, bool followCamera = false)
         {
-            QueueText((int)position.X, (int)position.Y, str, charLimit, col, 0, 0, false, alignment);
+            QueueText((int)position.X, (int)position.Y, str, charLimit, col, 0, 0, false, alignment, followCamera);
         }
 
         internal void DrawTextImmediate(Vector2 position, string str, int charLimit = 32)

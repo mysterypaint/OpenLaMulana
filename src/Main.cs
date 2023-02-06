@@ -214,6 +214,7 @@ namespace OpenLaMulana
 
         protected override void Update(GameTime gameTime)
         {
+            Global.GameTime = gameTime;
             Global.Input.Update(gameTime);
 
             if (InputManager.DirectKeyboardCheckPressed(Keys.Escape))
@@ -687,14 +688,38 @@ namespace OpenLaMulana
                     new Rectangle(256 + (equippedSubWeapon % 4) * World.CHIP_SIZE * 2, 96 + (equippedSubWeapon / 4) * World.CHIP_SIZE * 2, 16, 16),
                     Color.White);
 
-            Global.TextManager.DrawText(_camPos + new Vector2(21 * 8, 1 * 8), "---");
+            int subweaponCount = -1;
+            switch (Global.Inventory.EquippedSubWeapon)
+            {
+                case Global.SubWeapons.SHURIKEN:
+                    subweaponCount = Global.Inventory.ShurikenCount;
+                    break;
+                case Global.SubWeapons.THROWING_KNIFE:
+                    subweaponCount = Global.Inventory.ThrowingKnivesCount;
+                    break;
+                case Global.SubWeapons.FLARES:
+                    subweaponCount = Global.Inventory.FlaresCount;
+                    break;
+                case Global.SubWeapons.SPEAR:
+                    subweaponCount = Global.Inventory.SpearsCount;
+                    break;
+                case Global.SubWeapons.BOMB:
+                    subweaponCount = Global.Inventory.BombsCount;
+                    break;
+                case Global.SubWeapons.ANKH_JEWEL:
+                    subweaponCount = Global.Inventory.AnkhJewelCount;
+                    break;
+            }
+
             string fmt = "000";
+            if (subweaponCount >= 0)
+                Global.TextManager.DrawText(_camPos + new Vector2(21 * 8, 1 * 8), subweaponCount.ToString(fmt));
+            else
+                Global.TextManager.DrawText(_camPos + new Vector2(21 * 8, 1 * 8), "---");
             int numCoins = Global.Inventory.CoinCount;
             int numWeights = Global.Inventory.WeightCount;
-            string strCoins = numCoins.ToString(fmt);
-            string strWeights = numWeights.ToString(fmt);
 
-            Global.TextManager.DrawText(_camPos + new Vector2(28 * 8, 0 * 8), String.Format("={0}\\10={1}", strCoins, strWeights));
+            Global.TextManager.DrawText(_camPos + new Vector2(28 * 8, 0 * 8), String.Format("={0}\\10={1}", numCoins.ToString(fmt), numWeights.ToString(fmt)));
         }
 
         private bool StartGame()

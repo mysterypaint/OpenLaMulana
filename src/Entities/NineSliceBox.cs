@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Color = Microsoft.Xna.Framework.Color;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace OpenLaMulana.Entities
@@ -67,7 +68,7 @@ namespace OpenLaMulana.Entities
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            DrawNineSlice(spriteBatch, gameTime, Position, _boxWidth, _boxHeight);
+            DrawNineSlice(spriteBatch, gameTime, Global.Camera.Position + Position, _boxWidth, _boxHeight);
         }
 
         public void Update(GameTime gameTime)
@@ -158,7 +159,7 @@ namespace OpenLaMulana.Entities
                 if (rows >= 3)
                 {
                     if (_treasureIcon != null)
-                        _treasureIcon.Draw(spriteBatch, new Vector2(Position.X + tSize, Position.Y + tSize));
+                        _treasureIcon.Draw(spriteBatch, Global.Camera.Position + new Vector2(Position.X + tSize, Position.Y + tSize));
                     string displayedTreasureName = _treasureName.Substring(0, Math.Clamp(_treasureName.Length, 1, columns - 8));
                     string displayedTakenString = _takenString.Substring(0, Math.Clamp(_takenString.Length, 1, columns - 7));
 
@@ -167,9 +168,9 @@ namespace OpenLaMulana.Entities
                         displayedTreasureName = _treasureName;
                         displayedTakenString = _takenString;
                     }
-                    Global.TextManager.DrawText(new Vector2(Position.X + (4 * tSize), Position.Y + (1 * tSize)), displayedTreasureName);
-                    Global.TextManager.DrawText(new Vector2(Position.X + ((columns - 1) * tSize) - (displayedTakenString.Length * tSize), Position.Y + (2 * tSize)), displayedTakenString);
-                    
+                    Global.TextManager.DrawText(new Vector2(Position.X + (4 * tSize), Position.Y + (1 * tSize)), displayedTreasureName, 32, Color.White, World.VIEW_DIR.LEFT, true);
+                    Global.TextManager.DrawText(new Vector2(Position.X + ((columns - 1) * tSize) - (displayedTakenString.Length * tSize), Position.Y + (2 * tSize)), displayedTakenString, 32, Color.White, World.VIEW_DIR.LEFT, true);
+
                 }
             }
         }

@@ -13,8 +13,8 @@ namespace OpenLaMulana
     {
         public static bool DevModeEnabled { get; set; } = true;
         public static bool DevModeOverrideSpawnPoint { get; set; } = true;
-        public static int DevModeSpawnFieldID { get; set; } = 4;
-        public static Point DevModeSpawnView { get; set; } = new Point(3, 1);
+        public static int DevModeSpawnFieldID { get; set; } = 2;
+        public static Point DevModeSpawnView { get; set; } = new Point(0, 0);
         public static Point DevModeSpawnViewPos { get; set; } = new Point(5, 5);
 
         public static bool DevModeMuteBGM { get; set; } = true;
@@ -237,12 +237,14 @@ namespace OpenLaMulana
             INIT,
             ACTIVATING,
             IDLE,
+            ACTIVE,
             ATTACKING,
             DYING,
             RETREATING,
             SPEEDING_UP,
             RESETTING,
-            MAX
+            DELETED,
+            MAX,
         }
 
         public enum ItemTypes : int
@@ -632,6 +634,7 @@ namespace OpenLaMulana
         public static bool QoLChanges { get; internal set; } = false;
         public static NineSliceBox NineSliceBox { get; set; } = null;
         public static float DeltaTime { get; internal set; } = 0.0f;
+        public static GameTime GameTime { get; internal set; } = null;
 
         public static Dictionary<MainWeapons, int> WeaponsDamageTable = new Dictionary<MainWeapons, int>();
         public static Dictionary<SubWeapons, int> SubWeaponsDamageTable = new Dictionary<SubWeapons, int>();

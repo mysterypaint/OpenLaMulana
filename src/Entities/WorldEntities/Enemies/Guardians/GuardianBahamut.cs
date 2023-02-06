@@ -43,6 +43,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
             }
 
             _state = Global.WEStates.INIT;
+            Global.Main.SetState(Global.GameState.PLAYING);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

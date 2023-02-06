@@ -30,6 +30,7 @@ namespace OpenLaMulana.System
 
         static KeyboardState t_keyboardState;
         static KeyboardState t_previousKeyboardState;
+        static KeyboardState t_previousKeyboardState2;
         static GamePadState t_gamePadState;
         static GamePadState t_previousGamePadState;
         static bool _isBlocked = false;
@@ -335,31 +336,55 @@ namespace OpenLaMulana.System
 
         public static bool ButtonCheckPressed60FPS(ControllerKeys cK)
         {
+            if (_isBlocked)
+            {
+                return false;
+            }
             return PressedKeys[(int)cK];
         }
 
         public static bool ButtonCheckHeld60FPS(ControllerKeys cK)
         {
+            if (_isBlocked)
+            {
+                return false;
+            }
             return HeldKeys[(int)cK];
         }
 
         public static bool ButtonCheckReleased60FPS(ControllerKeys cK)
         {
+            if (_isBlocked)
+            {
+                return false;
+            }
             return ReleasedKeys[(int)cK];
         }
 
         public static bool ButtonCheckPressed30FPS(ControllerKeys cK)
         {
+            if (_isBlocked)
+            {
+                return false;
+            }
             return PressedKeys[(int)cK] || PressedKeysPrev[(int)cK];
         }
 
         public static bool ButtonCheckHeld30FPS(ControllerKeys cK)
         {
+            if (_isBlocked)
+            {
+                return false;
+            }
             return HeldKeys[(int)cK] || HeldKeysPrev[(int)cK];
         }
 
         public static bool ButtonCheckReleased30FPS(ControllerKeys cK)
         {
+            if (_isBlocked)
+            {
+                return false;
+            }
             return ReleasedKeys[(int)cK] || ReleasedKeysPrev[(int)cK];
         }
 
@@ -498,6 +523,7 @@ namespace OpenLaMulana.System
 
         public static KeyboardState GetKeyboardState()
         {
+            t_previousKeyboardState2 = t_previousKeyboardState;
             t_previousKeyboardState = t_keyboardState;
             t_keyboardState = Keyboard.GetState();
             return t_keyboardState;
@@ -548,6 +574,12 @@ namespace OpenLaMulana.System
         public static bool DirectKeyboardCheckPressed(Keys checkingKey)
         {
             return t_keyboardState.IsKeyDown(checkingKey) && !t_previousKeyboardState.IsKeyDown(checkingKey);
+        }
+
+        public static bool DirectKeyboardCheckPressed30FPS(Keys checkingKey)
+        {
+            return (t_keyboardState.IsKeyDown(checkingKey) && !t_previousKeyboardState.IsKeyDown(checkingKey)) ||
+                (t_previousKeyboardState.IsKeyDown(checkingKey) && !t_previousKeyboardState2.IsKeyDown(checkingKey));
         }
 
         public static bool DirectKeyboardCheckDown(Keys checkingKey)
@@ -669,15 +701,6 @@ namespace OpenLaMulana.System
             }
         }
 
-        internal bool GetPressedKeyState(ControllerKeys key)
-        {
-            if (_isBlocked)
-            {
-                return false;
-            }
-            return PressedKeys[(int)key];
-        }
-
         internal static bool GetJoysticksEnabled()
         {
             return _joysticksEnabled;
@@ -741,5 +764,6 @@ namespace OpenLaMulana.System
         {
             return _lastKeyStroke;
         }
+
     }
 }

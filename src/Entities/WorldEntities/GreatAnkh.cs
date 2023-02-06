@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
+using OpenLaMulana.System;
 using System;
 using System.Collections.Generic;
 using static OpenLaMulana.Global;
@@ -68,7 +69,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             Global.AudioManager.ChangeSongs(20);
 
                         if (CollidesWithPlayer()) {
-                            if (Global.Input.GetPressedKeyState(Global.ControllerKeys.MAIN_WEAPON))
+                            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.MAIN_WEAPON))
                             {
                                 _state = AnkhStates.ACTIVATED;
                                 _activationTimer = 30;

@@ -21,6 +21,7 @@ namespace OpenLaMulana
         public short BBoxOriginX { get; set; } = 0;
         public short BBoxOriginY { get; set; } = 0;
         public bool LockTo30FPS { get; set; } = true;
+        public bool LockToCamera { get; set; } = false;
 
         internal View _parentView = null;
         public Point ViewCoords = new Point(-1, -1);
