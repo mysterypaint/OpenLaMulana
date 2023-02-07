@@ -172,7 +172,7 @@ namespace OpenLaMulana
 
             long val = Global.GameRNG.RollDice(9);
 
-            _protag = new Protag(new Vector2(0, 0));
+            _protag = new Protag(0, 0, -1, -1, -1, -1, true, null, null);
             Global.Protag = _protag;
 
             Global.TextManager = new TextManager();
@@ -529,6 +529,7 @@ namespace OpenLaMulana
                 case Global.GameState.MSX_LOADING_FILE:
                     break;
                 case Global.GameState.ITEM_ACQUIRED:
+                case Global.GameState.CUTSCENE:
                     DrawHud(Global.SpriteBatch, gameTime);
                     break;
                 case Global.GameState.PAUSED:
@@ -695,7 +696,7 @@ namespace OpenLaMulana
                     subweaponCount = Global.Inventory.ShurikenCount;
                     break;
                 case Global.SubWeapons.THROWING_KNIFE:
-                    subweaponCount = Global.Inventory.ThrowingKnivesCount;
+                    subweaponCount = Global.Inventory.ThrowingKnifeCount;
                     break;
                 case Global.SubWeapons.FLARES:
                     subweaponCount = Global.Inventory.FlaresCount;
@@ -704,7 +705,7 @@ namespace OpenLaMulana
                     subweaponCount = Global.Inventory.SpearsCount;
                     break;
                 case Global.SubWeapons.BOMB:
-                    subweaponCount = Global.Inventory.BombsCount;
+                    subweaponCount = Global.Inventory.BombCount;
                     break;
                 case Global.SubWeapons.ANKH_JEWEL:
                     subweaponCount = Global.Inventory.AnkhJewelCount;

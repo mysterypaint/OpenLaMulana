@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities.WorldEntities.Enemies.Guardians;
+using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using OpenLaMulana.System;
 using System.Collections.Generic;
 
 namespace OpenLaMulana.Entities.WorldEntities
 {
-    internal class Ankh : ParentWorldEntity
+    internal class Ankh : ParentInteractableWorldEntity
     {
         enum AnkhStates
         {
@@ -63,25 +64,31 @@ namespace OpenLaMulana.Entities.WorldEntities
                         if (Global.AudioManager.IsPlaying() != 20)
                             Global.AudioManager.ChangeSongs(20);
 
-                        if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.SUB_WEAPON))
+                        if (CollidesWithPlayer())
                         {
-                            _state = AnkhStates.ACTIVATED;
-                            _activationTimer = 120;
-                            Global.Main.SetState(Global.GameState.CUTSCENE);
-
-                            if (Global.AudioManager.IsPlaying() >= 0)
-                                Global.AudioManager.StopMusic();
-                            Global.AudioManager.PlaySFX(SFX.ANKH_ACTIVATED);
-
-
-                            Global.Inventory.AnkhJewelCount--;
-                            if (Global.Inventory.AnkhJewelCount <= 0)
+                            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.SUB_WEAPON))
                             {
-                                Global.Inventory.AnkhJewelCount = 0;
-                                Global.MobileSuperX.RemoveSubweaponSlot(Global.SubWeapons.ANKH_JEWEL);
-                            }
+                                if ((Global.Inventory.EquippedSubWeapon == Global.SubWeapons.ANKH_JEWEL && Global.Inventory.AnkhJewelCount > 0) || Global.DevModeEnabled)
+                                {
+                                    _state = AnkhStates.ACTIVATED;
+                                    _activationTimer = 120;
+                                    Global.Main.SetState(Global.GameState.CUTSCENE);
 
-                            _ankhActivatedParticle = (AnkhParticle)InstanceCreate(new AnkhParticle((int)Position.X, (int)Position.Y - 16, 0, 0, 0, 0, true, null, null));
+                                    if (Global.AudioManager.IsPlaying() >= 0)
+                                        Global.AudioManager.StopMusic();
+                                    Global.AudioManager.PlaySFX(SFX.ANKH_ACTIVATED);
+
+
+                                    Global.Inventory.AnkhJewelCount--;
+                                    if (Global.Inventory.AnkhJewelCount <= 0)
+                                    {
+                                        Global.Inventory.AnkhJewelCount = 0;
+                                        Global.MobileSuperX.RemoveSubweaponSlot(Global.SubWeapons.ANKH_JEWEL);
+                                    }
+
+                                    _ankhActivatedParticle = (AnkhParticle)InstanceCreate(new AnkhParticle((int)Position.X, (int)Position.Y - 16, 0, 0, 0, 0, true, null, null));
+                                }
+                            }
                         }
                     }
                     break;

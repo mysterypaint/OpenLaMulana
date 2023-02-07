@@ -792,7 +792,7 @@ namespace OpenLaMulana.System
 
                         break;
                     case 1:
-                        Global.Inventory.ThrowingKnivesCount = GetWordAsInt(bytes);
+                        Global.Inventory.ThrowingKnifeCount = GetWordAsInt(bytes);
 
                         break;
                     case 2:
@@ -804,7 +804,7 @@ namespace OpenLaMulana.System
 
                         break;
                     case 4:
-                        Global.Inventory.BombsCount = GetWordAsInt(bytes);
+                        Global.Inventory.BombCount = GetWordAsInt(bytes);
 
                         break;
                     case 5:

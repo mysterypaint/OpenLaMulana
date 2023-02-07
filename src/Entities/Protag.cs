@@ -12,7 +12,7 @@ using static OpenLaMulana.Entities.World;
 namespace OpenLaMulana.Entities
 {
 
-    public class Protag : IGameEntity
+    public class Protag : ParentInteractableWorldEntity
     {
         public enum Facing
         {
@@ -22,21 +22,20 @@ namespace OpenLaMulana.Entities
             DOWN
         };
 
-        private Sprite _sprIndex;
         private Sprite _idleSprite;
 
-        public PlayerState State { get; set; } = PlayerState.IDLE;
+        public PlayerState PState { get; set; } = PlayerState.IDLE;
         private PlayerState _prevState = PlayerState.IDLE;
         public Facing FacingX = Facing.RIGHT;
         public Facing FacingY = Facing.DOWN;
-        public short BBoxOriginX { get; set; } = 5;
-        public short BBoxOriginY { get; set; } = 11;
+        public override short BBoxOriginX { get; set; } = 5;
+        public override short BBoxOriginY { get; set; } = 11;
         public short BBoxCenterX { get; set; } = 5;
         public short BBoxCenterY { get; set; } = 6;
 
-        public int Depth { get; set; } = (int)Global.DrawOrder.Protag;
-        public Effect ActiveShader { get; set; } = null;
-        public bool LockTo30FPS { get; set; } = true;
+        public override int Depth { get; set; } = (int)Global.DrawOrder.Protag;
+        public override Effect ActiveShader { get; set; } = null;
+        public override bool LockTo30FPS { get; set; } = true;
 
         private short _moveX = 0;
         private short _moveY = 0;
@@ -78,7 +77,7 @@ Video Hustler + Break Shot: Knife and key sword attack power +2
 Castlevania Dracula + Tile Magician: Whip attack power +2
         */
 
-        public Rectangle BBox;
+        public new Rectangle BBox;
 
         public int ContactWarpCooldownTimer { get; set; } = 0;
 
@@ -89,15 +88,19 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         private double _spdWalk = 1;
         private bool _enemyGrounded;
         private ParentInteractableWorldEntity _myGroundedEntity;
+
+        public int ActiveSubWeaponsMax = 4;
+        private List<SubWeaponParticle> _subWeaponParticles = new List<SubWeaponParticle>();
         private const double SPD_JUMP = 7.0;
         private const double SPD_GRAV_MAX = 8f;
 
-        public Protag(Vector2 position)
+        public Protag(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
             InitWeaponDamageTables();
 
-            State = PlayerState.MAIN_MENU;
+            PState = PlayerState.MAIN_MENU;
 
+            Vector2 position = new Vector2(x, y);
             BBox = new Rectangle(
                     (int)Math.Round(position.X),
                     (int)Math.Round(position.Y),
@@ -143,7 +146,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public void ResetState()
         {
-            State = PlayerState.IDLE;
+            PState = PlayerState.IDLE;
             _jumpCount = _jumpsMax;
             _hsp = 0;
             _vsp = 0;
@@ -151,9 +154,23 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             _isGrounded = false;
         }
 
+        public void DeleteAllWeaponParticles()
+        {
+            DeleteAllSubweaponParticles();
+        }
+
+        public void DeleteAllSubweaponParticles()
+        {
+            foreach (SubWeaponParticle particle in _subWeaponParticles)
+            {
+                InstanceDestroy(particle);
+            }
+            _subWeaponParticles.Clear();
+        }
+
         public void Initialize()
         {
-            State = PlayerState.IDLE;
+            PState = PlayerState.IDLE;
             _chipWidth = World.CHIP_SIZE;
             _chipHeight = World.CHIP_SIZE;
 
@@ -255,7 +272,19 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.GRAIL, true);
             HelperFunctions.UpdateInventorySilent(Global.ObtainableTreasures.MAGATAMA_JEWEL, true);
             HelperFunctions.UpdateInventorySilent(Global.SubWeapons.SHURIKEN, true);
+            HelperFunctions.UpdateInventorySilent(Global.SubWeapons.FLARES, true);
+            HelperFunctions.UpdateInventorySilent(Global.SubWeapons.BOMB, true);
+            HelperFunctions.UpdateInventorySilent(Global.SubWeapons.PISTOL, true);
+            HelperFunctions.UpdateInventorySilent(Global.SubWeapons.THROWING_KNIFE, true);
+            HelperFunctions.UpdateInventorySilent(Global.SubWeapons.SPEAR, true);
             HelperFunctions.UpdateInventorySilent(Global.SubWeapons.HANDY_SCANNER, true);
+
+            Global.Inventory.BombCount = 32;
+            Global.Inventory.FlaresCount = 255;
+            Global.Inventory.ShurikenCount = 255;
+            Global.Inventory.SpearsCount = 255;
+            Global.Inventory.ThrowingKnifeCount = 255;
+            Global.Inventory.BulletCount = 6;
 
             Global.Inventory.ObtainedMainWeapons[4] = Global.MainWeapons.KATANA;
             Global.Inventory.EquippedSoftware = new Global.ObtainableSoftware[] { Global.ObtainableSoftware.GLYPH_READER, Global.ObtainableSoftware.ANTARCTIC_ADVENTURE };
@@ -283,7 +312,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             SetBBoxToTile(spawnX, spawnY);
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             _sprIndex.Draw(spriteBatch, new Vector2(BBox.Center.X + 1, BBox.Y + BBoxOriginY + 1 + World.HUD_HEIGHT));
             Rectangle dRect = BBox;
@@ -301,7 +330,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
             */
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (Global.Camera.GetState() != Camera.CamStates.NONE)
                 return;
@@ -329,7 +358,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         private void RevampedStateMachine(View currRoom)
         {
 
-            switch (State)
+            switch (PState)
             {
                 case PlayerState.MAIN_MENU:
                 case PlayerState.PAUSED:
@@ -345,6 +374,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 case PlayerState.WHIPPING:
                     RevampedCollideAndMove(currRoom);
                     HandleScreenTransitions(currRoom);
+                    SubWeaponHandling(currRoom);
                     break;
                 case PlayerState.CLIMBING:
                     /*
@@ -362,7 +392,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         //BBox += new Vector2(0, Math.Sign(_vsp) * World.CHIP_SIZE);
                         _hsp = 0;
                         _vsp = 0;
-                        State = PlayerState.IDLE;
+                        PState = PlayerState.IDLE;
                     } else if (
                         TileGetCellAtPixel(currRoom, BBox.Left, BBox.Bottom) == ChipTypes.VOID ||
                         TileGetCellAtPixel(currRoom, BBox.X, BBox.Bottom) == ChipTypes.SOLID ||
@@ -377,13 +407,13 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                         _vsp = 0;
 
                         if (Math.Floor((BBox.Y + _vsp) / World.CHIP_SIZE) < ROOM_HEIGHT)
-                            State = PlayerState.IDLE;
+                            PState = PlayerState.IDLE;
                         else
                         {
                             Global.World.FieldTransitionCardinal(VIEW_DIR.DOWN);
                             _hsp = 0;
                             _vsp = 0;
-                            State = PlayerState.SCREEN_TRANSITION;
+                            PState = PlayerState.SCREEN_TRANSITION;
                         }
 
                     }
@@ -392,7 +422,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP)
                         {
-                            State = PlayerState.JUMPING;
+                            PState = PlayerState.JUMPING;
                             Global.AudioManager.PlaySFX(SFX.P_JUMP);
                             _jumpCount--;
                             _vsp = -_jumpSpeed;
@@ -411,8 +441,84 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     break;
             }
 
-            if (State != PlayerState.SCREEN_TRANSITION)
-                _prevState = State;
+            if (PState != PlayerState.SCREEN_TRANSITION)
+                _prevState = PState;
+        }
+
+        private void SubWeaponHandling(View currRoom)
+        {
+            if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.SUB_WEAPON))
+            {
+                switch (Global.Inventory.EquippedSubWeapon)
+                {
+                    case Global.SubWeapons.SHURIKEN:
+                        if (Global.Inventory.ShurikenCount > 0 && _subWeaponParticles.Count < ActiveSubWeaponsMax)
+                        {
+                            Global.Inventory.ShurikenCount--;
+                            Global.AudioManager.PlaySFX(SFX.SUBWEAPON_THROW);
+                            _subWeaponParticles.Add((SubWeaponParticle)InstanceCreate(new SubWeaponParticle(BBox.X, BBox.Y, 0, 0, 0, 0, false, null, null)));
+                        }
+                        break;
+                    case Global.SubWeapons.THROWING_KNIFE:
+                        if (Global.Inventory.ThrowingKnifeCount > 0 && _subWeaponParticles.Count < ActiveSubWeaponsMax)
+                        {
+                            Global.Inventory.ThrowingKnifeCount--;
+                            Global.AudioManager.PlaySFX(SFX.SUBWEAPON_THROW);
+                            _subWeaponParticles.Add((SubWeaponParticle)InstanceCreate(new SubWeaponParticle(BBox.X, BBox.Y, 1, 0, 0, 0, false, null, null)));
+                        }
+                        break;
+                    case Global.SubWeapons.SPEAR:
+                        if (Global.Inventory.SpearsCount > 0 && _subWeaponParticles.Count < ActiveSubWeaponsMax)
+                        {
+                            Global.Inventory.SpearsCount--;
+                            Global.AudioManager.PlaySFX(SFX.P_SPEAR_THROW); // 18? 3B I think is Katana... could be 32; wtf is 40, 47
+                            _subWeaponParticles.Add((SubWeaponParticle)InstanceCreate(new SubWeaponParticle(BBox.X, BBox.Y, 2, 0, 0, 0, false, null, null)));
+                        }
+                        break;
+                    case Global.SubWeapons.FLARES:
+                        if (Global.Inventory.FlaresCount > 0 && _subWeaponParticles.Count < ActiveSubWeaponsMax)
+                        {
+                            Global.Inventory.FlaresCount--;
+                            Global.AudioManager.PlaySFX(SFX.P_FLARE_THROW);
+                            _subWeaponParticles.Add((SubWeaponParticle)InstanceCreate(new SubWeaponParticle(BBox.X, BBox.Y, 3, 0, 0, 0, false, null, null)));
+                        }
+                        break;
+                    case Global.SubWeapons.BOMB:
+                        if (Global.Inventory.BombCount > 0 && _subWeaponParticles.Count < ActiveSubWeaponsMax)
+                        {
+                            Global.Inventory.BombCount--;
+                            Global.AudioManager.PlaySFX(SFX.P_BOMB_THROW);
+                            _subWeaponParticles.Add((SubWeaponParticle)InstanceCreate(new SubWeaponParticle(BBox.X, BBox.Y, 4, 0, 0, 0, false, null, null)));
+                        }
+                        break;
+                    case Global.SubWeapons.PISTOL:
+                        if (Global.Inventory.BulletCount > 0 && _subWeaponParticles.Count < ActiveSubWeaponsMax)
+                        {
+                            Global.Inventory.BulletCount--;
+                            Global.AudioManager.PlaySFX(SFX.DIVINE_RETRIBUTION);
+                            _subWeaponParticles.Add((SubWeaponParticle)InstanceCreate(new SubWeaponParticle(BBox.X, BBox.Y, 5, 0, 0, 0, false, null, null)));
+                        }
+                        break;
+                    case Global.SubWeapons.PISTOL_AMMUNITION:
+                        break;
+                    case Global.SubWeapons.ANKH_JEWEL:
+                        break;
+                    case Global.SubWeapons.BUCKLER:
+                    case Global.SubWeapons.SILVER_SHIELD:
+                    case Global.SubWeapons.ANGEL_SHIELD:
+                        break;
+                    case Global.SubWeapons.HANDY_SCANNER:
+                        break;
+                }
+            }
+
+            foreach(SubWeaponParticle particle in _subWeaponParticles)
+            {
+                if (particle.State == Global.WEStates.DYING)
+                {
+                    InstanceDestroy(particle);
+                }
+            }
         }
 
         private void RevampedCollideAndMove(View currRoom)
@@ -474,7 +580,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     _fellOffLedge = false;
                     //_vsp = 0;
                     //_vsp_fract = 0;
-                    State = PlayerState.IDLE;
+                    PState = PlayerState.IDLE;
 
 
                     if (_onIce)
@@ -539,7 +645,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
                 if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP) && _jumpCount > 0)
                 {
-                    State = PlayerState.JUMPING;
+                    PState = PlayerState.JUMPING;
                     _jumpCount--;
                     _vsp = -SPD_JUMP;
                     _vsp_fract = 0;
@@ -799,10 +905,10 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     Global.World.FieldTransitionCardinal(VIEW_DIR.DOWN);
                 }
                 else if (BBox.Top <= 0 &&
-                    (_isGrounded || State == PlayerState.CLIMBING || State == PlayerState.JUMPING) &&
-                    State != PlayerState.FALLING)
+                    (_isGrounded || PState == PlayerState.CLIMBING || PState == PlayerState.JUMPING) &&
+                    PState != PlayerState.FALLING)
                 {
-                    if (State == PlayerState.JUMPING)
+                    if (PState == PlayerState.JUMPING)
                     {
                         var currTile = TileGetAtPixel(currRoom, BBox.Left + 1, 0);
                         if (currTile != ChipTypes.LAVA &&
@@ -872,7 +978,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
         #region ClassicMovementCode
         private void ClassicStateMachine(View currRoom)
         {
-            switch (State)
+            switch (PState)
             {
                 case PlayerState.MAIN_MENU:
                 case PlayerState.PAUSED:
@@ -889,7 +995,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     break;
             }
 
-            _prevState = State;
+            _prevState = PState;
         }
 
         private void ClassicCollideAndMove(double dx, double dy, int[] chipline, View currRoom)
@@ -1082,7 +1188,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
             if (InputManager.ButtonCheckPressed30FPS(Global.ControllerKeys.JUMP) && dy <= 0 && _isGrounded)
             {
-                State = PlayerState.JUMPING;
+                PState = PlayerState.JUMPING;
             }
 
             _moveY = InputManager.DirHeldY;
@@ -1219,7 +1325,7 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
 
         public string PrintState()
         {
-            switch (State)
+            switch (PState)
             {
                 case PlayerState.IDLE:
                     return "Idle";

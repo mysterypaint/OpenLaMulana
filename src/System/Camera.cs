@@ -152,6 +152,7 @@ namespace OpenLaMulana.System
                         {
                             posX = 0;
                             _protag.SetPosition(new Point(ROOM_PX_WIDTH + (int)targetX, _protag.BBox.Y));
+                            _protag.DeleteAllWeaponParticles();
 
                             destView = Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView();
                             destRoomX = destView.X;
@@ -165,7 +166,7 @@ namespace OpenLaMulana.System
                             _moveToX = 0;
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
-                            _protag.State = _protag.GetPrevState();
+                            _protag.PState = _protag.GetPrevState();
 
                             // Reset the temporary flags in memory
                             Global.GameFlags.ResetAllRFlags();
@@ -183,6 +184,7 @@ namespace OpenLaMulana.System
                         {
                             posX = 0;
                             _protag.SetPosition(new Point((int)targetX, _protag.BBox.Y));
+                            _protag.DeleteAllWeaponParticles();
 
                             destView = Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView();
                             destRoomX = destView.X;
@@ -196,7 +198,7 @@ namespace OpenLaMulana.System
                             _moveToX = 0;
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
-                            _protag.State = _protag.GetPrevState();
+                            _protag.PState = _protag.GetPrevState();
 
                             // Reset the temporary flags in memory
                             Global.GameFlags.ResetAllRFlags();
@@ -224,6 +226,7 @@ namespace OpenLaMulana.System
                         {
                             posY = 0;
                             _protag.SetPosition(new Point(_protag.BBox.X, ROOM_PX_HEIGHT + (int)targetY));
+                            _protag.DeleteAllWeaponParticles();
 
                             destView = Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView();
                             destRoomX = destView.X;
@@ -237,7 +240,7 @@ namespace OpenLaMulana.System
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
-                            _protag.State = _protag.GetPrevState();
+                            _protag.PState = _protag.GetPrevState();
 
                             // Reset the temporary flags in memory
                             Global.GameFlags.ResetAllRFlags();
@@ -257,6 +260,7 @@ namespace OpenLaMulana.System
                         {
                             posY = 0;
                             _protag.SetPosition(new Point(_protag.BBox.X, (int)targetY));
+                            _protag.DeleteAllWeaponParticles();
 
                             destView = Global.World.GetActiveViews()[(int)World.AViews.DEST].GetView();
                             destRoomX = destView.X;
@@ -269,7 +273,7 @@ namespace OpenLaMulana.System
                             _moveToY = 0;
                             Global.World.UpdateCurrActiveView();
                             _state = (int)CamStates.NONE;
-                            _protag.State = _protag.GetPrevState();
+                            _protag.PState = _protag.GetPrevState();
 
                             // Reset the temporary flags in memory
                             Global.GameFlags.ResetAllRFlags();

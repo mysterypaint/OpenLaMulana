@@ -3,9 +3,9 @@
     public enum SFX
     {
         PAUSE,
-        P_JUMP,
+        P_BOMB_THROW,
         P_WHIP_RELEASE,
-        P_WHIP_PREPARE,
+        P_JUMP,
         P_GROUNDED,
         P_HURT,
         P_SHIELD_BLOCK,
@@ -53,7 +53,7 @@
         SE2F,
         SE30,
         DIVINE_RETRIBUTION,
-        SE32,
+        P_FLARE_THROW,
         SE33,
         SE34,
         SE35,

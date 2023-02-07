@@ -10,18 +10,18 @@ namespace OpenLaMulana
 {
     public abstract class ParentWorldEntity : IGameEntity
     {
-        public int Depth { get; set; } = (int)Global.DrawOrder.Entities;
-        public Effect ActiveShader { get; set; } = null;
-        internal Texture2D _tex;
+        public virtual int Depth { get; set; } = (int)Global.DrawOrder.Entities;
+        public virtual Effect ActiveShader { get; set; } = null;
+        public virtual Texture2D _tex { get; set; } = null;
         internal World _world;
-        internal Sprite _sprIndex;
+        internal virtual Sprite _sprIndex { get; set; } = null;
         public Vector2 Position;
         public Vector2 RelativeViewChipPos { get; }
         public bool Visible { get; set; } = true;
-        public short BBoxOriginX { get; set; } = 0;
-        public short BBoxOriginY { get; set; } = 0;
-        public bool LockTo30FPS { get; set; } = true;
-        public bool LockToCamera { get; set; } = false;
+        public virtual short BBoxOriginX { get; set; } = 0;
+        public virtual short BBoxOriginY { get; set; } = 0;
+        public virtual bool LockTo30FPS { get; set; } = true;
+        public virtual bool LockToCamera { get; set; } = false;
 
         internal View _parentView = null;
         public Point ViewCoords = new Point(-1, -1);
@@ -48,8 +48,14 @@ namespace OpenLaMulana
             StartFlags = startFlags;
             IsGlobal = spawnIsGlobal;
 
-            if (destView == null)
-                destView = Global.World.GetCurrentView();
+            if (!(this is Protag))
+            {
+                if (destView == null)
+                    destView = Global.World.GetCurrentView();
+            } else
+            {
+                destView = new View(1, 1, null, -1, -1, false);
+            }
             _parentView = destView;
 
             if (!spawnIsGlobal)

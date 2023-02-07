@@ -152,7 +152,37 @@ namespace OpenLaMulana.Graphics
             }
 
             return anim;
+        }
 
+        public static SpriteAnimation CreateSimpleAnimation(Texture2D texture, Point startPos, int width, int height, Point offset, int frameCount, float frameLength, int framesPerRow)
+        {
+            if (texture == null)
+                throw new ArgumentNullException(nameof(texture));
+
+            SpriteAnimation anim = new SpriteAnimation();
+
+            int xOff = 0;
+            int yOff = -1;
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                if (i % framesPerRow == 0)
+                {
+                    xOff = 0;
+                    yOff++;
+                }
+
+                Sprite sprite = new Sprite(texture, startPos.X + xOff * offset.X, startPos.Y + yOff * offset.Y, width, height);
+                anim.AddFrame(sprite, frameLength * i);
+
+                if (i == frameCount - 1)
+                    anim.AddFrame(sprite, frameLength * (i + 1));
+
+                xOff++;
+
+            }
+
+            return anim;
         }
 
         public static SpriteAnimation CreateSimpleAnimation(Sprite[] spriteArray, float frameLength)

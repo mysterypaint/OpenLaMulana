@@ -1003,7 +1003,7 @@ namespace OpenLaMulana
                     Global.MobileSuperX.SetState(Global.MSXStates.INACTIVE);
                     Global.Protag.SetHsp(0);
                     Global.Protag.SetVsp(0);
-                    Global.Protag.State = PlayerState.IDLE;
+                    Global.Protag.PState = PlayerState.IDLE;
                 }
             }
             return;

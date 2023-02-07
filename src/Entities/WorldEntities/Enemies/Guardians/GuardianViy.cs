@@ -101,7 +101,7 @@ namespace OpenLaMulana.Entities.WorldEntities.Enemies.Guardians
 
             Position = new Vector2(_ts, 16 * _ts);
             Global.Main.SetState(Global.GameState.PLAYING);
-            Global.Protag.State = PlayerState.CUTSCENE;
+            Global.Protag.PState = PlayerState.CUTSCENE;
         }
 
         ~GuardianViy()

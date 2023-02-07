@@ -372,7 +372,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                                     if (_myBGM >= 0)
                                         Global.AudioManager.ChangeSongs(_myBGM);
                                     State = NPCStates.ACTIVE;
-                                    _protag.State = PlayerState.NPC_DIALOGUE;
+                                    _protag.PState = PlayerState.NPC_DIALOGUE;
                                 }
                             }
                             break;
@@ -393,7 +393,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             {
                                 Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
                                 State = NPCStates.INACTIVE;
-                                _protag.State = PlayerState.IDLE;
+                                _protag.PState = PlayerState.IDLE;
                             }
                             break;
                     }
@@ -409,7 +409,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                                     if (_myBGM >= 0)
                                         Global.AudioManager.ChangeSongs(_myBGM);
                                     State = NPCStates.ACTIVE;
-                                    _protag.State = PlayerState.NPC_DIALOGUE;
+                                    _protag.PState = PlayerState.NPC_DIALOGUE;
                                 }
                             }
                             break;
@@ -418,7 +418,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             {
                                 Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
                                 State = NPCStates.INACTIVE;
-                                _protag.State = PlayerState.IDLE;
+                                _protag.PState = PlayerState.IDLE;
                             }
                             break;
                     }
@@ -434,7 +434,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                                     if (_myBGM >= 0)
                                         Global.AudioManager.ChangeSongs(_myBGM);
                                     State = NPCStates.ACTIVE;
-                                    _protag.State = PlayerState.NPC_DIALOGUE;
+                                    _protag.PState = PlayerState.NPC_DIALOGUE;
                                 }
                             }
                             break;
@@ -443,7 +443,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             {
                                 Global.AudioManager.ChangeSongs(Global.World.GetCurrField().MusicNumber);
                                 State = NPCStates.INACTIVE;
-                                _protag.State = PlayerState.IDLE;
+                                _protag.PState = PlayerState.IDLE;
                             }
                             break;
                     }

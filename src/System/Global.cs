@@ -48,6 +48,7 @@ namespace OpenLaMulana
             Entities = 300,
             AboveEntitiesGraphicDisplay = 301,
             Characters = 400,
+            ProtagWeaponParticles = 499,
             Protag = 500,
             Foreground = 600,
             UI = 700,
@@ -585,10 +586,10 @@ namespace OpenLaMulana
             public int WeightCount { get; set; }
 
             public int ShurikenCount { get; set; }
-            public int ThrowingKnivesCount { get; set; }
+            public int ThrowingKnifeCount { get; set; }
             public int SpearsCount { get; set; }
             public int FlaresCount { get; set; }
-            public int BombsCount { get; set; }
+            public int BombCount { get; set; }
             public int BulletCount { get; set; }
             public int AmmunitionRefills { get; set; }
             public int AnkhJewelCount { get; set; }

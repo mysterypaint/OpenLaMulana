@@ -141,7 +141,7 @@ namespace OpenLaMulana.Entities.WorldEntities
                             _timerFrames = 0;
                             Global.Main.SetState(Global.GameState.CUTSCENE);
                             State = WEStates.ACTIVATING;
-                            _protag.State = PlayerState.DYING;
+                            _protag.PState = PlayerState.DYING;
                             break;
                         }
                     }

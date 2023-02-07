@@ -606,7 +606,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
         public void DrawOverlayAView(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (Global.Protag.State == PlayerState.NPC_DIALOGUE)
+            if (Global.Protag.PState == PlayerState.NPC_DIALOGUE)
                 return;
             ActiveView aView = _activeViews[(int)AViews.OVERLAY];
 
@@ -821,7 +821,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
                         Global.Protag.SetVsp(0);
                         break;
                 }
-                //Global.Protag.State = PlayerState.SCREEN_TRANSITION;
+                //Global.Protag.PState = PlayerState.SCREEN_TRANSITION;
                 return;
             }
 
@@ -1223,6 +1223,8 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
 
 
             // Get rid of all the entities from the previous Field and allow spawning in every view
+            Global.Protag.DeleteAllWeaponParticles();
+
             if (thisField.ID != destField)
             {
                 thisField.QueueDeleteAllFieldAndRoomEntities();
@@ -1330,6 +1332,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             // If we're moving to a new Field, get rid of all the entities from the previous Field and allow spawning in every view
             if (updateEntities)
             {
+                Global.Protag.DeleteAllWeaponParticles();
                 currField.QueueDeleteAllFieldAndRoomEntities();
                 currField.UnlockAllViewSpawning();
 

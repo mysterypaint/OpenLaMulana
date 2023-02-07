@@ -77,7 +77,7 @@ namespace OpenLaMulana.Entities.WorldEntities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (Global.Protag.State == PlayerState.NPC_DIALOGUE)
+            if (Global.Protag.PState == PlayerState.NPC_DIALOGUE)
                 return;
             Rectangle rect = new Rectangle((int)Position.X, (int)Position.Y + World.HUD_HEIGHT, HitboxWidth, HitboxHeight);
             switch (State)
