@@ -36,6 +36,7 @@ namespace OpenLaMulana.Entities
         public override int Depth { get; set; } = (int)Global.DrawOrder.Protag;
         public override Effect ActiveShader { get; set; } = null;
         public override bool LockTo30FPS { get; set; } = true;
+        public override bool FrozenWhenCameraIsBusy { get; set; } = false;
 
         private short _moveX = 0;
         private short _moveY = 0;
@@ -166,6 +167,23 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 InstanceDestroy(particle);
             }
             _subWeaponParticles.Clear();
+        }
+
+        public void DeleteFlaggedSubweaponParticles()
+        {
+            List<SubWeaponParticle> particlesToRemove = new List<SubWeaponParticle>();
+
+            foreach (SubWeaponParticle particle in _subWeaponParticles)
+            {
+                if (particle.State == Global.WEStates.DYING)
+                {
+                    particlesToRemove.Add(particle);
+                    InstanceDestroy(particle);
+                }
+            }
+
+            foreach(SubWeaponParticle particle in particlesToRemove)
+                _subWeaponParticles.Remove(particle);
         }
 
         public void Initialize()
@@ -512,19 +530,20 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                 }
             }
 
-            foreach(SubWeaponParticle particle in _subWeaponParticles)
-            {
-                if (particle.State == Global.WEStates.DYING)
-                {
-                    InstanceDestroy(particle);
-                }
-            }
+            DeleteFlaggedSubweaponParticles();
         }
 
         private void RevampedCollideAndMove(View currRoom)
         {
 
             _moveX = InputManager.DirHeldX;
+            if (_moveX != 0)
+            {
+                if (_moveX > 0)
+                    FacingX = Facing.RIGHT;
+                else
+                    FacingX = Facing.LEFT;
+            }
 
             if (Global.DevModeEnabled && Global.DevModeDebugPhysics)
             {
@@ -587,11 +606,6 @@ Castlevania Dracula + Tile Magician: Whip attack power +2
                     {
                         if (_moveX != 0)
                         {
-                            if (_moveX > 0)
-                                FacingX = Facing.RIGHT;
-                            else
-                                FacingX = Facing.LEFT;
-
                             _hsp += _acc * _moveX;
                         }
                         _hsp = HelperFunctions.Lerp((float)_hsp, 0, (float)_drag);

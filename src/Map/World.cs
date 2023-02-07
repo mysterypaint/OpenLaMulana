@@ -41,6 +41,7 @@ Please refer to the LA-MULANA Flag List for the list of flags used in the actual
             MAX
         }
 
+        public bool FrozenWhenCameraIsBusy { get; set; } = false;
         public bool LockTo30FPS { get; set; } = false;
         public int Depth { get; set; } = (int)Global.DrawOrder.Tileset;
         public Effect ActiveShader { get; set; } = null;

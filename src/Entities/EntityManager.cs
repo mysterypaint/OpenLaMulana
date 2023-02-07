@@ -44,13 +44,16 @@ namespace OpenLaMulana.Entities
                 switch (Global.Main.State)
                 {
                     case Global.GameState.PLAYING:
-                        if (entity.LockTo30FPS)
+                        if (!entity.FrozenWhenCameraIsBusy || Global.Camera.GetState() == CamStates.NONE)
                         {
-                            if (Global.AnimationTimer.OneFrameElapsed())
+                            if (entity.LockTo30FPS)
+                            {
+                                if (Global.AnimationTimer.OneFrameElapsed())
+                                    entity.Update(gameTime);
+                            }
+                            else
                                 entity.Update(gameTime);
                         }
-                        else
-                            entity.Update(gameTime);
                         break;
                     case Global.GameState.CUTSCENE:
                         switch (entity)

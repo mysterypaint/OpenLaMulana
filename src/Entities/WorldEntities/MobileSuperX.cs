@@ -20,6 +20,7 @@ namespace OpenLaMulana
 
         Effect IGameEntity.ActiveShader => null;
         public bool LockTo30FPS { get; set; } = true;      // Locked to 30fps, but we should do it manually: It needs to ignore the pause state
+        public bool FrozenWhenCameraIsBusy { get; set; } = false;
 
         public enum MSXInventoryStates : int
         {

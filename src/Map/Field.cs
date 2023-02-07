@@ -25,6 +25,7 @@ Some Guardians are forced to relocate after the battle ends. See Guardian commen
         public int Depth { get; set; } = (int)Global.DrawOrder.Tileset;
         public Effect ActiveShader { get; set; } = null;
         public int WorldID { get; internal set; } = 0;
+        public bool FrozenWhenCameraIsBusy { get; set; } = false;
 
         public int MusicNumber = 0;
         public int MapIndex;

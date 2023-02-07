@@ -35,6 +35,7 @@ namespace OpenLaMulana.System
         public bool LockTo30FPS { get; set; } = true;
         public int Depth { get; set; } = (int)Global.DrawOrder.Text;
         public Effect ActiveShader { get; set; } = null;
+        public bool FrozenWhenCameraIsBusy { get; set; } = false;
 
 
         public Dictionary<char, int> codeMapDictENG = new Dictionary<char, int>();

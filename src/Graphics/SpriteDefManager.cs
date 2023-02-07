@@ -24,6 +24,7 @@ namespace OpenLaMulana
 
         private int _chipSize = OpenLaMulana.Entities.World.CHIP_SIZE;
         public bool LockTo30FPS { get; set; } = false;
+        public bool FrozenWhenCameraIsBusy { get; set; } = false;
 
         public SpriteDefManager()
         {

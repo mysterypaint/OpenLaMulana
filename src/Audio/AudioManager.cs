@@ -21,6 +21,7 @@ namespace OpenLaMulana
         private int _currSongID = -1;//17;
         private string[] _bgmFNames = new string[76];
         public bool LockTo30FPS { get; set; } = false;
+        public bool FrozenWhenCameraIsBusy { get; set; } = false;
 
         public int Depth { get; set; } = (int)Global.DrawOrder.Abstract;
         public Effect ActiveShader { get; set; } = null;

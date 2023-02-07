@@ -21,6 +21,7 @@ namespace OpenLaMulana.System
         Effect IGameEntity.ActiveShader => null;
 
         bool IGameEntity.LockTo30FPS { get; set; } = false;
+        public bool FrozenWhenCameraIsBusy { get; set; } = true;
 
         public InGameTimer()
         {

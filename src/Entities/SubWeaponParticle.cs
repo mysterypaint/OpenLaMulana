@@ -3,12 +3,14 @@ using Microsoft.Xna.Framework.Graphics;
 using OpenLaMulana.Entities.WorldEntities.Parents;
 using OpenLaMulana.Graphics;
 using System.Collections.Generic;
+using static OpenLaMulana.Entities.Protag;
 
 namespace OpenLaMulana.Entities
 {
     internal class SubWeaponParticle : ParentInteractableWorldEntity
     {
         SpriteAnimation _subWeaponAnim;
+        private int _moveX = 0;
 
         public SubWeaponParticle(int x, int y, int op1, int op2, int op3, int op4, bool spawnIsGlobal, View destView, List<ObjectStartFlag> startFlags) : base(x, y, op1, op2, op3, op4, spawnIsGlobal, destView, startFlags)
         {
@@ -18,20 +20,31 @@ namespace OpenLaMulana.Entities
             _tex = Global.TextureManager.GetTexture(Global.Textures.PROT1);
             Depth = (int)Global.DrawOrder.ProtagWeaponParticles;
 
+            if (Global.Protag.FacingX == Facing.RIGHT)
+                _moveX = 1;
+            else if (Global.Protag.FacingX == Facing.LEFT)
+                _moveX = -1;
+
             switch ((Global.SubWeapons)op1)
             {
                 case Global.SubWeapons.SHURIKEN:
                     //subWeaponSprites = new Sprite[] { Global.TextureManager.Get8x8Tile(_tex, 24, 4, Vector2.Zero), Global.TextureManager.Get8x8Tile(_tex, 25, 4, Vector2.Zero) };
                     _subWeaponAnim = SpriteAnimation.CreateSimpleAnimation(_tex, new Point(192, 32), 8, 8, new Point(8, 0), 2, 0.03f);
+                    MoveSpeed = 4;
+                    Hsp = MoveSpeed * _moveX;
                     break;
                 case Global.SubWeapons.THROWING_KNIFE:
                     _subWeaponAnim = SpriteAnimation.CreateSimpleAnimation(_tex, new Point(272, 16), 8, 8, new Point(8, 8), 4, 0.03f, 2);
+                    MoveSpeed = 4;
+                    Hsp = MoveSpeed * _moveX;
                     break;
                 case Global.SubWeapons.SPEAR:
                     _subWeaponAnim = SpriteAnimation.CreateSimpleAnimation(_tex, new Point(288, 16), 16, 16, new Point(0, 0), 1, 0.0f);
+                    Vsp = MoveSpeed;
                     break;
                 case Global.SubWeapons.FLARES:
                     _subWeaponAnim = SpriteAnimation.CreateSimpleAnimation(_tex, new Point(272, 32), 16, 16, new Point(16, 0), 2, 0.1f);
+                    Vsp = -MoveSpeed;
                     break;
                 case Global.SubWeapons.BOMB:
                     _subWeaponAnim = SpriteAnimation.CreateSimpleAnimation(_tex, new Point(240, 32), 8, 8, new Point(8, 8), 8, 0.02f, 4);
@@ -70,9 +83,14 @@ namespace OpenLaMulana.Entities
             {
                 case Global.WEStates.ACTIVATING:
                     _subWeaponAnim.Update(gameTime);
+                    Position += new Vector2(Hsp, Vsp);
+
+                    if (Position.X < 0 || Position.X > Global.Camera.Pos.X + (World.VIEW_WIDTH * World.CHIP_SIZE))
+                        State = Global.WEStates.DYING;
                     break;
                 case Global.WEStates.ACTIVE:
                     _subWeaponAnim.Update(gameTime);
+                    Position += new Vector2(Hsp, Vsp);
                     break;
                 case Global.WEStates.DYING:
                     break;

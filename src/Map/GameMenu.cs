@@ -11,6 +11,7 @@ namespace OpenLaMulana.Entities
         private int _currentScreen;
         private TextManager _textManager;
         public bool LockTo30FPS { get; set; } = false;
+        public bool FrozenWhenCameraIsBusy { get; set; } = false;
 
         public GameMenu(Global.ScreenOverlayState screen, TextManager textManager)
         {

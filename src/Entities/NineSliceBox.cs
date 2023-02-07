@@ -33,6 +33,7 @@ namespace OpenLaMulana.Entities
 
         Effect IGameEntity.ActiveShader => null;
         public bool LockTo30FPS { get; set; } = true;
+        public bool FrozenWhenCameraIsBusy { get; set; } = false;
 
         Vector2 Position = Vector2.Zero;
         private Sprite _treasureIcon = null;
