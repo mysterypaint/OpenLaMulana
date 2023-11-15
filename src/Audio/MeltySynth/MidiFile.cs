@@ -61,7 +61,7 @@ namespace MeltySynth
         /// Loads a MIDI file from the stream.
         /// </summary>
         /// <param name="stream">The data stream used to load the MIDI file.</param>
-        /// <param name="loopType">The type of the loop extension to be used.</param>
+        /// <param name="loopType">The type of loop extension to use.</param>
         public MidiFile(Stream stream, MidiFileLoopType loopType)
         {
             if (stream == null)
@@ -128,7 +128,7 @@ namespace MeltySynth
         /// Loads a MIDI file from the file.
         /// </summary>
         /// <param name="path">The MIDI file name and path.</param>
-        /// <param name="loopType">The type of the loop extension to be used.</param>
+        /// <param name="loopType">The type of loop extension to use.</param>
         public MidiFile(string path, MidiFileLoopType loopType)
         {
             if (path == null)
@@ -221,7 +221,8 @@ namespace MeltySynth
                 throw new InvalidDataException($"The chunk type must be 'MTrk', but was '{chunkType}'.");
             }
 
-            reader.ReadInt32BigEndian();
+            var end = (long)reader.ReadInt32BigEndian();
+            end += reader.BaseStream.Position;
 
             var messages = new List<Message>();
             var ticks = new List<int>();
@@ -274,16 +275,25 @@ namespace MeltySynth
                     case 0xFF: // Meta Event
                         switch (reader.ReadByte())
                         {
-                            case 0x2F: // End of Track
-                                reader.ReadByte();
-                                messages.Add(Message.EndOfTrack());
-                                ticks.Add(tick);
-                                return (messages, ticks);
-
                             case 0x06: // Meta Message
                                 messages.Add(Message.MetaMessage(ReadMetaMessage(reader)));
                                 ticks.Add(tick);
                                 break;
+
+                            case 0x2F: // End of Track
+                                reader.ReadByte();
+                                messages.Add(Message.EndOfTrack());
+                                ticks.Add(tick);
+
+                                // Some MIDI files may have events inserted after the EOT.
+                                // Such events should be ignored.
+                                if (reader.BaseStream.Position < end)
+                                {
+                                    reader.BaseStream.Position = end;
+                                }
+
+                                return (messages, ticks);
+
                             case 0x51: // Tempo
                                 messages.Add(Message.TempoChange(ReadTempo(reader)));
                                 ticks.Add(tick);
@@ -321,7 +331,6 @@ namespace MeltySynth
         {
             var size = reader.ReadIntVariableLength();
             var data = reader.ReadBytes(size);
-
             for (var i = 0; i < data.Length; i++)
             {
                 var value = data[i];
@@ -330,7 +339,6 @@ namespace MeltySynth
                     data[i] = (byte)'?';
                 }
             }
-
             return Encoding.ASCII.GetString(data, 0, data.Length);
         }
 

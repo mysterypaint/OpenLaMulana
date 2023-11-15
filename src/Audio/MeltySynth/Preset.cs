@@ -27,12 +27,12 @@ namespace MeltySynth
 
         private Preset(PresetInfo info, Zone[] zones, Instrument[] instruments)
         {
-            name = info.Name;
-            patchNumber = info.PatchNumber;
-            bankNumber = info.BankNumber;
-            library = info.Library;
-            genre = info.Genre;
-            morphology = info.Morphology;
+            this.name = info.Name;
+            this.patchNumber = info.PatchNumber;
+            this.bankNumber = info.BankNumber;
+            this.library = info.Library;
+            this.genre = info.Genre;
+            this.morphology = info.Morphology;
 
             var zoneCount = info.ZoneEndIndex - info.ZoneStartIndex + 1;
             if (zoneCount <= 0)

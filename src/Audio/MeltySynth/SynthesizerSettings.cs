@@ -8,7 +8,7 @@ namespace MeltySynth
     public sealed class SynthesizerSettings
     {
         internal static int DefaultBlockSize = 64;
-        internal static int DefaultMaximumPolyphony = 128;
+        internal static int DefaultMaximumPolyphony = 64;
         internal static bool DefaultEnableReverbAndChorus = true;
 
         private int sampleRate;
@@ -25,9 +25,9 @@ namespace MeltySynth
             CheckSampleRate(sampleRate);
 
             this.sampleRate = sampleRate;
-            blockSize = DefaultBlockSize;
-            maximumPolyphony = DefaultMaximumPolyphony;
-            enableReverbAndChorus = DefaultEnableReverbAndChorus;
+            this.blockSize = DefaultBlockSize;
+            this.maximumPolyphony = DefaultMaximumPolyphony;
+            this.enableReverbAndChorus = DefaultEnableReverbAndChorus;
         }
 
         private static void CheckSampleRate(int value)

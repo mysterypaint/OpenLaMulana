@@ -48,12 +48,10 @@ namespace MeltySynth
             }
 
             // If the number of active voices is less than the limit, use a free one.
-            if (activeVoiceCount < voices.Length && synthesizer.Channels[channel].GetActiveVoiceCount() < synthesizer.Channels[channel].GetPolyphonyLimit())
+            if (activeVoiceCount < voices.Length)
             {
                 var free = voices[activeVoiceCount];
                 activeVoiceCount++;
-                synthesizer.Channels[free.Channel].RemoveVoice(free);
-                synthesizer.Channels[channel].AddVoice(free);
                 return free;
             }
 
@@ -61,7 +59,6 @@ namespace MeltySynth
             // Find one which has the lowest priority.
             Voice? candidate = null;
             var lowestPriority = float.MaxValue;
-            Voice previousVoice = null;
             for (var i = 0; i < activeVoiceCount; i++)
             {
                 var voice = voices[i];
@@ -70,7 +67,6 @@ namespace MeltySynth
                 {
                     lowestPriority = priority;
                     candidate = voice;
-                    previousVoice = voice;
                 }
                 else if (priority == lowestPriority)
                 {
@@ -79,15 +75,8 @@ namespace MeltySynth
                     if (voice.VoiceLength > candidate!.VoiceLength)
                     {
                         candidate = voice;
-                        previousVoice = voice;
                     }
                 }
-            }
-
-            if (previousVoice != null && candidate != null)
-            {
-                synthesizer.Channels[previousVoice.Channel].RemoveVoice(previousVoice);
-                synthesizer.Channels[candidate.Channel].AddVoice(candidate);
             }
             return candidate;
         }
@@ -122,10 +111,8 @@ namespace MeltySynth
         public void Clear()
         {
             activeVoiceCount = 0;
-            foreach(Channel c in synthesizer.Channels)
-            {
-                c.ClearAllActiveVoices();
-            }
+            foreach(var voice in voices)
+                voice.Kill();
         }
 
         public Enumerator GetEnumerator()

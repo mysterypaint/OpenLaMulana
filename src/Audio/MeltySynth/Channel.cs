@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Channels;
 
 namespace MeltySynth
 {
@@ -24,17 +25,15 @@ namespace MeltySynth
         private short pitchBendRange;
         private short coarseTune;
         private short fineTune;
-        private short polyphonyLimit;
 
         private float pitchBend;
+
         private List<Voice> _myActiveVoices = new List<Voice>();
 
         internal Channel(Synthesizer synthesizer, bool isPercussionChannel)
         {
             this.synthesizer = synthesizer;
             this.isPercussionChannel = isPercussionChannel;
-            
-            polyphonyLimit = 64;
 
             Reset();
         }
@@ -57,7 +56,6 @@ namespace MeltySynth
             pitchBendRange = 2 << 7;
             coarseTune = 0;
             fineTune = 8192;
-            polyphonyLimit = 64;
 
             pitchBend = 0F;
         }
@@ -86,27 +84,6 @@ namespace MeltySynth
         public void SetPatch(int value)
         {
             patchNumber = value;
-
-            if (bankNumber == 0)
-            {
-                switch (value)
-                {
-                    default:
-                        polyphonyLimit = 64;
-                        break;
-                    case 0:
-                        polyphonyLimit = 1;
-                        break;
-                    case 38:
-                        polyphonyLimit = 1; // 2, until I can figure out what's going on with Ellmac's battle music on channel 6 (MIDI Ch 7): Some Note Ons at measure 29 are being eaten somehow...
-                        break;
-                }
-            } else
-            {
-                polyphonyLimit = 64;
-            }
-
-            ClearAllActiveVoices();
         }
 
         public void SetModulationCoarse(int value)
@@ -211,6 +188,49 @@ namespace MeltySynth
             pitchBend = (1F / 8192F) * ((value1 | (value2 << 7)) - 8192);
         }
 
+        internal void AddVoice(Voice v)
+        {
+            _myActiveVoices.Add(v);
+        }
+
+        internal void RemoveVoice(Voice v)
+        {
+            _myActiveVoices.Remove(v);
+        }
+
+
+        internal int GetActiveVoiceCount()
+        {
+            return _myActiveVoices.Count;
+        }
+        
+        internal void ClearAllActiveVoices()
+        {
+            _myActiveVoices.Clear();
+        }
+
+        internal float GetFirstActiveVoiceVolume()
+        {
+            var loudest = 0.0f;
+            foreach(Voice v in _myActiveVoices)
+            {
+                float vol = v.GetNoteGain();
+                if (vol > 0.0f && v.GetState() != Voice.VoiceState.Killed)
+                {
+                    var channelInfo = synthesizer.Channels[v.Channel];
+
+                    // According to the GM spec, the following value should be squared.
+                    var ve = channelInfo.Volume * channelInfo.Expression;
+                    var channelGain = ve * ve;
+
+                    var mixGain = v.GetNoteGain() * channelGain * v.GetVolEnv().Value;
+                    if (mixGain > loudest)
+                        loudest = mixGain;
+                }
+            }
+            return loudest;
+        }
+
         public bool IsPercussionChannel => isPercussionChannel;
 
         public int BankNumber => bankNumber;
@@ -229,38 +249,5 @@ namespace MeltySynth
         public float Tune => coarseTune + (1F / 8192F) * (fineTune - 8192);
 
         public float PitchBend => PitchBendRange * pitchBend;
-
-        public int GetPolyphonyLimit()
-        {
-            return polyphonyLimit;
-        }
-
-        internal void AddVoice(Voice v)
-        {
-            _myActiveVoices.Add(v);
-        }
-
-        internal void RemoveVoice(Voice v)
-        {
-            _myActiveVoices.Remove(v);
-        }
-
-        internal int GetActiveVoiceCount()
-        {
-            return _myActiveVoices.Count;
-        }
-
-        internal void ClearAllActiveVoices()
-        {
-            _myActiveVoices.Clear();
-        }
-
-        internal float GetActiveVoiceVolume(int voiceID)
-        {
-            if (_myActiveVoices.Count > 0)
-                return _myActiveVoices[voiceID].GetNoteGain();
-            else
-                return 0.0f;
-        }
     }
 }

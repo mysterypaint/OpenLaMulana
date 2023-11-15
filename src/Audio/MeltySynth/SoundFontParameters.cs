@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace MeltySynth
 {
@@ -16,7 +17,8 @@ namespace MeltySynth
                 throw new InvalidDataException("The LIST chunk was not found.");
             }
 
-            var end = reader.BaseStream.Position + reader.ReadInt32();
+            var end = (long)reader.ReadInt32();
+            end += reader.BaseStream.Position;
 
             var listType = reader.ReadFourCC();
             if (listType != "pdta")

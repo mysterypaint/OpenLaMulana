@@ -1,4 +1,6 @@
-﻿namespace MeltySynth
+﻿using System;
+
+namespace MeltySynth
 {
     /// <summary>
     /// Specifies the non-standard loop extension for MIDI files.
@@ -6,7 +8,7 @@
     public enum MidiFileLoopType
     {
         /// <summary>
-        /// No special loop extension.
+        /// No loop extension is used.
         /// </summary>
         None = 0,
 
@@ -18,13 +20,13 @@
 
         /// <summary>
         /// The Incredible Machine style loop.
-        /// CC #110 and #111 will be the loop start point and end point, respectively.
+        /// CC #110 and #111 will be the start and end points of the loop.
         /// </summary>
         IncredibleMachine,
 
         /// <summary>
         /// The Final Fantasy style loop.
-        /// CC #116 and #117 will be the loop start point and end point, respectively.
+        /// CC #116 and #117 will be the start and end points of the loop.
         /// </summary>
         FinalFantasy
     }

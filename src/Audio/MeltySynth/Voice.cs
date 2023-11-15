@@ -82,7 +82,7 @@ namespace MeltySynth
 
         public void Start(RegionPair region, int channel, int key, int velocity)
         {
-            exclusiveClass = region.ExclusiveClass;
+            this.exclusiveClass = region.ExclusiveClass;
             this.channel = channel;
             this.key = key;
             this.velocity = velocity;
@@ -127,6 +127,7 @@ namespace MeltySynth
             filter.ClearBuffer();
             filter.SetLowPassFilter(cutoff, resonance);
 
+            synthesizer.Channels[channel].AddVoice(this);
             smoothedCutoff = cutoff;
 
             voiceState = VoiceState.Playing;
@@ -144,6 +145,8 @@ namespace MeltySynth
         public void Kill()
         {
             noteGain = 0F;
+            voiceState = VoiceState.Killed;
+            synthesizer.Channels[channel].RemoveVoice(this);
         }
 
         public bool Process()
@@ -261,12 +264,23 @@ namespace MeltySynth
             return volEnv.Value;
         }
 
+        internal VoiceState GetState()
+        {
+            return voiceState;
+        }
+
+        internal VolumeEnvelope GetVolEnv()
+        {
+            return volEnv;
+        }
+
         public float Priority
         {
             get
             {
                 if (noteGain < SoundFontMath.NonAudible)
                 {
+                    voiceState = VoiceState.Killed;
                     return 0F;
                 }
                 else
@@ -297,11 +311,12 @@ namespace MeltySynth
 
 
 
-        private enum VoiceState
+        internal enum VoiceState
         {
             Playing,
             ReleaseRequested,
-            Released
+            Released,
+            Killed
         }
     }
 }

@@ -94,8 +94,8 @@ namespace MeltySynth
             this.a0 = b0 / a0;
             this.a1 = b1 / a0;
             this.a2 = b2 / a0;
-            a3 = a1 / a0;
-            a4 = a2 / a0;
+            this.a3 = a1 / a0;
+            this.a4 = a2 / a0;
         }
     }
 }

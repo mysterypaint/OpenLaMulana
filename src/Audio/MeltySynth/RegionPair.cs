@@ -1,4 +1,6 @@
-﻿namespace MeltySynth
+﻿using System;
+
+namespace MeltySynth
 {
     internal struct RegionPair
     {

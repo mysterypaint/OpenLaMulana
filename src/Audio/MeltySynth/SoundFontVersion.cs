@@ -1,4 +1,6 @@
-﻿namespace MeltySynth
+﻿using System;
+
+namespace MeltySynth
 {
     /// <summary>
     /// Reperesents the version of a SoundFont.
