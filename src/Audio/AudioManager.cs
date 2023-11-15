@@ -27,10 +27,10 @@ namespace OpenLaMulana
         public Effect ActiveShader { get; set; } = null;
 
         private float _userMasterVolScale { get; set; } = 0.8f;
-        private float _userBGMVolScale { get; set; } = 0.8f;
+        private float _userBGMVolScale { get; set; } = 0.55f;
         private float _userSFXVolScale { get; set; } = 0.8f;
 
-        private float _internalBGMVolScale = 0.55f;//0.6f;
+        private float _internalBGMVolScale = 1f;//0.6f;
         private float _internalSFXVolScale = 1.0f;
 
         private static Dictionary<SFX, SoundEffect> _sfxBank = new Dictionary<SFX, SoundEffect>();
