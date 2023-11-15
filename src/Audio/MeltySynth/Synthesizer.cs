@@ -16,6 +16,7 @@ namespace MeltySynth
     {
         private static readonly int channelCount = 16;
         private static readonly int percussionChannel = 9;
+        private int songID = -1;
 
         private readonly SoundFont soundFont;
         private readonly int sampleRate;
@@ -337,6 +338,15 @@ namespace MeltySynth
                 return;
             }
 
+            switch(songID)
+            {
+                // Hacky fix for absurd volume levels in Midnight Jungle
+                case 57:
+                    if (channel == 1)
+                        velocity = (int)(velocity * 0.20f);
+                    break;
+            }
+
             if (!(0 <= channel && channel < channels.Length))
             {
                 return;
@@ -472,8 +482,9 @@ namespace MeltySynth
         /// <summary>
         /// Resets the synthesizer.
         /// </summary>
-        public void Reset()
+        public void Reset(int songID)
         {
+            this.songID = songID;
             voices.Clear();
 
             foreach (var channel in channels)

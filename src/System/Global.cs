@@ -17,7 +17,7 @@ namespace OpenLaMulana
         public static Point DevModeSpawnView { get; set; } = new Point(0, 0);
         public static Point DevModeSpawnViewPos { get; set; } = new Point(5, 5);
 
-        public static bool DevModeMuteBGM { get; set; } = true;
+        public static bool DevModeMuteBGM { get; set; } = false;
         public static bool DevModeRunWhileInactive { get; set; } = true;
         public static bool DevModeAllEntitiesGeneric { get; set; } = false;
         public static bool DevModeDebugPhysics { get; set; } = false;

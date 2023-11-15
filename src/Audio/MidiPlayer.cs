@@ -36,11 +36,11 @@ namespace OpenLaMulana.Audio
             }
         }
 
-        public void Play(MidiFile midiFile, bool loop = false)
+        public void Play(MidiFile midiFile, int songID, bool loop = false)
         {
             if (_noMusic)
                 return;
-            sequencer.Play(midiFile, loop);
+            sequencer.Play(midiFile, songID, loop);
 
             if (dynamicSound.State != SoundState.Playing)
             {

@@ -206,7 +206,7 @@ namespace OpenLaMulana
                 return;
             if (_midiPlayer.State == SoundState.Stopped && _currSongID >= 0)
             {
-                _midiPlayer.Play(songs[_currSongID], true);
+                _midiPlayer.Play(songs[_currSongID], _currSongID, true);
                 Debug.WriteLine(_midiPlayer.GetMasterVolume());
             }
         }
@@ -274,7 +274,7 @@ namespace OpenLaMulana
                 _midiPlayer.Stop();
                 //midiPlayer.Dispose();
                 _currSongID = musicNumber;
-                _midiPlayer.Play(songs[_currSongID]);
+                _midiPlayer.Play(songs[_currSongID], _currSongID, false);
             }
         }
 

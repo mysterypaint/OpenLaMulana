@@ -750,6 +750,7 @@ namespace OpenLaMulana
 
         public void SaveGame()
         {
+            /*
             SaveState saveState = new SaveState
             {
                 //Highscore = _scoreBoard.HighScore,
@@ -768,7 +769,7 @@ namespace OpenLaMulana
             {
                 Debug.WriteLine("An error occurred while saving the game: " + ex.Message);
             }
-
+            */
         }
 
         public void LoadSaveState()

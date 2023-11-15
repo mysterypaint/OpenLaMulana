@@ -8,7 +8,7 @@ namespace MeltySynth
     public sealed class SynthesizerSettings
     {
         internal static int DefaultBlockSize = 64;
-        internal static int DefaultMaximumPolyphony = 64;
+        internal static int DefaultMaximumPolyphony = 128;
         internal static bool DefaultEnableReverbAndChorus = true;
 
         private int sampleRate;

@@ -19,6 +19,7 @@ namespace MeltySynth
         private MidiFile? midiFile;
         private bool loop;
 
+        private int songID;
         private int blockWrote;
 
         private TimeSpan currentTime;
@@ -48,7 +49,7 @@ namespace MeltySynth
         /// </summary>
         /// <param name="midiFile">The MIDI file to be played.</param>
         /// <param name="loop">If <c>true</c>, the MIDI file loops after reaching the end.</param>
-        public void Play(MidiFile midiFile, bool loop = false)
+        public void Play(MidiFile midiFile, int songID, bool loop = false)
         {
             if (midiFile == null)
             {
@@ -57,6 +58,7 @@ namespace MeltySynth
 
             this.midiFile = midiFile;
             this.loop = loop;
+            this.songID = songID;
 
             blockWrote = synthesizer.BlockSize;
 
@@ -64,7 +66,7 @@ namespace MeltySynth
             msgIndex = 0;
             loopIndex = 0;
 
-            synthesizer.Reset();
+            synthesizer.Reset(songID);
         }
 
         /// <summary>
@@ -74,7 +76,7 @@ namespace MeltySynth
         {
             midiFile = null;
 
-            synthesizer.Reset();
+            synthesizer.Reset(-1);
         }
 
         public void NoteOffAll(bool b)

@@ -673,12 +673,6 @@
 #begin music/m75.mid
 /copy:music/m75.mid
 
-#begin music/SanbikiScc.dls
-/copy:music/SanbikiScc.dls
-
-#begin music/SanbikiSCC.it
-/copy:music/SanbikiSCC.it
-
 #begin music/SanbikiScc.sf2
 /copy:music/SanbikiScc.sf2
 
