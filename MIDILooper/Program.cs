@@ -177,6 +177,8 @@ class Program
         // Read the file and display it line by line.
         int currChannel = 0;
         bool loopPlaced = false;
+        bool firstNoteOnForChannel = false;
+
         foreach (string line in System.IO.File.ReadLines(sOut))
         {
             string[] lineArgs = line.Split(", ");
@@ -190,9 +192,31 @@ class Program
                     loopPlaced = true;
                 }
             }
-
+            
             switch (cmd.ToLower())
             {
+                case "note_on_c":
+                    if (!firstNoteOnForChannel) {
+                        if (songIndex == 28)
+                        {
+                            switch (currChannel)
+                            {
+                                case 2:
+                                    contents.Add("2, 0, Program_c, 0, 39");
+                                    firstNoteOnForChannel = true;
+                                    break;
+                                case 5:
+                                    contents.Add("5, 0, Program_c, 3, 39");
+                                    firstNoteOnForChannel = true;
+                                    break;
+                                case 7:
+                                    contents.Add("7, 0, Program_c, 5, 39");
+                                    firstNoteOnForChannel = true;
+                                    break;
+                            }
+                        }
+                    }
+                    break;
                 case "header":
                     ticksPerQuarter = Int32.Parse(lineArgs[5]);
                     loopTick = (int)Math.Round(quarterBeatToLoopAt * ticksPerQuarter);
@@ -203,6 +227,7 @@ class Program
                             break;
                     }*/
                     currChannel++;
+                    firstNoteOnForChannel = false;
                     break;
                 case "end_track":
                     if (lineArgs[0].Equals("1"))
@@ -227,6 +252,7 @@ class Program
                             longestChannel = trackLen;
                     }
                     currChannel++;
+                    firstNoteOnForChannel = false;
                     break;
             }
 

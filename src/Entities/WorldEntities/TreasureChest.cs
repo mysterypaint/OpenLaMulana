@@ -122,6 +122,8 @@ namespace OpenLaMulana.Entities.WorldEntities
                     }
                     break;
                 case WEStates.ACTIVATING:
+                    if (_flagToTriggerWhenItemTaken < 0)
+                        break;
                     if (CollidesWithPlayer())
                     {
                         State = WEStates.DYING;
